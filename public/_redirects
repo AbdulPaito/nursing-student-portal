@@ -1,3 +1,5 @@
+
+/api/admin/login  https://nursing-student-portal.onrender.com/api/auth/login  200
 /api/*  https://nursing-student-portal.onrender.com/api/:splat  200
 
 /events           /events.html           200
