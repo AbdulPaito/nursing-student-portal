@@ -1,5 +1,7 @@
-/events /events.html 200
-/daily-subjects /daily-subjects.html 200
-/announcements /announcements.html 200
-/admin /admin/index.html 200
-/admin/login /admin/login.html 200
+/api/*  https://nursing-student-portal.onrender.com/api/:splat  200
+
+/events           /events.html           200
+/daily-subjects   /daily-subjects.html   200
+/announcements    /announcements.html   200
+/admin            /admin/index.html      200
+/admin/login      /admin/login.html      200
