@@ -1,49 +1,68 @@
-require('dotenv').config();
+require('dotenv').config({ override: true });
+
 const mongoose = require('mongoose');
-const User = require('../models/User');
 const connectDB = require('../config/db');
+const User = require('../models/User');
+
+const {
+  MONGODB_URI,
+  ADMIN_EMAIL,
+  ADMIN_PASSWORD,
+  ADMIN_NAME,
+} = process.env;
+
+function escapeRegex(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
 
 async function seedAdmin() {
-  try {
-    const adminName = process.env.ADMIN_NAME || 'Admin';
-    const adminEmail = process.env.ADMIN_EMAIL;
-    const adminPassword = process.env.ADMIN_PASSWORD;
+  if (!MONGODB_URI) {
+    throw new Error('MONGODB_URI environment variable is not set');
+  }
 
-    if (!process.env.MONGODB_URI) throw new Error('MONGODB_URI not set');
-    if (!adminEmail) throw new Error('ADMIN_EMAIL not set');
-    if (!adminPassword) throw new Error('ADMIN_PASSWORD not set');
+  if (!ADMIN_EMAIL || !ADMIN_PASSWORD || !ADMIN_NAME) {
+    throw new Error(
+      'ADMIN_EMAIL, ADMIN_PASSWORD, and ADMIN_NAME environment variables must be set'
+    );
+  }
 
-    await connectDB();
-    console.log('Connected to MongoDB');
+  await connectDB();
 
-    const emailTrimmed = String(adminEmail).trim();
-    const emailRegex = new RegExp('^' + emailTrimmed.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '$', 'i');
+  const adminEmailLower = ADMIN_EMAIL.toLowerCase();
+  const emailRegex = new RegExp(`^${escapeRegex(adminEmailLower)}$`, 'i');
 
-    const existing = await User.findOne({ email: { $regex: emailRegex } });
+  const existingAdmin = await User.findOne({ email: emailRegex });
 
-    if (existing) {
-      existing.name = adminName;
-      existing.email = emailTrimmed;
-      existing.role = 'admin';
-      existing.password = String(adminPassword);
-      await existing.save();
-      console.log(`Admin user updated: ${existing.email}`);
-    } else {
-      const user = new User({
-        name: adminName,
-        email: emailTrimmed,
-        password: String(adminPassword),
-        role: 'admin'
-      });
-      await user.save();
-      console.log(`Admin user created: ${user.email}`);
-    }
-  } catch (err) {
-    console.error('Seed error:', err);
-    process.exitCode = 1;
-  } finally {
-    await mongoose.disconnect();
+  if (existingAdmin) {
+    existingAdmin.name = ADMIN_NAME;
+    existingAdmin.email = ADMIN_EMAIL;
+    existingAdmin.role = 'admin';
+    existingAdmin.password = ADMIN_PASSWORD;
+
+    await existingAdmin.save();
+    console.log('Admin updated');
+  } else {
+    const admin = new User({
+      name: ADMIN_NAME,
+      email: ADMIN_EMAIL,
+      role: 'admin',
+      password: ADMIN_PASSWORD,
+    });
+
+    await admin.save();
+    console.log('Admin created');
   }
 }
 
-seedAdmin();
+seedAdmin()
+  .then(async () => {
+    await mongoose.disconnect();
+    process.exit(0);
+  })
+  .catch(async (error) => {
+    console.error('Seed error:', error && error.message ? error.message : error);
+    try {
+      await mongoose.disconnect();
+    } catch (_) {}
+    process.exit(1);
+  });
