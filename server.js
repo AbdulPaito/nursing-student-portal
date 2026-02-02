@@ -24,13 +24,15 @@ app.get('/api/test', (req, res) => {
 
 function requireDb(req, res, next) {
   if (mongoose.connection.readyState !== 1) {
+    console.error('MongoDB not connected');
     return res.status(503).json({ error: 'Database not connected. Please try again shortly.' });
   }
   next();
 }
 
 // API routes
-app.use('/api/auth', authRoutes);
+app.use('/api/auth', requireDb, authRoutes);
+app.use('/api/admin', requireDb, authRoutes);
 app.use('/api/events', requireDb, eventsRoutes);
 app.use('/api/daily-subjects', requireDb, dailySubjectsRoutes);
 app.use('/api/announcements', requireDb, announcementsRoutes);

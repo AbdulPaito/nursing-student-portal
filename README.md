@@ -27,18 +27,17 @@ A responsive Nursing Student Website with a MongoDB backend: public student port
    - Set `JWT_SECRET` (strong random string for production)
    - Optional: `PORT` (default 3000)
 
-3. **Seed database** (creates admin user and sample data)
+3. **Seed database** (creates sample data)
    ```bash
    node scripts/seed.js
    ```
-   Default admin: **admin@nursing.edu** / **admin123**
 
 4. **Run server**
    ```bash
    npm start
    ```
    - Public portal: http://localhost:3000
-   - Admin: http://localhost:3000/admin (login with seeded credentials)
+   - Admin: http://localhost:3000/admin
 
 ## Design
 

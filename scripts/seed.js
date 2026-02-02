@@ -10,24 +10,14 @@ const Event = require('../models/Event');
 const DailySubject = require('../models/DailySubject');
 const Announcement = require('../models/Announcement');
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/nursing-portal';
+const MONGODB_URI = process.env.MONGODB_URI;
 
 async function seed() {
+  if (!MONGODB_URI) {
+    throw new Error('MONGODB_URI is not set');
+  }
   await mongoose.connect(MONGODB_URI);
   console.log('Connected to MongoDB');
-
-  const existing = await User.findOne({ email: 'admin@nursing.edu' });
-  if (existing) {
-    console.log('Admin user already exists. Skipping user seed.');
-  } else {
-    await User.create({
-      name: 'Admin User',
-      email: 'admin@nursing.edu',
-      password: 'admin123',
-      role: 'admin'
-    });
-    console.log('Created admin user: admin@nursing.edu / admin123');
-  }
 
   if ((await Event.countDocuments()) === 0) {
     await Event.insertMany([
