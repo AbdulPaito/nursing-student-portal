@@ -43,19 +43,63 @@
     return `${mins}m`;
   }
 
-  // Mobile Menu Toggle
+  // Mobile Menu Toggle with Hamburger Animation
   const mobileMenuBtn = document.getElementById('mobileMenuBtn');
   const mobileMenu = document.getElementById('mobileMenu');
+  const hamburger = document.getElementById('hamburger');
+  let isMenuOpen = false;
+
+  function toggleMobileMenu() {
+    isMenuOpen = !isMenuOpen;
+    if (isMenuOpen) {
+      mobileMenu.classList.remove('hidden');
+      hamburger.classList.add('hamburger-active');
+      mobileMenuBtn.setAttribute('aria-expanded', 'true');
+    } else {
+      mobileMenu.classList.add('hidden');
+      hamburger.classList.remove('hamburger-active');
+      mobileMenuBtn.setAttribute('aria-expanded', 'false');
+    }
+  }
+
   if (mobileMenuBtn && mobileMenu) {
-    mobileMenuBtn.addEventListener('click', function() {
-      mobileMenu.classList.toggle('hidden');
-      const icon = mobileMenuBtn.querySelector('i');
-      if (icon) {
-        icon.classList.toggle('bi-list');
-        icon.classList.toggle('bi-x-lg');
+    mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+    
+    // Close menu when clicking a link
+    const mobileLinks = mobileMenu.querySelectorAll('a');
+    mobileLinks.forEach(function(link) {
+      link.addEventListener('click', function() {
+        if (isMenuOpen) toggleMobileMenu();
+      });
+    });
+    
+    // Close menu when clicking outside
+    document.addEventListener('click', function(e) {
+      if (isMenuOpen && !mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+        toggleMobileMenu();
       }
     });
   }
+
+  // Active page highlighting
+  const currentPage = window.location.pathname;
+  const allLinks = document.querySelectorAll('[data-page]');
+  allLinks.forEach(function(link) {
+    const page = link.getAttribute('data-page');
+    let isActive = false;
+    if (page === 'home' && (currentPage === '/' || currentPage === '/index.html')) isActive = true;
+    else if (page === 'events' && currentPage.includes('events')) isActive = true;
+    else if (page === 'subjects' && currentPage.includes('daily-subjects')) isActive = true;
+    else if (page === 'announcements' && currentPage.includes('announcements')) isActive = true;
+    else if (page === 'about' && currentPage.includes('about')) isActive = true;
+    
+    if (isActive) {
+      link.classList.add('active', 'text-primary');
+      if (link.classList.contains('nav-link')) {
+        link.classList.add('bg-primary/10');
+      }
+    }
+  });
 
   // Hero Date
   const heroDate = document.getElementById('heroDate');
