@@ -5,44 +5,181 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Nursing Student Portal - Home</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
           colors: {
             primary: {
-              DEFAULT: '#1E90FF',
-              dark: '#1873CC',
-              light: '#4da3ff',
-              50: '#E3F2FD',
-              100: '#BBDEFB',
-              500: '#1E90FF',
-              600: '#1873CC',
-              700: '#1565C0',
+              DEFAULT: '#7c3aed',
+              50: '#f5f3ff',
+              100: '#ede9fe',
+              200: '#ddd6fe',
+              300: '#c4b5fd',
+              400: '#a78bfa',
+              500: '#8b5cf6',
+              600: '#7c3aed',
+              700: '#6d28d9',
+              800: '#5b21b6',
+              900: '#4c1d95',
+            },
+            secondary: {
+              DEFAULT: '#4f46e5',
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              200: '#c7d2fe',
+              300: '#a5b4fc',
+              400: '#818cf8',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              800: '#3730a3',
+              900: '#312e81',
             },
             accent: {
-              grey: '#F5F5F5',
-            },
-            theory: '#1E90FF',
-            lab: '#228B22',
-            seminar: '#DAA520',
+              teal: '#14b8a6',
+              rose: '#f43f5e',
+              amber: '#f59e0b',
+              emerald: '#10b981',
+              blue: '#3b82f6',
+            }
           },
           fontFamily: {
-            heading: ['Montserrat', 'sans-serif'],
-            body: ['Open Sans', 'sans-serif'],
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
           },
+          animation: {
+            'fade-in': 'fadeIn 0.5s ease-out',
+            'fade-in-up': 'fadeInUp 0.6s ease-out',
+            'slide-in-left': 'slideInLeft 0.4s ease-out',
+            'slide-in-right': 'slideInRight 0.4s ease-out',
+            'scale-in': 'scaleIn 0.3s ease-out',
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'float': 'float 6s ease-in-out infinite',
+            'shimmer': 'shimmer 2s infinite',
+            'glow': 'glow 2s ease-in-out infinite alternate',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' }
+            },
+            fadeInUp: {
+              '0%': { opacity: '0', transform: 'translateY(20px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' }
+            },
+            slideInLeft: {
+              '0%': { opacity: '0', transform: 'translateX(-20px)' },
+              '100%': { opacity: '1', transform: 'translateX(0)' }
+            },
+            slideInRight: {
+              '0%': { opacity: '0', transform: 'translateX(20px)' },
+              '100%': { opacity: '1', transform: 'translateX(0)' }
+            },
+            scaleIn: {
+              '0%': { opacity: '0', transform: 'scale(0.95)' },
+              '100%': { opacity: '1', transform: 'scale(1)' }
+            },
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-10px)' }
+            },
+            shimmer: {
+              '0%': { backgroundPosition: '-1000px 0' },
+              '100%': { backgroundPosition: '1000px 0' }
+            },
+            glow: {
+              '0%': { boxShadow: '0 0 20px rgba(124, 58, 237, 0.4)' },
+              '100%': { boxShadow: '0 0 40px rgba(124, 58, 237, 0.8), 0 0 60px rgba(79, 70, 229, 0.6)' },
+            }
+          }
         }
       }
     }
   </script>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-  <link href="css/animations.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <style>
-    body { font-family: 'Open Sans', sans-serif; }
-    h1, h2, h3, h4, h5, h6 { font-family: 'Montserrat', sans-serif; }
-    /* Navbar Styles */
-    .nav-link { position: relative; }
+    body { 
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 50%, #e0e7ff 100%);
+      min-height: 100vh;
+    }
+    
+    /* Animated Background */
+    .bg-pattern {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: 
+        radial-gradient(circle at 20% 80%, rgba(124, 58, 237, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(79, 70, 229, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(16, 185, 129, 0.05) 0%, transparent 40%);
+      pointer-events: none;
+      z-index: -1;
+    }
+    
+    /* Glassmorphism Utilities */
+    .glass {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+    
+    .glass-strong {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    /* Card Hover Effects */
+    .card-hover {
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .card-hover:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 25px 50px -12px rgba(124, 58, 237, 0.25);
+    }
+    
+    /* Gradient Text */
+    .gradient-text {
+      background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    /* Animated Gradient Background */
+    .animated-gradient {
+      background: linear-gradient(-45deg, #7c3aed, #4f46e5, #6d28d9, #4338ca);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+    }
+    
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    /* Logo Glow */
+    .logo-glow {
+      animation: logoGlow 3s ease-in-out infinite;
+    }
+    
+    @keyframes logoGlow {
+      0%, 100% { box-shadow: 0 0 30px rgba(124, 58, 237, 0.3); }
+      50% { box-shadow: 0 0 50px rgba(124, 58, 237, 0.6), 0 0 70px rgba(79, 70, 229, 0.3); }
+    }
+    
+    /* Nav Link Animation */
+    .nav-link {
+      position: relative;
+    }
+    
     .nav-link::after {
       content: '';
       position: absolute;
@@ -50,104 +187,208 @@
       left: 0;
       width: 0;
       height: 2px;
-      background: linear-gradient(90deg, #1E90FF, #4da3ff);
+      background: linear-gradient(90deg, #7c3aed, #4f46e5);
       transition: width 0.3s ease;
     }
+    
     .nav-link:hover::after,
-    .nav-link.active::after { width: 100%; }
-    .hamburger-line { transition: all 0.3s ease-in-out; }
-    .hamburger-active .hamburger-line:first-child {
-      transform: rotate(45deg) translate(5px, 5px);
+    .nav-link.active::after {
+      width: 100%;
     }
-    .hamburger-active .hamburger-line:nth-child(2) { opacity: 0; }
+    
+    /* Scrollbar Styling */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: rgba(124, 58, 237, 0.1);
+      border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: rgba(124, 58, 237, 0.3);
+      border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(124, 58, 237, 0.5);
+    }
+    
+    /* Skeleton Loading */
+    .skeleton {
+      background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+    }
+    
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+    
+    /* Stat Card Gradients */
+    .stat-purple {
+      background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+    }
+    
+    .stat-emerald {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
+    
+    .stat-amber {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    }
+    
+    .stat-rose {
+      background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+    }
+    
+    /* Pulse Ring */
+    .pulse-ring {
+      position: relative;
+    }
+    
+    .pulse-ring::before {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: inherit;
+      background: inherit;
+      opacity: 0;
+      animation: pulseRing 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      z-index: -1;
+    }
+    
+    @keyframes pulseRing {
+      0% { transform: scale(1); opacity: 0.5; }
+      100% { transform: scale(1.15); opacity: 0; }
+    }
+    
+    /* Mobile Menu Animation */
+    .hamburger-line {
+      transition: all 0.3s ease-in-out;
+    }
+    
+    .hamburger-active .hamburger-line:first-child {
+      transform: rotate(45deg) translate(6px, 6px);
+    }
+    
+    .hamburger-active .hamburger-line:nth-child(2) {
+      opacity: 0;
+    }
+    
     .hamburger-active .hamburger-line:last-child {
-      transform: rotate(-45deg) translate(5px, -5px);
+      transform: rotate(-45deg) translate(6px, -6px);
     }
   </style>
 </head>
-<body class="bg-gradient-to-b from-white via-gray-50 to-gray-100 min-h-screen flex flex-col">
+<body class="text-gray-800 antialiased">
+  <!-- Animated Background -->
+  <div class="bg-pattern"></div>
+  
   <!-- Modern Responsive Navbar -->
-  <nav class="bg-white/95 backdrop-blur-md border-b border-gray-200/80 sticky top-0 z-50 transition-all duration-300" id="navbar">
+  <nav class="glass-strong sticky top-0 z-50 border-b border-white/50 shadow-lg shadow-primary-500/5">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16 lg:h-18">
+      <div class="flex items-center justify-between h-20">
         
         <!-- Logo & Title Section - ALWAYS VISIBLE -->
-        <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+        <div class="flex items-center gap-3 sm:gap-4 flex-shrink-0">
           <a href="/" class="relative group flex items-center justify-center">
-            <div class="relative h-10 w-10 sm:h-11 sm:w-11 rounded-xl overflow-hidden bg-gradient-to-br from-primary to-primary-dark shadow-md group-hover:shadow-lg group-hover:shadow-primary/20 transition-all duration-300 group-hover:scale-105">
+            <div class="relative h-12 w-12 sm:h-14 sm:w-14 rounded-2xl overflow-hidden bg-gradient-to-br from-primary-600 to-secondary-600 shadow-lg group-hover:shadow-xl group-hover:shadow-primary-500/30 transition-all duration-300 group-hover:scale-105 logo-glow flex items-center justify-center">
+              <!-- Fallback Icon when logo fails to load -->
               <div class="absolute inset-0 flex items-center justify-center">
-                <i class="bi bi-building text-white text-lg sm:text-xl"></i>
+                <i class="fa-solid fa-building-columns text-white text-2xl sm:text-3xl"></i>
               </div>
-              <img src="images/msu-logo.png" alt="MSU Logo" class="h-full w-full object-contain relative z-10" onerror="this.style.display='none'">
+              <!-- Actual Logo Image -->
+              <img 
+                src="images/msu-logo.png" 
+                alt="MSU Logo" 
+                class="h-full w-full object-contain relative z-10"
+                onerror="this.style.display='none'"
+              >
             </div>
-            <div class="absolute -inset-1 bg-primary/20 rounded-xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <!-- Glow Effect -->
+            <div class="absolute -inset-2 bg-primary-500/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
           </a>
           
+          <!-- Title - VISIBLE ON ALL SCREENS -->
           <div class="flex flex-col min-w-0">
-            <a href="/" class="group">
-              <h1 class="text-sm sm:text-base lg:text-lg font-bold text-gray-900 tracking-tight leading-tight truncate max-w-[140px] sm:max-w-[200px] lg:max-w-none transition-colors duration-300 group-hover:text-primary">
-                <span class="hidden sm:inline">Nursing Portal</span>
-                <span class="sm:hidden">Nursing</span>
+            <a href="/" class="group block">
+              <h1 class="text-xs sm:text-sm md:text-base lg:text-lg font-bold text-gray-900 tracking-tight leading-tight truncate max-w-[180px] sm:max-w-[250px] md:max-w-[350px] lg:max-w-none transition-colors duration-300 group-hover:text-primary-600">
+                <span class="hidden xs:inline">MARINDUQUE STATE UNIVERSITY</span>
+                <span class="xs:hidden">MSU</span>
               </h1>
             </a>
-            <span class="hidden sm:block text-[10px] sm:text-xs text-gray-500 font-medium tracking-wide uppercase truncate max-w-[180px] lg:max-w-none">
-              Marinduque State University
+            <span class="text-[10px] sm:text-xs md:text-sm text-primary-600 font-semibold tracking-wide uppercase truncate max-w-[200px] md:max-w-[350px] lg:max-w-none">
+              College of Allied Health Sciences
             </span>
           </div>
         </div>
 
         <!-- Desktop Navigation Links -->
         <div class="hidden md:flex items-center gap-1">
-          <a href="/" class="nav-link px-3 py-2 text-sm font-medium text-gray-700 hover:text-primary transition-colors duration-200 rounded-lg hover:bg-gray-50/80" data-page="home">
-            <span class="flex items-center gap-1.5"><i class="bi bi-house-door text-sm"></i>Home</span>
+          <a href="/" class="nav-link px-4 py-2.5 text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors duration-200 rounded-xl hover:bg-primary-50/50" data-page="home">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-house text-sm"></i>Home</span>
           </a>
-          <a href="/events" class="nav-link px-3 py-2 text-sm font-medium text-gray-700 hover:text-primary transition-colors duration-200 rounded-lg hover:bg-gray-50/80" data-page="events">
-            <span class="flex items-center gap-1.5"><i class="bi bi-calendar-event text-sm"></i>Events</span>
+          <a href="/events" class="nav-link px-4 py-2.5 text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors duration-200 rounded-xl hover:bg-primary-50/50" data-page="events">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-calendar-days text-sm"></i>Events</span>
           </a>
-          <a href="/daily-subjects.html" class="nav-link px-3 py-2 text-sm font-medium text-gray-700 hover:text-primary transition-colors duration-200 rounded-lg hover:bg-gray-50/80" data-page="subjects">
-            <span class="flex items-center gap-1.5"><i class="bi bi-journal-bookmark text-sm"></i>Subjects</span>
+          <a href="/daily-subjects.html" class="nav-link px-4 py-2.5 text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors duration-200 rounded-xl hover:bg-primary-50/50" data-page="subjects">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-book-open text-sm"></i>Subjects</span>
           </a>
-          <a href="/announcements.html" class="nav-link px-3 py-2 text-sm font-medium text-gray-700 hover:text-primary transition-colors duration-200 rounded-lg hover:bg-gray-50/80" data-page="announcements">
-            <span class="flex items-center gap-1.5"><i class="bi bi-megaphone text-sm"></i>Announcements</span>
+          <a href="/announcements.html" class="nav-link px-4 py-2.5 text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors duration-200 rounded-xl hover:bg-primary-50/50" data-page="announcements">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-bullhorn text-sm"></i>Announcements</span>
           </a>
-          <a href="#about" class="nav-link px-3 py-2 text-sm font-medium text-gray-700 hover:text-primary transition-colors duration-200 rounded-lg hover:bg-gray-50/80" data-page="about">
-            <span class="flex items-center gap-1.5"><i class="bi bi-info-circle text-sm"></i>Contact</span>
+          <a href="#about" class="nav-link px-4 py-2.5 text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors duration-200 rounded-xl hover:bg-primary-50/50" data-page="about">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-circle-info text-sm"></i>Contact</span>
           </a>
         </div>
 
         <!-- Mobile Menu Button -->
-        <button type="button" class="md:hidden relative p-2 rounded-xl text-gray-600 hover:text-primary hover:bg-gray-100/80 active:scale-95 transition-all duration-200" id="mobileMenuBtn" aria-label="Toggle menu" aria-expanded="false">
+        <button type="button" class="md:hidden relative p-2.5 rounded-xl text-gray-600 hover:text-primary-600 hover:bg-primary-50 active:scale-95 transition-all duration-200 pulse-ring" id="mobileMenuBtn" aria-label="Toggle menu" aria-expanded="false">
           <div class="w-6 h-5 flex flex-col justify-between" id="hamburger">
-            <span class="hamburger-line w-full h-0.5 bg-current rounded-full origin-center transition-all duration-300"></span>
-            <span class="hamburger-line w-full h-0.5 bg-current rounded-full transition-all duration-300"></span>
-            <span class="hamburger-line w-full h-0.5 bg-current rounded-full origin-center transition-all duration-300"></span>
+            <span class="hamburger-line w-full h-0.5 bg-current rounded-full origin-center"></span>
+            <span class="hamburger-line w-full h-0.5 bg-current rounded-full"></span>
+            <span class="hamburger-line w-full h-0.5 bg-current rounded-full origin-center"></span>
           </div>
         </button>
       </div>
     </div>
 
     <!-- Mobile Navigation Menu -->
-    <div class="md:hidden hidden bg-white border-t border-gray-100 shadow-lg shadow-gray-200/50" id="mobileMenu">
-      <div class="px-4 py-3 space-y-1">
-        <a href="/" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:text-primary hover:bg-primary/5 rounded-xl transition-all duration-200" data-page="home">
-          <div class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center"><i class="bi bi-house-door text-primary"></i></div>
+    <div class="md:hidden hidden bg-white/95 backdrop-blur-xl border-t border-primary-100 shadow-xl" id="mobileMenu">
+      <div class="px-4 py-4 space-y-1">
+        <a href="/" class="flex items-center gap-4 px-4 py-3.5 text-sm font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-xl transition-all duration-200" data-page="home">
+          <div class="w-10 h-10 rounded-xl bg-primary-100 flex items-center justify-center">
+            <i class="fa-solid fa-house text-primary-600"></i>
+          </div>
           <span>Home</span>
         </a>
-        <a href="/events" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:text-primary hover:bg-primary/5 rounded-xl transition-all duration-200" data-page="events">
-          <div class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center"><i class="bi bi-calendar-event text-primary"></i></div>
+        <a href="/events" class="flex items-center gap-4 px-4 py-3.5 text-sm font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-xl transition-all duration-200" data-page="events">
+          <div class="w-10 h-10 rounded-xl bg-primary-100 flex items-center justify-center">
+            <i class="fa-solid fa-calendar-days text-primary-600"></i>
+          </div>
           <span>Events</span>
         </a>
-        <a href="/daily-subjects.html" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:text-primary hover:bg-primary/5 rounded-xl transition-all duration-200" data-page="subjects">
-          <div class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center"><i class="bi bi-journal-bookmark text-primary"></i></div>
+        <a href="/daily-subjects.html" class="flex items-center gap-4 px-4 py-3.5 text-sm font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-xl transition-all duration-200" data-page="subjects">
+          <div class="w-10 h-10 rounded-xl bg-primary-100 flex items-center justify-center">
+            <i class="fa-solid fa-book-open text-primary-600"></i>
+          </div>
           <span>Subjects</span>
         </a>
-        <a href="/announcements.html" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:text-primary hover:bg-primary/5 rounded-xl transition-all duration-200" data-page="announcements">
-          <div class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center"><i class="bi bi-megaphone text-primary"></i></div>
+        <a href="/announcements.html" class="flex items-center gap-4 px-4 py-3.5 text-sm font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-xl transition-all duration-200" data-page="announcements">
+          <div class="w-10 h-10 rounded-xl bg-primary-100 flex items-center justify-center">
+            <i class="fa-solid fa-bullhorn text-primary-600"></i>
+          </div>
           <span>Announcements</span>
         </a>
-        <div class="border-t border-gray-100 my-2"></div>
-        <a href="#about" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:text-primary hover:bg-primary/5 rounded-xl transition-all duration-200" data-page="about">
-          <div class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center"><i class="bi bi-info-circle text-primary"></i></div>
+        <div class="border-t border-gray-100 my-3"></div>
+        <a href="#about" class="flex items-center gap-4 px-4 py-3.5 text-sm font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-xl transition-all duration-200" data-page="about">
+          <div class="w-10 h-10 rounded-xl bg-primary-100 flex items-center justify-center">
+            <i class="fa-solid fa-circle-info text-primary-600"></i>
+          </div>
           <span>Contact Us</span>
         </a>
       </div>
@@ -155,14 +396,16 @@
   </nav>
 
   <!-- Next Event Banner -->
-  <div class="hidden bg-gradient-to-r from-primary-dark via-primary to-primary-light shadow-lg" id="nextEventBanner">
-    <div class="container mx-auto px-4 py-3">
-      <div class="flex flex-col sm:flex-row items-center justify-center gap-3 text-white">
-        <div class="flex items-center gap-2">
-          <i class="bi bi-clock-history text-lg animate-pulse"></i>
-          <span class="font-semibold" id="nextEventBannerText">Next: Event Name — Countdown</span>
+  <div class="hidden animated-gradient shadow-lg" id="nextEventBanner">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4 text-white">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center animate-pulse">
+            <i class="fa-solid fa-clock text-lg"></i>
+          </div>
+          <span class="font-semibold text-lg" id="nextEventBannerText">Next: Event Name — Countdown</span>
         </div>
-        <a href="/events" class="px-4 py-1.5 bg-white text-primary text-sm font-semibold rounded-full hover:bg-gray-100 hover:scale-105 transition-all duration-300 shadow-md">
+        <a href="/events" class="px-6 py-2.5 bg-white text-primary-600 text-sm font-bold rounded-full hover:bg-gray-100 hover:scale-105 transition-all duration-300 shadow-lg">
           View All Events
         </a>
       </div>
@@ -170,7 +413,12 @@
   </div>
 
   <!-- Hero Section -->
-  <section class="relative bg-gradient-to-br from-primary via-primary to-primary-light text-white py-16 md:py-20 overflow-hidden">
+  <section class="relative animated-gradient text-white py-16 md:py-24 overflow-hidden">
+    <!-- Floating Shapes -->
+    <div class="absolute top-10 left-10 w-32 h-32 rounded-full bg-white/10 blur-2xl animate-float"></div>
+    <div class="absolute bottom-10 right-10 w-48 h-48 rounded-full bg-white/10 blur-3xl animate-float" style="animation-delay: -3s;"></div>
+    <div class="absolute top-1/2 left-1/4 w-24 h-24 rounded-full bg-white/5 blur-xl animate-float" style="animation-delay: -2s;"></div>
+    
     <div class="absolute inset-0 opacity-10">
       <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
         <defs>
@@ -181,119 +429,227 @@
         <rect width="100" height="100" fill="url(#grid)" />
       </svg>
     </div>
-    <div class="absolute inset-0 bg-gradient-to-t from-primary-dark/20 to-transparent"></div>
     
-    <div class="container mx-auto px-4 text-center relative z-10">
-      <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 animate-fade-in-up">
-        Welcome to the Nursing Student Portal
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+      <!-- Logo Display in Hero -->
+      <div class="flex flex-col items-center justify-center mb-8">
+        <div class="relative mb-6">
+          <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-white/20 flex items-center justify-center logo-glow mb-4">
+            <img src="images/msu-logo.png" alt="MSU Logo" class="w-20 h-20 sm:w-24 sm:h-24 object-contain" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\\'fa-solid fa-building-columns text-4xl sm:text-5xl text-white\\'></i>';">
+          </div>
+          <div class="absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-emerald-400 border-4 border-primary-600 animate-pulse"></div>
+        </div>
+        <h2 class="text-xl sm:text-2xl md:text-3xl font-bold mb-2 opacity-90">MARINDUQUE STATE UNIVERSITY</h2>
+        <p class="text-base sm:text-lg opacity-80">College of Allied Health Sciences</p>
+      </div>
+      
+      <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 animate-fade-in-up">
+        Welcome to the <span class="text-primary-200">Nursing</span> Student Portal
       </h1>
-      <p class="text-lg md:text-xl opacity-95 mb-2" id="heroDate">Loading...</p>
-      <p class="text-base opacity-90 italic">Stay focused, stay healthy!</p>
+      <p class="text-lg sm:text-xl md:text-2xl opacity-95 mb-3" id="heroDate">Loading...</p>
+      <p class="text-base sm:text-lg opacity-80 italic">Stay focused, stay healthy!</p>
       
       <!-- Countdown Timer -->
-      <div class="mt-8 flex justify-center" id="heroCountdown">
-        <div class="bg-white/20 backdrop-blur-sm rounded-2xl px-6 py-4 border border-white/30 animate-scale-in">
-          <p class="text-sm uppercase tracking-wider mb-2 opacity-90">Next Event Countdown</p>
-          <div class="flex items-center gap-4 text-2xl md:text-3xl font-bold font-mono" id="countdownDisplay">
-            <span>--</span><span class="text-sm">:</span><span>--</span><span class="text-sm">:</span><span>--</span>
+      <div class="mt-10 flex justify-center" id="heroCountdown">
+        <div class="glass rounded-3xl px-8 py-6 border border-white/30 animate-scale-in shadow-2xl">
+          <p class="text-sm uppercase tracking-wider mb-3 opacity-90 font-semibold">Next Event Countdown</p>
+          <div class="flex items-center gap-3 text-3xl sm:text-4xl md:text-5xl font-bold font-mono" id="countdownDisplay">
+            <div class="flex flex-col items-center">
+              <span class="bg-white/20 rounded-xl px-4 py-2">--</span>
+              <span class="text-xs mt-1 opacity-70">Days</span>
+            </div>
+            <span class="text-2xl opacity-50">:</span>
+            <div class="flex flex-col items-center">
+              <span class="bg-white/20 rounded-xl px-4 py-2">--</span>
+              <span class="text-xs mt-1 opacity-70">Hours</span>
+            </div>
+            <span class="text-2xl opacity-50">:</span>
+            <div class="flex flex-col items-center">
+              <span class="bg-white/20 rounded-xl px-4 py-2">--</span>
+              <span class="text-xs mt-1 opacity-70">Mins</span>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    
-    <!-- Decorative Elements -->
-    <div class="absolute -bottom-10 left-0 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
-    <div class="absolute top-10 right-0 w-60 h-60 bg-white/10 rounded-full blur-3xl"></div>
   </section>
 
   <!-- Main Content -->
-  <main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <!-- Announcements Carousel -->
-    <section class="mb-10 scroll-reveal" id="announcementsSection">
-      <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
-        <i class="bi bi-megaphone-fill text-primary mr-2"></i>
-        <span class="border-b-2 border-primary pb-1">Announcements</span>
-      </h2>
+  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+    <!-- Statistics Cards -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-10 sm:mb-12">
+      <div class="glass rounded-2xl p-4 sm:p-6 card-hover animate-fade-in-up" style="animation-delay: 0.1s;">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl stat-purple flex items-center justify-center">
+            <i class="fa-solid fa-calendar-check text-white text-lg sm:text-xl"></i>
+          </div>
+          <div class="text-2xl sm:text-3xl font-bold gradient-text" id="statEvents">0</div>
+        </div>
+        <p class="text-sm text-gray-600 font-medium">Total Events</p>
+        <div class="mt-3 w-full bg-gray-200 rounded-full h-2">
+          <div class="bg-gradient-to-r from-primary-500 to-secondary-500 h-2 rounded-full transition-all duration-1000" style="width: 75%"></div>
+        </div>
+      </div>
       
-      <div class="relative bg-gradient-to-br from-gray-50 to-white rounded-2xl p-6 shadow-lg border border-gray-100">
+      <div class="glass rounded-2xl p-4 sm:p-6 card-hover animate-fade-in-up" style="animation-delay: 0.2s;">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl stat-emerald flex items-center justify-center">
+            <i class="fa-solid fa-book-open-reader text-white text-lg sm:text-xl"></i>
+          </div>
+          <div class="text-2xl sm:text-3xl font-bold gradient-text" id="statSubjects">0</div>
+        </div>
+        <p class="text-sm text-gray-600 font-medium">Subjects Today</p>
+        <div class="mt-3 w-full bg-gray-200 rounded-full h-2">
+          <div class="bg-gradient-to-r from-emerald-500 to-teal-500 h-2 rounded-full transition-all duration-1000" style="width: 60%"></div>
+        </div>
+      </div>
+      
+      <div class="glass rounded-2xl p-4 sm:p-6 card-hover animate-fade-in-up" style="animation-delay: 0.3s;">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl stat-amber flex items-center justify-center">
+            <i class="fa-solid fa-bullhorn text-white text-lg sm:text-xl"></i>
+          </div>
+          <div class="text-2xl sm:text-3xl font-bold gradient-text" id="statAnnouncements">0</div>
+        </div>
+        <p class="text-sm text-gray-600 font-medium">Announcements</p>
+        <div class="mt-3 w-full bg-gray-200 rounded-full h-2">
+          <div class="bg-gradient-to-r from-amber-500 to-orange-500 h-2 rounded-full transition-all duration-1000" style="width: 85%"></div>
+        </div>
+      </div>
+      
+      <div class="glass rounded-2xl p-4 sm:p-6 card-hover animate-fade-in-up" style="animation-delay: 0.4s;">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl stat-rose flex items-center justify-center">
+            <i class="fa-solid fa-clock text-white text-lg sm:text-xl"></i>
+          </div>
+          <div class="text-lg sm:text-xl font-bold text-gray-800 truncate" id="statNextEventName">—</div>
+        </div>
+        <p class="text-xs text-gray-500" id="statNextEventDate">No upcoming events</p>
+      </div>
+    </div>
+
+    <!-- Announcements Carousel -->
+    <section class="mb-10 sm:mb-12 animate-fade-in-up" style="animation-delay: 0.5s;">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-12 h-12 rounded-xl stat-amber flex items-center justify-center">
+          <i class="fa-solid fa-bullhorn text-white text-xl"></i>
+        </div>
+        <h2 class="text-2xl sm:text-3xl font-bold gradient-text">Announcements</h2>
+      </div>
+      
+      <div class="glass rounded-3xl p-6 sm:p-8 shadow-xl border border-white/50">
         <!-- Navigation Arrows -->
-        <button type="button" class="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white shadow-lg border border-gray-200 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all duration-300 hover:scale-110" id="announcementsPrev" aria-label="Previous announcement">
-          <i class="bi bi-chevron-left text-lg"></i>
+        <button type="button" class="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full glass-strong shadow-lg flex items-center justify-center text-primary-600 hover:bg-primary-600 hover:text-white transition-all duration-300 hover:scale-110 hidden sm:flex" id="announcementsPrev" aria-label="Previous announcement">
+          <i class="fa-solid fa-chevron-left text-lg"></i>
         </button>
-        <button type="button" class="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white shadow-lg border border-gray-200 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all duration-300 hover:scale-110" id="announcementsNext" aria-label="Next announcement">
-          <i class="bi bi-chevron-right text-lg"></i>
+        <button type="button" class="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full glass-strong shadow-lg flex items-center justify-center text-primary-600 hover:bg-primary-600 hover:text-white transition-all duration-300 hover:scale-110 hidden sm:flex" id="announcementsNext" aria-label="Next announcement">
+          <i class="fa-solid fa-chevron-right text-lg"></i>
         </button>
         
         <!-- Carousel Container -->
-        <div class="overflow-hidden mx-8">
+        <div class="overflow-hidden mx-0 sm:mx-16">
           <div class="flex transition-transform duration-500 ease-out" id="announcementsInner">
-            <div class="flex-shrink-0 w-full text-center py-8 text-gray-500" id="announcementsPlaceholder">
-              <i class="bi bi-megaphone text-4xl mb-3 block opacity-50"></i>
-              <p>No announcements at the moment.</p>
+            <div class="flex-shrink-0 w-full text-center py-12 text-gray-500" id="announcementsPlaceholder">
+              <div class="w-20 h-20 mx-auto mb-4 rounded-2xl bg-gray-100 flex items-center justify-center">
+                <i class="fa-solid fa-bullhorn text-3xl text-gray-300"></i>
+              </div>
+              <p class="text-lg font-medium">No announcements at the moment.</p>
+              <p class="text-sm text-gray-400 mt-2">Check back later for updates!</p>
             </div>
           </div>
         </div>
         
         <!-- Dots Indicator -->
-        <div class="flex justify-center gap-2 mt-4" id="announcementDots"></div>
+        <div class="flex justify-center gap-2 mt-6" id="announcementDots"></div>
       </div>
     </section>
 
     <!-- Two Column Layout -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8">
       <!-- Upcoming Events -->
-      <div class="lg:col-span-7 scroll-reveal">
-        <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
-          <i class="bi bi-calendar-check text-primary mr-2"></i>
-          <span class="border-b-2 border-primary pb-1">Upcoming Events</span>
-        </h2>
+      <div class="lg:col-span-7 animate-fade-in-up" style="animation-delay: 0.6s;">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="w-12 h-12 rounded-xl stat-purple flex items-center justify-center">
+            <i class="fa-solid fa-calendar-check text-white text-xl"></i>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-bold gradient-text">Upcoming Events</h2>
+        </div>
         
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="upcomingEvents">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6" id="upcomingEvents">
           <!-- Loading State -->
-          <div class="col-span-2 flex justify-center py-12">
-            <div class="spinner"></div>
+          <div class="col-span-full flex justify-center py-16">
+            <div class="flex flex-col items-center gap-4">
+              <div class="w-16 h-16 rounded-2xl bg-primary-100 flex items-center justify-center animate-pulse">
+                <i class="fa-solid fa-spinner fa-spin text-3xl text-primary-600"></i>
+              </div>
+              <p class="text-gray-500 font-medium">Loading events...</p>
+            </div>
           </div>
         </div>
       </div>
 
       <!-- Right Column -->
-      <div class="lg:col-span-5 space-y-6">
+      <div class="lg:col-span-5 space-y-6 sm:space-y-8">
         <!-- Today's Subjects -->
-        <div class="scroll-reveal">
-          <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
-            <i class="bi bi-journal-text text-primary mr-2"></i>
-            <span class="border-b-2 border-primary pb-1">Today's Subjects</span>
-          </h2>
-          <div id="todaySubjects" class="space-y-3">
-            <div class="flex justify-center py-8">
-              <div class="spinner"></div>
+        <div class="animate-fade-in-up" style="animation-delay: 0.7s;">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-12 h-12 rounded-xl stat-emerald flex items-center justify-center">
+              <i class="fa-solid fa-book-open text-white text-xl"></i>
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-bold gradient-text">Today's Subjects</h2>
+          </div>
+          <div id="todaySubjects" class="space-y-4">
+            <div class="flex justify-center py-12">
+              <div class="flex flex-col items-center gap-4">
+                <div class="w-16 h-16 rounded-2xl bg-emerald-100 flex items-center justify-center animate-pulse">
+                  <i class="fa-solid fa-spinner fa-spin text-3xl text-emerald-600"></i>
+                </div>
+                <p class="text-gray-500 font-medium">Loading subjects...</p>
+              </div>
             </div>
           </div>
         </div>
 
         <!-- Mini Calendar -->
-        <div class="scroll-reveal">
-          <h3 class="text-lg font-semibold text-gray-700 mb-3 flex items-center">
-            <i class="bi bi-calendar3 text-primary mr-2"></i>
-            This Month
-          </h3>
-          <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-4">
-            <div class="flex justify-between items-center mb-3 text-sm font-semibold text-gray-700" id="miniCalendarHeader">
-              Loading...
+        <div class="animate-fade-in-up" style="animation-delay: 0.8s;">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-r from-primary-500 to-secondary-500 flex items-center justify-center">
+              <i class="fa-solid fa-calendar-days text-white"></i>
             </div>
-            <div class="grid grid-cols-7 gap-1 text-center text-xs mb-2">
-              <span class="text-gray-400">Su</span>
-              <span class="text-gray-400">Mo</span>
-              <span class="text-gray-400">Tu</span>
-              <span class="text-gray-400">We</span>
-              <span class="text-gray-400">Th</span>
-              <span class="text-gray-400">Fr</span>
-              <span class="text-gray-400">Sa</span>
+            <h3 class="text-xl sm:text-2xl font-bold text-gray-800">This Month</h3>
+          </div>
+          <div class="glass rounded-3xl shadow-xl border border-white/50 p-5 sm:p-6">
+            <div class="flex justify-between items-center mb-4 text-base font-bold text-gray-800" id="miniCalendarHeader">
+              <div class="skeleton h-6 w-24 rounded"></div>
             </div>
-            <div class="grid grid-cols-7 gap-1" id="miniCalendarGrid"></div>
-            <div class="flex items-center gap-4 mt-3 text-xs text-gray-500" id="miniCalendarLegend">
-              <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-primary"></span>Today</span>
-              <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-primary-dark"></span>Event</span>
+            <div class="grid grid-cols-7 gap-1 text-center text-xs sm:text-sm mb-3">
+              <span class="text-gray-400 font-medium">Su</span>
+              <span class="text-gray-400 font-medium">Mo</span>
+              <span class="text-gray-400 font-medium">Tu</span>
+              <span class="text-gray-400 font-medium">We</span>
+              <span class="text-gray-400 font-medium">Th</span>
+              <span class="text-gray-400 font-medium">Fr</span>
+              <span class="text-gray-400 font-medium">Sa</span>
+            </div>
+            <div class="grid grid-cols-7 gap-1" id="miniCalendarGrid">
+              <!-- Loading skeleton -->
+              <div class="skeleton aspect-square rounded-lg"></div>
+              <div class="skeleton aspect-square rounded-lg"></div>
+              <div class="skeleton aspect-square rounded-lg"></div>
+              <div class="skeleton aspect-square rounded-lg"></div>
+              <div class="skeleton aspect-square rounded-lg"></div>
+              <div class="skeleton aspect-square rounded-lg"></div>
+              <div class="skeleton aspect-square rounded-lg"></div>
+            </div>
+            <div class="flex items-center gap-4 mt-4 text-xs text-gray-500" id="miniCalendarLegend">
+              <span class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-gradient-to-r from-primary-500 to-secondary-500"></span>
+                Today
+              </span>
+              <span class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+                Event
+              </span>
             </div>
           </div>
         </div>
@@ -301,76 +657,103 @@
     </div>
 
     <!-- Quick Links -->
-    <section class="mt-12 scroll-reveal">
-      <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
-        <i class="bi bi-link-45deg text-primary mr-2"></i>
-        <span class="border-b-2 border-primary pb-1">Quick Links</span>
-      </h2>
-      <div class="flex flex-wrap gap-4">
-        <a href="/events" class="group inline-flex items-center px-6 py-3 border-2 border-primary text-primary font-semibold rounded-full hover:bg-primary hover:text-white transition-all duration-300 hover:shadow-lg hover:shadow-primary/30 hover:-translate-y-1">
-          <i class="bi bi-calendar-week mr-2 group-hover:animate-pulse"></i>
-          View Full Calendar
+    <section class="mt-12 sm:mt-16 animate-fade-in-up" style="animation-delay: 0.9s;">
+      <div class="flex items-center gap-3 mb-8">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-r from-primary-500 to-secondary-500 flex items-center justify-center">
+          <i class="fa-solid fa-link text-white"></i>
+        </div>
+        <h2 class="text-2xl sm:text-3xl font-bold gradient-text">Quick Links</h2>
+      </div>
+      <div class="flex flex-wrap gap-4 sm:gap-6">
+        <a href="/events" class="group inline-flex items-center gap-3 px-6 sm:px-8 py-3.5 sm:py-4 bg-gradient-to-r from-primary-600 to-secondary-600 text-white font-semibold rounded-2xl hover:shadow-xl hover:shadow-primary-500/30 hover:-translate-y-1 transition-all duration-300">
+          <i class="fa-solid fa-calendar-week text-lg group-hover:animate-pulse"></i>
+          <span>View Full Calendar</span>
+          <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
         </a>
-        <a href="/daily-subjects.html" class="group inline-flex items-center px-6 py-3 border-2 border-green-600 text-green-600 font-semibold rounded-full hover:bg-green-600 hover:text-white transition-all duration-300 hover:shadow-lg hover:shadow-green-600/30 hover:-translate-y-1">
-          <i class="bi bi-journal-richtext mr-2 group-hover:animate-pulse"></i>
-          All Subjects
+        <a href="/daily-subjects.html" class="group inline-flex items-center gap-3 px-6 sm:px-8 py-3.5 sm:py-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-semibold rounded-2xl hover:shadow-xl hover:shadow-emerald-500/30 hover:-translate-y-1 transition-all duration-300">
+          <i class="fa-solid fa-book-open-reader text-lg group-hover:animate-pulse"></i>
+          <span>All Subjects</span>
+          <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+        </a>
+        <a href="/announcements.html" class="group inline-flex items-center gap-3 px-6 sm:px-8 py-3.5 sm:py-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-semibold rounded-2xl hover:shadow-xl hover:shadow-amber-500/30 hover:-translate-y-1 transition-all duration-300">
+          <i class="fa-solid fa-bullhorn text-lg group-hover:animate-pulse"></i>
+          <span>All Announcements</span>
+          <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
         </a>
       </div>
     </section>
   </main>
 
   <!-- Footer -->
-  <footer class="bg-gradient-to-t from-gray-200 via-gray-100 to-white border-t-2 border-gray-200 py-8 mt-auto" id="about">
-    <div class="container mx-auto px-4 text-center">
-      <div class="flex items-center justify-center gap-3 mb-4">
-        <div class="relative">
-          <img src="images/nursing-logo.png" alt="Nursing Logo" class="h-10 w-10 rounded-full object-cover animate-pulse-glow" onerror="this.style.display='none';">
+  <footer class="glass-strong border-t border-white/50 mt-auto" id="about">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+        <!-- Logo & Info -->
+        <div class="text-center md:text-left">
+          <div class="flex items-center justify-center md:justify-start gap-3 mb-4">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-600 to-secondary-600 flex items-center justify-center">
+              <img src="images/msu-logo.png" alt="MSU Logo" class="w-10 h-10 object-contain" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\\'fa-solid fa-building-columns text-2xl text-white\\'></i>';">
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-gray-800">Marinduque State University</h3>
+              <p class="text-sm text-primary-600 font-medium">College of Allied Health Sciences</p>
+            </div>
+          </div>
         </div>
-        <span class="text-lg font-bold text-gray-800">Nursing Student Program</span>
+        
+        <!-- Contact Info -->
+        <div class="text-center">
+          <p class="text-gray-600 mb-2">
+            <span class="font-semibold">Program Coordinator:</span><br>
+            <a href="mailto:coordinator@nursing.edu" class="text-primary-600 hover:text-primary-700 hover:underline transition-colors">coordinator@nursing.edu</a>
+          </p>
+          <p class="text-sm text-gray-500">Healthcare Education</p>
+        </div>
+        
+        <!-- Social & Feedback -->
+        <div class="text-center md:text-right">
+          <div class="flex justify-center md:justify-end gap-3 mb-4">
+            <a href="#" class="w-11 h-11 rounded-xl bg-white border border-gray-200 flex items-center justify-center text-primary-600 hover:bg-primary-600 hover:text-white hover:border-primary-600 transition-all duration-300 hover:scale-110 shadow-sm" aria-label="Facebook">
+              <i class="fa-brands fa-facebook-f text-lg"></i>
+            </a>
+            <a href="#" class="w-11 h-11 rounded-xl bg-white border border-gray-200 flex items-center justify-center text-primary-600 hover:bg-primary-600 hover:text-white hover:border-primary-600 transition-all duration-300 hover:scale-110 shadow-sm" aria-label="Twitter">
+              <i class="fa-brands fa-x-twitter text-lg"></i>
+            </a>
+            <a href="#" class="w-11 h-11 rounded-xl bg-white border border-gray-200 flex items-center justify-center text-primary-600 hover:bg-primary-600 hover:text-white hover:border-primary-600 transition-all duration-300 hover:scale-110 shadow-sm" aria-label="LinkedIn">
+              <i class="fa-brands fa-linkedin-in text-lg"></i>
+            </a>
+          </div>
+          <button type="button" class="px-6 py-2.5 bg-gradient-to-r from-primary-600 to-secondary-600 text-white font-medium rounded-xl hover:shadow-lg hover:shadow-primary-500/30 transition-all duration-300" onclick="document.getElementById('feedbackModal').classList.remove('hidden')">
+            <i class="fa-solid fa-comment-dots mr-2"></i>Quick Feedback
+          </button>
+        </div>
       </div>
       
-      <p class="mb-2 text-gray-600">
-        <strong>Program Coordinator</strong>: 
-        <a href="mailto:coordinator@nursing.edu" class="text-primary hover:text-primary-dark hover:underline transition-colors">coordinator@nursing.edu</a> | 
-        <a href="tel:+15551234567" class="text-primary hover:text-primary-dark hover:underline transition-colors">(555) 123-4567</a>
-      </p>
-      <p class="mb-4 text-sm text-gray-500">Healthcare Education</p>
-      
-      <div class="flex justify-center gap-3 mb-4">
-        <a href="#" class="w-10 h-10 rounded-full bg-white border border-gray-300 flex items-center justify-center text-primary hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 hover:scale-110" aria-label="Facebook">
-          <i class="bi bi-facebook text-lg"></i>
-        </a>
-        <a href="#" class="w-10 h-10 rounded-full bg-white border border-gray-300 flex items-center justify-center text-primary hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 hover:scale-110" aria-label="Twitter">
-          <i class="bi bi-twitter-x text-lg"></i>
-        </a>
-        <a href="#" class="w-10 h-10 rounded-full bg-white border border-gray-300 flex items-center justify-center text-primary hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 hover:scale-110" aria-label="LinkedIn">
-          <i class="bi bi-linkedin text-lg"></i>
-        </a>
+      <div class="border-t border-gray-200 mt-8 pt-8 text-center">
+        <p class="text-sm text-gray-500">© 2025 Marinduque State University - College of Allied Health Sciences. All rights reserved.</p>
       </div>
-      
-      <button type="button" class="px-5 py-2 border-2 border-primary text-primary font-medium rounded-full hover:bg-primary hover:text-white transition-all duration-300" onclick="document.getElementById('feedbackModal').classList.remove('hidden')">
-        Quick Feedback
-      </button>
     </div>
   </footer>
 
   <!-- Feedback Modal -->
   <div class="fixed inset-0 z-50 hidden" id="feedbackModal">
-    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity" onclick="document.getElementById('feedbackModal').classList.add('hidden')"></div>
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity" onclick="document.getElementById('feedbackModal').classList.add('hidden')"></div>
     <div class="flex items-center justify-center min-h-screen p-4">
-      <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 relative animate-scale-in">
-        <button type="button" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors" onclick="document.getElementById('feedbackModal').classList.add('hidden')">
-          <i class="bi bi-x-lg text-xl"></i>
+      <div class="glass-strong rounded-3xl shadow-2xl max-w-md w-full p-8 relative animate-scale-in border border-white/50">
+        <button type="button" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-gray-100 text-gray-500 hover:text-gray-700 hover:bg-gray-200 flex items-center justify-center transition-all" onclick="document.getElementById('feedbackModal').classList.add('hidden')">
+          <i class="fa-solid fa-xmark text-xl"></i>
         </button>
-        <h5 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
-          <i class="bi bi-chat-dots text-primary mr-2"></i>
-          Quick Feedback
-        </h5>
-        <p class="text-sm text-gray-500 mb-4">Share your feedback about the portal.</p>
-        <textarea class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none" rows="4" placeholder="Your feedback..."></textarea>
-        <div class="flex justify-end gap-3 mt-4">
-          <button type="button" class="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors" onclick="document.getElementById('feedbackModal').classList.add('hidden')">Close</button>
-          <button type="button" class="px-6 py-2 bg-primary text-white font-medium rounded-lg hover:bg-primary-dark transition-all duration-300 hover:shadow-lg">Send</button>
+        <div class="flex items-center gap-3 mb-6">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-r from-primary-500 to-secondary-500 flex items-center justify-center">
+            <i class="fa-solid fa-comment-dots text-white text-xl"></i>
+          </div>
+          <h5 class="text-xl font-bold text-gray-800">Quick Feedback</h5>
+        </div>
+        <p class="text-sm text-gray-500 mb-6">Share your thoughts about the portal. Your feedback helps us improve!</p>
+        <textarea class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-primary-500 focus:bg-white focus:outline-none transition-all resize-none" rows="4" placeholder="Your feedback..."></textarea>
+        <div class="flex justify-end gap-3 mt-6">
+          <button type="button" class="px-5 py-2.5 text-gray-600 hover:text-gray-800 font-medium transition-colors rounded-xl hover:bg-gray-100" onclick="document.getElementById('feedbackModal').classList.add('hidden')">Cancel</button>
+          <button type="button" class="px-6 py-2.5 bg-gradient-to-r from-primary-600 to-secondary-600 text-white font-medium rounded-xl hover:shadow-lg hover:shadow-primary-500/30 transition-all duration-300">Send Feedback</button>
         </div>
       </div>
     </div>
