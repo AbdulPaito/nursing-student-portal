@@ -6,235 +6,587 @@
   <title>Admin Dashboard - Nursing Portal</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
           colors: {
             primary: {
-              DEFAULT: '#1E90FF',
-              dark: '#1873CC',
-              light: '#4da3ff',
+              DEFAULT: '#7c3aed',
+              50: '#f5f3ff',
+              100: '#ede9fe',
+              200: '#ddd6fe',
+              300: '#c4b5fd',
+              400: '#a78bfa',
+              500: '#8b5cf6',
+              600: '#7c3aed',
+              700: '#6d28d9',
+              800: '#5b21b6',
+              900: '#4c1d95',
             },
-            sidebar: '#1E90FF',
+            secondary: {
+              DEFAULT: '#4f46e5',
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              200: '#c7d2fe',
+              300: '#a5b4fc',
+              400: '#818cf8',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              800: '#3730a3',
+              900: '#312e81',
+            },
+            accent: {
+              teal: '#14b8a6',
+              rose: '#f43f5e',
+              amber: '#f59e0b',
+              emerald: '#10b981',
+            }
           },
           fontFamily: {
-            heading: ['Montserrat', 'sans-serif'],
-            body: ['Inter', 'sans-serif'],
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
           },
+          animation: {
+            'fade-in': 'fadeIn 0.5s ease-out',
+            'fade-in-up': 'fadeInUp 0.6s ease-out',
+            'slide-in-left': 'slideInLeft 0.4s ease-out',
+            'slide-in-right': 'slideInRight 0.4s ease-out',
+            'scale-in': 'scaleIn 0.3s ease-out',
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'float': 'float 6s ease-in-out infinite',
+            'shimmer': 'shimmer 2s infinite',
+            'counter': 'counter 1s ease-out',
+            'shake': 'shake 0.5s cubic-bezier(.36,.07,.19,.97) both',
+            'spin-slow': 'spin 3s linear infinite',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' }
+            },
+            fadeInUp: {
+              '0%': { opacity: '0', transform: 'translateY(20px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' }
+            },
+            slideInLeft: {
+              '0%': { opacity: '0', transform: 'translateX(-20px)' },
+              '100%': { opacity: '1', transform: 'translateX(0)' }
+            },
+            slideInRight: {
+              '0%': { opacity: '0', transform: 'translateX(20px)' },
+              '100%': { opacity: '1', transform: 'translateX(0)' }
+            },
+            scaleIn: {
+              '0%': { opacity: '0', transform: 'scale(0.95)' },
+              '100%': { opacity: '1', transform: 'scale(1)' }
+            },
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-10px)' }
+            },
+            shimmer: {
+              '0%': { backgroundPosition: '-1000px 0' },
+              '100%': { backgroundPosition: '1000px 0' }
+            },
+            shake: {
+              '10%, 90%': { transform: 'translate3d(-1px, 0, 0)' },
+              '20%, 80%': { transform: 'translate3d(2px, 0, 0)' },
+              '30%, 50%, 70%': { transform: 'translate3d(-4px, 0, 0)' },
+              '40%, 60%': { transform: 'translate3d(4px, 0, 0)' }
+            }
+          }
         }
       }
     }
   </script>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-  <link href="../css/animations.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <style>
-    body { font-family: 'Inter', sans-serif; }
-    h1, h2, h3, h4, h5, h6 { font-family: 'Montserrat', sans-serif; }
+    body { 
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 50%, #e0e7ff 100%);
+      min-height: 100vh;
+    }
     
+    /* Glassmorphism Utilities */
+    .glass {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    .glass-dark {
+      background: rgba(17, 24, 39, 0.8);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .glass-sidebar {
+      background: linear-gradient(180deg, rgba(124, 58, 237, 0.95) 0%, rgba(79, 70, 229, 0.95) 100%);
+      backdrop-filter: blur(20px);
+      border-right: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Animated Background Pattern */
+    .bg-pattern {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: 
+        radial-gradient(circle at 20% 80%, rgba(124, 58, 237, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(79, 70, 229, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(16, 185, 129, 0.05) 0%, transparent 40%);
+      pointer-events: none;
+      z-index: -1;
+    }
+    
+    /* Card Hover Effects */
+    .card-hover {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .card-hover:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px -12px rgba(124, 58, 237, 0.25);
+    }
+    
+    /* Stat Card Gradients */
+    .stat-gradient-1 {
+      background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+    }
+    
+    .stat-gradient-2 {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
+    
+    .stat-gradient-3 {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    }
+    
+    .stat-gradient-4 {
+      background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+    }
+    
+    /* Progress Bar Animation */
+    .progress-bar {
+      transition: width 1s ease-out;
+    }
+    
+    /* Circular Progress */
+    .circular-progress {
+      transform: rotate(-90deg);
+    }
+    
+    .circular-progress circle {
+      transition: stroke-dashoffset 1s ease-out;
+    }
+    
+    /* Button Shimmer */
+    .btn-shimmer {
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn-shimmer::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.6s;
+    }
+    
+    .btn-shimmer:hover::after {
+      left: 100%;
+    }
+    
+    /* Loading Skeleton */
+    .skeleton {
+      background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+    }
+    
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+    
+    /* Sidebar Link Animation */
     .sidebar-link {
-      @apply flex items-center gap-3 px-4 py-3 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300;
-    }
-    .sidebar-link.active {
-      @apply bg-primary-dark text-white shadow-lg;
+      position: relative;
+      overflow: hidden;
     }
     
-    .stat-card {
-      @apply rounded-xl p-6 text-white shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300;
+    .sidebar-link::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 3px;
+      background: white;
+      transform: scaleY(0);
+      transition: transform 0.3s;
     }
     
-    .btn-action {
-      @apply px-4 py-2 rounded-lg font-medium text-sm transition-all duration-300 flex items-center gap-2 hover:-translate-y-0.5 hover:shadow-md;
+    .sidebar-link:hover::before,
+    .sidebar-link.active::before {
+      transform: scaleY(1);
     }
     
-    .modal-enter {
-      animation: modalEnter 0.3s ease-out;
+    /* Modal Animation */
+    .modal-backdrop {
+      backdrop-filter: blur(8px);
     }
     
-    @keyframes modalEnter {
-      from { opacity: 0; transform: scale(0.95); }
-      to { opacity: 1; transform: scale(1); }
+    /* Input Focus Animation */
+    .input-glow:focus {
+      box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
     }
     
-    .count-up {
-      animation: countUp 0.5s ease-out;
+    /* Floating Action Button */
+    .fab {
+      box-shadow: 0 10px 30px -5px rgba(124, 58, 237, 0.4);
+    }
+    
+    /* Stagger Animation Delays */
+    .stagger-1 { animation-delay: 0.1s; }
+    .stagger-2 { animation-delay: 0.2s; }
+    .stagger-3 { animation-delay: 0.3s; }
+    .stagger-4 { animation-delay: 0.4s; }
+    .stagger-5 { animation-delay: 0.5s; }
+    
+    /* Scrollbar Styling */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: rgba(124, 58, 237, 0.1);
+      border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: rgba(124, 58, 237, 0.3);
+      border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(124, 58, 237, 0.5);
+    }
+    
+    /* Pulse Ring Animation */
+    .pulse-ring {
+      position: relative;
+    }
+    
+    .pulse-ring::before {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: inherit;
+      background: inherit;
+      opacity: 0;
+      animation: pulseRing 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    
+    @keyframes pulseRing {
+      0% { transform: scale(1); opacity: 0.5; }
+      100% { transform: scale(1.2); opacity: 0; }
     }
   </style>
 </head>
-<body class="bg-gray-50 min-h-screen">
+<body class="text-gray-800 antialiased">
+  <!-- Animated Background -->
+  <div class="bg-pattern"></div>
+  
   <!-- Mobile Sidebar Toggle -->
-  <button type="button" id="sidebarToggle" class="lg:hidden fixed top-4 left-4 z-50 w-10 h-10 rounded-xl bg-primary text-white shadow-lg flex items-center justify-center hover:bg-primary-dark transition-colors">
-    <i class="bi bi-list text-xl"></i>
+  <button type="button" id="sidebarToggle" class="lg:hidden fixed top-4 left-4 z-50 w-12 h-12 rounded-2xl bg-gradient-to-r from-primary-600 to-secondary-600 text-white shadow-xl flex items-center justify-center hover:shadow-2xl hover:scale-110 transition-all duration-300 pulse-ring">
+    <i class="fa-solid fa-bars text-xl"></i>
   </button>
 
   <!-- Sidebar Backdrop -->
-  <div id="sidebarBackdrop" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 hidden lg:hidden"></div>
+  <div id="sidebarBackdrop" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden lg:hidden transition-opacity duration-300 opacity-0"></div>
 
   <div class="flex min-h-screen">
     <!-- Sidebar -->
-    <aside id="sidebar" class="fixed lg:sticky top-0 left-0 h-screen w-72 bg-gradient-to-b from-primary to-primary-dark z-50 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 shadow-2xl">
+    <aside id="sidebar" class="fixed lg:sticky top-0 left-0 h-screen w-72 glass-sidebar z-50 transform -translate-x-full lg:translate-x-0 transition-transform duration-500 shadow-2xl">
+      <!-- Logo Section -->
       <div class="p-6 border-b border-white/10">
-        <div class="flex items-center gap-3">
-          <div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
-            <img src="../images/nursing-logo.png" alt="Nursing Logo" class="w-10 h-10 rounded-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
-            <div class="hidden">
-              <i class="bi bi-shield-check text-white text-xl"></i>
+        <div class="flex items-center gap-4">
+          <div class="relative">
+            <div class="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center pulse-ring animate-float">
+              <i class="fa-solid fa-user-nurse text-white text-2xl"></i>
             </div>
+            <!-- Status Indicator -->
+            <div class="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-emerald-400 border-2 border-primary-600 animate-pulse"></div>
           </div>
           <div>
-            <h2 class="font-bold text-white">Nursing Admin</h2>
-            <p class="text-white/60 text-xs">Management Portal</p>
+            <h2 class="font-bold text-white text-lg tracking-tight">Nursing Admin</h2>
+            <p class="text-white/60 text-xs font-medium">Management Portal</p>
           </div>
         </div>
       </div>
 
-      <nav class="p-4 space-y-1">
-        <a href="#" data-section="dashboard" class="sidebar-link active">
-          <i class="bi bi-grid-1x2-fill text-lg"></i>
-          <span>Dashboard</span>
+      <!-- Navigation -->
+      <nav class="p-4 space-y-2">
+        <a href="#" data-section="dashboard" class="sidebar-link active flex items-center gap-3 px-4 py-3.5 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 group">
+          <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
+            <i class="fa-solid fa-grid-2 text-lg"></i>
+          </div>
+          <span class="font-medium">Dashboard</span>
+          <i class="fa-solid fa-chevron-right ml-auto text-xs opacity-0 group-hover:opacity-100 transition-opacity"></i>
         </a>
-        <a href="#" data-section="events" class="sidebar-link">
-          <i class="bi bi-calendar-event text-lg"></i>
-          <span>Events</span>
+        
+        <a href="#" data-section="events" class="sidebar-link flex items-center gap-3 px-4 py-3.5 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 group">
+          <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
+            <i class="fa-solid fa-calendar-days text-lg"></i>
+          </div>
+          <span class="font-medium">Events</span>
+          <i class="fa-solid fa-chevron-right ml-auto text-xs opacity-0 group-hover:opacity-100 transition-opacity"></i>
         </a>
-        <a href="#" data-section="daily-subjects" class="sidebar-link">
-          <i class="bi bi-journal-bookmark text-lg"></i>
-          <span>Daily Subjects</span>
+        
+        <a href="#" data-section="daily-subjects" class="sidebar-link flex items-center gap-3 px-4 py-3.5 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 group">
+          <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
+            <i class="fa-solid fa-book-open text-lg"></i>
+          </div>
+          <span class="font-medium">Daily Subjects</span>
+          <i class="fa-solid fa-chevron-right ml-auto text-xs opacity-0 group-hover:opacity-100 transition-opacity"></i>
         </a>
-        <a href="#" data-section="announcements" class="sidebar-link">
-          <i class="bi bi-megaphone text-lg"></i>
-          <span>Announcements</span>
+        
+        <a href="#" data-section="announcements" class="sidebar-link flex items-center gap-3 px-4 py-3.5 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 group">
+          <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
+            <i class="fa-solid fa-bullhorn text-lg"></i>
+          </div>
+          <span class="font-medium">Announcements</span>
+          <i class="fa-solid fa-chevron-right ml-auto text-xs opacity-0 group-hover:opacity-100 transition-opacity"></i>
         </a>
+
         <div class="border-t border-white/10 my-4"></div>
-        <a href="/" target="_blank" class="sidebar-link">
-          <i class="bi bi-box-arrow-up-right text-lg"></i>
-          <span>View Student Portal</span>
+        
+        <a href="/" target="_blank" class="flex items-center gap-3 px-4 py-3.5 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 group">
+          <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
+            <i class="fa-solid fa-arrow-up-right-from-square text-lg"></i>
+          </div>
+          <span class="font-medium">View Portal</span>
         </a>
-        <a href="#" id="logoutLink" class="sidebar-link text-red-200 hover:text-red-100 hover:bg-red-500/20">
-          <i class="bi bi-box-arrow-right text-lg"></i>
-          <span>Logout</span>
+        
+        <a href="#" id="logoutLink" class="flex items-center gap-3 px-4 py-3.5 rounded-xl text-rose-300 hover:text-rose-100 hover:bg-rose-500/20 transition-all duration-300 group">
+          <div class="w-10 h-10 rounded-xl bg-rose-500/20 flex items-center justify-center group-hover:bg-rose-500/30 transition-colors">
+            <i class="fa-solid fa-right-from-bracket text-lg"></i>
+          </div>
+          <span class="font-medium">Logout</span>
         </a>
       </nav>
 
       <!-- Close button for mobile -->
-      <button type="button" id="sidebarClose" class="lg:hidden absolute top-4 right-4 text-white/60 hover:text-white">
-        <i class="bi bi-x-lg text-xl"></i>
+      <button type="button" id="sidebarClose" class="lg:hidden absolute top-4 right-4 w-10 h-10 rounded-xl bg-white/10 text-white/80 hover:text-white hover:bg-white/20 flex items-center justify-center transition-all">
+        <i class="fa-solid fa-xmark text-xl"></i>
       </button>
     </aside>
 
     <!-- Main Content -->
-    <main class="flex-1 lg:p-8 p-4 pt-20 lg:pt-8">
+    <main class="flex-1 p-4 lg:p-8 pt-20 lg:pt-8">
       <!-- Dashboard Section -->
-      <section id="section-dashboard" class="admin-section">
-        <div class="mb-8">
-          <h1 class="text-3xl font-bold text-gray-800 mb-2">Dashboard</h1>
-          <p class="text-gray-500">Welcome back! Here's an overview of your portal.</p>
+      <section id="section-dashboard" class="admin-section animate-fade-in">
+        <!-- Header -->
+        <div class="mb-8 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div>
+            <h1 class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary-700 to-secondary-700 bg-clip-text text-transparent mb-2">
+              Dashboard Overview
+            </h1>
+            <p class="text-gray-500">Welcome back! Here's what's happening in your portal.</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="glass rounded-2xl px-4 py-2 flex items-center gap-2">
+              <i class="fa-regular fa-calendar text-primary-600"></i>
+              <span class="text-sm font-medium text-gray-700" id="currentDate">Loading...</span>
+            </div>
+          </div>
         </div>
 
         <!-- Stats Grid -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div class="stat-card bg-gradient-to-br from-primary to-primary-dark">
-            <div class="flex items-center justify-between mb-2">
-              <i class="bi bi-calendar-event text-3xl opacity-80"></i>
-              <span class="text-sm opacity-70">Total</span>
+          <!-- Total Events -->
+          <div class="card-hover stat-gradient-1 rounded-3xl p-6 text-white shadow-xl shadow-primary-500/20 stagger-1 animate-fade-in-up">
+            <div class="flex items-start justify-between mb-4">
+              <div class="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center">
+                <i class="fa-solid fa-calendar-check text-2xl"></i>
+              </div>
+              <span class="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold">+12%</span>
             </div>
-            <div class="text-3xl font-bold mb-1" id="statEvents">0</div>
-            <div class="text-sm opacity-80">Events</div>
+            <div class="text-4xl font-bold mb-1" id="statEvents">0</div>
+            <div class="text-white/80 font-medium">Total Events</div>
+            <div class="mt-4 w-full bg-white/20 rounded-full h-2">
+              <div class="progress-bar bg-white rounded-full h-2" style="width: 75%"></div>
+            </div>
           </div>
 
-          <div class="stat-card bg-gradient-to-br from-green-500 to-green-700">
-            <div class="flex items-center justify-between mb-2">
-              <i class="bi bi-journal-bookmark text-3xl opacity-80"></i>
-              <span class="text-sm opacity-70">Active</span>
+          <!-- Active Subjects -->
+          <div class="card-hover stat-gradient-2 rounded-3xl p-6 text-white shadow-xl shadow-emerald-500/20 stagger-2 animate-fade-in-up">
+            <div class="flex items-start justify-between mb-4">
+              <div class="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center">
+                <i class="fa-solid fa-book-open-reader text-2xl"></i>
+              </div>
+              <span class="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold">Active</span>
             </div>
-            <div class="text-3xl font-bold mb-1" id="statSubjects">0</div>
-            <div class="text-sm opacity-80">Days with Subjects</div>
+            <div class="text-4xl font-bold mb-1" id="statSubjects">0</div>
+            <div class="text-white/80 font-medium">Days Scheduled</div>
+            <div class="mt-4 w-full bg-white/20 rounded-full h-2">
+              <div class="progress-bar bg-white rounded-full h-2" style="width: 60%"></div>
+            </div>
           </div>
 
-          <div class="stat-card bg-gradient-to-br from-purple-500 to-purple-700">
-            <div class="flex items-center justify-between mb-2">
-              <i class="bi bi-megaphone text-3xl opacity-80"></i>
-              <span class="text-sm opacity-70">Active</span>
+          <!-- Announcements -->
+          <div class="card-hover stat-gradient-3 rounded-3xl p-6 text-white shadow-xl shadow-amber-500/20 stagger-3 animate-fade-in-up">
+            <div class="flex items-start justify-between mb-4">
+              <div class="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center">
+                <i class="fa-solid fa-bullhorn text-2xl"></i>
+              </div>
+              <span class="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold">Live</span>
             </div>
-            <div class="text-3xl font-bold mb-1" id="statAnnouncements">0</div>
-            <div class="text-sm opacity-80">Announcements</div>
+            <div class="text-4xl font-bold mb-1" id="statAnnouncements">0</div>
+            <div class="text-white/80 font-medium">Announcements</div>
+            <div class="mt-4 w-full bg-white/20 rounded-full h-2">
+              <div class="progress-bar bg-white rounded-full h-2" style="width: 85%"></div>
+            </div>
           </div>
 
-          <div class="stat-card bg-gradient-to-br from-orange-500 to-red-600">
-            <div class="flex items-center justify-between mb-2">
-              <i class="bi bi-clock-history text-3xl opacity-80"></i>
-              <span class="text-sm opacity-70">Coming Up</span>
+          <!-- Next Event -->
+          <div class="card-hover stat-gradient-4 rounded-3xl p-6 text-white shadow-xl shadow-rose-500/20 stagger-4 animate-fade-in-up">
+            <div class="flex items-start justify-between mb-4">
+              <div class="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center">
+                <i class="fa-solid fa-clock text-2xl"></i>
+              </div>
+              <span class="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold">Soon</span>
             </div>
             <div class="text-lg font-bold mb-1 truncate" id="statNextEventName">—</div>
-            <div class="text-sm opacity-80" id="statNextEventDate">No upcoming events</div>
+            <div class="text-white/80 text-sm" id="statNextEventDate">No upcoming events</div>
+            <div class="mt-4 flex items-center gap-2">
+              <i class="fa-solid fa-hourglass-half text-white/60"></i>
+              <span class="text-xs text-white/60" id="statCountdown">—</span>
+            </div>
           </div>
         </div>
 
-        <!-- Chart Section -->
-        <div class="bg-white rounded-2xl shadow-md p-6 mb-6">
-          <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-            <i class="bi bi-graph-up text-primary"></i>
-            Analytics Overview
-          </h3>
-          <canvas id="analyticsChart" height="100"></canvas>
-        </div>
+        <!-- Charts & Activity Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Analytics Chart -->
+          <div class="lg:col-span-2 glass rounded-3xl p-6 shadow-xl card-hover">
+            <div class="flex items-center justify-between mb-6">
+              <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                <i class="fa-solid fa-chart-line text-primary-600"></i>
+                Analytics Overview
+              </h3>
+              <div class="flex gap-2">
+                <button class="px-3 py-1.5 rounded-lg bg-primary-100 text-primary-700 text-sm font-medium hover:bg-primary-200 transition-colors">Monthly</button>
+                <button class="px-3 py-1.5 rounded-lg text-gray-500 text-sm font-medium hover:bg-gray-100 transition-colors">Weekly</button>
+              </div>
+            </div>
+            <div class="relative h-72">
+              <canvas id="analyticsChart"></canvas>
+            </div>
+          </div>
 
-        <!-- Recent Activity -->
-        <div class="bg-white rounded-2xl shadow-md p-6">
-          <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-            <i class="bi bi-activity text-primary"></i>
-            Recent Activity
-          </h3>
-          <ul class="space-y-3" id="recentActivityList">
-            <li class="flex items-center gap-3 text-gray-500 py-2">
-              <div class="spinner spinner-sm"></div>
-              <span>Loading...</span>
-            </li>
-          </ul>
+          <!-- Recent Activity -->
+          <div class="glass rounded-3xl p-6 shadow-xl card-hover">
+            <div class="flex items-center justify-between mb-6">
+              <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                <i class="fa-solid fa-bolt text-amber-500"></i>
+                Recent Activity
+              </h3>
+              <span class="px-2 py-1 rounded-lg bg-amber-100 text-amber-700 text-xs font-bold">Live</span>
+            </div>
+            <ul class="space-y-4" id="recentActivityList">
+              <li class="flex items-center gap-4 py-2">
+                <div class="skeleton w-12 h-12 rounded-xl"></div>
+                <div class="flex-1 space-y-2">
+                  <div class="skeleton h-4 w-3/4 rounded"></div>
+                  <div class="skeleton h-3 w-1/2 rounded"></div>
+                </div>
+              </li>
+              <li class="flex items-center gap-4 py-2">
+                <div class="skeleton w-12 h-12 rounded-xl"></div>
+                <div class="flex-1 space-y-2">
+                  <div class="skeleton h-4 w-2/3 rounded"></div>
+                  <div class="skeleton h-3 w-1/3 rounded"></div>
+                </div>
+              </li>
+            </ul>
+          </div>
         </div>
       </section>
 
       <!-- Events Section -->
-      <section id="section-events" class="admin-section hidden">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      <section id="section-events" class="admin-section hidden animate-fade-in">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-8">
           <div>
-            <h1 class="text-3xl font-bold text-gray-800 mb-1">Events Management</h1>
-            <p class="text-gray-500">Manage college events and activities</p>
+            <h1 class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary-700 to-secondary-700 bg-clip-text text-transparent mb-2">
+              Events Management
+            </h1>
+            <p class="text-gray-500">Create and manage college events and activities</p>
           </div>
-          <button type="button" class="btn-action bg-green-500 hover:bg-green-600 text-white shadow-green-500/30" onclick="openEventForm()">
-            <i class="bi bi-plus-lg"></i>
-            Add Event
+          <button type="button" class="btn-shimmer px-6 py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold rounded-2xl shadow-xl shadow-emerald-500/30 transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-2 group" onclick="openEventForm()">
+            <i class="fa-solid fa-plus group-hover:rotate-90 transition-transform"></i>
+            <span>Add Event</span>
           </button>
         </div>
 
-        <div class="bg-white rounded-2xl shadow-md overflow-hidden">
-          <div class="p-4 border-b border-gray-100">
-            <div class="relative max-w-md">
-              <i class="bi bi-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-              <input type="text" id="eventsSearch" placeholder="Search by title..." class="w-full pl-11 pr-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none">
+        <div class="glass rounded-3xl shadow-xl overflow-hidden">
+          <div class="p-6 border-b border-gray-100">
+            <div class="flex flex-col sm:flex-row gap-4 justify-between">
+              <div class="relative max-w-md flex-1">
+                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input type="text" id="eventsSearch" placeholder="Search events by title..." class="w-full pl-12 pr-4 py-3.5 bg-gray-50 border-2 border-gray-100 rounded-2xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
+              </div>
+              <div class="flex gap-2">
+                <button class="px-4 py-2 rounded-xl bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors flex items-center gap-2">
+                  <i class="fa-solid fa-filter"></i>
+                  <span>Filter</span>
+                </button>
+                <button class="px-4 py-2 rounded-xl bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors flex items-center gap-2">
+                  <i class="fa-solid fa-arrow-down-short-wide"></i>
+                  <span>Sort</span>
+                </button>
+              </div>
             </div>
           </div>
 
-          <div id="eventsLoading" class="hidden p-8 text-center">
-            <div class="spinner mx-auto mb-3"></div>
-            <p class="text-gray-500">Loading events...</p>
+          <div id="eventsLoading" class="hidden p-12 text-center">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary-100 mb-4">
+              <i class="fa-solid fa-spinner fa-spin text-2xl text-primary-600"></i>
+            </div>
+            <p class="text-gray-500 font-medium">Loading events...</p>
           </div>
 
           <div id="eventsTableWrap" class="overflow-x-auto">
             <table class="w-full">
-              <thead class="bg-gray-50">
+              <thead class="bg-gray-50/80">
                 <tr>
-                  <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Title</th>
-                  <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Date</th>
-                  <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Time</th>
+                  <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Event Details</th>
+                  <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Date & Time</th>
                   <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Location</th>
-                  <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Items</th>
+                  <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Items Required</th>
                   <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Actions</th>
                 </tr>
               </thead>
               <tbody id="eventsTableBody" class="divide-y divide-gray-100">
-                <tr><td colspan="6" class="px-6 py-8 text-center text-gray-500">Loading...</td></tr>
+                <tr>
+                  <td colspan="5" class="px-6 py-12 text-center">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gray-100 mb-4">
+                      <i class="fa-solid fa-spinner fa-spin text-2xl text-gray-400"></i>
+                    </div>
+                    <p class="text-gray-500 font-medium">Loading events...</p>
+                  </td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -242,37 +594,48 @@
       </section>
 
       <!-- Daily Subjects Section -->
-      <section id="section-daily-subjects" class="admin-section hidden">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      <section id="section-daily-subjects" class="admin-section hidden animate-fade-in">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-8">
           <div>
-            <h1 class="text-3xl font-bold text-gray-800 mb-1">Daily Subjects</h1>
-            <p class="text-gray-500">Manage weekly class schedules</p>
+            <h1 class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary-700 to-secondary-700 bg-clip-text text-transparent mb-2">
+              Daily Subjects
+            </h1>
+            <p class="text-gray-500">Manage weekly class schedules and curriculum</p>
           </div>
-          <button type="button" class="btn-action bg-green-500 hover:bg-green-600 text-white shadow-green-500/30" onclick="openSubjectForm()">
-            <i class="bi bi-plus-lg"></i>
-            Add Subject
+          <button type="button" class="btn-shimmer px-6 py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold rounded-2xl shadow-xl shadow-emerald-500/30 transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-2 group" onclick="openSubjectForm()">
+            <i class="fa-solid fa-plus group-hover:rotate-90 transition-transform"></i>
+            <span>Add Subject</span>
           </button>
         </div>
 
-        <div class="bg-white rounded-2xl shadow-md overflow-hidden">
-          <div id="subjectsLoading" class="hidden p-8 text-center">
-            <div class="spinner mx-auto mb-3"></div>
-            <p class="text-gray-500">Loading subjects...</p>
+        <div class="glass rounded-3xl shadow-xl overflow-hidden">
+          <div id="subjectsLoading" class="hidden p-12 text-center">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary-100 mb-4">
+              <i class="fa-solid fa-spinner fa-spin text-2xl text-primary-600"></i>
+            </div>
+            <p class="text-gray-500 font-medium">Loading subjects...</p>
           </div>
 
           <div id="subjectsTableWrap" class="overflow-x-auto">
             <table class="w-full">
-              <thead class="bg-gray-50">
+              <thead class="bg-gray-50/80">
                 <tr>
                   <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Day</th>
-                  <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Subject Name</th>
+                  <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Subject</th>
                   <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Type</th>
                   <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Items Needed</th>
                   <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Actions</th>
                 </tr>
               </thead>
               <tbody id="dailySubjectsTableBody" class="divide-y divide-gray-100">
-                <tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">Loading...</td></tr>
+                <tr>
+                  <td colspan="5" class="px-6 py-12 text-center">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gray-100 mb-4">
+                      <i class="fa-solid fa-spinner fa-spin text-2xl text-gray-400"></i>
+                    </div>
+                    <p class="text-gray-500 font-medium">Loading subjects...</p>
+                  </td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -280,37 +643,48 @@
       </section>
 
       <!-- Announcements Section -->
-      <section id="section-announcements" class="admin-section hidden">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      <section id="section-announcements" class="admin-section hidden animate-fade-in">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-8">
           <div>
-            <h1 class="text-3xl font-bold text-gray-800 mb-1">Announcements</h1>
-            <p class="text-gray-500">Manage student announcements</p>
+            <h1 class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary-700 to-secondary-700 bg-clip-text text-transparent mb-2">
+              Announcements
+            </h1>
+            <p class="text-gray-500">Manage student announcements and notifications</p>
           </div>
-          <button type="button" class="btn-action bg-green-500 hover:bg-green-600 text-white shadow-green-500/30" onclick="openAnnouncementForm()">
-            <i class="bi bi-plus-lg"></i>
-            Add Announcement
+          <button type="button" class="btn-shimmer px-6 py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold rounded-2xl shadow-xl shadow-emerald-500/30 transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-2 group" onclick="openAnnouncementForm()">
+            <i class="fa-solid fa-plus group-hover:rotate-90 transition-transform"></i>
+            <span>Add Announcement</span>
           </button>
         </div>
 
-        <div class="bg-white rounded-2xl shadow-md overflow-hidden">
-          <div id="announcementsLoading" class="hidden p-8 text-center">
-            <div class="spinner mx-auto mb-3"></div>
-            <p class="text-gray-500">Loading announcements...</p>
+        <div class="glass rounded-3xl shadow-xl overflow-hidden">
+          <div id="announcementsLoading" class="hidden p-12 text-center">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary-100 mb-4">
+              <i class="fa-solid fa-spinner fa-spin text-2xl text-primary-600"></i>
+            </div>
+            <p class="text-gray-500 font-medium">Loading announcements...</p>
           </div>
 
           <div id="announcementsTableWrap" class="overflow-x-auto">
             <table class="w-full">
-              <thead class="bg-gray-50">
+              <thead class="bg-gray-50/80">
                 <tr>
                   <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Title</th>
                   <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Message</th>
                   <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Date</th>
-                  <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Active</th>
+                  <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Status</th>
                   <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Actions</th>
                 </tr>
               </thead>
               <tbody id="announcementsTableBody" class="divide-y divide-gray-100">
-                <tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">Loading...</td></tr>
+                <tr>
+                  <td colspan="5" class="px-6 py-12 text-center">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gray-100 mb-4">
+                      <i class="fa-solid fa-spinner fa-spin text-2xl text-gray-400"></i>
+                    </div>
+                    <p class="text-gray-500 font-medium">Loading announcements...</p>
+                  </td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -321,27 +695,37 @@
 
   <!-- Event Modal -->
   <div id="eventModal" class="fixed inset-0 z-50 hidden">
-    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity" onclick="closeModal('eventModal')"></div>
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity" onclick="closeModal('eventModal')"></div>
     <div class="flex items-center justify-center min-h-screen p-4">
-      <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 relative modal-enter">
-        <button type="button" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors" onclick="closeModal('eventModal')">
-          <i class="bi bi-x-lg text-xl"></i>
+      <div class="glass rounded-3xl shadow-2xl max-w-2xl w-full p-8 relative animate-scale-in">
+        <button type="button" class="absolute top-6 right-6 w-10 h-10 rounded-full bg-gray-100 text-gray-500 hover:text-gray-700 hover:bg-gray-200 flex items-center justify-center transition-all" onclick="closeModal('eventModal')">
+          <i class="fa-solid fa-xmark text-xl"></i>
         </button>
-        <h3 class="text-xl font-bold text-gray-800 mb-6" id="eventModalTitle">Add Event</h3>
-        <input type="hidden" id="eventId">
-        <div class="space-y-4">
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Title *</label>
-            <input type="text" id="eventTitle" required class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none">
+        
+        <div class="flex items-center gap-3 mb-6">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-r from-primary-500 to-secondary-500 flex items-center justify-center">
+            <i class="fa-solid fa-calendar-plus text-white text-xl"></i>
           </div>
+          <h3 class="text-2xl font-bold text-gray-800" id="eventModalTitle">Add Event</h3>
+        </div>
+        
+        <input type="hidden" id="eventId">
+        
+        <div class="space-y-5">
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Title <span class="text-rose-500">*</span></label>
+            <input type="text" id="eventTitle" required class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow" placeholder="Enter event title">
+          </div>
+          
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-2">Description</label>
-            <textarea id="eventDescription" rows="2" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"></textarea>
+            <textarea id="eventDescription" rows="2" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow resize-none" placeholder="Enter event description"></textarea>
           </div>
+          
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-2">Category</label>
-            <select id="eventCategory" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none">
-              <option value="">-- Select --</option>
+            <select id="eventCategory" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
+              <option value="">Select category</option>
               <option value="Orientation">Orientation</option>
               <option value="Training">Training</option>
               <option value="Workshops">Workshops</option>
@@ -349,28 +733,32 @@
               <option value="Social Events">Social Events</option>
             </select>
           </div>
+          
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2">Date *</label>
-              <input type="date" id="eventDate" required class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none">
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Date <span class="text-rose-500">*</span></label>
+              <input type="date" id="eventDate" required class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
             </div>
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2">Time *</label>
-              <input type="time" id="eventTime" required class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none">
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Time <span class="text-rose-500">*</span></label>
+              <input type="time" id="eventTime" required class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
             </div>
           </div>
+          
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-2">Location</label>
-            <input type="text" id="eventLocation" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none">
+            <input type="text" id="eventLocation" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow" placeholder="Enter location">
           </div>
+          
           <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Items (one per line)</label>
-            <textarea id="eventItems" rows="3" placeholder="Item 1&#10;Item 2" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"></textarea>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Items Required (one per line)</label>
+            <textarea id="eventItems" rows="3" placeholder="Item 1&#10;Item 2&#10;Item 3" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow resize-none"></textarea>
           </div>
         </div>
-        <div class="flex justify-end gap-3 mt-6">
-          <button type="button" class="px-5 py-2.5 text-gray-600 hover:text-gray-800 font-medium transition-colors" onclick="closeModal('eventModal')">Cancel</button>
-          <button type="button" id="eventSaveBtn" class="px-6 py-2.5 bg-primary hover:bg-primary-dark text-white font-semibold rounded-xl transition-all hover:shadow-lg hover:shadow-primary/30">Save Event</button>
+        
+        <div class="flex justify-end gap-3 mt-8">
+          <button type="button" class="px-6 py-3 text-gray-600 hover:text-gray-800 font-semibold transition-colors" onclick="closeModal('eventModal')">Cancel</button>
+          <button type="button" id="eventSaveBtn" class="btn-shimmer px-8 py-3 bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 text-white font-semibold rounded-xl transition-all duration-300 shadow-xl shadow-primary-500/30">Save Event</button>
         </div>
       </div>
     </div>
@@ -378,19 +766,27 @@
 
   <!-- Subject Modal -->
   <div id="subjectModal" class="fixed inset-0 z-50 hidden">
-    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity" onclick="closeModal('subjectModal')"></div>
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity" onclick="closeModal('subjectModal')"></div>
     <div class="flex items-center justify-center min-h-screen p-4">
-      <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 relative modal-enter">
-        <button type="button" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors" onclick="closeModal('subjectModal')">
-          <i class="bi bi-x-lg text-xl"></i>
+      <div class="glass rounded-3xl shadow-2xl max-w-lg w-full p-8 relative animate-scale-in">
+        <button type="button" class="absolute top-6 right-6 w-10 h-10 rounded-full bg-gray-100 text-gray-500 hover:text-gray-700 hover:bg-gray-200 flex items-center justify-center transition-all" onclick="closeModal('subjectModal')">
+          <i class="fa-solid fa-xmark text-xl"></i>
         </button>
-        <h3 class="text-xl font-bold text-gray-800 mb-6" id="subjectModalTitle">Add Subject</h3>
+        
+        <div class="flex items-center gap-3 mb-6">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 flex items-center justify-center">
+            <i class="fa-solid fa-book-medical text-white text-xl"></i>
+          </div>
+          <h3 class="text-2xl font-bold text-gray-800" id="subjectModalTitle">Add Subject</h3>
+        </div>
+        
         <input type="hidden" id="subjectDocId">
         <input type="hidden" id="subjectIndex">
-        <div class="space-y-4">
+        
+        <div class="space-y-5">
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-2">Day of Week</label>
-            <select id="subjectDay" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none">
+            <select id="subjectDay" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
               <option value="Monday">Monday</option>
               <option value="Tuesday">Tuesday</option>
               <option value="Wednesday">Wednesday</option>
@@ -400,10 +796,11 @@
               <option value="Sunday">Sunday</option>
             </select>
           </div>
+          
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-2">Subject Name</label>
-            <select id="subjectNameSelect" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none">
-              <option value="">-- Select --</option>
+            <select id="subjectNameSelect" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
+              <option value="">Select subject</option>
               <option value="Anatomy & Physiology">Anatomy & Physiology</option>
               <option value="Clinical Skills Lab">Clinical Skills Lab</option>
               <option value="Nursing Fundamentals">Nursing Fundamentals</option>
@@ -415,26 +812,30 @@
               <option value="Other">Other</option>
             </select>
           </div>
+          
           <div id="subjectNameOtherWrap" class="hidden">
             <label class="block text-sm font-semibold text-gray-700 mb-2">Custom Subject Name</label>
-            <input type="text" id="subjectNameOther" placeholder="Type subject name" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none">
+            <input type="text" id="subjectNameOther" placeholder="Type subject name" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
           </div>
+          
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-2">Type</label>
-            <select id="subjectType" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none">
+            <select id="subjectType" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
               <option value="Theory">Theory</option>
               <option value="Lab">Lab</option>
               <option value="Seminar">Seminar</option>
             </select>
           </div>
+          
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-2">Items Needed (one per line)</label>
-            <textarea id="subjectItems" rows="3" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"></textarea>
+            <textarea id="subjectItems" rows="3" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow resize-none" placeholder="Stethoscope&#10;Lab coat&#10;Textbook"></textarea>
           </div>
         </div>
-        <div class="flex justify-end gap-3 mt-6">
-          <button type="button" class="px-5 py-2.5 text-gray-600 hover:text-gray-800 font-medium transition-colors" onclick="closeModal('subjectModal')">Cancel</button>
-          <button type="button" id="subjectSaveBtn" class="px-6 py-2.5 bg-primary hover:bg-primary-dark text-white font-semibold rounded-xl transition-all hover:shadow-lg hover:shadow-primary/30">Save Subject</button>
+        
+        <div class="flex justify-end gap-3 mt-8">
+          <button type="button" class="px-6 py-3 text-gray-600 hover:text-gray-800 font-semibold transition-colors" onclick="closeModal('subjectModal')">Cancel</button>
+          <button type="button" id="subjectSaveBtn" class="btn-shimmer px-8 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold rounded-xl transition-all duration-300 shadow-xl shadow-emerald-500/30">Save Subject</button>
         </div>
       </div>
     </div>
@@ -442,41 +843,53 @@
 
   <!-- Announcement Modal -->
   <div id="announcementModal" class="fixed inset-0 z-50 hidden">
-    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity" onclick="closeModal('announcementModal')"></div>
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity" onclick="closeModal('announcementModal')"></div>
     <div class="flex items-center justify-center min-h-screen p-4">
-      <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 relative modal-enter">
-        <button type="button" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors" onclick="closeModal('announcementModal')">
-          <i class="bi bi-x-lg text-xl"></i>
+      <div class="glass rounded-3xl shadow-2xl max-w-lg w-full p-8 relative animate-scale-in">
+        <button type="button" class="absolute top-6 right-6 w-10 h-10 rounded-full bg-gray-100 text-gray-500 hover:text-gray-700 hover:bg-gray-200 flex items-center justify-center transition-all" onclick="closeModal('announcementModal')">
+          <i class="fa-solid fa-xmark text-xl"></i>
         </button>
-        <h3 class="text-xl font-bold text-gray-800 mb-6" id="announcementModalTitle">Add Announcement</h3>
+        
+        <div class="flex items-center gap-3 mb-6">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 flex items-center justify-center">
+            <i class="fa-solid fa-bullhorn text-white text-xl"></i>
+          </div>
+          <h3 class="text-2xl font-bold text-gray-800" id="announcementModalTitle">Add Announcement</h3>
+        </div>
+        
         <input type="hidden" id="announcementId">
-        <div class="space-y-4">
+        
+        <div class="space-y-5">
           <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Title *</label>
-            <input type="text" id="announcementTitle" required class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none">
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Title <span class="text-rose-500">*</span></label>
+            <input type="text" id="announcementTitle" required class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow" placeholder="Enter announcement title">
           </div>
+          
           <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Message *</label>
-            <textarea id="announcementMessage" rows="3" required class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"></textarea>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Message <span class="text-rose-500">*</span></label>
+            <textarea id="announcementMessage" rows="3" required class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow resize-none" placeholder="Enter your message"></textarea>
           </div>
+          
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2">Date *</label>
-              <input type="date" id="announcementDate" required class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none">
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Date <span class="text-rose-500">*</span></label>
+              <input type="date" id="announcementDate" required class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
             </div>
             <div>
               <label class="block text-sm font-semibold text-gray-700 mb-2">Time</label>
-              <input type="time" id="announcementTime" value="09:00" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none">
+              <input type="time" id="announcementTime" value="09:00" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
             </div>
           </div>
-          <div class="flex items-center gap-3">
-            <input type="checkbox" id="announcementActive" checked class="w-5 h-5 text-primary rounded border-gray-300 focus:ring-primary">
-            <label for="announcementActive" class="text-sm text-gray-700">Active (show in carousel)</label>
+          
+          <div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
+            <input type="checkbox" id="announcementActive" checked class="w-5 h-5 text-primary-600 rounded-lg border-2 border-gray-300 focus:ring-primary-500 focus:ring-2 cursor-pointer">
+            <label for="announcementActive" class="text-sm font-medium text-gray-700 cursor-pointer select-none">Active (show in carousel)</label>
           </div>
         </div>
-        <div class="flex justify-end gap-3 mt-6">
-          <button type="button" class="px-5 py-2.5 text-gray-600 hover:text-gray-800 font-medium transition-colors" onclick="closeModal('announcementModal')">Cancel</button>
-          <button type="button" id="announcementSaveBtn" class="px-6 py-2.5 bg-primary hover:bg-primary-dark text-white font-semibold rounded-xl transition-all hover:shadow-lg hover:shadow-primary/30">Save Announcement</button>
+        
+        <div class="flex justify-end gap-3 mt-8">
+          <button type="button" class="px-6 py-3 text-gray-600 hover:text-gray-800 font-semibold transition-colors" onclick="closeModal('announcementModal')">Cancel</button>
+          <button type="button" id="announcementSaveBtn" class="btn-shimmer px-8 py-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold rounded-xl transition-all duration-300 shadow-xl shadow-amber-500/30">Save Announcement</button>
         </div>
       </div>
     </div>
@@ -484,25 +897,26 @@
 
   <!-- Confirm Delete Modal -->
   <div id="confirmDeleteModal" class="fixed inset-0 z-50 hidden">
-    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity" onclick="closeModal('confirmDeleteModal')"></div>
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity" onclick="closeModal('confirmDeleteModal')"></div>
     <div class="flex items-center justify-center min-h-screen p-4">
-      <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 relative modal-enter text-center">
-        <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-red-100 flex items-center justify-center">
-          <i class="bi bi-exclamation-triangle text-red-500 text-2xl"></i>
+      <div class="glass rounded-3xl shadow-2xl max-w-md w-full p-8 relative animate-scale-in text-center">
+        <div class="w-20 h-20 mx-auto mb-6 rounded-2xl bg-rose-100 flex items-center justify-center animate-pulse">
+          <i class="fa-solid fa-triangle-exclamation text-rose-500 text-3xl"></i>
         </div>
-        <h3 class="text-xl font-bold text-gray-800 mb-2">Confirm Delete</h3>
-        <p class="text-gray-600 mb-6" id="confirmDeleteMessage">Are you sure you want to delete this item?</p>
-        <div class="flex justify-center gap-3">
-          <button type="button" class="px-6 py-2.5 text-gray-600 hover:text-gray-800 font-medium transition-colors" onclick="closeModal('confirmDeleteModal')">Cancel</button>
-          <button type="button" id="confirmDeleteBtn" class="px-6 py-2.5 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-xl transition-all hover:shadow-lg hover:shadow-red-500/30">Delete</button>
+        <h3 class="text-2xl font-bold text-gray-800 mb-2">Confirm Delete</h3>
+        <p class="text-gray-600 mb-8" id="confirmDeleteMessage">Are you sure you want to delete this item? This action cannot be undone.</p>
+        <div class="flex justify-center gap-4">
+          <button type="button" class="px-8 py-3.5 text-gray-600 hover:text-gray-800 font-semibold transition-colors rounded-xl hover:bg-gray-100" onclick="closeModal('confirmDeleteModal')">Cancel</button>
+          <button type="button" id="confirmDeleteBtn" class="btn-shimmer px-8 py-3.5 bg-gradient-to-r from-rose-500 to-rose-600 hover:from-rose-600 hover:to-rose-700 text-white font-semibold rounded-xl transition-all duration-300 shadow-xl shadow-rose-500/30">Delete</button>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Toast Container -->
-  <div id="toastContainer" class="fixed top-4 right-4 z-[9999] space-y-2"></div>
+  <div id="toastContainer" class="fixed top-6 right-6 z-[9999] space-y-3"></div>
 
+  <!-- JavaScript -->
   <script src="admin-tailwind.js"></script>
 </body>
 </html>

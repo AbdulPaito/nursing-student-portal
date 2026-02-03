@@ -16,30 +16,42 @@
     if (e.persisted && !getToken()) window.location.replace('/admin/login');
   });
 
-  // Toast
+  // Toast with enhanced animations
   function toast(message, type) {
     type = type || 'success';
     const container = document.getElementById('toastContainer');
     if (!container) return;
     const id = 'toast-' + Date.now();
-    const bgClass = type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-primary';
-    const icon = type === 'success' ? 'bi-check-circle' : type === 'error' ? 'bi-exclamation-circle' : 'bi-info-circle';
+    
+    const colors = {
+      success: { bg: 'bg-gradient-to-r from-emerald-500 to-teal-500', icon: 'fa-check-circle', shadow: 'shadow-emerald-500/30' },
+      error: { bg: 'bg-gradient-to-r from-rose-500 to-red-600', icon: 'fa-circle-xmark', shadow: 'shadow-rose-500/30' },
+      info: { bg: 'bg-gradient-to-r from-primary-500 to-secondary-500', icon: 'fa-circle-info', shadow: 'shadow-primary-500/30' }
+    };
+    
+    const color = colors[type] || colors.info;
     
     container.insertAdjacentHTML('beforeend', `
-      <div id="${id}" class="${bgClass} text-white px-6 py-4 rounded-xl shadow-lg flex items-center gap-3 animate-slide-in-right">
-        <i class="bi ${icon} text-xl"></i>
-        <span class="font-medium">${escapeHtml(message)}</span>
-        <button onclick="this.parentElement.remove()" class="ml-2 text-white/70 hover:text-white">
-          <i class="bi bi-x-lg"></i>
+      <div id="${id}" class="${color.bg} text-white px-6 py-4 rounded-2xl shadow-2xl ${color.shadow} flex items-center gap-4 transform translate-x-full transition-all duration-300" style="backdrop-filter: blur(10px);">
+        <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
+          <i class="fa-solid ${color.icon} text-xl"></i>
+        </div>
+        <span class="font-semibold">${escapeHtml(message)}</span>
+        <button onclick="this.parentElement.remove()" class="ml-auto w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors flex-shrink-0">
+          <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
     `);
     
     const el = document.getElementById(id);
+    // Animate in
+    requestAnimationFrame(() => {
+      el.classList.remove('translate-x-full');
+    });
+    
     setTimeout(() => {
       if (el && el.parentNode) {
-        el.style.opacity = '0';
-        el.style.transform = 'translateX(100%)';
+        el.classList.add('translate-x-full', 'opacity-0');
         setTimeout(() => el.remove(), 300);
       }
     }, 4000);
@@ -52,15 +64,32 @@
     return d.innerHTML;
   }
 
-  // Modal functions
+  // Modal functions with animations
   window.openModal = function(modalId) {
-    document.getElementById(modalId).classList.remove('hidden');
+    const modal = document.getElementById(modalId);
+    modal.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
+    
+    // Animate backdrop
+    const backdrop = modal.querySelector('.absolute.inset-0');
+    if (backdrop) {
+      backdrop.style.opacity = '0';
+      setTimeout(() => backdrop.style.opacity = '1', 10);
+    }
   };
 
   window.closeModal = function(modalId) {
-    document.getElementById(modalId).classList.add('hidden');
-    document.body.style.overflow = '';
+    const modal = document.getElementById(modalId);
+    const backdrop = modal.querySelector('.absolute.inset-0');
+    
+    if (backdrop) {
+      backdrop.style.opacity = '0';
+    }
+    
+    setTimeout(() => {
+      modal.classList.add('hidden');
+      document.body.style.overflow = '';
+    }, 200);
   };
 
   // Confirm delete
@@ -80,7 +109,7 @@
 
   function confirmDelete(msg) {
     if (!confirmModal) return Promise.resolve(confirm(msg || 'Delete this item?'));
-    confirmMessage.textContent = msg || 'Are you sure you want to delete this item?';
+    confirmMessage.textContent = msg || 'Are you sure you want to delete this item? This action cannot be undone.';
     return new Promise(function(resolve) {
       confirmDeleteResolve = resolve;
       openModal('confirmDeleteModal');
@@ -106,33 +135,58 @@
     });
   }
 
-  // Sidebar
+  // Sidebar with smooth animations
   const sidebar = document.getElementById('sidebar');
   const sidebarToggle = document.getElementById('sidebarToggle');
   const sidebarClose = document.getElementById('sidebarClose');
   const sidebarBackdrop = document.getElementById('sidebarBackdrop');
 
   function toggleSidebar() {
-    sidebar.classList.toggle('-translate-x-full');
-    sidebarBackdrop.classList.toggle('hidden');
+    const isOpen = !sidebar.classList.contains('-translate-x-full');
+    
+    if (isOpen) {
+      sidebar.classList.add('-translate-x-full');
+      sidebarBackdrop.classList.add('hidden');
+      sidebarBackdrop.classList.remove('opacity-100');
+      sidebarBackdrop.classList.add('opacity-0');
+    } else {
+      sidebar.classList.remove('-translate-x-full');
+      sidebarBackdrop.classList.remove('hidden');
+      setTimeout(() => {
+        sidebarBackdrop.classList.remove('opacity-0');
+        sidebarBackdrop.classList.add('opacity-100');
+      }, 10);
+    }
   }
 
   if (sidebarToggle) sidebarToggle.addEventListener('click', toggleSidebar);
   if (sidebarClose) sidebarClose.addEventListener('click', toggleSidebar);
   if (sidebarBackdrop) sidebarBackdrop.addEventListener('click', toggleSidebar);
 
-  // Section switching
+  // Section switching with fade animations
   document.querySelectorAll('.sidebar-link[data-section]').forEach(function(link) {
     link.addEventListener('click', function(e) {
       if (this.getAttribute('href') === '#') e.preventDefault();
       const section = this.dataset.section;
       
+      // Fade out current sections
       document.querySelectorAll('.admin-section').forEach(function(s) { 
-        s.classList.add('hidden'); 
+        s.style.opacity = '0';
+        setTimeout(() => s.classList.add('hidden'), 200);
       });
       
-      const panel = document.getElementById('section-' + section);
-      if (panel) panel.classList.remove('hidden');
+      // Show new section with animation
+      setTimeout(() => {
+        const panel = document.getElementById('section-' + section);
+        if (panel) {
+          panel.classList.remove('hidden');
+          panel.style.opacity = '0';
+          setTimeout(() => {
+            panel.style.opacity = '1';
+            panel.classList.add('animate-fade-in');
+          }, 50);
+        }
+      }, 200);
       
       document.querySelectorAll('.sidebar-link').forEach(function(n) { 
         n.classList.remove('active'); 
@@ -151,20 +205,63 @@
     window.location.href = '/admin/login';
   });
 
-  // Dashboard Stats with Animation
-  function animateCounter(element, target, duration = 1000) {
+  // Update current date
+  function updateCurrentDate() {
+    const dateEl = document.getElementById('currentDate');
+    if (dateEl) {
+      const options = { weekday: 'short', month: 'short', day: 'numeric' };
+      dateEl.textContent = new Date().toLocaleDateString('en-US', options);
+    }
+  }
+  updateCurrentDate();
+
+  // Animated counter with easing
+  function animateCounter(element, target, duration = 1500) {
+    if (!element) return;
     const start = 0;
-    const increment = target / (duration / 16);
-    let current = start;
+    const startTime = performance.now();
     
-    const timer = setInterval(() => {
-      current += increment;
-      if (current >= target) {
-        current = target;
-        clearInterval(timer);
+    function update(currentTime) {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      
+      // Easing function (ease-out-expo)
+      const easeOut = 1 - Math.pow(1 - progress, 3);
+      const current = Math.floor(start + (target - start) * easeOut);
+      
+      element.textContent = current.toLocaleString();
+      
+      if (progress < 1) {
+        requestAnimationFrame(update);
       }
-      element.textContent = Math.floor(current);
-    }, 16);
+    }
+    
+    requestAnimationFrame(update);
+  }
+
+  // Countdown timer for next event
+  function updateCountdown(targetDate) {
+    const countdownEl = document.getElementById('statCountdown');
+    if (!countdownEl || !targetDate) return;
+    
+    function update() {
+      const now = new Date();
+      const diff = new Date(targetDate) - now;
+      
+      if (diff <= 0) {
+        countdownEl.textContent = 'Event started!';
+        return;
+      }
+      
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      
+      countdownEl.textContent = `${days}d ${hours}h ${minutes}m`;
+    }
+    
+    update();
+    setInterval(update, 60000);
   }
 
   let analyticsChartInstance = null;
@@ -196,16 +293,21 @@
       
       if (nextEl) nextEl.textContent = upcoming.length ? upcoming[0].title : '—';
       if (dateEl) dateEl.textContent = upcoming.length ? upcoming[0].date : 'No upcoming events';
+      
+      // Start countdown if there's an upcoming event
+      if (upcoming.length && upcoming[0].date) {
+        updateCountdown(upcoming[0].date + 'T' + (upcoming[0].time || '00:00'));
+      }
 
-      // Recent Activity
+      // Recent Activity with staggered animations
       let activity = [];
       events.slice(0, 5).forEach(function(e) { 
-        activity.push({ type: 'event', text: e.title, date: e.date, icon: 'bi-calendar-event', color: 'bg-blue-100 text-blue-600' }); 
+        activity.push({ type: 'event', text: e.title, date: e.date, icon: 'fa-calendar-check', color: 'bg-primary-100 text-primary-600' }); 
       });
       
       dailySubjects.forEach(function(d) {
         (d.subjects || []).slice(0, 2).forEach(function(s) { 
-          activity.push({ type: 'subject', text: d.dayOfWeek + ': ' + s.name, date: d.dayOfWeek, icon: 'bi-journal-bookmark', color: 'bg-green-100 text-green-600' }); 
+          activity.push({ type: 'subject', text: d.dayOfWeek + ': ' + s.name, date: d.dayOfWeek, icon: 'fa-book-open', color: 'bg-emerald-100 text-emerald-600' }); 
         });
       });
 
@@ -213,26 +315,30 @@
       
       if (recentActivityList) {
         recentActivityList.innerHTML = activity.length
-          ? activity.map(function(a) { 
+          ? activity.map(function(a, index) { 
               return `
-                <li class="flex items-center gap-3 py-2 border-b border-gray-50 last:border-0">
-                  <div class="w-10 h-10 rounded-full ${a.color} flex items-center justify-center flex-shrink-0">
-                    <i class="bi ${a.icon}"></i>
+                <li class="flex items-center gap-4 py-3 border-b border-gray-100 last:border-0 opacity-0 animate-fade-in-up" style="animation-delay: ${index * 0.1}s; animation-fill-mode: forwards;">
+                  <div class="w-12 h-12 rounded-xl ${a.color} flex items-center justify-center flex-shrink-0">
+                    <i class="fa-solid ${a.icon}"></i>
                   </div>
                   <div class="flex-grow min-w-0">
-                    <p class="text-sm font-medium text-gray-800 truncate">${escapeHtml(a.text)}</p>
-                    <p class="text-xs text-gray-500">${escapeHtml(a.type)} • ${escapeHtml(a.date)}</p>
+                    <p class="text-sm font-semibold text-gray-800 truncate">${escapeHtml(a.text)}</p>
+                    <p class="text-xs text-gray-500 flex items-center gap-1">
+                      <i class="fa-solid fa-tag text-[10px]"></i>
+                      ${escapeHtml(a.type)} • ${escapeHtml(a.date)}
+                    </p>
                   </div>
+                  <div class="w-2 h-2 rounded-full bg-gray-300"></div>
                 </li>
               `; 
             }).join('')
-          : '<li class="text-gray-500 py-4 text-center">No recent activity. Add events or subjects.</li>';
+          : '<li class="text-gray-500 py-8 text-center flex flex-col items-center gap-3"><i class="fa-solid fa-inbox text-4xl text-gray-300"></i><span>No recent activity. Add events or subjects.</span></li>';
       }
 
       renderAnalyticsChart(events, dailySubjects, announcements);
     } catch (err) { 
       console.error(err); 
-      if (recentActivityList) recentActivityList.innerHTML = '<li class="text-gray-500 py-4 text-center">Could not load activity.</li>'; 
+      if (recentActivityList) recentActivityList.innerHTML = '<li class="text-gray-500 py-8 text-center"><i class="fa-solid fa-triangle-exclamation text-4xl text-rose-300 mb-3"></i><p>Could not load activity.</p></li>'; 
     }
   }
 
@@ -265,19 +371,19 @@
           {
             label: 'Events',
             data: eventsPerMonth,
-            backgroundColor: 'rgba(30, 144, 255, 0.8)',
-            borderColor: '#1E90FF',
-            borderWidth: 1,
-            borderRadius: 6,
+            backgroundColor: 'rgba(124, 58, 237, 0.8)',
+            borderColor: '#7c3aed',
+            borderWidth: 2,
+            borderRadius: 8,
             borderSkipped: false
           },
           {
             label: 'Announcements',
             data: announcementsPerMonth,
-            backgroundColor: 'rgba(34, 139, 34, 0.7)',
-            borderColor: '#228B22',
-            borderWidth: 1,
-            borderRadius: 6,
+            backgroundColor: 'rgba(16, 185, 129, 0.7)',
+            borderColor: '#10b981',
+            borderWidth: 2,
+            borderRadius: 8,
             borderSkipped: false
           }
         ]
@@ -285,28 +391,37 @@
       options: {
         responsive: true,
         maintainAspectRatio: true,
+        animation: {
+          duration: 1500,
+          easing: 'easeOutQuart'
+        },
         plugins: {
           legend: {
             display: true,
             position: 'bottom',
-            labels: { usePointStyle: true, padding: 20 }
+            labels: { 
+              usePointStyle: true, 
+              padding: 20,
+              font: { family: 'Plus Jakarta Sans', size: 12 }
+            }
           }
         },
         scales: {
           y: {
             beginAtZero: true,
-            ticks: { stepSize: 1 },
+            ticks: { stepSize: 1, font: { family: 'Plus Jakarta Sans' } },
             grid: { color: 'rgba(0,0,0,0.05)' }
           },
           x: {
-            grid: { display: false }
+            grid: { display: false },
+            ticks: { font: { family: 'Plus Jakarta Sans' } }
           }
         }
       }
     });
   }
 
-  // Events CRUD
+  // Events CRUD with enhanced UI
   let eventsList = [];
   const eventsTableBody = document.getElementById('eventsTableBody');
   const eventsTableWrap = document.getElementById('eventsTableWrap');
@@ -324,7 +439,7 @@
       eventsList = Array.isArray(res.data) ? res.data : [];
       renderEvents(eventsList);
     } catch (err) {
-      if (eventsTableBody) eventsTableBody.innerHTML = '<tr><td colspan="6" class="px-6 py-8 text-center text-gray-500">Failed to load.</td></tr>';
+      if (eventsTableBody) eventsTableBody.innerHTML = '<tr><td colspan="5" class="px-6 py-12 text-center"><i class="fa-solid fa-triangle-exclamation text-4xl text-rose-300 mb-3"></i><p class="text-gray-500">Failed to load events.</p></td></tr>';
       toast('Failed to load events', 'error');
     }
     setEventsLoading(false);
@@ -336,25 +451,56 @@
     
     if (!eventsTableBody) return;
     
-    eventsTableBody.innerHTML = filtered.length ? filtered.map(function(e) {
+    eventsTableBody.innerHTML = filtered.length ? filtered.map(function(e, index) {
+      const today = new Date().toISOString().split('T')[0];
+      const isPast = e.date < today;
+      const statusBadge = isPast 
+        ? '<span class="px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-600">Past</span>'
+        : '<span class="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-600">Upcoming</span>';
+      
       return `
-        <tr class="hover:bg-gray-50 transition-colors">
-          <td class="px-6 py-4 text-sm text-gray-800 font-medium">${escapeHtml(e.title)}</td>
-          <td class="px-6 py-4 text-sm text-gray-600">${escapeHtml(e.date)}</td>
-          <td class="px-6 py-4 text-sm text-gray-600">${escapeHtml(e.time)}</td>
-          <td class="px-6 py-4 text-sm text-gray-600">${escapeHtml(e.location || '')}</td>
-          <td class="px-6 py-4 text-sm text-gray-600">${e.items && e.items.length ? e.items.map(escapeHtml).join(', ') : '—'}</td>
-          <td class="px-6 py-4 text-sm">
-            <button class="btn-action bg-orange-500 hover:bg-orange-600 text-white shadow-orange-500/30 mr-2" onclick="editEvent('${escapeHtml(e._id)}')">
-              <i class="bi bi-pencil"></i>Edit
-            </button>
-            <button class="btn-action bg-red-500 hover:bg-red-600 text-white shadow-red-500/30" onclick="deleteEvent('${escapeHtml(e._id)}')">
-              <i class="bi bi-trash"></i>Delete
-            </button>
+        <tr class="hover:bg-gray-50/80 transition-colors border-b border-gray-50 last:border-0 opacity-0 animate-fade-in" style="animation-delay: ${index * 0.05}s; animation-fill-mode: forwards;">
+          <td class="px-6 py-4">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-gradient-to-r from-primary-500 to-secondary-500 flex items-center justify-center flex-shrink-0">
+                <i class="fa-solid fa-calendar text-white text-sm"></i>
+              </div>
+              <div>
+                <p class="text-sm font-semibold text-gray-800">${escapeHtml(e.title)}</p>
+                <p class="text-xs text-gray-500">${e.category || 'General'}</p>
+              </div>
+            </div>
+          </td>
+          <td class="px-6 py-4">
+            <div class="text-sm text-gray-800 font-medium">${escapeHtml(e.date)}</div>
+            <div class="text-xs text-gray-500">${escapeHtml(e.time)}</div>
+          </td>
+          <td class="px-6 py-4">
+            <div class="flex items-center gap-2 text-sm text-gray-600">
+              <i class="fa-solid fa-location-dot text-rose-400"></i>
+              <span>${escapeHtml(e.location || '—')}</span>
+            </div>
+          </td>
+          <td class="px-6 py-4">
+            ${e.items && e.items.length 
+              ? `<div class="flex flex-wrap gap-1">${e.items.slice(0, 3).map(item => `<span class="px-2 py-1 rounded-lg bg-gray-100 text-gray-600 text-xs">${escapeHtml(item)}</span>`).join('')}${e.items.length > 3 ? `<span class="px-2 py-1 rounded-lg bg-gray-100 text-gray-500 text-xs">+${e.items.length - 3}</span>` : ''}</div>`
+              : '<span class="text-gray-400 text-sm">—</span>'
+            }
+          </td>
+          <td class="px-6 py-4">
+            <div class="flex items-center gap-2">
+              ${statusBadge}
+              <button class="w-9 h-9 rounded-xl bg-amber-100 text-amber-600 hover:bg-amber-200 flex items-center justify-center transition-colors" onclick="editEvent('${escapeHtml(e._id)}')" title="Edit">
+                <i class="fa-solid fa-pen text-sm"></i>
+              </button>
+              <button class="w-9 h-9 rounded-xl bg-rose-100 text-rose-600 hover:bg-rose-200 flex items-center justify-center transition-colors" onclick="deleteEvent('${escapeHtml(e._id)}')" title="Delete">
+                <i class="fa-solid fa-trash text-sm"></i>
+              </button>
+            </div>
           </td>
         </tr>
       `;
-    }).join('') : '<tr><td colspan="6" class="px-6 py-8 text-center text-gray-500">No events.</td></tr>';
+    }).join('') : '<tr><td colspan="5" class="px-6 py-12 text-center"><i class="fa-solid fa-inbox text-4xl text-gray-300 mb-3"></i><p class="text-gray-500">No events found.</p></td></tr>';
   }
 
   if (document.getElementById('eventsSearch')) {
@@ -405,8 +551,13 @@
         items: (document.getElementById('eventItems').value || '').split('\n').map(function(s) { return s.trim(); }).filter(Boolean)
       };
       
+      if (!body.title || !body.date || !body.time) {
+        toast('Please fill in all required fields', 'error');
+        return;
+      }
+      
       eventSaveBtn.disabled = true;
-      eventSaveBtn.innerHTML = '<div class="spinner spinner-sm border-white border-t-transparent mr-2"></div>Saving...';
+      eventSaveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Saving...';
       
       try {
         const res = await apiFetch('/api/events' + (id ? '/' + id : ''), { 
@@ -431,7 +582,7 @@
   }
 
   window.deleteEvent = async function(id) {
-    const ok = await confirmDelete('Delete this event?');
+    const ok = await confirmDelete('Are you sure you want to delete this event?');
     if (!ok) return;
     
     try {
@@ -479,7 +630,7 @@
       
       renderDailySubjects();
     } catch (err) {
-      if (subjectsTableBody) subjectsTableBody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">Failed to load.</td></tr>';
+      if (subjectsTableBody) subjectsTableBody.innerHTML = '<tr><td colspan="5" class="px-6 py-12 text-center"><i class="fa-solid fa-triangle-exclamation text-4xl text-rose-300 mb-3"></i><p class="text-gray-500">Failed to load.</p></td></tr>';
       toast('Failed to load subjects', 'error');
     }
     setSubjectsLoading(false);
@@ -488,34 +639,50 @@
   function renderDailySubjects() {
     if (!subjectsTableBody) return;
     
-    subjectsTableBody.innerHTML = dailySubjectsFlat.length ? dailySubjectsFlat.map(function(s, idx) {
+    subjectsTableBody.innerHTML = dailySubjectsFlat.length ? dailySubjectsFlat.map(function(s, index) {
       const typeColors = {
-        'Theory': 'bg-blue-100 text-blue-700',
-        'Lab': 'bg-green-100 text-green-700',
-        'Seminar': 'bg-yellow-100 text-yellow-700'
+        'Theory': 'bg-blue-100 text-blue-700 border-blue-200',
+        'Lab': 'bg-emerald-100 text-emerald-700 border-emerald-200',
+        'Seminar': 'bg-amber-100 text-amber-700 border-amber-200'
       };
       const badgeClass = typeColors[s.type] || typeColors['Theory'];
       const items = Array.isArray(s.itemsNeeded) ? s.itemsNeeded : [];
       
       return `
-        <tr class="hover:bg-gray-50 transition-colors">
-          <td class="px-6 py-4 text-sm text-gray-800 font-medium">${escapeHtml(s.dayOfWeek)}</td>
-          <td class="px-6 py-4 text-sm text-gray-800">${escapeHtml(s.name)}</td>
+        <tr class="hover:bg-gray-50/80 transition-colors border-b border-gray-50 last:border-0 opacity-0 animate-fade-in" style="animation-delay: ${index * 0.05}s; animation-fill-mode: forwards;">
           <td class="px-6 py-4">
-            <span class="px-3 py-1 rounded-full text-xs font-semibold ${badgeClass}">${escapeHtml(s.type)}</span>
+            <div class="flex items-center gap-2">
+              <div class="w-10 h-10 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 flex items-center justify-center">
+                <i class="fa-solid fa-calendar-day text-white text-sm"></i>
+              </div>
+              <span class="text-sm font-semibold text-gray-800">${escapeHtml(s.dayOfWeek)}</span>
+            </div>
           </td>
-          <td class="px-6 py-4 text-sm text-gray-600">${items.length ? items.map(escapeHtml).join(', ') : '—'}</td>
-          <td class="px-6 py-4 text-sm">
-            <button class="btn-action bg-orange-500 hover:bg-orange-600 text-white shadow-orange-500/30 mr-2" onclick="editSubject(${idx})">
-              <i class="bi bi-pencil"></i>Edit
-            </button>
-            <button class="btn-action bg-red-500 hover:bg-red-600 text-white shadow-red-500/30" onclick="deleteSubject('${s.docId}', ${s.subjectIndex})">
-              <i class="bi bi-trash"></i>Delete
-            </button>
+          <td class="px-6 py-4">
+            <p class="text-sm font-semibold text-gray-800">${escapeHtml(s.name)}</p>
+          </td>
+          <td class="px-6 py-4">
+            <span class="px-3 py-1.5 rounded-lg text-xs font-semibold border ${badgeClass}">${escapeHtml(s.type)}</span>
+          </td>
+          <td class="px-6 py-4">
+            ${items.length 
+              ? `<div class="flex flex-wrap gap-1">${items.map(item => `<span class="px-2 py-1 rounded-lg bg-gray-100 text-gray-600 text-xs">${escapeHtml(item)}</span>`).join('')}</div>`
+              : '<span class="text-gray-400 text-sm">—</span>'
+            }
+          </td>
+          <td class="px-6 py-4">
+            <div class="flex items-center gap-2">
+              <button class="w-9 h-9 rounded-xl bg-amber-100 text-amber-600 hover:bg-amber-200 flex items-center justify-center transition-colors" onclick="editSubject(${index})" title="Edit">
+                <i class="fa-solid fa-pen text-sm"></i>
+              </button>
+              <button class="w-9 h-9 rounded-xl bg-rose-100 text-rose-600 hover:bg-rose-200 flex items-center justify-center transition-colors" onclick="deleteSubject('${s.docId}', ${s.subjectIndex})" title="Delete">
+                <i class="fa-solid fa-trash text-sm"></i>
+              </button>
+            </div>
           </td>
         </tr>
       `;
-    }).join('') : '<tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">No subjects.</td></tr>';
+    }).join('') : '<tr><td colspan="5" class="px-6 py-12 text-center"><i class="fa-solid fa-inbox text-4xl text-gray-300 mb-3"></i><p class="text-gray-500">No subjects scheduled.</p></td></tr>';
   }
 
   const subjectNameSelect = document.getElementById('subjectNameSelect');
@@ -592,7 +759,7 @@
       }
       
       subjectSaveBtn.disabled = true;
-      subjectSaveBtn.innerHTML = '<div class="spinner spinner-sm border-white border-t-transparent mr-2"></div>Saving...';
+      subjectSaveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Saving...';
       
       try {
         if (!docId) {
@@ -624,7 +791,7 @@
         }
         
         closeModal('subjectModal');
-        toast('Saved successfully!');
+        toast('Subject saved successfully!');
         loadDailySubjects();
         loadDashboard();
       } catch (err) {
@@ -637,7 +804,7 @@
   }
 
   window.deleteSubject = async function(docId, subjectIndex) {
-    const ok = await confirmDelete('Delete this subject?');
+    const ok = await confirmDelete('Are you sure you want to delete this subject?');
     if (!ok) return;
     
     try {
@@ -672,33 +839,46 @@
       announcementsList = Array.isArray(res.data) ? res.data : [];
       
       if (announcementsTableBody) {
-        announcementsTableBody.innerHTML = announcementsList.length ? announcementsList.map(function(a) {
+        announcementsTableBody.innerHTML = announcementsList.length ? announcementsList.map(function(a, index) {
           const msg = (a.message || '').substring(0, 60) + ((a.message || '').length > 60 ? '…' : '');
           const active = a.active !== false;
           const dt = a.date + (a.time ? ' ' + a.time : '');
           
           return `
-            <tr class="hover:bg-gray-50 transition-colors">
-              <td class="px-6 py-4 text-sm text-gray-800 font-medium">${escapeHtml(a.title)}</td>
-              <td class="px-6 py-4 text-sm text-gray-600">${escapeHtml(msg)}</td>
-              <td class="px-6 py-4 text-sm text-gray-600">${escapeHtml(dt)}</td>
+            <tr class="hover:bg-gray-50/80 transition-colors border-b border-gray-50 last:border-0 opacity-0 animate-fade-in" style="animation-delay: ${index * 0.05}s; animation-fill-mode: forwards;">
               <td class="px-6 py-4">
-                <span class="px-3 py-1 rounded-full text-xs font-semibold ${active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}">${active ? 'Active' : 'Inactive'}</span>
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 flex items-center justify-center">
+                    <i class="fa-solid fa-bullhorn text-white text-sm"></i>
+                  </div>
+                  <p class="text-sm font-semibold text-gray-800">${escapeHtml(a.title)}</p>
+                </div>
               </td>
-              <td class="px-6 py-4 text-sm">
-                <button class="btn-action bg-orange-500 hover:bg-orange-600 text-white shadow-orange-500/30 mr-2" onclick="editAnnouncement('${escapeHtml(a._id)}')">
-                  <i class="bi bi-pencil"></i>Edit
-                </button>
-                <button class="btn-action bg-red-500 hover:bg-red-600 text-white shadow-red-500/30" onclick="deleteAnnouncement('${escapeHtml(a._id)}')">
-                  <i class="bi bi-trash"></i>Delete
-                </button>
+              <td class="px-6 py-4">
+                <p class="text-sm text-gray-600 line-clamp-2">${escapeHtml(msg)}</p>
+              </td>
+              <td class="px-6 py-4">
+                <p class="text-sm text-gray-600">${escapeHtml(dt)}</p>
+              </td>
+              <td class="px-6 py-4">
+                <span class="px-3 py-1.5 rounded-lg text-xs font-semibold ${active ? 'bg-emerald-100 text-emerald-700 border border-emerald-200' : 'bg-gray-100 text-gray-600 border border-gray-200'}">${active ? 'Active' : 'Inactive'}</span>
+              </td>
+              <td class="px-6 py-4">
+                <div class="flex items-center gap-2">
+                  <button class="w-9 h-9 rounded-xl bg-amber-100 text-amber-600 hover:bg-amber-200 flex items-center justify-center transition-colors" onclick="editAnnouncement('${escapeHtml(a._id)}')" title="Edit">
+                    <i class="fa-solid fa-pen text-sm"></i>
+                  </button>
+                  <button class="w-9 h-9 rounded-xl bg-rose-100 text-rose-600 hover:bg-rose-200 flex items-center justify-center transition-colors" onclick="deleteAnnouncement('${escapeHtml(a._id)}')" title="Delete">
+                    <i class="fa-solid fa-trash text-sm"></i>
+                  </button>
+                </div>
               </td>
             </tr>
           `;
-        }).join('') : '<tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">No announcements.</td></tr>';
+        }).join('') : '<tr><td colspan="5" class="px-6 py-12 text-center"><i class="fa-solid fa-inbox text-4xl text-gray-300 mb-3"></i><p class="text-gray-500">No announcements yet.</p></td></tr>';
       }
     } catch (err) {
-      if (announcementsTableBody) announcementsTableBody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">Failed to load.</td></tr>';
+      if (announcementsTableBody) announcementsTableBody.innerHTML = '<tr><td colspan="5" class="px-6 py-12 text-center"><i class="fa-solid fa-triangle-exclamation text-4xl text-rose-300 mb-3"></i><p class="text-gray-500">Failed to load.</p></td></tr>';
       toast('Failed to load announcements', 'error');
     }
     setAnnouncementsLoading(false);
@@ -746,8 +926,13 @@
         active: document.getElementById('announcementActive').checked
       };
       
+      if (!body.title || !body.message || !body.date) {
+        toast('Please fill in all required fields', 'error');
+        return;
+      }
+      
       announcementSaveBtn.disabled = true;
-      announcementSaveBtn.innerHTML = '<div class="spinner spinner-sm border-white border-t-transparent mr-2"></div>Saving...';
+      announcementSaveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Saving...';
       
       try {
         const res = await apiFetch('/api/announcements' + (id ? '/' + id : ''), { 
@@ -772,7 +957,7 @@
   }
 
   window.deleteAnnouncement = async function(id) {
-    const ok = await confirmDelete('Delete this announcement?');
+    const ok = await confirmDelete('Are you sure you want to delete this announcement?');
     if (!ok) return;
     
     try {
