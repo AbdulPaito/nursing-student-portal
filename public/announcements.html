@@ -4,121 +4,367 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Announcements - Nursing Student Portal</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              DEFAULT: '#1E90FF',
+              dark: '#1873CC',
+              light: '#4da3ff',
+              50: '#E3F2FD',
+              100: '#BBDEFB',
+              500: '#1E90FF',
+              600: '#1873CC',
+              700: '#1565C0',
+            },
+          },
+          fontFamily: {
+            heading: ['Montserrat', 'sans-serif'],
+            body: ['Open Sans', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-  <link href="css/style.css" rel="stylesheet">
+  <link href="css/animations.css" rel="stylesheet">
+  <style>
+    body { font-family: 'Open Sans', sans-serif; }
+    h1, h2, h3, h4, h5, h6 { font-family: 'Montserrat', sans-serif; }
+    .announcement-card {
+      transition: all 0.3s ease;
+    }
+    .announcement-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+    }
+    .announcement-message {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .announcement-card.expanded .announcement-message {
+      -webkit-line-clamp: unset;
+      line-clamp: unset;
+    }
+  </style>
 </head>
-<body>
-  <nav class="navbar navbar-expand-lg navbar-portal sticky-top">
-    <div class="container">
-      <a class="navbar-brand school-brand d-flex align-items-center" href="/">
-        <img src="images/msu-logo.png" alt="MSU Logo" class="school-logo me-2" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-        <span class="school-logo-fallback d-none"><i class="bi bi-building me-2 text-primary"></i></span>
-        <div>
-          <span class="school-name d-block">MARINDUQUE STATE UNIVERSITY</span>
-          <span class="school-college d-block">College of Allied Health Sciences</span>
+<body class="bg-gradient-to-b from-white via-gray-50 to-gray-100 min-h-screen flex flex-col">
+  <!-- Navbar -->
+  <nav class="bg-white shadow-md sticky top-0 z-50" id="navbar">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <a href="/" class="flex items-center space-x-3 group">
+          <div class="relative">
+            <img src="images/msu-logo.png" alt="MSU Logo" class="h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
+            <div class="hidden h-12 w-12 bg-gradient-to-br from-primary to-primary-dark rounded-full flex items-center justify-center">
+              <i class="bi bi-building text-white text-xl"></i>
+            </div>
+          </div>
+          <div class="hidden sm:block">
+            <span class="block text-sm font-bold text-primary-dark tracking-wide uppercase">Marinduque State University</span>
+            <span class="block text-xs text-gray-500">College of Allied Health Sciences</span>
+          </div>
+        </a>
+
+        <div class="hidden md:flex items-center space-x-1">
+          <a href="/" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-primary hover:bg-gray-50 transition-all duration-300">
+            <i class="bi bi-house-door-fill mr-1"></i>Home
+          </a>
+          <a href="/events" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-primary hover:bg-gray-50 transition-all duration-300">
+            <i class="bi bi-calendar-event mr-1"></i>Events
+          </a>
+          <a href="/daily-subjects.html" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-primary hover:bg-gray-50 transition-all duration-300">
+            <i class="bi bi-journal-bookmark mr-1"></i>Daily Subjects
+          </a>
+          <a href="/announcements.html" class="px-3 py-2 rounded-lg text-sm font-medium text-white bg-primary shadow-lg shadow-primary/30">
+            <i class="bi bi-megaphone mr-1"></i>Announcements
+          </a>
+          <a href="/#about" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-primary hover:bg-gray-50 transition-all duration-300">
+            <i class="bi bi-info-circle mr-1"></i>About
+          </a>
         </div>
-      </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain" aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-      <div class="collapse navbar-collapse" id="navMain">
-        <ul class="navbar-nav ms-auto gap-1">
-          <li class="nav-item"><a class="nav-link" href="/"><i class="bi bi-house-door-fill me-1"></i>Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="/events"><i class="bi bi-calendar-event me-1"></i>Events</a></li>
-          <li class="nav-item"><a class="nav-link" href="/daily-subjects.html"><i class="bi bi-journal-bookmark me-1"></i>Daily Subjects</a></li>
-          <li class="nav-item"><a class="nav-link active" href="/announcements.html"><i class="bi bi-megaphone me-1"></i>Announcements</a></li>
-          <li class="nav-item"><a class="nav-link" href="/#about"><i class="bi bi-info-circle me-1"></i>About / Contact</a></li>
-        </ul>
+
+        <button type="button" class="md:hidden p-2 rounded-lg text-gray-600 hover:text-primary hover:bg-gray-100 transition-all duration-300" id="mobileMenuBtn">
+          <i class="bi bi-list text-2xl"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="md:hidden hidden bg-white border-t" id="mobileMenu">
+      <div class="px-4 py-3 space-y-1">
+        <a href="/" class="block px-4 py-3 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors">
+          <i class="bi bi-house-door-fill mr-2"></i>Home
+        </a>
+        <a href="/events" class="block px-4 py-3 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors">
+          <i class="bi bi-calendar-event mr-2"></i>Events
+        </a>
+        <a href="/daily-subjects.html" class="block px-4 py-3 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors">
+          <i class="bi bi-journal-bookmark mr-2"></i>Daily Subjects
+        </a>
+        <a href="/announcements.html" class="block px-4 py-3 rounded-lg text-sm font-medium text-white bg-primary">
+          <i class="bi bi-megaphone mr-2"></i>Announcements
+        </a>
+        <a href="/#about" class="block px-4 py-3 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors">
+          <i class="bi bi-info-circle mr-2"></i>About
+        </a>
       </div>
     </div>
   </nav>
 
-  <section class="page-hero page-hero-announcements page-hero-gradient">
-    <div class="container">
-      <div class="row align-items-center gy-3">
-        <div class="col-lg-8">
-          <h1 class="page-hero-title">
-            <i class="bi bi-bell-fill text-warning"></i>
-            <span>Announcements</span>
-          </h1>
-          <p class="page-hero-subtitle">Official updates and important notices from the college.</p>
+  <!-- Hero Section -->
+  <section class="relative bg-gradient-to-br from-yellow-500 via-yellow-400 to-orange-400 text-white py-12 md:py-16">
+    <div class="absolute inset-0 bg-gradient-to-t from-yellow-600/20 to-transparent"></div>
+    <div class="container mx-auto px-4 relative z-10">
+      <div class="flex items-center gap-3 mb-2">
+        <div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center animate-pulse">
+          <i class="bi bi-bell-fill text-2xl"></i>
         </div>
+        <h1 class="text-3xl md:text-4xl font-bold">Announcements</h1>
       </div>
+      <p class="text-lg opacity-90">Official updates and important notices from the college.</p>
     </div>
   </section>
 
-  <main class="container py-4">
-    <div id="announcementsList" class="row g-4">
-      <p class="text-muted">Loading...</p>
+  <!-- Main Content -->
+  <main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Filters -->
+    <div class="mb-6 flex flex-wrap gap-4 items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="text-sm text-gray-500">Filter by:</span>
+        <div class="flex gap-2">
+          <button class="px-4 py-2 rounded-full text-sm font-medium bg-primary text-white shadow-md transition-all hover:shadow-lg" id="filterAll">All</button>
+          <button class="px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition-all" id="filterNew">New</button>
+          <button class="px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition-all" id="filterImportant">Important</button>
+        </div>
+      </div>
+      <div class="relative">
+        <i class="bi bi-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+        <input type="text" id="searchAnnouncements" placeholder="Search announcements..." class="pl-10 pr-4 py-2 border border-gray-200 rounded-full text-sm focus:ring-2 focus:ring-primary focus:border-transparent transition-all w-64">
+      </div>
+    </div>
+
+    <!-- Announcements Grid -->
+    <div class="grid grid-cols-1 gap-6" id="announcementsGrid">
+      <div class="flex justify-center py-12">
+        <div class="spinner"></div>
+      </div>
+    </div>
+
+    <!-- No Results -->
+    <div id="noResults" class="hidden text-center py-12">
+      <i class="bi bi-search text-4xl text-gray-300 mb-3"></i>
+      <p class="text-gray-500">No announcements found matching your search.</p>
     </div>
   </main>
-  <footer class="footer-portal" id="about">
-    <div class="container">
-      <p class="mb-1"><strong>Program Coordinator</strong>: <a href="mailto:coordinator@nursing.edu">coordinator@nursing.edu</a> | <a href="tel:+15551234567">(555) 123-4567</a></p>
-      <p class="mb-0 text-muted small">Nursing Student Program</p>
+
+  <!-- Footer -->
+  <footer class="bg-gradient-to-t from-gray-200 via-gray-100 to-white border-t-2 border-gray-200 py-8 mt-auto" id="about">
+    <div class="container mx-auto px-4 text-center">
+      <p class="mb-2 text-gray-600">
+        <strong>Program Coordinator</strong>: 
+        <a href="mailto:coordinator@nursing.edu" class="text-primary hover:text-primary-dark hover:underline transition-colors">coordinator@nursing.edu</a> | 
+        <a href="tel:+15551234567" class="text-primary hover:text-primary-dark hover:underline transition-colors">(555) 123-4567</a>
+      </p>
+      <p class="text-sm text-gray-500">Nursing Student Program</p>
     </div>
   </footer>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
   <script>
     (function() {
-      function escapeHtml(s) { if (!s) return ''; var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+      // Mobile Menu
+      const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+      const mobileMenu = document.getElementById('mobileMenu');
+      if (mobileMenuBtn && mobileMenu) {
+        mobileMenuBtn.addEventListener('click', function() {
+          mobileMenu.classList.toggle('hidden');
+          const icon = mobileMenuBtn.querySelector('i');
+          if (icon) {
+            icon.classList.toggle('bi-list');
+            icon.classList.toggle('bi-x-lg');
+          }
+        });
+      }
+
+      function escapeHtml(s) {
+        if (!s) return '';
+        const d = document.createElement('div');
+        d.textContent = s;
+        return d.innerHTML;
+      }
+
       function formatDateTime(dateStr, timeStr) {
         if (!dateStr) return '';
         try {
-          var d = new Date(dateStr + (timeStr ? 'T' + timeStr : ''));
-          var datePart = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-          var timePart = timeStr ? d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }) : '';
+          const d = new Date(dateStr + (timeStr ? 'T' + timeStr : ''));
+          const datePart = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+          const timePart = timeStr ? d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }) : '';
           return timePart ? datePart + ' – ' + timePart : datePart;
         } catch (e) { return dateStr + (timeStr ? ' ' + timeStr : ''); }
       }
-      var today = new Date().toISOString().split('T')[0];
-      fetch('/api/announcements').then(function(r) { return r.json(); }).then(function(list) {
-        var el = document.getElementById('announcementsList');
-        if (!list.length) { el.innerHTML = '<p class="text-muted">No announcements.</p>'; return; }
-        el.innerHTML = list.map(function(a) {
-          var dateTime = formatDateTime(a.date, a.time);
-          var isNew = a.date >= today;
-          var isImportant = (a.priority && String(a.priority).toLowerCase() === 'important') || a.important === true || ((a.title || '').toLowerCase().indexOf('urgent') !== -1) || ((a.title || '').toLowerCase().indexOf('important') !== -1);
-          var priority = isImportant ? 'Important' : (isNew ? 'New' : 'General');
-          var priorityClass = isImportant ? 'bg-danger' : (isNew ? 'bg-primary' : 'bg-secondary');
-          var itemClass = isImportant ? 'announcement-important' : (isNew ? 'announcement-new' : 'announcement-general');
-          return '' +
-            '<div class="col-12">' +
-              '<div class="card card-portal h-100 announcement-item ' + itemClass + '">' +
-                '<div class="card-body">' +
-                  '<div class="d-flex align-items-start">' +
-                    '<div class="me-3 mt-1">' +
-                      '<span class="d-inline-flex align-items-center justify-content-center rounded-circle bg-primary-subtle" style="width:2.5rem;height:2.5rem;">' +
-                        '<i class="bi bi-megaphone-fill text-primary fs-4"></i>' +
-                      '</span>' +
-                    '</div>' +
-                    '<div class="flex-grow-1">' +
-                      '<div class="d-flex justify-content-between align-items-start mb-1">' +
-                        '<h5 class="card-title mb-0">' + escapeHtml(a.title) + '</h5>' +
-                        '<span class="badge ' + priorityClass + ' ms-2">' + priority + '</span>' +
-                      '</div>' +
-                      '<p class="text-muted small mb-2">' +
-                        '<i class="bi bi-calendar3 me-1"></i>' + escapeHtml(dateTime || a.date || '') +
-                      '</p>' +
-                      '<p class="mb-0 small announcement-message">' + escapeHtml(a.message) + '</p>' +
-                      '<a href="#" class="small text-primary text-decoration-none mt-2 d-inline-block announcement-toggle">Read more</a>' +
-                    '</div>' +
-                  '</div>' +
-                '</div>' +
-              '</div>' +
-            '</div>';
-        }).join('');
 
-        el.addEventListener('click', function(ev) {
-          var t = ev.target;
-          if (!t || !t.classList || !t.classList.contains('announcement-toggle')) return;
-          ev.preventDefault();
-          var card = t.closest('.announcement-item');
-          if (!card) return;
-          card.classList.toggle('is-expanded');
-          t.textContent = card.classList.contains('is-expanded') ? 'Show less' : 'Read more';
+      let allAnnouncements = [];
+      let currentFilter = 'all';
+      let searchQuery = '';
+
+      function getPriority(a) {
+        const today = new Date().toISOString().split('T')[0];
+        const isNew = a.date >= today;
+        const isImportant = (a.priority && String(a.priority).toLowerCase() === 'important') || 
+                            a.important === true || 
+                            ((a.title || '').toLowerCase().indexOf('urgent') !== -1) || 
+                            ((a.title || '').toLowerCase().indexOf('important') !== -1);
+        
+        if (isImportant) return { type: 'Important', color: 'bg-red-500', border: 'border-red-500', bg: 'bg-red-50' };
+        if (isNew) return { type: 'New', color: 'bg-blue-500', border: 'border-blue-500', bg: 'bg-blue-50' };
+        return { type: 'General', color: 'bg-gray-500', border: 'border-gray-400', bg: 'bg-gray-50' };
+      }
+
+      function renderAnnouncementCard(a) {
+        const priority = getPriority(a);
+        const dateTime = formatDateTime(a.date, a.time);
+        const priorityKey = `${a._id || a.date}-${a.title}`;
+
+        return `
+          <div class="announcement-card bg-white rounded-xl shadow-md border-l-4 ${priority.border} overflow-hidden animate-fade-in" id="announcement-${priorityKey}">
+            <div class="p-6">
+              <div class="flex items-start gap-4">
+                <div class="flex-shrink-0 w-14 h-14 rounded-full ${priority.bg} flex items-center justify-center">
+                  <i class="bi bi-megaphone-fill ${priority.border.replace('border-', 'text-').replace('400', '500')} text-2xl"></i>
+                </div>
+                <div class="flex-grow">
+                  <div class="flex items-start justify-between gap-3 mb-2">
+                    <h3 class="font-bold text-gray-800 text-lg">${escapeHtml(a.title)}</h3>
+                    <span class="px-3 py-1 ${priority.color} text-white text-xs font-semibold rounded-full whitespace-nowrap">${priority.type}</span>
+                  </div>
+                  
+                  <p class="text-sm text-gray-500 mb-3 flex items-center gap-2">
+                    <i class="bi bi-calendar3 text-primary"></i>
+                    ${escapeHtml(dateTime || a.date || '')}
+                  </p>
+                  
+                  <p class="text-gray-600 announcement-message leading-relaxed">${escapeHtml(a.message)}</p>
+                  
+                  <button class="mt-3 text-sm font-medium text-primary hover:text-primary-dark transition-colors flex items-center gap-1 announcement-toggle" data-id="${priorityKey}">
+                    <span>Read more</span>
+                    <i class="bi bi-chevron-down transition-transform"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      function renderAnnouncements() {
+        const grid = document.getElementById('announcementsGrid');
+        const noResults = document.getElementById('noResults');
+        
+        let filtered = allAnnouncements;
+        
+        if (currentFilter !== 'all') {
+          filtered = filtered.filter(a => {
+            const priority = getPriority(a);
+            return priority.type.toLowerCase() === currentFilter;
+          });
+        }
+        
+        if (searchQuery) {
+          const q = searchQuery.toLowerCase();
+          filtered = filtered.filter(a => (a.title || '').toLowerCase().includes(q) || (a.message || '').toLowerCase().includes(q));
+        }
+        
+        if (filtered.length === 0) {
+          grid.innerHTML = '';
+          noResults.classList.remove('hidden');
+          return;
+        }
+        
+        noResults.classList.add('hidden');
+        grid.innerHTML = filtered.map(renderAnnouncementCard).join('');
+
+        // Add toggle functionality
+        document.querySelectorAll('.announcement-toggle').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const card = document.getElementById(`announcement-${this.dataset.id}`);
+            const isExpanded = card.classList.contains('expanded');
+            const span = this.querySelector('span');
+            const icon = this.querySelector('i');
+            
+            if (isExpanded) {
+              card.classList.remove('expanded');
+              span.textContent = 'Read more';
+              icon.style.transform = 'rotate(0deg)';
+            } else {
+              card.classList.add('expanded');
+              span.textContent = 'Show less';
+              icon.style.transform = 'rotate(180deg)';
+            }
+          });
         });
-      }).catch(function() { document.getElementById('announcementsList').innerHTML = '<p class="text-muted">Could not load announcements.</p>'; });
+      }
+
+      // Filter buttons
+      document.getElementById('filterAll').addEventListener('click', function() {
+        currentFilter = 'all';
+        updateFilterButtons();
+        renderAnnouncements();
+      });
+
+      document.getElementById('filterNew').addEventListener('click', function() {
+        currentFilter = 'new';
+        updateFilterButtons();
+        renderAnnouncements();
+      });
+
+      document.getElementById('filterImportant').addEventListener('click', function() {
+        currentFilter = 'important';
+        updateFilterButtons();
+        renderAnnouncements();
+      });
+
+      function updateFilterButtons() {
+        const buttons = {
+          all: document.getElementById('filterAll'),
+          new: document.getElementById('filterNew'),
+          important: document.getElementById('filterImportant')
+        };
+        
+        Object.keys(buttons).forEach(key => {
+          const btn = buttons[key];
+          if (key === currentFilter) {
+            btn.className = 'px-4 py-2 rounded-full text-sm font-medium bg-primary text-white shadow-md transition-all hover:shadow-lg';
+          } else {
+            btn.className = 'px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition-all';
+          }
+        });
+      }
+
+      // Search
+      document.getElementById('searchAnnouncements').addEventListener('input', function() {
+        searchQuery = this.value;
+        renderAnnouncements();
+      });
+
+      // Load announcements
+      const today = new Date().toISOString().split('T')[0];
+      fetch('/api/announcements').then(function(r) { return r.json(); }).then(function(list) {
+        allAnnouncements = list;
+        renderAnnouncements();
+      }).catch(function() {
+        document.getElementById('announcementsGrid').innerHTML = `
+          <div class="text-center py-12 text-gray-500">
+            <i class="bi bi-exclamation-circle text-4xl mb-3 block"></i>
+            Could not load announcements.
+          </div>
+        `;
+      });
     })();
   </script>
 </body>

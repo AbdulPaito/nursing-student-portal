@@ -4,153 +4,356 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Daily Subjects - Nursing Student Portal</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              DEFAULT: '#1E90FF',
+              dark: '#1873CC',
+              light: '#4da3ff',
+              50: '#E3F2FD',
+              100: '#BBDEFB',
+              500: '#1E90FF',
+              600: '#1873CC',
+              700: '#1565C0',
+            },
+            theory: '#1E90FF',
+            lab: '#228B22',
+            seminar: '#DAA520',
+          },
+          fontFamily: {
+            heading: ['Montserrat', 'sans-serif'],
+            body: ['Open Sans', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-  <link href="css/style.css" rel="stylesheet">
+  <link href="css/animations.css" rel="stylesheet">
+  <style>
+    body { font-family: 'Open Sans', sans-serif; }
+    h1, h2, h3, h4, h5, h6 { font-family: 'Montserrat', sans-serif; }
+    .day-tab.active {
+      background: linear-gradient(135deg, #1E90FF 0%, #1873CC 100%);
+      color: white;
+      box-shadow: 0 4px 15px rgba(30, 144, 255, 0.3);
+    }
+  </style>
 </head>
-<body>
-  <nav class="navbar navbar-expand-lg navbar-portal sticky-top">
-    <div class="container">
-      <a class="navbar-brand school-brand d-flex align-items-center" href="/">
-        <img src="images/msu-logo.png" alt="MSU Logo" class="school-logo me-2" onerror="this.style.display='none'; var n=this.nextElementSibling; if(n) n.classList.remove('d-none');">
-        <span class="school-logo-fallback d-none"><i class="bi bi-building me-2 text-primary"></i></span>
-        <div>
-          <span class="school-name d-block">MARINDUQUE STATE UNIVERSITY</span>
-          <span class="school-college d-block">College of Allied Health Sciences</span>
+<body class="bg-gradient-to-b from-white via-gray-50 to-gray-100 min-h-screen flex flex-col">
+  <!-- Navbar -->
+  <nav class="bg-white shadow-md sticky top-0 z-50" id="navbar">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <a href="/" class="flex items-center space-x-3 group">
+          <div class="relative">
+            <img src="images/msu-logo.png" alt="MSU Logo" class="h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
+            <div class="hidden h-12 w-12 bg-gradient-to-br from-primary to-primary-dark rounded-full flex items-center justify-center">
+              <i class="bi bi-building text-white text-xl"></i>
+            </div>
+          </div>
+          <div class="hidden sm:block">
+            <span class="block text-sm font-bold text-primary-dark tracking-wide uppercase">Marinduque State University</span>
+            <span class="block text-xs text-gray-500">College of Allied Health Sciences</span>
+          </div>
+        </a>
+
+        <div class="hidden md:flex items-center space-x-1">
+          <a href="/" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-primary hover:bg-gray-50 transition-all duration-300">
+            <i class="bi bi-house-door-fill mr-1"></i>Home
+          </a>
+          <a href="/events" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-primary hover:bg-gray-50 transition-all duration-300">
+            <i class="bi bi-calendar-event mr-1"></i>Events
+          </a>
+          <a href="/daily-subjects.html" class="px-3 py-2 rounded-lg text-sm font-medium text-white bg-primary shadow-lg shadow-primary/30">
+            <i class="bi bi-journal-bookmark mr-1"></i>Daily Subjects
+          </a>
+          <a href="/announcements.html" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-primary hover:bg-gray-50 transition-all duration-300">
+            <i class="bi bi-megaphone mr-1"></i>Announcements
+          </a>
+          <a href="/#about" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-primary hover:bg-gray-50 transition-all duration-300">
+            <i class="bi bi-info-circle mr-1"></i>About
+          </a>
         </div>
-      </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain" aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navMain">
-        <ul class="navbar-nav ms-auto gap-1">
-          <li class="nav-item"><a class="nav-link" href="/"><i class="bi bi-house-door-fill me-1"></i>Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="/events"><i class="bi bi-calendar-event me-1"></i>Events</a></li>
-          <li class="nav-item"><a class="nav-link active" href="/daily-subjects.html"><i class="bi bi-journal-bookmark me-1"></i>Daily Subjects</a></li>
-          <li class="nav-item"><a class="nav-link" href="/announcements.html"><i class="bi bi-megaphone me-1"></i>Announcements</a></li>
-          <li class="nav-item"><a class="nav-link" href="/#about"><i class="bi bi-info-circle me-1"></i>About / Contact</a></li>
-        </ul>
+
+        <button type="button" class="md:hidden p-2 rounded-lg text-gray-600 hover:text-primary hover:bg-gray-100 transition-all duration-300" id="mobileMenuBtn">
+          <i class="bi bi-list text-2xl"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="md:hidden hidden bg-white border-t" id="mobileMenu">
+      <div class="px-4 py-3 space-y-1">
+        <a href="/" class="block px-4 py-3 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors">
+          <i class="bi bi-house-door-fill mr-2"></i>Home
+        </a>
+        <a href="/events" class="block px-4 py-3 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors">
+          <i class="bi bi-calendar-event mr-2"></i>Events
+        </a>
+        <a href="/daily-subjects.html" class="block px-4 py-3 rounded-lg text-sm font-medium text-white bg-primary">
+          <i class="bi bi-journal-bookmark mr-2"></i>Daily Subjects
+        </a>
+        <a href="/announcements.html" class="block px-4 py-3 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors">
+          <i class="bi bi-megaphone mr-2"></i>Announcements
+        </a>
+        <a href="/#about" class="block px-4 py-3 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors">
+          <i class="bi bi-info-circle mr-2"></i>About
+        </a>
       </div>
     </div>
   </nav>
 
-  <section class="page-hero page-hero-subjects page-hero-gradient">
-    <div class="container">
-      <div class="row align-items-center gy-3">
-        <div class="col-lg-8">
-          <h1 class="page-hero-title">
-            <i class="bi bi-journal-bookmark-fill text-success"></i>
-            <span>Daily Subjects</span>
-          </h1>
-          <p class="page-hero-subtitle">Today’s scheduled classes and academic activities by day of the week.</p>
+  <!-- Hero Section -->
+  <section class="relative bg-gradient-to-br from-green-600 via-green-500 to-emerald-400 text-white py-12 md:py-16">
+    <div class="absolute inset-0 bg-gradient-to-t from-green-700/20 to-transparent"></div>
+    <div class="container mx-auto px-4 relative z-10">
+      <div class="flex items-center gap-3 mb-2">
+        <div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center animate-pulse">
+          <i class="bi bi-journal-bookmark-fill text-2xl"></i>
         </div>
+        <h1 class="text-3xl md:text-4xl font-bold">Daily Subjects</h1>
       </div>
+      <p class="text-lg opacity-90">Today's scheduled classes and academic activities by day of the week.</p>
     </div>
   </section>
 
-  <main class="container py-4">
-    <div class="legend-box mb-4">
-      <p class="text-muted mb-0">Select a day to view subjects and required items. Color code: <span class="badge badge-theory">Theory</span> <span class="badge badge-lab">Lab</span> <span class="badge badge-seminar">Seminar</span></p>
+  <!-- Main Content -->
+  <main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Legend -->
+    <div class="bg-gray-50 rounded-xl p-4 mb-6 border border-gray-200">
+      <p class="text-sm text-gray-600 flex flex-wrap items-center gap-3">
+        <span>Color code:</span>
+        <span class="inline-flex items-center gap-1 px-3 py-1 bg-blue-500 text-white text-xs font-semibold rounded-full">
+          <i class="bi bi-book"></i> Theory
+        </span>
+        <span class="inline-flex items-center gap-1 px-3 py-1 bg-green-600 text-white text-xs font-semibold rounded-full">
+          <i class="bi bi-droplet"></i> Lab
+        </span>
+        <span class="inline-flex items-center gap-1 px-3 py-1 bg-yellow-600 text-white text-xs font-semibold rounded-full">
+          <i class="bi bi-people"></i> Seminar
+        </span>
+      </p>
     </div>
 
-    <ul class="nav nav-tabs mb-4 flex-wrap" id="dayTabs" role="tablist">
-      <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="Monday-tab" data-bs-toggle="tab" data-bs-target="#Monday" type="button" role="tab">Monday</button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="Tuesday-tab" data-bs-toggle="tab" data-bs-target="#Tuesday" type="button" role="tab">Tuesday</button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="Wednesday-tab" data-bs-toggle="tab" data-bs-target="#Wednesday" type="button" role="tab">Wednesday</button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="Thursday-tab" data-bs-toggle="tab" data-bs-target="#Thursday" type="button" role="tab">Thursday</button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="Friday-tab" data-bs-toggle="tab" data-bs-target="#Friday" type="button" role="tab">Friday</button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="Saturday-tab" data-bs-toggle="tab" data-bs-target="#Saturday" type="button" role="tab">Saturday</button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="Sunday-tab" data-bs-toggle="tab" data-bs-target="#Sunday" type="button" role="tab">Sunday</button>
-      </li>
-    </ul>
+    <!-- Day Tabs -->
+    <div class="mb-6 overflow-x-auto pb-2">
+      <div class="flex gap-2 min-w-max" id="dayTabs">
+        <button class="day-tab px-5 py-3 rounded-xl text-sm font-semibold bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition-all duration-300" data-day="Monday">Monday</button>
+        <button class="day-tab px-5 py-3 rounded-xl text-sm font-semibold bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition-all duration-300" data-day="Tuesday">Tuesday</button>
+        <button class="day-tab px-5 py-3 rounded-xl text-sm font-semibold bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition-all duration-300" data-day="Wednesday">Wednesday</button>
+        <button class="day-tab px-5 py-3 rounded-xl text-sm font-semibold bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition-all duration-300" data-day="Thursday">Thursday</button>
+        <button class="day-tab px-5 py-3 rounded-xl text-sm font-semibold bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition-all duration-300" data-day="Friday">Friday</button>
+        <button class="day-tab px-5 py-3 rounded-xl text-sm font-semibold bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition-all duration-300" data-day="Saturday">Saturday</button>
+        <button class="day-tab px-5 py-3 rounded-xl text-sm font-semibold bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition-all duration-300" data-day="Sunday">Sunday</button>
+      </div>
+    </div>
 
-    <div class="tab-content" id="dayTabContent">
-      <div class="tab-pane fade show active" id="Monday" role="tabpanel"><div class="day-content" data-day="Monday">Loading...</div></div>
-      <div class="tab-pane fade" id="Tuesday" role="tabpanel"><div class="day-content" data-day="Tuesday">Loading...</div></div>
-      <div class="tab-pane fade" id="Wednesday" role="tabpanel"><div class="day-content" data-day="Wednesday">Loading...</div></div>
-      <div class="tab-pane fade" id="Thursday" role="tabpanel"><div class="day-content" data-day="Thursday">Loading...</div></div>
-      <div class="tab-pane fade" id="Friday" role="tabpanel"><div class="day-content" data-day="Friday">Loading...</div></div>
-      <div class="tab-pane fade" id="Saturday" role="tabpanel"><div class="day-content" data-day="Saturday">Loading...</div></div>
-      <div class="tab-pane fade" id="Sunday" role="tabpanel"><div class="day-content" data-day="Sunday">Loading...</div></div>
+    <!-- Subjects Content -->
+    <div id="subjectsContent" class="min-h-[200px]">
+      <div class="flex justify-center py-12">
+        <div class="spinner"></div>
+      </div>
     </div>
   </main>
 
-  <footer class="footer-portal">
-    <div class="container">
-      <p class="mb-1"><strong>Program Coordinator</strong>: coordinator@nursing.edu | (555) 123-4567</p>
-      <p class="mb-0 text-muted small">Nursing Student Program</p>
+  <!-- Footer -->
+  <footer class="bg-gradient-to-t from-gray-200 via-gray-100 to-white border-t-2 border-gray-200 py-8 mt-auto">
+    <div class="container mx-auto px-4 text-center">
+      <p class="mb-1 text-gray-600">
+        <strong>Program Coordinator</strong>: coordinator@nursing.edu | (555) 123-4567
+      </p>
+      <p class="mb-0 text-sm text-gray-500">Nursing Student Program</p>
     </div>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     (function() {
-      const days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
-      let dataByDay = {};
+      // Mobile Menu
+      const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+      const mobileMenu = document.getElementById('mobileMenu');
+      if (mobileMenuBtn && mobileMenu) {
+        mobileMenuBtn.addEventListener('click', function() {
+          mobileMenu.classList.toggle('hidden');
+          const icon = mobileMenuBtn.querySelector('i');
+          if (icon) {
+            icon.classList.toggle('bi-list');
+            icon.classList.toggle('bi-x-lg');
+          }
+        });
+      }
 
-      function escapeHtml(s) { if (!s) return ''; const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
-      function renderDay(day, subjects) {
-        const container = document.querySelector('.day-content[data-day="' + day + '"]');
-        if (!subjects || !subjects.length) {
-          container.innerHTML = '<p class="text-muted">No subjects scheduled for this day.</p>';
-          return;
+      // Escape HTML
+      function escapeHtml(s) {
+        if (!s) return '';
+        const d = document.createElement('div');
+        d.textContent = s;
+        return d.innerHTML;
+      }
+
+      const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+      let dataByDay = {};
+      let currentDay = 'Monday';
+
+      const typeConfig = {
+        theory: { 
+          color: 'theory', 
+          bg: 'bg-blue-50', 
+          border: 'border-blue-500', 
+          badgeBg: 'bg-blue-500',
+          text: 'text-blue-700',
+          icon: 'bi-book'
+        },
+        lab: { 
+          color: 'lab', 
+          bg: 'bg-green-50', 
+          border: 'border-green-500', 
+          badgeBg: 'bg-green-600',
+          text: 'text-green-700',
+          icon: 'bi-droplet'
+        },
+        seminar: { 
+          color: 'seminar', 
+          bg: 'bg-yellow-50', 
+          border: 'border-yellow-500', 
+          badgeBg: 'bg-yellow-600',
+          text: 'text-yellow-700',
+          icon: 'bi-people'
         }
-        container.innerHTML = subjects.map(s => {
-          const type = (s.type || 'Theory').toLowerCase();
-          const badgeClass = type === 'lab' ? 'badge-lab' : type === 'seminar' ? 'badge-seminar' : 'badge-theory';
-          const cardClass = type === 'lab' ? 'card-lab' : type === 'seminar' ? 'card-seminar' : 'card-theory';
-          const badgeIcon = type === 'lab' ? 'bi-microscope' : type === 'seminar' ? 'bi-easel2' : 'bi-book';
-          return `
-            <div class="card card-portal ${cardClass} mb-3">
-              <div class="card-body">
-                <div class="d-flex align-items-start mb-1">
-                  <div class="me-2 mt-1">
-                    <span class="badge ${badgeClass}"><i class="bi ${badgeIcon} me-1" aria-hidden="true"></i>${escapeHtml(s.type || 'Theory')}</span>
-                  </div>
-                  <div class="flex-grow-1">
-                    <strong>${escapeHtml(s.name)}</strong>
-                    <div class="subject-meta small text-muted mt-1">
-                      ${s.time ? `<span class="me-3"><i class="bi bi-clock me-1"></i>${escapeHtml(s.time)}</span>` : ''}
-                      ${s.instructor ? `<span class="me-3"><i class="bi bi-person me-1"></i>${escapeHtml(s.instructor)}</span>` : ''}
-                      ${s.location ? `<span><i class="bi bi-geo-alt me-1"></i>${escapeHtml(s.location)}</span>` : ''}
-                    </div>
-                  </div>
+      };
+
+      function getTypeConfig(type) {
+        return typeConfig[type.toLowerCase()] || typeConfig.theory;
+      }
+
+      function renderSubjectCard(s) {
+        const type = (s.type || 'Theory').toLowerCase();
+        const config = getTypeConfig(type);
+
+        return `
+          <div class="bg-white rounded-xl shadow-md border-l-4 ${config.border} hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden animate-fade-in">
+            <div class="p-5">
+              <div class="flex items-start gap-4">
+                <div class="flex-shrink-0 w-12 h-12 rounded-full ${config.bg} flex items-center justify-center">
+                  <i class="bi ${config.icon} ${config.text} text-xl"></i>
                 </div>
-                <div class="items-highlight mt-2">
-                  <p class="mb-1 small fw-semibold"><i class="bi bi-list-ul me-1 text-primary" aria-hidden="true"></i>Items to bring</p>
-                  ${s.itemsNeeded && s.itemsNeeded.length ? `<ul class="list-items mb-0">${s.itemsNeeded.map(i => '<li>' + escapeHtml(i) + '</li>').join('')}</ul>` : '<p class="mb-0 text-muted small">No items required.</p>'}
+                <div class="flex-grow">
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="px-3 py-1 ${config.badgeBg} text-white text-xs font-semibold rounded-full">${escapeHtml(s.type || 'Theory')}</span>
+                  </div>
+                  <h3 class="font-bold text-gray-800 text-lg mb-2">${escapeHtml(s.name)}</h3>
+                  
+                  <div class="flex flex-wrap gap-4 text-sm text-gray-600 mb-3">
+                    ${s.time ? `
+                      <span class="flex items-center gap-1">
+                        <i class="bi bi-clock text-primary"></i>
+                        ${escapeHtml(s.time)}
+                      </span>
+                    ` : ''}
+                    ${s.instructor ? `
+                      <span class="flex items-center gap-1">
+                        <i class="bi bi-person text-primary"></i>
+                        ${escapeHtml(s.instructor)}
+                      </span>
+                    ` : ''}
+                    ${s.location ? `
+                      <span class="flex items-center gap-1">
+                        <i class="bi bi-geo-alt text-primary"></i>
+                        ${escapeHtml(s.location)}
+                      </span>
+                    ` : ''}
+                  </div>
+                  
+                  ${s.itemsNeeded && s.itemsNeeded.length ? `
+                    <div class="bg-gray-50 rounded-lg p-3">
+                      <p class="text-xs font-semibold text-gray-700 mb-2">Items to bring:</p>
+                      <div class="flex flex-wrap gap-2">
+                        ${s.itemsNeeded.map(i => `
+                          <span class="px-3 py-1 bg-white border border-gray-200 text-gray-600 text-xs rounded-full flex items-center gap-1">
+                            <i class="bi bi-check2-circle text-primary text-xs"></i>
+                            ${escapeHtml(i)}
+                          </span>
+                        `).join('')}
+                      </div>
+                    </div>
+                  ` : `
+                    <p class="text-sm text-gray-400 italic">No items required for this class.</p>
+                  `}
                 </div>
               </div>
             </div>
-          `;
-        }).join('');
+          </div>
+        `;
       }
 
+      function renderDay(day) {
+        const container = document.getElementById('subjectsContent');
+        const subjects = dataByDay[day] || [];
+        
+        if (!subjects.length) {
+          container.innerHTML = `
+            <div class="text-center py-12 bg-gray-50 rounded-xl">
+              <i class="bi bi-calendar-x text-5xl text-gray-300 mb-4"></i>
+              <h3 class="text-lg font-semibold text-gray-600 mb-2">No subjects scheduled</h3>
+              <p class="text-gray-500">There are no classes scheduled for ${day}.</p>
+            </div>
+          `;
+          return;
+        }
+        
+        container.innerHTML = `
+          <div class="space-y-4">
+            ${subjects.map(renderSubjectCard).join('')}
+          </div>
+        `;
+      }
+
+      function setActiveTab(day) {
+        document.querySelectorAll('.day-tab').forEach(tab => {
+          if (tab.dataset.day === day) {
+            tab.classList.add('active');
+          } else {
+            tab.classList.remove('active');
+          }
+        });
+        currentDay = day;
+        renderDay(day);
+      }
+
+      // Tab click handlers
+      document.querySelectorAll('.day-tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+          setActiveTab(this.dataset.day);
+        });
+      });
+
+      // Load today's day initially
+      const today = new Date();
+      const todayDayName = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][today.getDay()];
+
+      // Load data
       fetch('/api/daily-subjects').then(r => r.json()).then(list => {
-        list.forEach(doc => { dataByDay[doc.dayOfWeek] = doc.subjects || []; });
+        list.forEach(doc => { 
+          dataByDay[doc.dayOfWeek] = doc.subjects || []; 
+        });
+        
+        // Fill missing days
         days.forEach(day => {
           if (!dataByDay[day]) dataByDay[day] = [];
-          renderDay(day, dataByDay[day]);
         });
+        
+        setActiveTab(todayDayName);
       }).catch(() => {
-        days.forEach(day => {
-          const c = document.querySelector('.day-content[data-day="' + day + '"]');
-          if (c) c.innerHTML = '<p class="text-muted">Could not load subjects.</p>';
-        });
+        document.getElementById('subjectsContent').innerHTML = `
+          <div class="text-center py-12 text-gray-500">
+            <i class="bi bi-exclamation-circle text-4xl mb-3 block"></i>
+            Could not load subjects. Please try again later.
+          </div>
+        `;
       });
     })();
   </script>

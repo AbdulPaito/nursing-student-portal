@@ -4,189 +4,505 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard - Nursing Portal</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-  <link href="../css/style.css" rel="stylesheet">
-  <link href="admin.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              DEFAULT: '#1E90FF',
+              dark: '#1873CC',
+              light: '#4da3ff',
+            },
+            sidebar: '#1E90FF',
+          },
+          fontFamily: {
+            heading: ['Montserrat', 'sans-serif'],
+            body: ['Inter', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="../css/animations.css" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    h1, h2, h3, h4, h5, h6 { font-family: 'Montserrat', sans-serif; }
+    
+    .sidebar-link {
+      @apply flex items-center gap-3 px-4 py-3 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300;
+    }
+    .sidebar-link.active {
+      @apply bg-primary-dark text-white shadow-lg;
+    }
+    
+    .stat-card {
+      @apply rounded-xl p-6 text-white shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300;
+    }
+    
+    .btn-action {
+      @apply px-4 py-2 rounded-lg font-medium text-sm transition-all duration-300 flex items-center gap-2 hover:-translate-y-0.5 hover:shadow-md;
+    }
+    
+    .modal-enter {
+      animation: modalEnter 0.3s ease-out;
+    }
+    
+    @keyframes modalEnter {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    
+    .count-up {
+      animation: countUp 0.5s ease-out;
+    }
+  </style>
 </head>
-<body class="admin-dashboard">
-  <div class="admin-wrapper">
-    <button type="button" class="admin-sidebar-toggle" id="sidebarToggle" aria-label="Toggle menu"><i class="bi bi-list"></i></button>
-    <div class="admin-sidebar-backdrop" id="sidebarBackdrop"></div>
+<body class="bg-gray-50 min-h-screen">
+  <!-- Mobile Sidebar Toggle -->
+  <button type="button" id="sidebarToggle" class="lg:hidden fixed top-4 left-4 z-50 w-10 h-10 rounded-xl bg-primary text-white shadow-lg flex items-center justify-center hover:bg-primary-dark transition-colors">
+    <i class="bi bi-list text-xl"></i>
+  </button>
 
-    <aside class="admin-sidebar flex-shrink-0" id="sidebar">
-      <div class="sidebar-brand p-3 d-flex align-items-center">
-        <img src="../images/nursing-logo.png" alt="Nursing Logo" class="brand-logo-img me-2" onerror="this.style.display='none';">
-        <span>Nursing Admin</span>
+  <!-- Sidebar Backdrop -->
+  <div id="sidebarBackdrop" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 hidden lg:hidden"></div>
+
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="fixed lg:sticky top-0 left-0 h-screen w-72 bg-gradient-to-b from-primary to-primary-dark z-50 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 shadow-2xl">
+      <div class="p-6 border-b border-white/10">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
+            <img src="../images/nursing-logo.png" alt="Nursing Logo" class="w-10 h-10 rounded-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
+            <div class="hidden">
+              <i class="bi bi-shield-check text-white text-xl"></i>
+            </div>
+          </div>
+          <div>
+            <h2 class="font-bold text-white">Nursing Admin</h2>
+            <p class="text-white/60 text-xs">Management Portal</p>
+          </div>
+        </div>
       </div>
-      <nav class="nav flex-column py-2">
-        <a class="nav-link active" href="#" data-section="dashboard"><i class="bi bi-grid-1x2-fill me-2"></i><span>Dashboard</span></a>
-        <a class="nav-link" href="#" data-section="events"><i class="bi bi-calendar-event me-2"></i><span>Events</span></a>
-        <a class="nav-link" href="#" data-section="daily-subjects"><i class="bi bi-journal-bookmark me-2"></i><span>Daily Subjects</span></a>
-        <a class="nav-link" href="#" data-section="announcements"><i class="bi bi-megaphone me-2"></i><span>Announcements</span></a>
-        <a class="nav-link" href="/" target="_blank"><i class="bi bi-box-arrow-up-right me-2"></i><span>View Student Portal</span></a>
-        <a class="nav-link" href="#" id="logoutLink"><i class="bi bi-box-arrow-right me-2"></i><span>Logout</span></a>
+
+      <nav class="p-4 space-y-1">
+        <a href="#" data-section="dashboard" class="sidebar-link active">
+          <i class="bi bi-grid-1x2-fill text-lg"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="#" data-section="events" class="sidebar-link">
+          <i class="bi bi-calendar-event text-lg"></i>
+          <span>Events</span>
+        </a>
+        <a href="#" data-section="daily-subjects" class="sidebar-link">
+          <i class="bi bi-journal-bookmark text-lg"></i>
+          <span>Daily Subjects</span>
+        </a>
+        <a href="#" data-section="announcements" class="sidebar-link">
+          <i class="bi bi-megaphone text-lg"></i>
+          <span>Announcements</span>
+        </a>
+        <div class="border-t border-white/10 my-4"></div>
+        <a href="/" target="_blank" class="sidebar-link">
+          <i class="bi bi-box-arrow-up-right text-lg"></i>
+          <span>View Student Portal</span>
+        </a>
+        <a href="#" id="logoutLink" class="sidebar-link text-red-200 hover:text-red-100 hover:bg-red-500/20">
+          <i class="bi bi-box-arrow-right text-lg"></i>
+          <span>Logout</span>
+        </a>
       </nav>
+
+      <!-- Close button for mobile -->
+      <button type="button" id="sidebarClose" class="lg:hidden absolute top-4 right-4 text-white/60 hover:text-white">
+        <i class="bi bi-x-lg text-xl"></i>
+      </button>
     </aside>
 
-    <main class="admin-main flex-grow-1">
-      <!-- Dashboard -->
+    <!-- Main Content -->
+    <main class="flex-1 lg:p-8 p-4 pt-20 lg:pt-8">
+      <!-- Dashboard Section -->
       <section id="section-dashboard" class="admin-section">
-        <h1 class="h3 mb-4 fw-bold">Dashboard</h1>
-        <div class="row g-3 mb-4">
-          <div class="col-6 col-md-3">
-            <div class="stat-card events rounded-3 p-3 text-white shadow-sm">
-              <div class="h4 mb-0" id="statEvents">0</div>
-              <small class="opacity-90">Total Events</small>
+        <div class="mb-8">
+          <h1 class="text-3xl font-bold text-gray-800 mb-2">Dashboard</h1>
+          <p class="text-gray-500">Welcome back! Here's an overview of your portal.</p>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div class="stat-card bg-gradient-to-br from-primary to-primary-dark">
+            <div class="flex items-center justify-between mb-2">
+              <i class="bi bi-calendar-event text-3xl opacity-80"></i>
+              <span class="text-sm opacity-70">Total</span>
             </div>
+            <div class="text-3xl font-bold mb-1" id="statEvents">0</div>
+            <div class="text-sm opacity-80">Events</div>
           </div>
-          <div class="col-6 col-md-3">
-            <div class="stat-card subjects rounded-3 p-3 text-white shadow-sm">
-              <div class="h4 mb-0" id="statSubjects">0</div>
-              <small class="opacity-90">Days with Subjects</small>
+
+          <div class="stat-card bg-gradient-to-br from-green-500 to-green-700">
+            <div class="flex items-center justify-between mb-2">
+              <i class="bi bi-journal-bookmark text-3xl opacity-80"></i>
+              <span class="text-sm opacity-70">Active</span>
             </div>
+            <div class="text-3xl font-bold mb-1" id="statSubjects">0</div>
+            <div class="text-sm opacity-80">Days with Subjects</div>
           </div>
-          <div class="col-6 col-md-3">
-            <div class="stat-card items rounded-3 p-3 text-white shadow-sm">
-              <div class="h4 mb-0" id="statAnnouncements">0</div>
-              <small class="opacity-90">Announcements</small>
+
+          <div class="stat-card bg-gradient-to-br from-purple-500 to-purple-700">
+            <div class="flex items-center justify-between mb-2">
+              <i class="bi bi-megaphone text-3xl opacity-80"></i>
+              <span class="text-sm opacity-70">Active</span>
             </div>
+            <div class="text-3xl font-bold mb-1" id="statAnnouncements">0</div>
+            <div class="text-sm opacity-80">Announcements</div>
           </div>
-          <div class="col-6 col-md-3">
-            <div class="stat-card countdown rounded-3 p-3 text-white shadow-sm">
-              <div class="h6 mb-0" id="statNextEventName">—</div>
-              <small class="opacity-90" id="statNextEventDate">Next Event</small>
+
+          <div class="stat-card bg-gradient-to-br from-orange-500 to-red-600">
+            <div class="flex items-center justify-between mb-2">
+              <i class="bi bi-clock-history text-3xl opacity-80"></i>
+              <span class="text-sm opacity-70">Coming Up</span>
             </div>
+            <div class="text-lg font-bold mb-1 truncate" id="statNextEventName">—</div>
+            <div class="text-sm opacity-80" id="statNextEventDate">No upcoming events</div>
           </div>
         </div>
-        <div class="row mb-4">
-          <div class="col-12">
-            <div class="card shadow-sm rounded-3">
-              <div class="card-header">Analytics Chart</div>
-              <div class="card-body"><canvas id="analyticsChart" height="120"></canvas></div>
+
+        <!-- Chart Section -->
+        <div class="bg-white rounded-2xl shadow-md p-6 mb-6">
+          <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <i class="bi bi-graph-up text-primary"></i>
+            Analytics Overview
+          </h3>
+          <canvas id="analyticsChart" height="100"></canvas>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="bg-white rounded-2xl shadow-md p-6">
+          <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <i class="bi bi-activity text-primary"></i>
+            Recent Activity
+          </h3>
+          <ul class="space-y-3" id="recentActivityList">
+            <li class="flex items-center gap-3 text-gray-500 py-2">
+              <div class="spinner spinner-sm"></div>
+              <span>Loading...</span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Events Section -->
+      <section id="section-events" class="admin-section hidden">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <div>
+            <h1 class="text-3xl font-bold text-gray-800 mb-1">Events Management</h1>
+            <p class="text-gray-500">Manage college events and activities</p>
+          </div>
+          <button type="button" class="btn-action bg-green-500 hover:bg-green-600 text-white shadow-green-500/30" onclick="openEventForm()">
+            <i class="bi bi-plus-lg"></i>
+            Add Event
+          </button>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-md overflow-hidden">
+          <div class="p-4 border-b border-gray-100">
+            <div class="relative max-w-md">
+              <i class="bi bi-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+              <input type="text" id="eventsSearch" placeholder="Search by title..." class="w-full pl-11 pr-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none">
             </div>
           </div>
-        </div>
-        <div class="card shadow-sm rounded-3">
-          <div class="card-header">Recent Activity</div>
-          <div class="card-body">
-            <ul class="list-group list-group-flush" id="recentActivityList">
-              <li class="list-group-item text-muted border-0">Loading...</li>
-            </ul>
+
+          <div id="eventsLoading" class="hidden p-8 text-center">
+            <div class="spinner mx-auto mb-3"></div>
+            <p class="text-gray-500">Loading events...</p>
+          </div>
+
+          <div id="eventsTableWrap" class="overflow-x-auto">
+            <table class="w-full">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Title</th>
+                  <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Date</th>
+                  <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Time</th>
+                  <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Location</th>
+                  <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Items</th>
+                  <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="eventsTableBody" class="divide-y divide-gray-100">
+                <tr><td colspan="6" class="px-6 py-8 text-center text-gray-500">Loading...</td></tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </section>
 
-      <!-- Events -->
-      <section id="section-events" class="admin-section d-none">
-        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
-          <h1 class="h3 mb-0 fw-bold">Events Management</h1>
-          <button type="button" class="btn btn-add btn-primary" data-bs-toggle="modal" data-bs-target="#eventModal" onclick="openEventForm()"><i class="bi bi-plus-lg me-1"></i>Add Event</button>
+      <!-- Daily Subjects Section -->
+      <section id="section-daily-subjects" class="admin-section hidden">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <div>
+            <h1 class="text-3xl font-bold text-gray-800 mb-1">Daily Subjects</h1>
+            <p class="text-gray-500">Manage weekly class schedules</p>
+          </div>
+          <button type="button" class="btn-action bg-green-500 hover:bg-green-600 text-white shadow-green-500/30" onclick="openSubjectForm()">
+            <i class="bi bi-plus-lg"></i>
+            Add Subject
+          </button>
         </div>
-        <div class="mb-3"><input type="text" class="form-control" id="eventsSearch" placeholder="Search by title..."></div>
-        <div id="eventsLoading" class="text-center py-4 d-none"><div class="admin-spinner"></div> Loading...</div>
-        <div class="table-responsive" id="eventsTableWrap">
-          <table class="table table-admin table-bordered table-hover mb-0">
-            <thead><tr><th>Title</th><th>Date</th><th>Time</th><th>Location</th><th>Items</th><th>Actions</th></tr></thead>
-            <tbody id="eventsTableBody"></tbody>
-          </table>
+
+        <div class="bg-white rounded-2xl shadow-md overflow-hidden">
+          <div id="subjectsLoading" class="hidden p-8 text-center">
+            <div class="spinner mx-auto mb-3"></div>
+            <p class="text-gray-500">Loading subjects...</p>
+          </div>
+
+          <div id="subjectsTableWrap" class="overflow-x-auto">
+            <table class="w-full">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Day</th>
+                  <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Subject Name</th>
+                  <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Type</th>
+                  <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Items Needed</th>
+                  <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="dailySubjectsTableBody" class="divide-y divide-gray-100">
+                <tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </section>
 
-      <!-- Daily Subjects -->
-      <section id="section-daily-subjects" class="admin-section d-none">
-        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
-          <h1 class="h3 mb-0 fw-bold">Daily Subjects Management</h1>
-          <button type="button" class="btn btn-add btn-primary" data-bs-toggle="modal" data-bs-target="#subjectModal" onclick="openSubjectForm()"><i class="bi bi-plus-lg me-1"></i>Add Subject</button>
+      <!-- Announcements Section -->
+      <section id="section-announcements" class="admin-section hidden">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <div>
+            <h1 class="text-3xl font-bold text-gray-800 mb-1">Announcements</h1>
+            <p class="text-gray-500">Manage student announcements</p>
+          </div>
+          <button type="button" class="btn-action bg-green-500 hover:bg-green-600 text-white shadow-green-500/30" onclick="openAnnouncementForm()">
+            <i class="bi bi-plus-lg"></i>
+            Add Announcement
+          </button>
         </div>
-        <div id="subjectsLoading" class="text-center py-4 d-none"><div class="admin-spinner"></div> Loading...</div>
-        <div class="table-responsive" id="subjectsTableWrap">
-          <table class="table table-admin table-bordered table-hover mb-0">
-            <thead><tr><th>Day</th><th>Subject Name</th><th>Type</th><th>Items Needed</th><th>Actions</th></tr></thead>
-            <tbody id="dailySubjectsTableBody"></tbody>
-          </table>
-        </div>
-      </section>
 
-      <!-- Announcements -->
-      <section id="section-announcements" class="admin-section d-none">
-        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
-          <h1 class="h3 mb-0 fw-bold">Announcements</h1>
-          <button type="button" class="btn btn-add btn-primary" data-bs-toggle="modal" data-bs-target="#announcementModal" onclick="openAnnouncementForm()"><i class="bi bi-plus-lg me-1"></i>Add Announcement</button>
-        </div>
-        <div id="announcementsLoading" class="text-center py-4 d-none"><div class="admin-spinner"></div> Loading...</div>
-        <div class="table-responsive" id="announcementsTableWrap">
-          <table class="table table-admin table-bordered table-hover mb-0">
-            <thead><tr><th>Title</th><th>Message</th><th>Date</th><th>Active</th><th>Actions</th></tr></thead>
-            <tbody id="announcementsTableBody"></tbody>
-          </table>
+        <div class="bg-white rounded-2xl shadow-md overflow-hidden">
+          <div id="announcementsLoading" class="hidden p-8 text-center">
+            <div class="spinner mx-auto mb-3"></div>
+            <p class="text-gray-500">Loading announcements...</p>
+          </div>
+
+          <div id="announcementsTableWrap" class="overflow-x-auto">
+            <table class="w-full">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Title</th>
+                  <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Message</th>
+                  <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Date</th>
+                  <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Active</th>
+                  <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="announcementsTableBody" class="divide-y divide-gray-100">
+                <tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </section>
     </main>
   </div>
 
   <!-- Event Modal -->
-  <div class="modal fade" id="eventModal" tabindex="-1">
-    <div class="modal-dialog"><div class="modal-content rounded-3 shadow">
-      <div class="modal-header"><h5 class="modal-title" id="eventModalTitle">Add Event</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-      <div class="modal-body">
+  <div id="eventModal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity" onclick="closeModal('eventModal')"></div>
+    <div class="flex items-center justify-center min-h-screen p-4">
+      <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 relative modal-enter">
+        <button type="button" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors" onclick="closeModal('eventModal')">
+          <i class="bi bi-x-lg text-xl"></i>
+        </button>
+        <h3 class="text-xl font-bold text-gray-800 mb-6" id="eventModalTitle">Add Event</h3>
         <input type="hidden" id="eventId">
-        <div class="mb-2"><label class="form-label">Title</label><input type="text" class="form-control" id="eventTitle" required></div>
-        <div class="mb-2"><label class="form-label">Description</label><textarea class="form-control" id="eventDescription" rows="2"></textarea></div>
-        <div class="mb-2"><label class="form-label">Category</label><select class="form-select" id="eventCategory"><option value="">-- Select --</option><option value="Orientation">Orientation</option><option value="Training">Training</option><option value="Workshops">Workshops</option><option value="Seminars">Seminars</option><option value="Social Events">Social Events</option></select></div>
-        <div class="row mb-2"><div class="col-6"><label class="form-label">Date</label><input type="date" class="form-control" id="eventDate" required></div><div class="col-6"><label class="form-label">Time</label><input type="time" class="form-control" id="eventTime" required></div></div>
-        <div class="mb-2"><label class="form-label">Location</label><input type="text" class="form-control" id="eventLocation"></div>
-        <div class="mb-2"><label class="form-label">Items (one per line)</label><textarea class="form-control" id="eventItems" rows="3" placeholder="Item 1&#10;Item 2"></textarea></div>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Title *</label>
+            <input type="text" id="eventTitle" required class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Description</label>
+            <textarea id="eventDescription" rows="2" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"></textarea>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Category</label>
+            <select id="eventCategory" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none">
+              <option value="">-- Select --</option>
+              <option value="Orientation">Orientation</option>
+              <option value="Training">Training</option>
+              <option value="Workshops">Workshops</option>
+              <option value="Seminars">Seminars</option>
+              <option value="Social Events">Social Events</option>
+            </select>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Date *</label>
+              <input type="date" id="eventDate" required class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Time *</label>
+              <input type="time" id="eventTime" required class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none">
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Location</label>
+            <input type="text" id="eventLocation" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Items (one per line)</label>
+            <textarea id="eventItems" rows="3" placeholder="Item 1&#10;Item 2" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"></textarea>
+          </div>
+        </div>
+        <div class="flex justify-end gap-3 mt-6">
+          <button type="button" class="px-5 py-2.5 text-gray-600 hover:text-gray-800 font-medium transition-colors" onclick="closeModal('eventModal')">Cancel</button>
+          <button type="button" id="eventSaveBtn" class="px-6 py-2.5 bg-primary hover:bg-primary-dark text-white font-semibold rounded-xl transition-all hover:shadow-lg hover:shadow-primary/30">Save Event</button>
+        </div>
       </div>
-      <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button type="button" class="btn btn-primary" id="eventSaveBtn">Save</button></div>
-    </div></div>
+    </div>
   </div>
 
   <!-- Subject Modal -->
-  <div class="modal fade" id="subjectModal" tabindex="-1">
-    <div class="modal-dialog"><div class="modal-content rounded-3 shadow">
-      <div class="modal-header"><h5 class="modal-title" id="subjectModalTitle">Add Subject</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-      <div class="modal-body">
-        <input type="hidden" id="subjectDocId"><input type="hidden" id="subjectIndex">
-        <div class="mb-2"><label class="form-label">Day of Week</label><select class="form-select" id="subjectDay"><option value="Monday">Monday</option><option value="Tuesday">Tuesday</option><option value="Wednesday">Wednesday</option><option value="Thursday">Thursday</option><option value="Friday">Friday</option><option value="Saturday">Saturday</option><option value="Sunday">Sunday</option></select></div>
-        <div class="mb-2"><label class="form-label">Subject Name</label><select class="form-select" id="subjectNameSelect"><option value="">-- Select --</option><option value="Anatomy & Physiology">Anatomy & Physiology</option><option value="Clinical Skills Lab">Clinical Skills Lab</option><option value="Nursing Fundamentals">Nursing Fundamentals</option><option value="Pharmacology">Pharmacology</option><option value="Patient Care Seminar">Patient Care Seminar</option><option value="Medical-Surgical Nursing">Medical-Surgical Nursing</option><option value="Community Health">Community Health</option><option value="Maternal & Child">Maternal & Child</option><option value="Other">Other</option></select></div>
-        <div class="mb-2 d-none" id="subjectNameOtherWrap"><label class="form-label">Custom Subject Name</label><input type="text" class="form-control" id="subjectNameOther" placeholder="Type subject name"></div>
-        <div class="mb-2"><label class="form-label">Type</label><select class="form-select" id="subjectType"><option value="Theory">Theory</option><option value="Lab">Lab</option><option value="Seminar">Seminar</option></select></div>
-        <div class="mb-2"><label class="form-label">Items Needed (one per line)</label><textarea class="form-control" id="subjectItems" rows="3"></textarea></div>
+  <div id="subjectModal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity" onclick="closeModal('subjectModal')"></div>
+    <div class="flex items-center justify-center min-h-screen p-4">
+      <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 relative modal-enter">
+        <button type="button" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors" onclick="closeModal('subjectModal')">
+          <i class="bi bi-x-lg text-xl"></i>
+        </button>
+        <h3 class="text-xl font-bold text-gray-800 mb-6" id="subjectModalTitle">Add Subject</h3>
+        <input type="hidden" id="subjectDocId">
+        <input type="hidden" id="subjectIndex">
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Day of Week</label>
+            <select id="subjectDay" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none">
+              <option value="Monday">Monday</option>
+              <option value="Tuesday">Tuesday</option>
+              <option value="Wednesday">Wednesday</option>
+              <option value="Thursday">Thursday</option>
+              <option value="Friday">Friday</option>
+              <option value="Saturday">Saturday</option>
+              <option value="Sunday">Sunday</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Subject Name</label>
+            <select id="subjectNameSelect" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none">
+              <option value="">-- Select --</option>
+              <option value="Anatomy & Physiology">Anatomy & Physiology</option>
+              <option value="Clinical Skills Lab">Clinical Skills Lab</option>
+              <option value="Nursing Fundamentals">Nursing Fundamentals</option>
+              <option value="Pharmacology">Pharmacology</option>
+              <option value="Patient Care Seminar">Patient Care Seminar</option>
+              <option value="Medical-Surgical Nursing">Medical-Surgical Nursing</option>
+              <option value="Community Health">Community Health</option>
+              <option value="Maternal & Child">Maternal & Child</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div id="subjectNameOtherWrap" class="hidden">
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Custom Subject Name</label>
+            <input type="text" id="subjectNameOther" placeholder="Type subject name" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Type</label>
+            <select id="subjectType" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none">
+              <option value="Theory">Theory</option>
+              <option value="Lab">Lab</option>
+              <option value="Seminar">Seminar</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Items Needed (one per line)</label>
+            <textarea id="subjectItems" rows="3" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"></textarea>
+          </div>
+        </div>
+        <div class="flex justify-end gap-3 mt-6">
+          <button type="button" class="px-5 py-2.5 text-gray-600 hover:text-gray-800 font-medium transition-colors" onclick="closeModal('subjectModal')">Cancel</button>
+          <button type="button" id="subjectSaveBtn" class="px-6 py-2.5 bg-primary hover:bg-primary-dark text-white font-semibold rounded-xl transition-all hover:shadow-lg hover:shadow-primary/30">Save Subject</button>
+        </div>
       </div>
-      <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button type="button" class="btn btn-primary" id="subjectSaveBtn">Save</button></div>
-    </div></div>
+    </div>
   </div>
 
   <!-- Announcement Modal -->
-  <div class="modal fade" id="announcementModal" tabindex="-1">
-    <div class="modal-dialog"><div class="modal-content rounded-3 shadow">
-      <div class="modal-header"><h5 class="modal-title" id="announcementModalTitle">Add Announcement</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-      <div class="modal-body">
+  <div id="announcementModal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity" onclick="closeModal('announcementModal')"></div>
+    <div class="flex items-center justify-center min-h-screen p-4">
+      <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 relative modal-enter">
+        <button type="button" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors" onclick="closeModal('announcementModal')">
+          <i class="bi bi-x-lg text-xl"></i>
+        </button>
+        <h3 class="text-xl font-bold text-gray-800 mb-6" id="announcementModalTitle">Add Announcement</h3>
         <input type="hidden" id="announcementId">
-        <div class="mb-2"><label class="form-label">Title</label><input type="text" class="form-control" id="announcementTitle" required></div>
-        <div class="mb-2"><label class="form-label">Message</label><textarea class="form-control" id="announcementMessage" rows="3" required></textarea></div>
-        <div class="row mb-2"><div class="col-6"><label class="form-label">Date</label><input type="date" class="form-control" id="announcementDate" required></div><div class="col-6"><label class="form-label">Time</label><input type="time" class="form-control" id="announcementTime" value="09:00"></div></div>
-        <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="announcementActive" checked><label class="form-check-label" for="announcementActive">Active (show in carousel)</label></div>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Title *</label>
+            <input type="text" id="announcementTitle" required class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Message *</label>
+            <textarea id="announcementMessage" rows="3" required class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"></textarea>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Date *</label>
+              <input type="date" id="announcementDate" required class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Time</label>
+              <input type="time" id="announcementTime" value="09:00" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none">
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <input type="checkbox" id="announcementActive" checked class="w-5 h-5 text-primary rounded border-gray-300 focus:ring-primary">
+            <label for="announcementActive" class="text-sm text-gray-700">Active (show in carousel)</label>
+          </div>
+        </div>
+        <div class="flex justify-end gap-3 mt-6">
+          <button type="button" class="px-5 py-2.5 text-gray-600 hover:text-gray-800 font-medium transition-colors" onclick="closeModal('announcementModal')">Cancel</button>
+          <button type="button" id="announcementSaveBtn" class="px-6 py-2.5 bg-primary hover:bg-primary-dark text-white font-semibold rounded-xl transition-all hover:shadow-lg hover:shadow-primary/30">Save Announcement</button>
+        </div>
       </div>
-      <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button type="button" class="btn btn-primary" id="announcementSaveBtn">Save</button></div>
-    </div></div>
+    </div>
   </div>
 
   <!-- Confirm Delete Modal -->
-  <div class="modal fade" id="confirmDeleteModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered"><div class="modal-content rounded-3 shadow">
-      <div class="modal-header border-0"><h5 class="modal-title">Confirm Delete</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-      <div class="modal-body" id="confirmDeleteMessage">Are you sure you want to delete this item?</div>
-      <div class="modal-footer border-0"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button></div>
-    </div></div>
+  <div id="confirmDeleteModal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity" onclick="closeModal('confirmDeleteModal')"></div>
+    <div class="flex items-center justify-center min-h-screen p-4">
+      <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 relative modal-enter text-center">
+        <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-red-100 flex items-center justify-center">
+          <i class="bi bi-exclamation-triangle text-red-500 text-2xl"></i>
+        </div>
+        <h3 class="text-xl font-bold text-gray-800 mb-2">Confirm Delete</h3>
+        <p class="text-gray-600 mb-6" id="confirmDeleteMessage">Are you sure you want to delete this item?</p>
+        <div class="flex justify-center gap-3">
+          <button type="button" class="px-6 py-2.5 text-gray-600 hover:text-gray-800 font-medium transition-colors" onclick="closeModal('confirmDeleteModal')">Cancel</button>
+          <button type="button" id="confirmDeleteBtn" class="px-6 py-2.5 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-xl transition-all hover:shadow-lg hover:shadow-red-500/30">Delete</button>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div class="admin-toast-container" id="toastContainer"></div>
+  <!-- Toast Container -->
+  <div id="toastContainer" class="fixed top-4 right-4 z-[9999] space-y-2"></div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="admin.js"></script>
+  <script src="admin-tailwind.js"></script>
 </body>
 </html>
