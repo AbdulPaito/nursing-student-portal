@@ -64,117 +64,228 @@
   }
 
   /**
-   * Create minimalist music control UI
+   * Create minimalist music control UI integrated into navbar
    */
   function createMusicUI() {
-    const musicHTML = `
-      <!-- Persistent Music Control - Top Right Corner -->
-      <div id="persistentMusicControl" class="fixed top-6 right-6 z-50" style="animation: fadeInDown 0.6s ease-out;">
-        <!-- Music Icon Button -->
-        <button id="musicIconBtn" class="music-icon-btn" title="Background Music" aria-label="Music controls">
-          <i class="fa-solid fa-music text-xl"></i>
-        </button>
-        
-        <!-- Volume Controls Dropdown -->
-        <div id="volumeControlDropdown" class="volume-dropdown">
-          <div class="p-3">
-            <p class="text-xs font-semibold text-gray-700 mb-3 flex items-center gap-2">
-              <i class="fa-solid fa-music text-primary-600"></i>
-              Background Music
-            </p>
-            <div class="flex items-center gap-3">
-              <i class="fa-solid fa-volume-low text-gray-500 text-sm"></i>
-              <input type="range" id="volumeSliderControl" class="volume-slider-control" min="0" max="100" value="50">
-              <button id="muteToggleBtn" class="mute-btn-control">
-                <i class="fa-solid fa-volume-high"></i>
-              </button>
-            </div>
+    // Find navbar to inject music control
+    const navbar = document.querySelector('nav');
+    if (!navbar) {
+      console.warn('Navbar not found, music control not added');
+      return;
+    }
+
+    // Find the navbar container (the div with flex items)
+    const navContainer = navbar.querySelector('.flex.items-center.justify-between');
+    if (!navContainer) {
+      console.warn('Navbar container not found');
+      return;
+    }
+
+    // Create music control HTML (inline in navbar)
+    const musicControl = document.createElement('div');
+    musicControl.id = 'persistentMusicControl';
+    musicControl.className = 'relative flex items-center';
+    musicControl.innerHTML = `
+      <!-- Music Icon Button (Navbar Integrated) -->
+      <button id="musicIconBtn" class="navbar-music-btn" title="Background Music" aria-label="Music controls">
+        <i class="fa-solid fa-music"></i>
+      </button>
+      
+      <!-- Volume Controls Dropdown -->
+      <div id="volumeControlDropdown" class="navbar-music-dropdown">
+        <div class="p-3">
+          <p class="text-xs font-semibold text-gray-700 mb-3 flex items-center gap-2">
+            <i class="fa-solid fa-music text-primary-600"></i>
+            Background Music
+          </p>
+          <div class="flex items-center gap-3">
+            <i class="fa-solid fa-volume-low text-gray-500 text-sm"></i>
+            <input type="range" id="volumeSliderControl" class="volume-slider-control" min="0" max="100" value="50">
+            <button id="muteToggleBtn" class="mute-btn-control">
+              <i class="fa-solid fa-volume-high"></i>
+            </button>
           </div>
         </div>
       </div>
+    `;
+
+    // Insert before mobile menu button (on mobile it appears left of hamburger)
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    if (mobileMenuBtn) {
+      mobileMenuBtn.parentNode.insertBefore(musicControl, mobileMenuBtn);
+    } else {
+      // Fallback: append to nav container
+      navContainer.appendChild(musicControl);
+    }
+
+    // Add styles
+    addStyles();
+    setupEventListeners();
+  }
+
+  /**
+   * Add CSS styles for navbar-integrated music control
+   */
+  function addStyles() {
+    if (document.getElementById('persistent-music-styles')) return;
+    
+    const style = document.createElement('style');
+    style.id = 'persistent-music-styles';
+    style.textContent = `
+      @keyframes slideDown {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
       
-      <style>
-        @keyframes fadeInDown {
-          from { opacity: 0; transform: translateY(-20px); }
-          to { opacity: 1; transform: translateY(0); }
+      @keyframes pulseRing {
+        0%, 100% { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1), 0 0 0 0 rgba(124, 58, 237, 0.4); }
+        50% { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1), 0 0 0 6px rgba(124, 58, 237, 0); }
+      }
+      
+      /* Navbar Music Button */
+      .navbar-music-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        background: white;
+        border: 2px solid #7c3aed;
+        color: #7c3aed;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        margin-right: 12px;
+      }
+      
+      .navbar-music-btn:hover {
+        background: #f9fafb;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+      
+      .navbar-music-btn:active {
+        transform: translateY(0);
+      }
+      
+      .navbar-music-btn.playing {
+        animation: pulseRing 2s ease-in-out infinite;
+      }
+      
+      .navbar-music-btn.muted {
+        border-color: #ef4444;
+        color: #ef4444;
+      }
+      
+      .navbar-music-btn i {
+        font-size: 16px;
+      }
+      
+      /* Desktop: Larger button */
+      @media (min-width: 768px) {
+        .navbar-music-btn {
+          width: 44px;
+          height: 44px;
+          margin-right: 16px;
         }
         
-        @keyframes slideDown {
-          from { opacity: 0; transform: translateY(-10px); }
-          to { opacity: 1; transform: translateY(0); }
+        .navbar-music-btn i {
+          font-size: 18px;
         }
-        
-        @keyframes pulseRing {
-          0%, 100% { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 0 0 0 rgba(124, 58, 237, 0.4); }
-          50% { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 0 0 8px rgba(124, 58, 237, 0); }
-        }
-        
-        .music-icon-btn {
-          width: 56px; height: 56px; border-radius: 16px; background: white;
-          border: 2px solid #7c3aed; color: #7c3aed; cursor: pointer;
-          display: flex; align-items: center; justify-content: center;
-          transition: all 0.3s ease;
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(124, 58, 237, 0.15);
-        }
-        
-        .music-icon-btn:hover {
-          background: #f9fafb; transform: translateY(-2px);
-          box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15), 0 3px 6px rgba(124, 58, 237, 0.25);
-        }
-        
-        .music-icon-btn.playing {
-          background: white;
-          animation: pulseRing 2s ease-in-out infinite;
-        }
-        
-        .music-icon-btn.muted {
-          background: white; border-color: #ef4444; color: #ef4444;
-        }
-        
-        .volume-dropdown {
-          position: absolute; top: 66px; right: 0; background: white;
-          backdrop-filter: blur(20px); border: 2px solid #e5e7eb; border-radius: 16px;
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); min-width: 200px;
-          display: none; animation: slideDown 0.3s ease;
-        }
-        
-        .volume-dropdown.show { display: block; }
-        
-        .volume-slider-control {
-          flex: 1; height: 6px; border-radius: 3px; background: #e5e7eb;
-          outline: none; -webkit-appearance: none; cursor: pointer;
-        }
-        
-        .volume-slider-control::-webkit-slider-thumb {
-          -webkit-appearance: none; appearance: none; width: 18px; height: 18px;
-          border-radius: 50%; background: #7c3aed; cursor: pointer;
-          box-shadow: 0 2px 6px rgba(124, 58, 237, 0.4); transition: transform 0.2s ease;
-        }
-        
-        .volume-slider-control::-webkit-slider-thumb:hover { transform: scale(1.1); }
-        
-        .volume-slider-control::-moz-range-thumb {
-          width: 18px; height: 18px; border-radius: 50%; background: #7c3aed;
-          cursor: pointer; border: none; box-shadow: 0 2px 6px rgba(124, 58, 237, 0.4);
-          transition: transform 0.2s ease;
-        }
-        
-        .volume-slider-control::-moz-range-thumb:hover { transform: scale(1.1); }
-        
-        .mute-btn-control {
-          width: 36px; height: 36px; border-radius: 10px; background: #f3f4f6;
-          border: 1px solid #e5e7eb; color: #6b7280; cursor: pointer;
-          display: flex; align-items: center; justify-content: center;
-          transition: all 0.2s ease; flex-shrink: 0;
-        }
-        
-        .mute-btn-control:hover { background: #e5e7eb; color: #374151; }
-        .mute-btn-control.muted { background: #fee2e2; border-color: #fecaca; color: #ef4444; }
-      </style>
+      }
+      
+      /* Volume Dropdown */
+      .navbar-music-dropdown {
+        position: absolute;
+        top: 52px;
+        right: 0;
+        background: white;
+        backdrop-filter: blur(20px);
+        border: 2px solid #e5e7eb;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        min-width: 200px;
+        display: none;
+        animation: slideDown 0.3s ease;
+        z-index: 1000;
+      }
+      
+      .navbar-music-dropdown.show {
+        display: block;
+      }
+      
+      /* Volume Slider */
+      .volume-slider-control {
+        flex: 1;
+        height: 6px;
+        border-radius: 3px;
+        background: #e5e7eb;
+        outline: none;
+        -webkit-appearance: none;
+        cursor: pointer;
+      }
+      
+      .volume-slider-control::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: #7c3aed;
+        cursor: pointer;
+        box-shadow: 0 2px 6px rgba(124, 58, 237, 0.4);
+        transition: transform 0.2s ease;
+      }
+      
+      .volume-slider-control::-webkit-slider-thumb:hover {
+        transform: scale(1.1);
+      }
+      
+      .volume-slider-control::-moz-range-thumb {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: #7c3aed;
+        cursor: pointer;
+        border: none;
+        box-shadow: 0 2px 6px rgba(124, 58, 237, 0.4);
+        transition: transform 0.2s ease;
+      }
+      
+      .volume-slider-control::-moz-range-thumb:hover {
+        transform: scale(1.1);
+      }
+      
+      /* Mute Button */
+      .mute-btn-control {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background: #f3f4f6;
+        border: 1px solid #e5e7eb;
+        color: #6b7280;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+        flex-shrink: 0;
+      }
+      
+      .mute-btn-control:hover {
+        background: #e5e7eb;
+        color: #374151;
+      }
+      
+      .mute-btn-control.muted {
+        background: #fee2e2;
+        border-color: #fecaca;
+        color: #ef4444;
+      }
     `;
     
-    document.body.insertAdjacentHTML('beforeend', musicHTML);
-    setupEventListeners();
+    document.head.appendChild(style);
   }
 
   /**

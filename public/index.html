@@ -543,40 +543,128 @@
     </div>
 
     <!-- Announcements Carousel -->
-    <section class="mb-10 sm:mb-12 animate-fade-in-up" style="animation-delay: 0.5s;">
-      <div class="flex items-center gap-3 mb-6">
-        <div class="w-12 h-12 rounded-xl stat-amber flex items-center justify-center">
-          <i class="fa-solid fa-bullhorn text-white text-xl"></i>
-        </div>
-        <h2 class="text-2xl sm:text-3xl font-bold gradient-text">Announcements</h2>
-      </div>
-      
-      <div class="glass rounded-3xl p-6 sm:p-8 shadow-xl border border-white/50">
-        <!-- Navigation Arrows -->
-        <button type="button" class="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full glass-strong shadow-lg flex items-center justify-center text-primary-600 hover:bg-primary-600 hover:text-white transition-all duration-300 hover:scale-110 hidden sm:flex" id="announcementsPrev" aria-label="Previous announcement">
-          <i class="fa-solid fa-chevron-left text-lg"></i>
-        </button>
-        <button type="button" class="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full glass-strong shadow-lg flex items-center justify-center text-primary-600 hover:bg-primary-600 hover:text-white transition-all duration-300 hover:scale-110 hidden sm:flex" id="announcementsNext" aria-label="Next announcement">
-          <i class="fa-solid fa-chevron-right text-lg"></i>
-        </button>
-        
-        <!-- Carousel Container -->
-        <div class="overflow-hidden mx-0 sm:mx-16">
-          <div class="flex transition-transform duration-500 ease-out" id="announcementsInner">
-            <div class="flex-shrink-0 w-full text-center py-12 text-gray-500" id="announcementsPlaceholder">
-              <div class="w-20 h-20 mx-auto mb-4 rounded-2xl bg-gray-100 flex items-center justify-center">
-                <i class="fa-solid fa-bullhorn text-3xl text-gray-300"></i>
-              </div>
-              <p class="text-lg font-medium">No announcements at the moment.</p>
-              <p class="text-sm text-gray-400 mt-2">Check back later for updates!</p>
-            </div>
+    <section class="mb-10 sm:mb-12 animate-fade-in-up relative" style="animation-delay: 0.5s;">
+      <div class="flex items-center justify-between mb-8">
+        <div class="flex items-center gap-4">
+          <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-500/30">
+            <i class="fa-solid fa-bullhorn text-white text-2xl"></i>
+          </div>
+          <div>
+            <h2 class="text-3xl sm:text-4xl font-bold gradient-text">Latest Announcements</h2>
+            <p class="text-sm text-gray-500 mt-1">Stay updated with important news</p>
           </div>
         </div>
-        
-        <!-- Dots Indicator -->
-        <div class="flex justify-center gap-2 mt-6" id="announcementDots"></div>
+      </div>
+      
+      <div class="relative">
+        <!-- Announcement Cards Container -->
+        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-purple-50 via-white to-blue-50 p-1">
+          <!-- Inner glow border effect -->
+          <div class="absolute inset-0 rounded-3xl bg-gradient-to-r from-primary-500/20 via-secondary-500/20 to-primary-500/20 blur-xl"></div>
+          
+          <!-- Main content area -->
+          <div class="relative bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl shadow-primary-500/10 overflow-hidden">
+            <!-- Navigation Arrows - Modern Circular Design -->
+            <button type="button" class="announcement-nav-btn announcement-nav-prev" id="announcementsPrev" aria-label="Previous announcement">
+              <div class="relative z-10">
+                <i class="fa-solid fa-chevron-left text-xl"></i>
+              </div>
+              <div class="absolute inset-0 bg-gradient-to-br from-primary-600 to-secondary-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full"></div>
+            </button>
+            
+            <button type="button" class="announcement-nav-btn announcement-nav-next" id="announcementsNext" aria-label="Next announcement">
+              <div class="relative z-10">
+                <i class="fa-solid fa-chevron-right text-xl"></i>
+              </div>
+              <div class="absolute inset-0 bg-gradient-to-br from-primary-600 to-secondary-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full"></div>
+            </button>
+            
+            <!-- Carousel Container -->
+            <div class="overflow-hidden px-4 sm:px-20 py-8 sm:py-12">
+              <div class="flex transition-transform duration-700 ease-in-out" id="announcementsInner">
+                <!-- Placeholder -->
+                <div class="flex-shrink-0 w-full text-center py-16 text-gray-500" id="announcementsPlaceholder">
+                  <div class="w-24 h-24 mx-auto mb-6 rounded-3xl bg-gradient-to-br from-primary-100 to-purple-100 flex items-center justify-center">
+                    <i class="fa-solid fa-bullhorn text-4xl text-primary-400"></i>
+                  </div>
+                  <h3 class="text-xl font-bold text-gray-700 mb-2">No Announcements Yet</h3>
+                  <p class="text-gray-500">Check back later for important updates!</p>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Pagination Dots - Enhanced Design -->
+            <div class="flex justify-center gap-3 pb-8" id="announcementDots"></div>
+          </div>
+        </div>
       </div>
     </section>
+    
+    <style>
+      /* Modern Navigation Arrows */
+      .announcement-nav-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: white;
+        border: 3px solid #7c3aed;
+        color: #7c3aed;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 20;
+        box-shadow: 0 8px 24px rgba(124, 58, 237, 0.2);
+        overflow: hidden;
+        @apply group;
+      }
+      
+      .announcement-nav-prev {
+        left: 8px;
+      }
+      
+      .announcement-nav-next {
+        right: 8px;
+      }
+      
+      @media (min-width: 640px) {
+        .announcement-nav-prev {
+          left: 16px;
+        }
+        .announcement-nav-next {
+          right: 16px;
+        }
+      }
+      
+      .announcement-nav-btn:hover {
+        transform: translateY(-50%) scale(1.1);
+        box-shadow: 0 12px 32px rgba(124, 58, 237, 0.4);
+        border-color: transparent;
+      }
+      
+      .announcement-nav-btn:hover i {
+        color: white;
+      }
+      
+      .announcement-nav-btn:active {
+        transform: translateY(-50%) scale(0.95);
+      }
+      
+      /* Hide arrows on very small screens */
+      @media (max-width: 480px) {
+        .announcement-nav-btn {
+          width: 44px;
+          height: 44px;
+        }
+        .announcement-nav-btn i {
+          font-size: 16px;
+        }
+      }
+    </style>
 
     <!-- Two Column Layout -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8">

@@ -190,67 +190,100 @@
       }
       
       return `
-        <div class="flex-shrink-0 w-full px-4" data-index="${i}">
-          <div class="bg-white rounded-2xl p-6 ${isUrgent ? 'border-l-4 border-red-500 bg-red-50' : 'border-l-4 border-primary-500'} shadow-lg hover:shadow-xl transition-all duration-300">
-            <div class="flex items-start gap-4">
-              <div class="flex-shrink-0 w-14 h-14 rounded-xl ${isUrgent ? 'bg-red-100' : 'bg-primary/10'} flex items-center justify-center">
-                <i class="fa-solid ${isUrgent ? 'fa-exclamation-triangle' : 'fa-megaphone'} ${isUrgent ? 'text-red-500' : 'text-primary'} text-2xl"></i>
-              </div>
-              <div class="flex-grow min-w-0">
-                <!-- Title and Type Badge -->
-                <div class="flex items-center gap-2 mb-2 flex-wrap">
-                  <h4 class="font-bold text-gray-800 text-lg">${escapeHtml(a.title)}</h4>
-                  <span class="px-3 py-1 ${isUrgent ? 'bg-red-500' : 'bg-primary-500'} text-white text-xs font-bold rounded-full">
-                    ${escapeHtml(type)}
-                  </span>
+        <div class="flex-shrink-0 w-full px-2" data-index="${i}">
+          <!-- Modern Glassmorphism Card with Gradient Border -->
+          <div class="relative group">
+            <!-- Gradient border effect -->
+            <div class="absolute -inset-0.5 bg-gradient-to-r ${isUrgent ? 'from-red-500 via-rose-500 to-red-600' : 'from-primary-500 via-purple-500 to-secondary-500'} rounded-3xl opacity-75 group-hover:opacity-100 blur transition duration-500 group-hover:duration-300 animate-pulse"></div>
+            
+            <!-- Main card -->
+            <div class="relative bg-white rounded-3xl shadow-2xl overflow-hidden">
+              <!-- Top gradient accent -->
+              <div class="h-2 bg-gradient-to-r ${isUrgent ? 'from-red-500 to-rose-600' : 'from-primary-500 to-secondary-600'}"></div>
+              
+              <div class="p-8 sm:p-10">
+                <!-- Header Section -->
+                <div class="flex items-start gap-6 mb-6">
+                  <!-- Icon with animated glow -->
+                  <div class="relative flex-shrink-0">
+                    <div class="absolute inset-0 ${isUrgent ? 'bg-red-500' : 'bg-primary-500'} rounded-2xl blur-xl opacity-50 animate-pulse"></div>
+                    <div class="relative w-20 h-20 rounded-2xl bg-gradient-to-br ${isUrgent ? 'from-red-500 to-rose-600' : 'from-primary-500 to-secondary-600'} flex items-center justify-center shadow-xl">
+                      <i class="fa-solid ${isUrgent ? 'fa-exclamation-triangle' : 'fa-megaphone'} text-white text-3xl"></i>
+                    </div>
+                  </div>
+                  
+                  <!-- Title and Badge -->
+                  <div class="flex-grow min-w-0">
+                    <div class="flex items-start justify-between gap-4 mb-3">
+                      <h3 class="text-2xl sm:text-3xl font-bold text-gray-900 leading-tight">${escapeHtml(a.title)}</h3>
+                      <span class="flex-shrink-0 px-4 py-2 bg-gradient-to-r ${isUrgent ? 'from-red-500 to-rose-600' : 'from-primary-500 to-secondary-600'} text-white text-sm font-bold rounded-full shadow-lg">
+                        ${escapeHtml(type)}
+                      </span>
+                    </div>
+                    
+                    <!-- Date/Time Info with styled container -->
+                    <div class="inline-flex flex-wrap items-center gap-3 bg-gradient-to-r from-purple-50 to-blue-50 px-5 py-3 rounded-2xl border border-purple-100">
+                      ${dayOfWeek ? `
+                        <div class="flex items-center gap-2">
+                          <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-secondary-600 flex items-center justify-center">
+                            <i class="fa-solid fa-calendar text-white text-sm"></i>
+                          </div>
+                          <span class="font-bold text-gray-800">${escapeHtml(dayOfWeek)}</span>
+                        </div>
+                      ` : ''}
+                      ${formattedDate ? `
+                        <div class="flex items-center gap-2">
+                          <i class="fa-solid fa-calendar-day text-primary-600"></i>
+                          <span class="text-gray-700 font-medium">${escapeHtml(formattedDate)}</span>
+                        </div>
+                      ` : ''}
+                      ${formattedTime ? `
+                        <div class="flex items-center gap-2">
+                          <i class="fa-solid fa-clock text-primary-600"></i>
+                          <span class="text-gray-700 font-medium">${escapeHtml(formattedTime)}</span>
+                        </div>
+                      ` : ''}
+                    </div>
+                  </div>
                 </div>
                 
-                <!-- Day, Date, Time -->
-                <div class="flex flex-wrap items-center gap-3 mb-3 text-sm text-gray-600">
-                  ${dayOfWeek ? `
-                    <span class="flex items-center gap-1">
-                      <i class="fa-solid fa-calendar text-primary-600"></i>
-                      <strong>${escapeHtml(dayOfWeek)}</strong>
-                    </span>
-                  ` : ''}
-                  ${formattedDate ? `
-                    <span class="flex items-center gap-1">
-                      <i class="fa-solid fa-calendar-day text-primary-600"></i>
-                      ${escapeHtml(formattedDate)}
-                    </span>
-                  ` : ''}
-                  ${formattedTime ? `
-                    <span class="flex items-center gap-1">
-                      <i class="fa-solid fa-clock text-primary-600"></i>
-                      ${escapeHtml(formattedTime)}
-                    </span>
-                  ` : ''}
+                <!-- Message Section with elegant styling -->
+                <div class="relative mb-6">
+                  <div class="absolute -left-4 top-0 bottom-0 w-1 bg-gradient-to-b from-primary-500 to-secondary-600 rounded-full"></div>
+                  <div class="bg-gradient-to-br from-gray-50 to-purple-50/30 rounded-2xl p-6 border border-purple-100/50">
+                    <div class="flex items-center gap-2 mb-3">
+                      <i class="fa-solid fa-message text-primary-600"></i>
+                      <p class="text-sm font-bold text-gray-700 uppercase tracking-wider">Announcement</p>
+                    </div>
+                    <p class="text-gray-800 leading-relaxed text-base sm:text-lg whitespace-pre-wrap break-words">${escapeHtml(a.message)}</p>
+                  </div>
                 </div>
                 
-                <!-- Full Message (not truncated) -->
-                <div class="bg-white rounded-lg p-4 border border-gray-200">
-                  <p class="text-sm font-semibold text-gray-700 mb-2">Message:</p>
-                  <p class="text-gray-700 leading-relaxed whitespace-pre-wrap break-words">${escapeHtml(a.message)}</p>
-                </div>
-                
-                <!-- Items if any -->
+                <!-- Items Section (if any) -->
                 ${a.itemsNeeded && a.itemsNeeded.length ? `
-                  <div class="mt-3 bg-gray-50 rounded-lg p-3 border border-gray-200">
-                    <p class="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                      <i class="fa-solid fa-list-check text-primary-600"></i>
-                      Items Needed:
-                    </p>
-                    <ul class="space-y-1">
-                      ${a.itemsNeeded.map(item => `
-                        <li class="flex items-start gap-2 text-sm text-gray-700">
-                          <i class="fa-solid fa-circle-check text-green-600 text-xs mt-1 flex-shrink-0"></i>
-                          <span class="break-words">${escapeHtml(item)}</span>
+                  <div class="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-6 border-2 border-emerald-100">
+                    <div class="flex items-center gap-3 mb-4">
+                      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
+                        <i class="fa-solid fa-list-check text-white"></i>
+                      </div>
+                      <h4 class="text-lg font-bold text-gray-800">Items Needed</h4>
+                    </div>
+                    <ul class="space-y-3">
+                      ${a.itemsNeeded.map((item, idx) => `
+                        <li class="flex items-start gap-3 group/item">
+                          <div class="flex-shrink-0 w-7 h-7 rounded-lg bg-white border-2 border-emerald-500 flex items-center justify-center mt-0.5 group-hover/item:scale-110 transition-transform">
+                            <i class="fa-solid fa-check text-emerald-600 text-sm"></i>
+                          </div>
+                          <span class="text-gray-800 leading-relaxed flex-grow break-words font-medium">${escapeHtml(item)}</span>
                         </li>
                       `).join('')}
                     </ul>
                   </div>
                 ` : ''}
               </div>
+              
+              <!-- Bottom decorative gradient -->
+              <div class="h-1 bg-gradient-to-r ${isUrgent ? 'from-red-500 via-rose-500 to-red-600' : 'from-primary-500 via-purple-500 to-secondary-500'}"></div>
             </div>
           </div>
         </div>
@@ -260,11 +293,56 @@
     announcementsInner.innerHTML = announcementSlides.join('');
     announcementIndex = 0;
     
-    // Create dots
+    // Create enhanced pagination dots
     if (announcementDots) {
       announcementDots.innerHTML = list.map((_, i) => `
-        <button class="w-2 h-2 rounded-full transition-all duration-300 ${i === 0 ? 'bg-primary w-6' : 'bg-gray-300'}" data-index="${i}" aria-label="Go to announcement ${i + 1}"></button>
+        <button class="announcement-dot ${i === 0 ? 'active' : ''}" data-index="${i}" aria-label="Go to announcement ${i + 1}">
+          <div class="dot-inner"></div>
+        </button>
       `).join('');
+      
+      // Add styles for enhanced dots
+      if (!document.getElementById('announcement-dots-styles')) {
+        const dotStyles = document.createElement('style');
+        dotStyles.id = 'announcement-dots-styles';
+        dotStyles.textContent = `
+          .announcement-dot {
+            position: relative;
+            width: 12px;
+            height: 12px;
+            cursor: pointer;
+            padding: 0;
+            border: none;
+            background: transparent;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+          }
+          
+          .announcement-dot .dot-inner {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: #d1d5db;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          }
+          
+          .announcement-dot:hover .dot-inner {
+            background: #a78bfa;
+            transform: scale(1.2);
+          }
+          
+          .announcement-dot.active {
+            width: 32px;
+          }
+          
+          .announcement-dot.active .dot-inner {
+            background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
+          }
+        `;
+        document.head.appendChild(dotStyles);
+      }
     }
     
     updateAnnouncementsPosition();
@@ -284,14 +362,12 @@
     
     // Update dots
     if (announcementDots) {
-      const dots = announcementDots.querySelectorAll('button');
+      const dots = announcementDots.querySelectorAll('.announcement-dot');
       dots.forEach((dot, i) => {
         if (i === announcementIndex) {
-          dot.classList.remove('bg-gray-300', 'w-2');
-          dot.classList.add('bg-primary', 'w-6');
+          dot.classList.add('active');
         } else {
-          dot.classList.remove('bg-primary', 'w-6');
-          dot.classList.add('bg-gray-300', 'w-2');
+          dot.classList.remove('active');
         }
       });
     }
