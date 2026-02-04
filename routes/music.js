@@ -2,24 +2,29 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const path = require('path');
-const fs = require('fs');
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const Music = require('../models/Music');
 const auth = require('../middleware/auth');
 
-// Create uploads directory if it doesn't exist
-const uploadsDir = path.join(__dirname, '../public/uploads/music');
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-}
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
-// Configure multer for music file uploads
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, uploadsDir);
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, 'music-' + uniqueSuffix + path.extname(file.originalname));
+// Configure Cloudinary storage for multer
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'nursing-portal/music',
+    resource_type: 'video', // Use 'video' for audio files in Cloudinary
+    allowed_formats: ['mp3', 'wav', 'ogg', 'm4a', 'aac'],
+    public_id: (req, file) => {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      return 'music-' + uniqueSuffix;
+    }
   }
 });
 
@@ -27,9 +32,9 @@ const fileFilter = (req, file, cb) => {
   // Accept audio files only
   const allowedTypes = /mp3|wav|ogg|m4a|aac/;
   const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-  const mimetype = allowedTypes.test(file.mimetype);
+  const mimetype = file.mimetype.includes('audio') || allowedTypes.test(file.mimetype);
 
-  if (mimetype && extname) {
+  if (mimetype || extname) {
     return cb(null, true);
   } else {
     cb(new Error('Only audio files are allowed (mp3, wav, ogg, m4a, aac)'));
@@ -49,9 +54,9 @@ router.post('/upload', auth, upload.single('music'), async (req, res) => {
   try {
     // Check if user is admin
     if (req.user.role !== 'admin') {
-      // Delete uploaded file if not admin
-      if (req.file) {
-        fs.unlinkSync(req.file.path);
+      // Delete uploaded file from Cloudinary if not admin
+      if (req.file && req.file.public_id) {
+        await cloudinary.uploader.destroy(req.file.public_id, { resource_type: 'video' });
       }
       return res.status(403).json({ message: 'Access denied. Admin only.' });
     }
@@ -63,19 +68,22 @@ router.post('/upload', auth, upload.single('music'), async (req, res) => {
     const { title, location, duration } = req.body;
 
     if (!title || !location) {
-      // Delete uploaded file if validation fails
-      fs.unlinkSync(req.file.path);
+      // Delete uploaded file from Cloudinary if validation fails
+      if (req.file.public_id) {
+        await cloudinary.uploader.destroy(req.file.public_id, { resource_type: 'video' });
+      }
       return res.status(400).json({ message: 'Title and location are required' });
     }
 
     const music = new Music({
       title: title,
-      fileName: req.file.filename,
-      filePath: `/uploads/music/${req.file.filename}`,
-      fileSize: req.file.size,
+      fileName: req.file.filename || req.file.public_id,
+      filePath: req.file.path, // Cloudinary URL
+      fileSize: req.file.size || 0,
       duration: duration || 0,
       location: location,
-      uploadedBy: req.user.id
+      uploadedBy: req.user.id,
+      cloudinaryId: req.file.public_id // Store for deletion
     });
 
     await music.save();
@@ -86,9 +94,13 @@ router.post('/upload', auth, upload.single('music'), async (req, res) => {
     });
   } catch (error) {
     console.error('Music upload error:', error);
-    // Delete uploaded file if database save fails
-    if (req.file && fs.existsSync(req.file.path)) {
-      fs.unlinkSync(req.file.path);
+    // Delete uploaded file from Cloudinary if database save fails
+    if (req.file && req.file.public_id) {
+      try {
+        await cloudinary.uploader.destroy(req.file.public_id, { resource_type: 'video' });
+      } catch (deleteError) {
+        console.error('Failed to delete file from Cloudinary:', deleteError);
+      }
     }
     res.status(500).json({ message: 'Server error', error: error.message });
   }
@@ -191,10 +203,14 @@ router.delete('/:id', auth, async (req, res) => {
       return res.status(404).json({ message: 'Music not found' });
     }
 
-    // Delete file from filesystem
-    const filePath = path.join(__dirname, '../public', music.filePath);
-    if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
+    // Delete file from Cloudinary
+    if (music.cloudinaryId) {
+      try {
+        await cloudinary.uploader.destroy(music.cloudinaryId, { resource_type: 'video' });
+      } catch (cloudError) {
+        console.error('Failed to delete from Cloudinary:', cloudError);
+        // Continue with database deletion even if Cloudinary deletion fails
+      }
     }
 
     // Delete from database

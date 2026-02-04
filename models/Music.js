@@ -16,7 +16,7 @@ const musicSchema = new mongoose.Schema({
   },
   fileSize: {
     type: Number,
-    required: true
+    default: 0
   },
   duration: {
     type: Number, // in seconds
@@ -31,6 +31,10 @@ const musicSchema = new mongoose.Schema({
   isActive: {
     type: Boolean,
     default: true
+  },
+  cloudinaryId: {
+    type: String,
+    required: false
   },
   uploadedBy: {
     type: mongoose.Schema.Types.ObjectId,
