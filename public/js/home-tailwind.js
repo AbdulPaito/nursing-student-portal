@@ -191,99 +191,71 @@
       
       return `
         <div class="flex-shrink-0 w-full px-2" data-index="${i}">
-          <!-- Modern Glassmorphism Card with Gradient Border -->
-          <div class="relative group">
-            <!-- Gradient border effect -->
-            <div class="absolute -inset-0.5 bg-gradient-to-r ${isUrgent ? 'from-red-500 via-rose-500 to-red-600' : 'from-primary-500 via-purple-500 to-secondary-500'} rounded-3xl opacity-75 group-hover:opacity-100 blur transition duration-500 group-hover:duration-300 animate-pulse"></div>
-            
-            <!-- Main card -->
-            <div class="relative bg-white rounded-3xl shadow-2xl overflow-hidden">
-              <!-- Top gradient accent -->
-              <div class="h-2 bg-gradient-to-r ${isUrgent ? 'from-red-500 to-rose-600' : 'from-primary-500 to-secondary-600'}"></div>
+          <!-- Compact Modern Card -->
+          <div class="relative max-h-[280px]">
+            <!-- Subtle gradient background -->
+            <div class="bg-gradient-to-br ${isUrgent ? 'from-red-50 to-rose-50' : 'from-purple-50 to-blue-50'} rounded-2xl shadow-lg border-2 ${isUrgent ? 'border-red-200' : 'border-purple-200'} overflow-hidden">
               
-              <div class="p-8 sm:p-10">
-                <!-- Header Section -->
-                <div class="flex items-start gap-6 mb-6">
-                  <!-- Icon with animated glow -->
-                  <div class="relative flex-shrink-0">
-                    <div class="absolute inset-0 ${isUrgent ? 'bg-red-500' : 'bg-primary-500'} rounded-2xl blur-xl opacity-50 animate-pulse"></div>
-                    <div class="relative w-20 h-20 rounded-2xl bg-gradient-to-br ${isUrgent ? 'from-red-500 to-rose-600' : 'from-primary-500 to-secondary-600'} flex items-center justify-center shadow-xl">
-                      <i class="fa-solid ${isUrgent ? 'fa-exclamation-triangle' : 'fa-megaphone'} text-white text-3xl"></i>
-                    </div>
+              <!-- Compact Header -->
+              <div class="flex items-start gap-4 p-5 bg-white/60">
+                <!-- Smaller Icon -->
+                <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br ${isUrgent ? 'from-red-500 to-rose-600' : 'from-primary-500 to-secondary-600'} flex items-center justify-center shadow-md">
+                  <i class="fa-solid ${isUrgent ? 'fa-exclamation-triangle' : 'fa-megaphone'} text-white text-lg"></i>
+                </div>
+                
+                <!-- Title and Badge -->
+                <div class="flex-grow min-w-0">
+                  <div class="flex items-center gap-2 mb-1.5">
+                    <h3 class="text-lg font-bold text-gray-900 leading-tight truncate">${escapeHtml(a.title)}</h3>
+                    <span class="flex-shrink-0 px-2.5 py-1 bg-gradient-to-r ${isUrgent ? 'from-red-500 to-rose-600' : 'from-primary-500 to-secondary-600'} text-white text-xs font-bold rounded-full">
+                      ${escapeHtml(type)}
+                    </span>
                   </div>
                   
-                  <!-- Title and Badge -->
-                  <div class="flex-grow min-w-0">
-                    <div class="flex items-start justify-between gap-4 mb-3">
-                      <h3 class="text-2xl sm:text-3xl font-bold text-gray-900 leading-tight">${escapeHtml(a.title)}</h3>
-                      <span class="flex-shrink-0 px-4 py-2 bg-gradient-to-r ${isUrgent ? 'from-red-500 to-rose-600' : 'from-primary-500 to-secondary-600'} text-white text-sm font-bold rounded-full shadow-lg">
-                        ${escapeHtml(type)}
+                  <!-- Compact Date/Time -->
+                  <div class="flex flex-wrap items-center gap-2 text-xs text-gray-600">
+                    ${dayOfWeek ? `
+                      <span class="flex items-center gap-1">
+                        <i class="fa-solid fa-calendar text-primary-600"></i>
+                        <strong>${escapeHtml(dayOfWeek)}</strong>
                       </span>
-                    </div>
-                    
-                    <!-- Date/Time Info with styled container -->
-                    <div class="inline-flex flex-wrap items-center gap-3 bg-gradient-to-r from-purple-50 to-blue-50 px-5 py-3 rounded-2xl border border-purple-100">
-                      ${dayOfWeek ? `
-                        <div class="flex items-center gap-2">
-                          <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-secondary-600 flex items-center justify-center">
-                            <i class="fa-solid fa-calendar text-white text-sm"></i>
-                          </div>
-                          <span class="font-bold text-gray-800">${escapeHtml(dayOfWeek)}</span>
-                        </div>
-                      ` : ''}
-                      ${formattedDate ? `
-                        <div class="flex items-center gap-2">
-                          <i class="fa-solid fa-calendar-day text-primary-600"></i>
-                          <span class="text-gray-700 font-medium">${escapeHtml(formattedDate)}</span>
-                        </div>
-                      ` : ''}
-                      ${formattedTime ? `
-                        <div class="flex items-center gap-2">
-                          <i class="fa-solid fa-clock text-primary-600"></i>
-                          <span class="text-gray-700 font-medium">${escapeHtml(formattedTime)}</span>
-                        </div>
-                      ` : ''}
-                    </div>
+                    ` : ''}
+                    ${formattedDate ? `
+                      <span>${escapeHtml(formattedDate)}</span>
+                    ` : ''}
+                    ${formattedTime ? `
+                      <span class="flex items-center gap-1">
+                        <i class="fa-solid fa-clock text-primary-600"></i>
+                        ${escapeHtml(formattedTime)}
+                      </span>
+                    ` : ''}
                   </div>
                 </div>
-                
-                <!-- Message Section with elegant styling -->
-                <div class="relative mb-6">
-                  <div class="absolute -left-4 top-0 bottom-0 w-1 bg-gradient-to-b from-primary-500 to-secondary-600 rounded-full"></div>
-                  <div class="bg-gradient-to-br from-gray-50 to-purple-50/30 rounded-2xl p-6 border border-purple-100/50">
-                    <div class="flex items-center gap-2 mb-3">
-                      <i class="fa-solid fa-message text-primary-600"></i>
-                      <p class="text-sm font-bold text-gray-700 uppercase tracking-wider">Announcement</p>
-                    </div>
-                    <p class="text-gray-800 leading-relaxed text-base sm:text-lg whitespace-pre-wrap break-words">${escapeHtml(a.message)}</p>
-                  </div>
-                </div>
-                
-                <!-- Items Section (if any) -->
-                ${a.itemsNeeded && a.itemsNeeded.length ? `
-                  <div class="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-6 border-2 border-emerald-100">
-                    <div class="flex items-center gap-3 mb-4">
-                      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
-                        <i class="fa-solid fa-list-check text-white"></i>
-                      </div>
-                      <h4 class="text-lg font-bold text-gray-800">Items Needed</h4>
-                    </div>
-                    <ul class="space-y-3">
-                      ${a.itemsNeeded.map((item, idx) => `
-                        <li class="flex items-start gap-3 group/item">
-                          <div class="flex-shrink-0 w-7 h-7 rounded-lg bg-white border-2 border-emerald-500 flex items-center justify-center mt-0.5 group-hover/item:scale-110 transition-transform">
-                            <i class="fa-solid fa-check text-emerald-600 text-sm"></i>
-                          </div>
-                          <span class="text-gray-800 leading-relaxed flex-grow break-words font-medium">${escapeHtml(item)}</span>
-                        </li>
-                      `).join('')}
-                    </ul>
-                  </div>
-                ` : ''}
               </div>
               
-              <!-- Bottom decorative gradient -->
-              <div class="h-1 bg-gradient-to-r ${isUrgent ? 'from-red-500 via-rose-500 to-red-600' : 'from-primary-500 via-purple-500 to-secondary-500'}"></div>
+              <!-- Message Section - Most Visible -->
+              <div class="px-5 py-4 bg-white border-t border-purple-100">
+                <p class="text-gray-900 font-medium text-base leading-relaxed whitespace-pre-wrap break-words line-clamp-4">${escapeHtml(a.message)}</p>
+              </div>
+              
+              <!-- Items Section (if any) - Compact -->
+              ${a.itemsNeeded && a.itemsNeeded.length ? `
+                <div class="px-5 py-3 bg-emerald-50/50 border-t border-emerald-100">
+                  <div class="flex items-center gap-2 mb-2">
+                    <i class="fa-solid fa-list-check text-emerald-600 text-sm"></i>
+                    <h4 class="text-xs font-bold text-gray-700 uppercase">Items Needed</h4>
+                  </div>
+                  <ul class="space-y-1.5">
+                    ${a.itemsNeeded.slice(0, 3).map(item => `
+                      <li class="flex items-start gap-2 text-sm text-gray-800">
+                        <i class="fa-solid fa-check text-emerald-600 text-xs mt-0.5 flex-shrink-0"></i>
+                        <span class="break-words leading-tight">${escapeHtml(item)}</span>
+                      </li>
+                    `).join('')}
+                    ${a.itemsNeeded.length > 3 ? `<li class="text-xs text-gray-500 italic">+${a.itemsNeeded.length - 3} more...</li>` : ''}
+                  </ul>
+                </div>
+              ` : ''}
             </div>
           </div>
         </div>

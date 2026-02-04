@@ -144,9 +144,9 @@
       
       /* Navbar Music Button */
       .navbar-music-btn {
-        width: 40px;
-        height: 40px;
-        border-radius: 12px;
+        width: 35px;
+        height: 35px;
+        border-radius: 10px;
         background: white;
         border: 2px solid #7c3aed;
         color: #7c3aed;
@@ -156,7 +156,8 @@
         justify-content: center;
         transition: all 0.3s ease;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        margin-right: 12px;
+        margin-right: 15px;
+        flex-shrink: 0;
       }
       
       .navbar-music-btn:hover {
@@ -185,13 +186,13 @@
       /* Desktop: Larger button */
       @media (min-width: 768px) {
         .navbar-music-btn {
-          width: 44px;
-          height: 44px;
-          margin-right: 16px;
+          width: 40px;
+          height: 40px;
+          margin-right: 20px;
         }
         
         .navbar-music-btn i {
-          font-size: 18px;
+          font-size: 17px;
         }
       }
       
