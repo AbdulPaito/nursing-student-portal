@@ -85,14 +85,16 @@
       border: 1px solid rgba(255, 255, 255, 0.3);
     }
     
-    /* Background image styling */
+    /* Full-screen background - Building covers entire viewport */
     .bg-page {
-      background-color: #1e1b4b; /* Fallback solid color (indigo-950) */
+      background-color: #1e1b4b; /* Fallback solid color */
       background-image: url('../images/background.png');
-      background-size: contain;
-      background-position: center top;
+      background-size: cover;
+      background-position: center center;
       background-repeat: no-repeat;
-      background-attachment: scroll;
+      background-attachment: fixed;
+      min-height: 100vh;
+      width: 100vw;
     }
     
     /* Dark overlay for better contrast */
@@ -103,9 +105,115 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.3);
+      background: rgba(0, 0, 0, 0.4);
       z-index: 0;
       pointer-events: none;
+    }
+    
+    /* Music control inside login card */
+    .music-control-card {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      z-index: 10;
+    }
+    
+    .music-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: rgba(124, 58, 237, 0.1);
+      border: 1px solid rgba(124, 58, 237, 0.3);
+      color: #7c3aed;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+    
+    .music-btn:hover {
+      background: rgba(124, 58, 237, 0.2);
+      transform: scale(1.05);
+    }
+    
+    .music-btn.playing {
+      background: rgba(124, 58, 237, 0.2);
+      border-color: #7c3aed;
+    }
+    
+    .music-btn.muted {
+      background: rgba(239, 68, 68, 0.1);
+      border-color: rgba(239, 68, 68, 0.3);
+      color: #ef4444;
+    }
+    
+    .volume-popup {
+      position: absolute;
+      top: 50px;
+      right: 0;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(124, 58, 237, 0.2);
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      min-width: 200px;
+      display: none;
+      animation: slideDown 0.3s ease;
+    }
+    
+    .volume-popup.show {
+      display: block;
+    }
+    
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .volume-slider-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    
+    .volume-slider {
+      flex: 1;
+      height: 4px;
+      border-radius: 2px;
+      background: #e5e7eb;
+      outline: none;
+      -webkit-appearance: none;
+    }
+    
+    .volume-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #7c3aed;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(124, 58, 237, 0.3);
+    }
+    
+    .volume-slider::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #7c3aed;
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 2px 4px rgba(124, 58, 237, 0.3);
     }
     
     /* Floating shapes */
@@ -218,6 +326,36 @@
   <!-- Login Card -->
   <div class="relative w-full max-w-md animate-fade-in-up">
     <div class="glass-card rounded-3xl shadow-2xl overflow-hidden">
+      <!-- Music Control in Card -->
+      <div class="music-control-card">
+        <button id="musicBtn" class="music-btn" title="Background Music">
+          <i class="fa-solid fa-music text-lg"></i>
+        </button>
+        <div id="volumePopup" class="volume-popup">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+            <span style="font-size: 13px; font-weight: 600; color: #374151;">Background Music</span>
+            <button id="closePopup" style="background: none; border: none; cursor: pointer; color: #9ca3af; padding: 0; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+          <div style="font-size: 12px; color: #6b7280; margin-bottom: 12px;" id="trackTitle">Loading...</div>
+          <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+            <button id="playPauseBtn" style="flex: 1; padding: 8px; background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 500; transition: all 0.2s;">
+              <i class="fa-solid fa-play" style="margin-right: 4px;"></i>
+              <span id="playPauseText">Play</span>
+            </button>
+            <button id="muteBtn" style="padding: 8px 12px; background: #f3f4f6; color: #6b7280; border: none; border-radius: 8px; cursor: pointer; transition: all 0.2s;">
+              <i class="fa-solid fa-volume-high"></i>
+            </button>
+          </div>
+          <div class="volume-slider-container">
+            <i class="fa-solid fa-volume-low" style="color: #9ca3af; font-size: 12px;"></i>
+            <input type="range" id="volumeSlider" class="volume-slider" min="0" max="100" value="50">
+            <i class="fa-solid fa-volume-high" style="color: #9ca3af; font-size: 12px;"></i>
+          </div>
+        </div>
+      </div>
+      
       <!-- Header -->
       <div class="relative p-8 text-center bg-gradient-to-br from-primary-600/90 via-primary-700/90 to-secondary-800/90 backdrop-blur-xl">
         <!-- Animated Logo Container -->
@@ -335,9 +473,136 @@
 
   <!-- Music Player Script -->
   <script>
-    window.musicPlayerLocation = 'login';
+    // Music Player for Login Card
+    let audio = null;
+    let isPlaying = false;
+    let isMuted = false;
+    
+    async function initMusicPlayer() {
+      try {
+        const response = await fetch('/api/music/active/login');
+        const data = await response.json();
+        
+        if (response.ok && data._id) {
+          audio = new Audio(data.filePath);
+          audio.volume = 0.5;
+          audio.loop = true;
+          
+          document.getElementById('trackTitle').textContent = data.title || 'Background Music';
+          
+          // Auto-play after short delay
+          setTimeout(() => {
+            audio.play().then(() => {
+              isPlaying = true;
+              updateUI();
+            }).catch(err => console.log('Autoplay prevented:', err));
+          }, 1000);
+        } else {
+          document.getElementById('trackTitle').textContent = 'No music available';
+        }
+      } catch (error) {
+        console.error('Music load error:', error);
+        document.getElementById('trackTitle').textContent = 'Failed to load';
+      }
+    }
+    
+    function updateUI() {
+      const musicBtn = document.getElementById('musicBtn');
+      const playPauseBtn = document.getElementById('playPauseBtn');
+      const playPauseText = document.getElementById('playPauseText');
+      const playPauseIcon = playPauseBtn.querySelector('i');
+      const muteBtn = document.getElementById('muteBtn');
+      
+      // Update main button
+      if (isMuted || !isPlaying) {
+        musicBtn.classList.remove('playing');
+        if (isMuted) {
+          musicBtn.classList.add('muted');
+          musicBtn.querySelector('i').className = 'fa-solid fa-volume-xmark text-lg';
+        } else {
+          musicBtn.classList.remove('muted');
+          musicBtn.querySelector('i').className = 'fa-solid fa-music text-lg';
+        }
+      } else {
+        musicBtn.classList.add('playing');
+        musicBtn.classList.remove('muted');
+        musicBtn.querySelector('i').className = 'fa-solid fa-music text-lg';
+      }
+      
+      // Update play/pause button
+      if (isPlaying) {
+        playPauseIcon.className = 'fa-solid fa-pause';
+        playPauseText.textContent = 'Pause';
+        playPauseBtn.style.background = 'linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%)';
+      } else {
+        playPauseIcon.className = 'fa-solid fa-play';
+        playPauseText.textContent = 'Play';
+        playPauseBtn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+      }
+      
+      // Update mute button
+      if (isMuted) {
+        muteBtn.querySelector('i').className = 'fa-solid fa-volume-xmark';
+        muteBtn.style.background = '#fee2e2';
+        muteBtn.style.color = '#ef4444';
+      } else {
+        muteBtn.querySelector('i').className = 'fa-solid fa-volume-high';
+        muteBtn.style.background = '#f3f4f6';
+        muteBtn.style.color = '#6b7280';
+      }
+    }
+    
+    // Event Listeners
+    document.getElementById('musicBtn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      const popup = document.getElementById('volumePopup');
+      popup.classList.toggle('show');
+    });
+    
+    document.getElementById('closePopup').addEventListener('click', () => {
+      document.getElementById('volumePopup').classList.remove('show');
+    });
+    
+    document.getElementById('playPauseBtn').addEventListener('click', () => {
+      if (!audio) return;
+      
+      if (isPlaying) {
+        audio.pause();
+        isPlaying = false;
+      } else {
+        audio.play().then(() => {
+          isPlaying = true;
+        }).catch(err => console.error('Play error:', err));
+      }
+      updateUI();
+    });
+    
+    document.getElementById('muteBtn').addEventListener('click', () => {
+      if (!audio) return;
+      
+      audio.muted = !audio.muted;
+      isMuted = audio.muted;
+      updateUI();
+    });
+    
+    document.getElementById('volumeSlider').addEventListener('input', (e) => {
+      if (!audio) return;
+      audio.volume = e.target.value / 100;
+    });
+    
+    // Close popup when clicking outside
+    document.addEventListener('click', (e) => {
+      const popup = document.getElementById('volumePopup');
+      const musicBtn = document.getElementById('musicBtn');
+      
+      if (!popup.contains(e.target) && !musicBtn.contains(e.target)) {
+        popup.classList.remove('show');
+      }
+    });
+    
+    // Initialize on page load
+    window.addEventListener('DOMContentLoaded', initMusicPlayer);
   </script>
-  <script src="../js/music-player.js"></script>
 
   <script>
     (function() {
