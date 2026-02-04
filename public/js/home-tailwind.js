@@ -160,18 +160,96 @@
     
     announcementSlides = list.map(function(a, i) {
       const isUrgent = (a.title && a.title.toLowerCase().indexOf('urgent') !== -1) || (a.urgent === true);
-      const dateTimeStr = formatAnnouncementDateTime(a.date, a.time);
+      const type = a.type || 'General';
+      
+      // Format date and time properly
+      let dayOfWeek = '';
+      let formattedDate = a.date || '';
+      let formattedTime = '';
+      
+      if (a.date) {
+        try {
+          const dateObj = new Date(a.date + 'T00:00:00');
+          dayOfWeek = dateObj.toLocaleDateString('en-US', { weekday: 'long' });
+          formattedDate = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        } catch (e) {
+          formattedDate = a.date;
+        }
+      }
+      
+      if (a.time) {
+        try {
+          const [hours, minutes] = a.time.split(':');
+          const hour = parseInt(hours, 10);
+          const ampm = hour >= 12 ? 'PM' : 'AM';
+          const displayHour = hour % 12 || 12;
+          formattedTime = `${displayHour}:${minutes} ${ampm}`;
+        } catch (e) {
+          formattedTime = a.time;
+        }
+      }
+      
       return `
         <div class="flex-shrink-0 w-full px-4" data-index="${i}">
-          <div class="bg-white rounded-xl p-5 ${isUrgent ? 'border-l-4 border-red-500 bg-red-50' : 'border border-gray-100'} shadow-sm hover:shadow-md transition-shadow">
+          <div class="bg-white rounded-2xl p-6 ${isUrgent ? 'border-l-4 border-red-500 bg-red-50' : 'border-l-4 border-primary-500'} shadow-lg hover:shadow-xl transition-all duration-300">
             <div class="flex items-start gap-4">
-              <div class="flex-shrink-0 w-12 h-12 rounded-full ${isUrgent ? 'bg-red-100' : 'bg-primary/10'} flex items-center justify-center">
-                <i class="bi bi-megaphone-fill ${isUrgent ? 'text-red-500' : 'text-primary'} text-xl"></i>
+              <div class="flex-shrink-0 w-14 h-14 rounded-xl ${isUrgent ? 'bg-red-100' : 'bg-primary/10'} flex items-center justify-center">
+                <i class="fa-solid ${isUrgent ? 'fa-exclamation-triangle' : 'fa-megaphone'} ${isUrgent ? 'text-red-500' : 'text-primary'} text-2xl"></i>
               </div>
-              <div class="flex-grow">
-                <h4 class="font-bold text-gray-800 mb-1">${escapeHtml(a.title)}</h4>
-                ${dateTimeStr ? `<p class="text-sm text-gray-500 mb-2">${escapeHtml(dateTimeStr)}</p>` : ''}
-                <p class="text-gray-600 text-sm">${escapeHtml(a.message)}</p>
+              <div class="flex-grow min-w-0">
+                <!-- Title and Type Badge -->
+                <div class="flex items-center gap-2 mb-2 flex-wrap">
+                  <h4 class="font-bold text-gray-800 text-lg">${escapeHtml(a.title)}</h4>
+                  <span class="px-3 py-1 ${isUrgent ? 'bg-red-500' : 'bg-primary-500'} text-white text-xs font-bold rounded-full">
+                    ${escapeHtml(type)}
+                  </span>
+                </div>
+                
+                <!-- Day, Date, Time -->
+                <div class="flex flex-wrap items-center gap-3 mb-3 text-sm text-gray-600">
+                  ${dayOfWeek ? `
+                    <span class="flex items-center gap-1">
+                      <i class="fa-solid fa-calendar text-primary-600"></i>
+                      <strong>${escapeHtml(dayOfWeek)}</strong>
+                    </span>
+                  ` : ''}
+                  ${formattedDate ? `
+                    <span class="flex items-center gap-1">
+                      <i class="fa-solid fa-calendar-day text-primary-600"></i>
+                      ${escapeHtml(formattedDate)}
+                    </span>
+                  ` : ''}
+                  ${formattedTime ? `
+                    <span class="flex items-center gap-1">
+                      <i class="fa-solid fa-clock text-primary-600"></i>
+                      ${escapeHtml(formattedTime)}
+                    </span>
+                  ` : ''}
+                </div>
+                
+                <!-- Full Message (not truncated) -->
+                <div class="bg-white rounded-lg p-4 border border-gray-200">
+                  <p class="text-sm font-semibold text-gray-700 mb-2">Message:</p>
+                  <p class="text-gray-700 leading-relaxed whitespace-pre-wrap break-words">${escapeHtml(a.message)}</p>
+                </div>
+                
+                <!-- Items if any -->
+                ${a.itemsNeeded && a.itemsNeeded.length ? `
+                  <div class="mt-3 bg-gray-50 rounded-lg p-3 border border-gray-200">
+                    <p class="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                      <i class="fa-solid fa-list-check text-primary-600"></i>
+                      Items Needed:
+                    </p>
+                    <ul class="space-y-1">
+                      ${a.itemsNeeded.map(item => `
+                        <li class="flex items-start gap-2 text-sm text-gray-700">
+                          <i class="fa-solid fa-circle-check text-green-600 text-xs mt-1 flex-shrink-0"></i>
+                          <span class="break-words">${escapeHtml(item)}</span>
+                        </li>
+                      `).join('')}
+                    </ul>
+                  </div>
+                ` : ''}
               </div>
             </div>
           </div>
@@ -304,10 +382,30 @@
     setInterval(setBannerText, 60000);
   }
 
-  // Hero Countdown
+  // Hero Countdown - Enhanced Format
   function startCountdownTimer(nextEvent) {
     const countdownDisplay = document.getElementById('countdownDisplay');
-    if (!countdownDisplay || !nextEvent) return;
+    const countdownTitle = document.getElementById('countdownTitle');
+    
+    if (!countdownDisplay) return;
+    
+    if (!nextEvent) {
+      // No upcoming events
+      if (countdownTitle) {
+        countdownTitle.innerHTML = '<i class="fa-solid fa-calendar-xmark mr-2"></i>No Upcoming Events';
+      }
+      countdownDisplay.innerHTML = `
+        <div class="text-center py-6">
+          <p class="text-lg text-gray-500">No upcoming events. Check back later for updates!</p>
+        </div>
+      `;
+      return;
+    }
+    
+    // Show event title
+    if (countdownTitle) {
+      countdownTitle.innerHTML = `<i class="fa-solid fa-calendar-star mr-2"></i>Next Event: ${escapeHtml(nextEvent.title)}`;
+    }
 
     function updateCountdown() {
       const target = new Date(nextEvent.date + 'T' + (nextEvent.time || '00:00'));
@@ -315,7 +413,13 @@
       const diff = target - now;
       
       if (diff <= 0) {
-        countdownDisplay.innerHTML = '<span class="text-lg">Event in progress!</span>';
+        countdownDisplay.innerHTML = `
+          <div class="text-center py-4">
+            <p class="text-xl font-bold text-green-600">
+              <i class="fa-solid fa-circle-check mr-2"></i>Event is happening now!
+            </p>
+          </div>
+        `;
         return;
       }
       
@@ -325,13 +429,32 @@
       const seconds = Math.floor((diff % (1000 * 60)) / 1000);
       
       countdownDisplay.innerHTML = `
-        <span class="animate-count">${String(days).padStart(2, '0')}</span>
-        <span class="text-sm opacity-70">:</span>
-        <span class="animate-count">${String(hours).padStart(2, '0')}</span>
-        <span class="text-sm opacity-70">:</span>
-        <span class="animate-count">${String(minutes).padStart(2, '0')}</span>
-        <span class="text-sm opacity-70">:</span>
-        <span class="animate-count">${String(seconds).padStart(2, '0')}</span>
+        <div class="grid grid-cols-4 gap-4 md:gap-6">
+          <div class="text-center">
+            <div class="bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl p-4 shadow-lg">
+              <div class="text-3xl md:text-4xl font-bold text-white mb-1">${String(days).padStart(2, '0')}</div>
+              <div class="text-xs md:text-sm text-white/80 uppercase tracking-wider">Days</div>
+            </div>
+          </div>
+          <div class="text-center">
+            <div class="bg-gradient-to-br from-secondary-500 to-secondary-600 rounded-2xl p-4 shadow-lg">
+              <div class="text-3xl md:text-4xl font-bold text-white mb-1">${String(hours).padStart(2, '0')}</div>
+              <div class="text-xs md:text-sm text-white/80 uppercase tracking-wider">Hours</div>
+            </div>
+          </div>
+          <div class="text-center">
+            <div class="bg-gradient-to-br from-accent-500 to-accent-600 rounded-2xl p-4 shadow-lg">
+              <div class="text-3xl md:text-4xl font-bold text-white mb-1">${String(minutes).padStart(2, '0')}</div>
+              <div class="text-xs md:text-sm text-white/80 uppercase tracking-wider">Minutes</div>
+            </div>
+          </div>
+          <div class="text-center">
+            <div class="bg-gradient-to-br from-pink-500 to-pink-600 rounded-2xl p-4 shadow-lg">
+              <div class="text-3xl md:text-4xl font-bold text-white mb-1">${String(seconds).padStart(2, '0')}</div>
+              <div class="text-xs md:text-sm text-white/80 uppercase tracking-wider">Seconds</div>
+            </div>
+          </div>
+        </div>
       `;
     }
     

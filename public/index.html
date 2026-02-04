@@ -451,22 +451,36 @@
       
       <!-- Countdown Timer -->
       <div class="mt-10 flex justify-center" id="heroCountdown">
-        <div class="glass rounded-3xl px-8 py-6 border border-white/30 animate-scale-in shadow-2xl">
-          <p class="text-sm uppercase tracking-wider mb-3 opacity-90 font-semibold">Next Event Countdown</p>
-          <div class="flex items-center gap-3 text-3xl sm:text-4xl md:text-5xl font-bold font-mono" id="countdownDisplay">
-            <div class="flex flex-col items-center">
-              <span class="bg-white/20 rounded-xl px-4 py-2">--</span>
-              <span class="text-xs mt-1 opacity-70">Days</span>
-            </div>
-            <span class="text-2xl opacity-50">:</span>
-            <div class="flex flex-col items-center">
-              <span class="bg-white/20 rounded-xl px-4 py-2">--</span>
-              <span class="text-xs mt-1 opacity-70">Hours</span>
-            </div>
-            <span class="text-2xl opacity-50">:</span>
-            <div class="flex flex-col items-center">
-              <span class="bg-white/20 rounded-xl px-4 py-2">--</span>
-              <span class="text-xs mt-1 opacity-70">Mins</span>
+        <div class="glass rounded-3xl px-6 py-6 sm:px-8 sm:py-8 border border-white/30 animate-scale-in shadow-2xl max-w-4xl w-full">
+          <h3 class="text-base sm:text-lg uppercase tracking-wider mb-5 opacity-90 font-bold text-center" id="countdownTitle">
+            <i class="fa-solid fa-calendar-star mr-2"></i>Next Event Countdown
+          </h3>
+          <div id="countdownDisplay">
+            <div class="grid grid-cols-4 gap-3 sm:gap-4">
+              <div class="text-center">
+                <div class="bg-white/20 rounded-xl sm:rounded-2xl p-3 sm:p-4">
+                  <div class="text-2xl sm:text-3xl md:text-4xl font-bold mb-1">--</div>
+                  <div class="text-xs opacity-70 uppercase tracking-wider">Days</div>
+                </div>
+              </div>
+              <div class="text-center">
+                <div class="bg-white/20 rounded-xl sm:rounded-2xl p-3 sm:p-4">
+                  <div class="text-2xl sm:text-3xl md:text-4xl font-bold mb-1">--</div>
+                  <div class="text-xs opacity-70 uppercase tracking-wider">Hours</div>
+                </div>
+              </div>
+              <div class="text-center">
+                <div class="bg-white/20 rounded-xl sm:rounded-2xl p-3 sm:p-4">
+                  <div class="text-2xl sm:text-3xl md:text-4xl font-bold mb-1">--</div>
+                  <div class="text-xs opacity-70 uppercase tracking-wider">Minutes</div>
+                </div>
+              </div>
+              <div class="text-center">
+                <div class="bg-white/20 rounded-xl sm:rounded-2xl p-3 sm:p-4">
+                  <div class="text-2xl sm:text-3xl md:text-4xl font-bold mb-1">--</div>
+                  <div class="text-xs opacity-70 uppercase tracking-wider">Seconds</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -762,8 +776,8 @@
   <!-- Enhanced Card Renderer -->
   <script src="js/enhanced-card-renderer.js"></script>
   
-  <!-- Minimalist Music Player Script -->
-  <script src="js/music-player-minimalist-portal.js"></script>
+  <!-- Persistent Music Player (works across all pages) -->
+  <script src="js/persistent-music-player.js"></script>
   
   <script src="js/home-tailwind.js"></script>
 </body>
