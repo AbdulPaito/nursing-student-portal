@@ -8,8 +8,10 @@ const authRoutes = require('./routes/auth');
 const eventsRoutes = require('./routes/events');
 const dailySubjectsRoutes = require('./routes/dailySubjects');
 const announcementsRoutes = require('./routes/announcements');
+const musicRoutes = require('./routes/music');
 
 const app = express();
+const path = require('path');
 
 // CORS Configuration
 // Parse CORS_ORIGINS from env or use defaults
@@ -54,6 +56,9 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Serve static files
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Request logging middleware (for debugging)
 app.use((req, res, next) => {
@@ -113,6 +118,7 @@ app.use('/api/admin', requireDb, authRoutes);  // Alias for auth routes
 app.use('/api/events', requireDb, eventsRoutes);
 app.use('/api/daily-subjects', requireDb, dailySubjectsRoutes);
 app.use('/api/announcements', requireDb, announcementsRoutes);
+app.use('/api/music', requireDb, musicRoutes);
 
 // 404 handler
 app.use((req, res) => {

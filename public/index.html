@@ -296,16 +296,16 @@
         <!-- Logo & Title Section - ALWAYS VISIBLE -->
         <div class="flex items-center gap-3 sm:gap-4 flex-shrink-0">
           <a href="/" class="relative group flex items-center justify-center">
-            <div class="relative h-12 w-12 sm:h-14 sm:w-14 rounded-2xl overflow-hidden bg-gradient-to-br from-primary-600 to-secondary-600 shadow-lg group-hover:shadow-xl group-hover:shadow-primary-500/30 transition-all duration-300 group-hover:scale-105 logo-glow flex items-center justify-center">
+            <div class="relative h-12 w-12 sm:h-14 sm:w-14 transition-all duration-300 group-hover:scale-105 flex items-center justify-center">
               <!-- Fallback Icon when logo fails to load -->
-              <div class="absolute inset-0 flex items-center justify-center">
+              <div class="absolute inset-0 flex items-center justify-center rounded-2xl bg-gradient-to-br from-primary-600 to-secondary-600 shadow-lg">
                 <i class="fa-solid fa-building-columns text-white text-2xl sm:text-3xl"></i>
               </div>
               <!-- Actual Logo Image -->
               <img 
                 src="images/msu-logo.png" 
                 alt="MSU Logo" 
-                class="h-full w-full object-contain relative z-10"
+                class="h-full w-full object-contain relative z-10 drop-shadow-lg"
                 onerror="this.style.display='none'"
               >
             </div>
@@ -759,6 +759,12 @@
     </div>
   </div>
 
+  <!-- Music Player Script -->
+  <script>
+    window.musicPlayerLocation = 'portal';
+  </script>
+  <script src="js/music-player.js"></script>
+  
   <script src="js/home-tailwind.js"></script>
 </body>
 </html>
