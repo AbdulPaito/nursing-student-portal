@@ -227,7 +227,10 @@
               
               <!-- Message Section - Most Visible -->
               <div class="px-5 py-4 bg-white border-t border-purple-100">
-                <p class="text-gray-900 font-medium text-base leading-relaxed whitespace-pre-wrap break-words line-clamp-4">${escapeHtml(a.message)}</p>
+                <div class="mb-2">
+                  <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Message:</span>
+                </div>
+                <p class="text-gray-900 font-semibold text-base leading-relaxed whitespace-pre-wrap break-words">${escapeHtml(a.message)}</p>
               </div>
               
               <!-- Items Section (if any) - Compact -->
