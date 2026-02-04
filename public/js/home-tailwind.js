@@ -196,40 +196,32 @@
             <!-- Subtle gradient background -->
             <div class="bg-gradient-to-br ${isUrgent ? 'from-red-50 to-rose-50' : 'from-purple-50 to-blue-50'} rounded-2xl shadow-lg border-2 ${isUrgent ? 'border-red-200' : 'border-purple-200'} overflow-hidden">
               
-              <!-- Compact Header -->
-              <div class="flex items-start gap-4 p-5 bg-white/60">
-                <!-- Smaller Icon -->
-                <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br ${isUrgent ? 'from-red-500 to-rose-600' : 'from-primary-500 to-secondary-600'} flex items-center justify-center shadow-md">
-                  <i class="fa-solid ${isUrgent ? 'fa-exclamation-triangle' : 'fa-megaphone'} text-white text-lg"></i>
+              <!-- Compact Header - No Icon -->
+              <div class="p-5 bg-white/60">
+                <div class="flex items-center justify-between gap-2 mb-1.5">
+                  <h3 class="text-lg font-bold text-gray-900 leading-tight">${escapeHtml(a.title)}</h3>
+                  <span class="flex-shrink-0 px-2.5 py-1 bg-gradient-to-r ${isUrgent ? 'from-red-500 to-rose-600' : 'from-primary-500 to-secondary-600'} text-white text-xs font-bold rounded-full">
+                    ${escapeHtml(type)}
+                  </span>
                 </div>
                 
-                <!-- Title and Badge -->
-                <div class="flex-grow min-w-0">
-                  <div class="flex items-center gap-2 mb-1.5">
-                    <h3 class="text-lg font-bold text-gray-900 leading-tight truncate">${escapeHtml(a.title)}</h3>
-                    <span class="flex-shrink-0 px-2.5 py-1 bg-gradient-to-r ${isUrgent ? 'from-red-500 to-rose-600' : 'from-primary-500 to-secondary-600'} text-white text-xs font-bold rounded-full">
-                      ${escapeHtml(type)}
+                <!-- Compact Date/Time -->
+                <div class="flex flex-wrap items-center gap-2 text-xs text-gray-600">
+                  ${dayOfWeek ? `
+                    <span class="flex items-center gap-1">
+                      <i class="fa-solid fa-calendar text-primary-600"></i>
+                      <strong>${escapeHtml(dayOfWeek)}</strong>
                     </span>
-                  </div>
-                  
-                  <!-- Compact Date/Time -->
-                  <div class="flex flex-wrap items-center gap-2 text-xs text-gray-600">
-                    ${dayOfWeek ? `
-                      <span class="flex items-center gap-1">
-                        <i class="fa-solid fa-calendar text-primary-600"></i>
-                        <strong>${escapeHtml(dayOfWeek)}</strong>
-                      </span>
-                    ` : ''}
-                    ${formattedDate ? `
-                      <span>${escapeHtml(formattedDate)}</span>
-                    ` : ''}
-                    ${formattedTime ? `
-                      <span class="flex items-center gap-1">
-                        <i class="fa-solid fa-clock text-primary-600"></i>
-                        ${escapeHtml(formattedTime)}
-                      </span>
-                    ` : ''}
-                  </div>
+                  ` : ''}
+                  ${formattedDate ? `
+                    <span>${escapeHtml(formattedDate)}</span>
+                  ` : ''}
+                  ${formattedTime ? `
+                    <span class="flex items-center gap-1">
+                      <i class="fa-solid fa-clock text-primary-600"></i>
+                      ${escapeHtml(formattedTime)}
+                    </span>
+                  ` : ''}
                 </div>
               </div>
               
@@ -534,6 +526,79 @@
   }).catch(function() {
     if (todayContainer) todayContainer.innerHTML = '<p class="text-gray-500 text-center py-4">Could not load subjects.</p>';
   });
+
+  // Statistics Cards - Fetch Real Data
+  const statEvents = document.getElementById('statEvents');
+  const statSubjects = document.getElementById('statSubjects');
+  const statAnnouncements = document.getElementById('statAnnouncements');
+  const statNextEventName = document.getElementById('statNextEventName');
+  const statNextEventDate = document.getElementById('statNextEventDate');
+
+  function loadStatistics() {
+    fetch('/api/stats/all')
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data.success && data.stats) {
+          // Animate numbers counting up
+          function animateCount(element, target) {
+            if (!element) return;
+            const duration = 1000;
+            const start = 0;
+            const increment = target / (duration / 16);
+            let current = start;
+            
+            const timer = setInterval(function() {
+              current += increment;
+              if (current >= target) {
+                element.textContent = target;
+                clearInterval(timer);
+              } else {
+                element.textContent = Math.floor(current);
+              }
+            }, 16);
+          }
+          
+          animateCount(statEvents, data.stats.totalEvents);
+          animateCount(statSubjects, data.stats.subjectsTodayCount);
+          animateCount(statAnnouncements, data.stats.announcementsCount);
+        }
+      })
+      .catch(function(err) {
+        console.error('Failed to load statistics:', err);
+        // Keep showing 0 on error
+      });
+    
+    // Load next event info for 4th stat card
+    fetch('/api/events/upcoming')
+      .then(function(r) { return r.json(); })
+      .then(function(events) {
+        if (events && events.length > 0) {
+          const nextEvent = events[0];
+          if (statNextEventName) {
+            statNextEventName.textContent = nextEvent.title;
+            statNextEventName.title = nextEvent.title; // tooltip
+          }
+          if (statNextEventDate) {
+            const eventDate = new Date(nextEvent.date + 'T' + (nextEvent.time || '00:00'));
+            const formatted = eventDate.toLocaleDateString('en-US', { 
+              month: 'short', 
+              day: 'numeric', 
+              year: 'numeric' 
+            });
+            statNextEventDate.textContent = formatted;
+          }
+        } else {
+          if (statNextEventName) statNextEventName.textContent = '—';
+          if (statNextEventDate) statNextEventDate.textContent = 'No upcoming events';
+        }
+      })
+      .catch(function(err) {
+        console.error('Failed to load next event:', err);
+      });
+  }
+
+  // Load statistics on page load
+  loadStatistics();
 
   // Mini Calendar
   const calendarGrid = document.getElementById('miniCalendarGrid');

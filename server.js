@@ -9,6 +9,7 @@ const eventsRoutes = require('./routes/events');
 const dailySubjectsRoutes = require('./routes/dailySubjects');
 const announcementsRoutes = require('./routes/announcements');
 const musicRoutes = require('./routes/music');
+const statsRoutes = require('./routes/stats');
 
 const app = express();
 const path = require('path');
@@ -119,6 +120,7 @@ app.use('/api/events', requireDb, eventsRoutes);
 app.use('/api/daily-subjects', requireDb, dailySubjectsRoutes);
 app.use('/api/announcements', requireDb, announcementsRoutes);
 app.use('/api/music', requireDb, musicRoutes);
+app.use('/api/stats', requireDb, statsRoutes);
 
 // 404 handler
 app.use((req, res) => {
