@@ -371,7 +371,7 @@
           <i class="fa-solid fa-chevron-right ml-auto text-xs opacity-0 group-hover:opacity-100 transition-opacity"></i>
         </a>
         
-        <a href="music.html" class="sidebar-link flex items-center gap-3 px-4 py-3.5 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 group">
+        <a href="#" data-section="music" class="sidebar-link flex items-center gap-3 px-4 py-3.5 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 group">
           <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
             <i class="fa-solid fa-music text-lg"></i>
           </div>
@@ -699,7 +699,135 @@
           </div>
         </div>
       </section>
+
+      <!-- Music Management Section -->
+      <section id="section-music" class="admin-section hidden animate-fade-in">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-8">
+          <div>
+            <h1 class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary-700 to-secondary-700 bg-clip-text text-transparent mb-2">
+              Background Music
+            </h1>
+            <p class="text-gray-500">Manage background music for login and portal pages</p>
+          </div>
+          <button type="button" class="btn-shimmer px-6 py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold rounded-2xl shadow-xl shadow-emerald-500/30 transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-2 group" onclick="openMusicUploadModal()">
+            <i class="fa-solid fa-upload group-hover:rotate-12 transition-transform"></i>
+            <span>Upload Music</span>
+          </button>
+        </div>
+
+        <!-- Loading State -->
+        <div id="musicLoading" class="glass rounded-3xl shadow-xl p-12 text-center">
+          <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary-100 mb-4">
+            <i class="fa-solid fa-spinner fa-spin text-2xl text-primary-600"></i>
+          </div>
+          <p class="text-gray-500 font-medium">Loading music files...</p>
+        </div>
+
+        <!-- Empty State -->
+        <div id="musicEmpty" class="hidden glass rounded-3xl shadow-xl p-12 text-center">
+          <i class="fa-solid fa-music text-6xl text-gray-300 mb-4"></i>
+          <p class="text-gray-600 font-medium mb-4">No music files uploaded yet</p>
+          <button type="button" onclick="openMusicUploadModal()" class="px-6 py-3 bg-gradient-to-br from-primary-600 to-secondary-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all">
+            Upload Your First Music
+          </button>
+        </div>
+
+        <!-- Music Grid -->
+        <div id="musicGrid" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+      </section>
     </main>
+  </div>
+
+  <!-- Music Upload Modal -->
+  <div id="musicUploadModal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity" onclick="closeMusicUploadModal()"></div>
+    <div class="flex items-center justify-center min-h-screen p-4">
+      <div class="glass rounded-3xl shadow-2xl max-w-md w-full p-8 relative animate-scale-in">
+        <button type="button" class="absolute top-6 right-6 w-10 h-10 rounded-full bg-gray-100 text-gray-500 hover:text-gray-700 hover:bg-gray-200 flex items-center justify-center transition-all" onclick="closeMusicUploadModal()">
+          <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+        
+        <div class="flex items-center gap-3 mb-6">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-r from-primary-500 to-secondary-500 flex items-center justify-center">
+            <i class="fa-solid fa-upload text-white text-xl"></i>
+          </div>
+          <h3 class="text-2xl font-bold text-gray-800">Upload Music</h3>
+        </div>
+        
+        <form id="musicUploadForm" class="space-y-4">
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Music Title <span class="text-rose-500">*</span></label>
+            <input type="text" id="musicTitle" required class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-primary-500 focus:bg-white outline-none transition-all input-glow" placeholder="Enter music title">
+          </div>
+          
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Location <span class="text-rose-500">*</span></label>
+            <select id="musicLocation" required class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-primary-500 focus:bg-white outline-none transition-all input-glow">
+              <option value="login">Login Page Only</option>
+              <option value="portal">Student Portal Only</option>
+              <option value="both">Both Pages</option>
+            </select>
+          </div>
+          
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Music File <span class="text-rose-500">*</span></label>
+            <input type="file" id="musicFile" accept="audio/*" required class="hidden" onchange="updateMusicFileName()">
+            <button type="button" onclick="document.getElementById('musicFile').click()" class="w-full px-4 py-3 border-2 border-dashed border-gray-300 hover:border-primary-500 rounded-xl text-gray-600 hover:text-primary-600 transition-all flex items-center justify-center gap-2">
+              <i class="fa-solid fa-file-audio"></i>
+              <span id="musicFileNameDisplay">Choose audio file (MP3, WAV, OGG, M4A)</span>
+            </button>
+            <p class="text-xs text-gray-500 mt-2">Maximum file size: 10MB</p>
+          </div>
+          
+          <div class="flex gap-3 pt-4">
+            <button type="button" onclick="closeMusicUploadModal()" class="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-all">Cancel</button>
+            <button type="submit" id="musicUploadBtn" class="flex-1 px-6 py-3 bg-gradient-to-br from-primary-600 to-secondary-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all">Upload</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Music Edit Modal -->
+  <div id="musicEditModal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity" onclick="closeMusicEditModal()"></div>
+    <div class="flex items-center justify-center min-h-screen p-4">
+      <div class="glass rounded-3xl shadow-2xl max-w-md w-full p-8 relative animate-scale-in">
+        <button type="button" class="absolute top-6 right-6 w-10 h-10 rounded-full bg-gray-100 text-gray-500 hover:text-gray-700 hover:bg-gray-200 flex items-center justify-center transition-all" onclick="closeMusicEditModal()">
+          <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+        
+        <div class="flex items-center gap-3 mb-6">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center">
+            <i class="fa-solid fa-edit text-white text-xl"></i>
+          </div>
+          <h3 class="text-2xl font-bold text-gray-800">Edit Music</h3>
+        </div>
+        
+        <form id="musicEditForm" class="space-y-4">
+          <input type="hidden" id="editMusicId">
+          
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Music Title <span class="text-rose-500">*</span></label>
+            <input type="text" id="editMusicTitle" required class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-primary-500 focus:bg-white outline-none transition-all input-glow">
+          </div>
+          
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Location <span class="text-rose-500">*</span></label>
+            <select id="editMusicLocation" required class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-primary-500 focus:bg-white outline-none transition-all input-glow">
+              <option value="login">Login Page Only</option>
+              <option value="portal">Student Portal Only</option>
+              <option value="both">Both Pages</option>
+            </select>
+          </div>
+          
+          <div class="flex gap-3 pt-4">
+            <button type="button" onclick="closeMusicEditModal()" class="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-all">Cancel</button>
+            <button type="submit" class="flex-1 px-6 py-3 bg-gradient-to-br from-blue-600 to-cyan-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 
   <!-- Event Modal -->

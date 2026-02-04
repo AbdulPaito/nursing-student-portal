@@ -543,4 +543,202 @@
   loadEvents();
   loadDailySubjects();
   loadAnnouncements();
+
+  // Music Management
+  var musicList = [];
+  var musicGrid = document.getElementById('musicGrid');
+  var musicLoading = document.getElementById('musicLoading');
+  var musicEmpty = document.getElementById('musicEmpty');
+
+  async function loadMusicFiles() {
+    if (musicLoading) musicLoading.classList.remove('hidden');
+    if (musicGrid) musicGrid.classList.add('hidden');
+    if (musicEmpty) musicEmpty.classList.add('hidden');
+
+    try {
+      var res = await apiFetch('/api/music');
+      var raw = res.data;
+      musicList = Array.isArray(raw) ? raw : [];
+      
+      if (musicLoading) musicLoading.classList.add('hidden');
+      
+      if (musicList.length === 0) {
+        if (musicEmpty) musicEmpty.classList.remove('hidden');
+      } else {
+        if (musicGrid) {
+          musicGrid.classList.remove('hidden');
+          displayMusicFiles(musicList);
+        }
+      }
+    } catch (err) {
+      if (musicLoading) {
+        musicLoading.innerHTML = '<div class="glass rounded-3xl shadow-xl p-12 text-center"><i class="fa-solid fa-exclamation-circle text-4xl text-red-500 mb-4"></i><p class="text-red-600">' + (err.message || 'Failed to load') + '</p></div>';
+      }
+    }
+  }
+
+  function displayMusicFiles(files) {
+    if (!musicGrid) return;
+    musicGrid.innerHTML = files.map(function(music) {
+      var locationLabel = music.location === 'login' ? 'Login Page' : music.location === 'portal' ? 'Student Portal' : 'Both Pages';
+      var statusClass = music.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600';
+      var statusText = music.isActive ? 'Active' : 'Inactive';
+      var fileSize = formatFileSize(music.fileSize);
+      
+      return '<div class="glass rounded-2xl border-2 border-gray-200 p-5 hover:border-primary-500 hover:shadow-lg transition-all card-hover">' +
+        '<div class="flex items-start justify-between mb-4">' +
+          '<div class="flex-1"><h3 class="font-bold text-gray-800 mb-1">' + escapeHtml(music.title) + '</h3>' +
+          '<p class="text-xs text-gray-500">' + fileSize + '</p></div>' +
+          '<span class="px-3 py-1 rounded-full text-xs font-semibold ' + statusClass + '">' + statusText + '</span>' +
+        '</div>' +
+        '<div class="mb-4"><span class="inline-flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-medium bg-primary-50 text-primary-700">' +
+          '<i class="fa-solid fa-map-marker-alt"></i> ' + locationLabel +
+        '</span></div>' +
+        '<audio controls class="w-full mb-4" style="height: 40px;"><source src="' + music.filePath + '" type="audio/mpeg">Your browser does not support audio.</audio>' +
+        '<div class="flex gap-2">' +
+          '<button onclick="toggleMusicStatus(\'' + music._id + '\', ' + music.isActive + ')" class="flex-1 px-4 py-2 rounded-lg font-medium transition-all ' + (music.isActive ? 'bg-gray-100 text-gray-700 hover:bg-gray-200' : 'bg-green-100 text-green-700 hover:bg-green-200') + '">' +
+            '<i class="fa-solid fa-' + (music.isActive ? 'pause' : 'play') + '"></i> ' + (music.isActive ? 'Deactivate' : 'Activate') +
+          '</button>' +
+          '<button onclick="openMusicEditModal(\'' + music._id + '\', \'' + escapeHtml(music.title) + '\', \'' + music.location + '\')" class="px-4 py-2 rounded-lg font-medium bg-blue-100 text-blue-700 hover:bg-blue-200 transition-all"><i class="fa-solid fa-edit"></i></button>' +
+          '<button onclick="deleteMusic(\'' + music._id + '\')" class="px-4 py-2 rounded-lg font-medium bg-red-100 text-red-700 hover:bg-red-200 transition-all"><i class="fa-solid fa-trash"></i></button>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  function formatFileSize(bytes) {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+  }
+
+  window.openMusicUploadModal = function() {
+    document.getElementById('musicUploadModal').classList.remove('hidden');
+  };
+
+  window.closeMusicUploadModal = function() {
+    document.getElementById('musicUploadModal').classList.add('hidden');
+    document.getElementById('musicUploadForm').reset();
+    document.getElementById('musicFileNameDisplay').textContent = 'Choose audio file (MP3, WAV, OGG, M4A)';
+  };
+
+  window.updateMusicFileName = function() {
+    var fileInput = document.getElementById('musicFile');
+    var display = document.getElementById('musicFileNameDisplay');
+    if (fileInput.files.length > 0) {
+      display.textContent = fileInput.files[0].name;
+    }
+  };
+
+  document.getElementById('musicUploadForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    var title = document.getElementById('musicTitle').value;
+    var location = document.getElementById('musicLocation').value;
+    var file = document.getElementById('musicFile').files[0];
+
+    if (!file) {
+      toast('Please select a music file', 'error');
+      return;
+    }
+
+    var formData = new FormData();
+    formData.append('title', title);
+    formData.append('location', location);
+    formData.append('music', file);
+
+    var uploadBtn = document.getElementById('musicUploadBtn');
+    uploadBtn.disabled = true;
+    uploadBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading...';
+
+    try {
+      var response = await fetch('/api/music/upload', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + getToken() },
+        body: formData
+      });
+
+      var data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Upload failed');
+      }
+
+      toast('Music uploaded successfully!');
+      closeMusicUploadModal();
+      loadMusicFiles();
+    } catch (error) {
+      toast('Error: ' + error.message, 'error');
+    } finally {
+      uploadBtn.disabled = false;
+      uploadBtn.innerHTML = 'Upload';
+    }
+  });
+
+  window.toggleMusicStatus = async function(id, currentStatus) {
+    try {
+      var res = await apiFetch('/api/music/' + id + '/toggle', { method: 'PUT', headers: headers() });
+      if (!res.ok) throw new Error(res.data.message || 'Failed to update status');
+      toast(res.data.message || 'Status updated');
+      loadMusicFiles();
+    } catch (error) {
+      toast('Error: ' + error.message, 'error');
+    }
+  };
+
+  window.deleteMusic = async function(id) {
+    var ok = await confirmDelete('Are you sure you want to delete this music file?');
+    if (!ok) return;
+
+    try {
+      var res = await apiFetch('/api/music/' + id, { method: 'DELETE', headers: headers() });
+      if (!res.ok) throw new Error(res.data.message || 'Delete failed');
+      toast('Music deleted successfully!');
+      loadMusicFiles();
+    } catch (error) {
+      toast('Error: ' + error.message, 'error');
+    }
+  };
+
+  window.openMusicEditModal = function(id, title, location) {
+    document.getElementById('editMusicId').value = id;
+    document.getElementById('editMusicTitle').value = title;
+    document.getElementById('editMusicLocation').value = location;
+    document.getElementById('musicEditModal').classList.remove('hidden');
+  };
+
+  window.closeMusicEditModal = function() {
+    document.getElementById('musicEditModal').classList.add('hidden');
+  };
+
+  document.getElementById('musicEditForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    var id = document.getElementById('editMusicId').value;
+    var title = document.getElementById('editMusicTitle').value;
+    var location = document.getElementById('editMusicLocation').value;
+
+    try {
+      var res = await apiFetch('/api/music/' + id, {
+        method: 'PUT',
+        headers: headers(),
+        body: JSON.stringify({ title: title, location: location })
+      });
+
+      if (!res.ok) throw new Error(res.data.message || 'Update failed');
+      toast('Music updated successfully!');
+      closeMusicEditModal();
+      loadMusicFiles();
+    } catch (error) {
+      toast('Error: ' + error.message, 'error');
+    }
+  });
+
+  // Load music when music section is active
+  document.addEventListener('DOMContentLoaded', function() {
+    var musicSection = document.querySelector('[data-section="music"]');
+    if (musicSection) {
+      musicSection.addEventListener('click', function() {
+        loadMusicFiles();
+      });
+    }
+  });
 })();
