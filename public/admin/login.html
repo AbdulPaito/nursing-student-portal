@@ -85,17 +85,14 @@
       border: 1px solid rgba(255, 255, 255, 0.3);
     }
     
-    /* Gradient background animation */
-    .animated-gradient {
-      background: linear-gradient(-45deg, #7c3aed, #4f46e5, #7c3aed, #312e81);
-      background-size: 400% 400%;
-      animation: gradientBG 15s ease infinite;
-    }
-    
-    @keyframes gradientBG {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+    /* Background image styling */
+    .bg-page {
+      background-color: #4c1d95; /* Fallback solid color (purple-900) */
+      background-image: url('../images/background.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
     }
     
     /* Floating shapes */
@@ -197,7 +194,7 @@
     }
   </style>
 </head>
-<body class="min-h-screen animated-gradient flex items-center justify-center p-4 relative overflow-hidden">
+<body class="min-h-screen bg-page flex items-center justify-center p-4 relative overflow-hidden">
   <!-- Animated Background Shapes -->
   <div class="floating-shape shape-1"></div>
   <div class="floating-shape shape-2"></div>
