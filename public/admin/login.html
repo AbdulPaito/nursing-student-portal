@@ -85,11 +85,11 @@
       border: 1px solid rgba(255, 255, 255, 0.3);
     }
     
-    /* Full-screen background - Building covers entire viewport */
+    /* Full-screen background - Zoomed out to show full building */
     .bg-page {
       background-color: #1e1b4b; /* Fallback solid color */
       background-image: url('../images/background.png');
-      background-size: cover;
+      background-size: 80%; /* Zoomed out to show full building */
       background-position: center center;
       background-repeat: no-repeat;
       background-attachment: fixed;
@@ -113,53 +113,64 @@
     /* Music control inside login card */
     .music-control-card {
       position: absolute;
-      top: 16px;
-      right: 16px;
+      top: 20px;
+      right: 20px;
       z-index: 10;
     }
     
     .music-btn {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      background: rgba(124, 58, 237, 0.1);
-      border: 1px solid rgba(124, 58, 237, 0.3);
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      background: white; /* White background for high visibility */
+      border: 2px solid #7c3aed;
       color: #7c3aed;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       transition: all 0.3s ease;
-      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(124, 58, 237, 0.2);
     }
     
     .music-btn:hover {
-      background: rgba(124, 58, 237, 0.2);
-      transform: scale(1.05);
+      background: #f9fafb;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2), 0 3px 6px rgba(124, 58, 237, 0.3);
     }
     
     .music-btn.playing {
-      background: rgba(124, 58, 237, 0.2);
+      background: white;
       border-color: #7c3aed;
+      animation: pulse-ring 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulse-ring {
+      0%, 100% {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 0 0 0 rgba(124, 58, 237, 0.4);
+      }
+      50% {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 0 0 8px rgba(124, 58, 237, 0);
+      }
     }
     
     .music-btn.muted {
-      background: rgba(239, 68, 68, 0.1);
-      border-color: rgba(239, 68, 68, 0.3);
+      background: white;
+      border-color: #ef4444;
       color: #ef4444;
     }
     
     .volume-popup {
       position: absolute;
-      top: 50px;
+      top: 60px; /* Below the icon */
       right: 0;
-      background: rgba(255, 255, 255, 0.95);
+      background: white;
       backdrop-filter: blur(20px);
-      border: 1px solid rgba(124, 58, 237, 0.2);
+      border: 2px solid #e5e7eb;
       border-radius: 12px;
-      padding: 16px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-      min-width: 200px;
+      padding: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      min-width: 180px;
       display: none;
       animation: slideDown 0.3s ease;
     }
@@ -182,14 +193,13 @@
     .volume-slider-container {
       display: flex;
       align-items: center;
-      gap: 8px;
-      margin-top: 8px;
+      gap: 10px;
     }
     
     .volume-slider {
       flex: 1;
-      height: 4px;
-      border-radius: 2px;
+      height: 6px;
+      border-radius: 3px;
       background: #e5e7eb;
       outline: none;
       -webkit-appearance: none;
@@ -198,22 +208,48 @@
     .volume-slider::-webkit-slider-thumb {
       -webkit-appearance: none;
       appearance: none;
-      width: 16px;
-      height: 16px;
+      width: 18px;
+      height: 18px;
       border-radius: 50%;
       background: #7c3aed;
       cursor: pointer;
-      box-shadow: 0 2px 4px rgba(124, 58, 237, 0.3);
+      box-shadow: 0 2px 6px rgba(124, 58, 237, 0.4);
     }
     
     .volume-slider::-moz-range-thumb {
-      width: 16px;
-      height: 16px;
+      width: 18px;
+      height: 18px;
       border-radius: 50%;
       background: #7c3aed;
       cursor: pointer;
       border: none;
-      box-shadow: 0 2px 4px rgba(124, 58, 237, 0.3);
+      box-shadow: 0 2px 6px rgba(124, 58, 237, 0.4);
+    }
+    
+    .mute-toggle-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: #f3f4f6;
+      border: 1px solid #e5e7eb;
+      color: #6b7280;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+    
+    .mute-toggle-btn:hover {
+      background: #e5e7eb;
+      color: #374151;
+    }
+    
+    .mute-toggle-btn.muted {
+      background: #fee2e2;
+      border-color: #fecaca;
+      color: #ef4444;
     }
     
     /* Floating shapes */
@@ -329,29 +365,15 @@
       <!-- Music Control in Card -->
       <div class="music-control-card">
         <button id="musicBtn" class="music-btn" title="Background Music">
-          <i class="fa-solid fa-music text-lg"></i>
+          <i class="fa-solid fa-music text-xl"></i>
         </button>
         <div id="volumePopup" class="volume-popup">
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-            <span style="font-size: 13px; font-weight: 600; color: #374151;">Background Music</span>
-            <button id="closePopup" style="background: none; border: none; cursor: pointer; color: #9ca3af; padding: 0; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;">
-              <i class="fa-solid fa-xmark"></i>
-            </button>
-          </div>
-          <div style="font-size: 12px; color: #6b7280; margin-bottom: 12px;" id="trackTitle">Loading...</div>
-          <div style="display: flex; gap: 8px; margin-bottom: 12px;">
-            <button id="playPauseBtn" style="flex: 1; padding: 8px; background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 500; transition: all 0.2s;">
-              <i class="fa-solid fa-play" style="margin-right: 4px;"></i>
-              <span id="playPauseText">Play</span>
-            </button>
-            <button id="muteBtn" style="padding: 8px 12px; background: #f3f4f6; color: #6b7280; border: none; border-radius: 8px; cursor: pointer; transition: all 0.2s;">
+          <div class="volume-slider-container">
+            <i class="fa-solid fa-volume-low" style="color: #6b7280; font-size: 14px;"></i>
+            <input type="range" id="volumeSlider" class="volume-slider" min="0" max="100" value="50">
+            <button id="muteBtn" class="mute-toggle-btn">
               <i class="fa-solid fa-volume-high"></i>
             </button>
-          </div>
-          <div class="volume-slider-container">
-            <i class="fa-solid fa-volume-low" style="color: #9ca3af; font-size: 12px;"></i>
-            <input type="range" id="volumeSlider" class="volume-slider" min="0" max="100" value="50">
-            <i class="fa-solid fa-volume-high" style="color: #9ca3af; font-size: 12px;"></i>
           </div>
         </div>
       </div>
@@ -473,7 +495,7 @@
 
   <!-- Music Player Script -->
   <script>
-    // Music Player for Login Card
+    // Compact Music Player for Login Card
     let audio = null;
     let isPlaying = false;
     let isMuted = false;
@@ -488,8 +510,6 @@
           audio.volume = 0.5;
           audio.loop = true;
           
-          document.getElementById('trackTitle').textContent = data.title || 'Background Music';
-          
           // Auto-play after short delay
           setTimeout(() => {
             audio.play().then(() => {
@@ -497,58 +517,37 @@
               updateUI();
             }).catch(err => console.log('Autoplay prevented:', err));
           }, 1000);
-        } else {
-          document.getElementById('trackTitle').textContent = 'No music available';
         }
       } catch (error) {
         console.error('Music load error:', error);
-        document.getElementById('trackTitle').textContent = 'Failed to load';
       }
     }
     
     function updateUI() {
       const musicBtn = document.getElementById('musicBtn');
-      const playPauseBtn = document.getElementById('playPauseBtn');
-      const playPauseText = document.getElementById('playPauseText');
-      const playPauseIcon = playPauseBtn.querySelector('i');
       const muteBtn = document.getElementById('muteBtn');
       
-      // Update main button
-      if (isMuted || !isPlaying) {
+      // Update main music button
+      if (isMuted) {
+        musicBtn.classList.add('muted');
         musicBtn.classList.remove('playing');
-        if (isMuted) {
-          musicBtn.classList.add('muted');
-          musicBtn.querySelector('i').className = 'fa-solid fa-volume-xmark text-lg';
-        } else {
-          musicBtn.classList.remove('muted');
-          musicBtn.querySelector('i').className = 'fa-solid fa-music text-lg';
-        }
-      } else {
+        musicBtn.querySelector('i').className = 'fa-solid fa-volume-xmark text-xl';
+      } else if (isPlaying) {
         musicBtn.classList.add('playing');
         musicBtn.classList.remove('muted');
-        musicBtn.querySelector('i').className = 'fa-solid fa-music text-lg';
-      }
-      
-      // Update play/pause button
-      if (isPlaying) {
-        playPauseIcon.className = 'fa-solid fa-pause';
-        playPauseText.textContent = 'Pause';
-        playPauseBtn.style.background = 'linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%)';
+        musicBtn.querySelector('i').className = 'fa-solid fa-music text-xl';
       } else {
-        playPauseIcon.className = 'fa-solid fa-play';
-        playPauseText.textContent = 'Play';
-        playPauseBtn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+        musicBtn.classList.remove('playing', 'muted');
+        musicBtn.querySelector('i').className = 'fa-solid fa-music text-xl';
       }
       
-      // Update mute button
+      // Update mute button in popup
       if (isMuted) {
+        muteBtn.classList.add('muted');
         muteBtn.querySelector('i').className = 'fa-solid fa-volume-xmark';
-        muteBtn.style.background = '#fee2e2';
-        muteBtn.style.color = '#ef4444';
       } else {
+        muteBtn.classList.remove('muted');
         muteBtn.querySelector('i').className = 'fa-solid fa-volume-high';
-        muteBtn.style.background = '#f3f4f6';
-        muteBtn.style.color = '#6b7280';
       }
     }
     
@@ -557,24 +556,6 @@
       e.stopPropagation();
       const popup = document.getElementById('volumePopup');
       popup.classList.toggle('show');
-    });
-    
-    document.getElementById('closePopup').addEventListener('click', () => {
-      document.getElementById('volumePopup').classList.remove('show');
-    });
-    
-    document.getElementById('playPauseBtn').addEventListener('click', () => {
-      if (!audio) return;
-      
-      if (isPlaying) {
-        audio.pause();
-        isPlaying = false;
-      } else {
-        audio.play().then(() => {
-          isPlaying = true;
-        }).catch(err => console.error('Play error:', err));
-      }
-      updateUI();
     });
     
     document.getElementById('muteBtn').addEventListener('click', () => {
