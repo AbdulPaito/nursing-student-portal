@@ -419,11 +419,11 @@
     <div class="absolute bottom-10 right-10 w-48 h-48 rounded-full bg-white/10 blur-3xl animate-float" style="animation-delay: -3s;"></div>
     <div class="absolute top-1/2 left-1/4 w-24 h-24 rounded-full bg-white/5 blur-xl animate-float" style="animation-delay: -2s;"></div>
     
-    <div class="absolute inset-0 opacity-30">
+    <div class="absolute inset-0 opacity-10">
       <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
         <defs>
           <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
-            <path d="M 10 0 L 0 0 0 10" fill="none" stroke="white" stroke-width="1" style="filter: drop-shadow(0 0 1px rgba(255,255,255,0.5));"/>
+            <path d="M 10 0 L 0 0 0 10" fill="none" stroke="white" stroke-width="0.5"/>
           </pattern>
         </defs>
         <rect width="100" height="100" fill="url(#grid)" />
@@ -451,22 +451,22 @@
       
       <!-- Countdown Timer -->
       <div class="mt-10 flex justify-center" id="heroCountdown">
-        <div class="glass rounded-3xl px-8 py-6 border border-white/30 animate-scale-in shadow-2xl">
-          <p class="text-sm uppercase tracking-wider mb-3 opacity-90 font-semibold">Next Event Countdown</p>
+        <div class="glass rounded-3xl px-8 py-6 border border-white/50 animate-scale-in shadow-2xl">
+          <p class="text-base uppercase tracking-widest mb-4 font-bold text-white drop-shadow-lg">Next Event Countdown</p>
           <div class="flex items-center gap-3 text-3xl sm:text-4xl md:text-5xl font-bold font-mono" id="countdownDisplay">
             <div class="flex flex-col items-center">
-              <span class="bg-white/20 rounded-xl px-4 py-2">--</span>
-              <span class="text-xs mt-1 opacity-70">Days</span>
+              <span class="bg-white/30 rounded-xl px-4 py-2 shadow-lg backdrop-blur-sm border border-white/40 text-white drop-shadow-md">--</span>
+              <span class="text-sm mt-2 font-bold text-white drop-shadow-md">Days</span>
             </div>
-            <span class="text-2xl opacity-50">:</span>
+            <span class="text-3xl text-white drop-shadow-md">:</span>
             <div class="flex flex-col items-center">
-              <span class="bg-white/20 rounded-xl px-4 py-2">--</span>
-              <span class="text-xs mt-1 opacity-70">Hours</span>
+              <span class="bg-white/30 rounded-xl px-4 py-2 shadow-lg backdrop-blur-sm border border-white/40 text-white drop-shadow-md">--</span>
+              <span class="text-sm mt-2 font-bold text-white drop-shadow-md">Hours</span>
             </div>
-            <span class="text-2xl opacity-50">:</span>
+            <span class="text-3xl text-white drop-shadow-md">:</span>
             <div class="flex flex-col items-center">
-              <span class="bg-white/20 rounded-xl px-4 py-2">--</span>
-              <span class="text-xs mt-1 opacity-70">Mins</span>
+              <span class="bg-white/30 rounded-xl px-4 py-2 shadow-lg backdrop-blur-sm border border-white/40 text-white drop-shadow-md">--</span>
+              <span class="text-sm mt-2 font-bold text-white drop-shadow-md">Mins</span>
             </div>
           </div>
         </div>
