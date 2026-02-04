@@ -102,8 +102,23 @@
   <style>
     body { 
       font-family: 'Plus Jakarta Sans', sans-serif;
-      background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 50%, #e0e7ff 100%);
+      background: url('images/background.png') center center / cover no-repeat fixed, linear-gradient(135deg, #f5f3ff 0%, #ede9fe 50%, #e0e7ff 100%);
       min-height: 100vh;
+      position: relative;
+    }
+    
+    /* Background overlay with purple tint */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(139, 92, 246, 0.30);
+      backdrop-filter: blur(2px);
+      pointer-events: none;
+      z-index: -1;
     }
     
     /* Animated Background */
@@ -296,16 +311,16 @@
         <!-- Logo & Title Section - ALWAYS VISIBLE -->
         <div class="flex items-center gap-3 sm:gap-4 flex-shrink-0">
           <a href="/" class="relative group flex items-center justify-center">
-            <div class="relative h-12 w-12 sm:h-14 sm:w-14 rounded-2xl overflow-hidden bg-gradient-to-br from-primary-600 to-secondary-600 shadow-lg group-hover:shadow-xl group-hover:shadow-primary-500/30 transition-all duration-300 group-hover:scale-105 logo-glow flex items-center justify-center">
+            <div class="relative h-12 w-12 sm:h-14 sm:w-14 rounded-2xl overflow-hidden bg-transparent shadow-lg group-hover:shadow-xl group-hover:shadow-primary-500/30 transition-all duration-300 group-hover:scale-105 flex items-center justify-center">
               <!-- Fallback Icon when logo fails to load -->
-              <div class="absolute inset-0 flex items-center justify-center">
+              <div class="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary-600 to-secondary-600 rounded-2xl">
                 <i class="fa-solid fa-building-columns text-white text-2xl sm:text-3xl"></i>
               </div>
               <!-- Actual Logo Image -->
               <img 
                 src="images/msu-logo.png" 
                 alt="MSU Logo" 
-                class="h-full w-full object-contain relative z-10"
+                class="h-full w-full object-contain relative z-10 drop-shadow-lg"
                 onerror="this.style.display='none'"
               >
             </div>
@@ -435,7 +450,7 @@
       <div class="flex flex-col items-center justify-center mb-8">
         <div class="relative mb-6">
           <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-white/20 flex items-center justify-center logo-glow mb-4">
-            <img src="images/msu-logo.png" alt="MSU Logo" class="w-20 h-20 sm:w-24 sm:h-24 object-contain" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\\'fa-solid fa-building-columns text-4xl sm:text-5xl text-white\\'></i>';">
+            <img src="images/msu-logo.png" alt="MSU Logo" class="w-20 h-20 sm:w-24 sm:h-24 object-contain drop-shadow-2xl" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\\'fa-solid fa-building-columns text-4xl sm:text-5xl text-white\\'></i>';">
           </div>
           <div class="absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-emerald-400 border-4 border-primary-600 animate-pulse"></div>
         </div>
@@ -691,8 +706,8 @@
         <!-- Logo & Info -->
         <div class="text-center md:text-left">
           <div class="flex items-center justify-center md:justify-start gap-3 mb-4">
-            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-600 to-secondary-600 flex items-center justify-center">
-              <img src="images/msu-logo.png" alt="MSU Logo" class="w-10 h-10 object-contain" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\\'fa-solid fa-building-columns text-2xl text-white\\'></i>';">
+            <div class="w-14 h-14 rounded-2xl bg-transparent flex items-center justify-center">
+              <img src="images/msu-logo.png" alt="MSU Logo" class="w-10 h-10 object-contain drop-shadow-lg" onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\\'w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-600 to-secondary-600 flex items-center justify-center\\'><i class=\\'fa-solid fa-building-columns text-2xl text-white\\'></i></div>';">
             </div>
             <div>
               <h3 class="text-lg font-bold text-gray-800">Marinduque State University</h3>

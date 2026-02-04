@@ -76,6 +76,24 @@
   <style>
     body { 
       font-family: 'Plus Jakarta Sans', sans-serif;
+      background: url('../images/background.png') center center / cover no-repeat fixed;
+      position: relative;
+    }
+    
+    /* Background overlay with purple tint and gradient blend */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(-45deg, rgba(124, 58, 237, 0.85), rgba(79, 70, 229, 0.85), rgba(124, 58, 237, 0.85), rgba(49, 46, 129, 0.85));
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      backdrop-filter: blur(2px);
+      pointer-events: none;
+      z-index: 0;
     }
     
     /* Glassmorphism card */
@@ -87,9 +105,7 @@
     
     /* Gradient background animation */
     .animated-gradient {
-      background: linear-gradient(-45deg, #7c3aed, #4f46e5, #7c3aed, #312e81);
-      background-size: 400% 400%;
-      animation: gradientBG 15s ease infinite;
+      background: transparent;
     }
     
     @keyframes gradientBG {
@@ -203,17 +219,17 @@
   <div class="floating-shape shape-2"></div>
   
   <!-- Grid Pattern Overlay -->
-  <div class="fixed inset-0 opacity-20 pointer-events-none" style="background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px); background-size: 30px 30px;"></div>
+  <div class="fixed inset-0 opacity-20 pointer-events-none z-10" style="background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px); background-size: 30px 30px;"></div>
 
   <!-- Login Card -->
-  <div class="relative w-full max-w-md animate-fade-in-up">
+  <div class="relative w-full max-w-md animate-fade-in-up z-20">
     <div class="glass-card rounded-3xl shadow-2xl overflow-hidden">
       <!-- Header -->
       <div class="relative p-8 text-center bg-gradient-to-br from-primary-600/90 via-primary-700/90 to-secondary-800/90 backdrop-blur-xl">
         <!-- Animated Logo Container -->
         <div class="relative mx-auto mb-6">
-          <div class="w-28 h-28 mx-auto rounded-3xl bg-white/20 flex items-center justify-center logo-glow transform hover:scale-110 transition-transform duration-300 p-2">
-            <img src="../images/msu-logo.png" alt="Marinduque State University" class="w-24 h-24 object-contain" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\\'fa-solid fa-building-columns text-5xl text-white\\'></i>';">
+          <div class="w-28 h-28 mx-auto rounded-3xl bg-white/20 flex items-center justify-center logo-glow transform hover:scale-110 transition-transform duration-300 p-3">
+            <img src="../images/msu-logo.png" alt="Marinduque State University" class="w-full h-full object-contain drop-shadow-2xl" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\\'fa-solid fa-building-columns text-5xl text-white\\'></i>';">
           </div>
           <!-- Floating badge -->
           <div class="absolute -bottom-2 -right-2 w-10 h-10 rounded-xl bg-white/30 backdrop-blur-md flex items-center justify-center animate-float">
