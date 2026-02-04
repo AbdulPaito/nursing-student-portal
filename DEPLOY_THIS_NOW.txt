@@ -1,0 +1,45 @@
+============================================
+  MUSIC UPLOAD FIX - READY TO DEPLOY
+============================================
+
+WHAT WAS FIXED:
+✅ API URL configured: https://nursing-student-portal.onrender.com
+✅ Music section now calls loadMusicFiles() automatically
+✅ Upload button will work
+✅ All console logs added for debugging
+
+DEPLOY COMMANDS:
+----------------
+cd "Documents\Nursing Website"
+git add .
+git commit -m "Fix music upload - section loading and API URL"
+git push origin main
+
+WAIT: 2-3 minutes for Netlify to redeploy
+
+TEST:
+----------------
+1. Go to your admin dashboard
+2. Press F12 (open console)
+3. Click "Background Music"
+4. You should see:
+   📄 Switching to section: music
+   ✅ Section visible: music
+   🎵 Music section loaded, fetching files...
+   🎵 Loading music files...
+   📡 Fetching from: https://nursing-student-portal.onrender.com/api/music
+
+5. Click "Upload Music"
+6. Fill form and upload MP3
+7. You should see:
+   🎵 Starting music upload...
+   📡 Uploading to: https://nursing-student-portal.onrender.com/api/music/upload
+   ✅ Music uploaded successfully!
+
+FILES CHANGED:
+----------------
+- public/admin/admin.js (API URL + section switching logic)
+
+THAT'S IT!
+Push to GitHub and test in 2-3 minutes!
+============================================

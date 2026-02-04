@@ -79,16 +79,41 @@
   }
 
   // Section switching + active highlight
+  function showSection(sectionName) {
+    console.log('📄 Switching to section:', sectionName);
+    document.querySelectorAll('.admin-section').forEach(function(s) { s.classList.add('hidden'); });
+    var target = document.getElementById('section-' + sectionName);
+    if (target) {
+      target.classList.remove('hidden');
+      console.log('✅ Section visible:', sectionName);
+      
+      // Load data when section is shown
+      if (sectionName === 'music') {
+        console.log('🎵 Music section loaded, fetching files...');
+        loadMusicFiles();
+      }
+    } else {
+      console.error('❌ Section not found:', 'section-' + sectionName);
+    }
+  }
+
   document.querySelectorAll('.admin-sidebar .nav-link[data-section]').forEach(function(link) {
     link.addEventListener('click', function(e) {
       if (this.getAttribute('href') === '#') e.preventDefault();
       var section = this.getAttribute('data-section');
-      document.querySelectorAll('.admin-section').forEach(function(s) { s.classList.add('d-none'); });
-      var panel = document.getElementById('section-' + section);
-      if (panel) panel.classList.remove('d-none');
+      
+      // Show the selected section (this calls loadMusicFiles if music section)
+      showSection(section);
+      
+      // Update active link styling
       document.querySelectorAll('.admin-sidebar .nav-link').forEach(function(n) { n.classList.remove('active'); });
       this.classList.add('active');
-      if (sidebar && window.innerWidth < 992) { sidebar.classList.remove('show'); if (sidebarBackdrop) sidebarBackdrop.classList.remove('show'); }
+      
+      // Close mobile sidebar
+      if (sidebar && window.innerWidth < 992) { 
+        sidebar.classList.remove('show'); 
+        if (sidebarBackdrop) sidebarBackdrop.classList.remove('show'); 
+      }
     });
   });
   document.getElementById('logoutLink').addEventListener('click', function(e) {
@@ -757,13 +782,13 @@
     }
   });
 
-  // Load music when music section is active
+  // Initialize - show dashboard by default
   document.addEventListener('DOMContentLoaded', function() {
-    var musicSection = document.querySelector('[data-section="music"]');
-    if (musicSection) {
-      musicSection.addEventListener('click', function() {
-        loadMusicFiles();
-      });
+    console.log('✅ Admin dashboard initialized');
+    // Dashboard section should be visible by default
+    var dashboardSection = document.getElementById('section-dashboard');
+    if (dashboardSection && !dashboardSection.classList.contains('hidden')) {
+      console.log('✅ Dashboard is default section');
     }
   });
 })();
