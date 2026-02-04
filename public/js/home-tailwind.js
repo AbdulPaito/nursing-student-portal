@@ -260,67 +260,25 @@
     renderAnnouncements(list);
   }).catch(function() {});
 
-  // Events with Cards
+  // Events with Enhanced Cards
   const upcomingEventsEl = document.getElementById('upcomingEvents');
-  
-  function renderEventCard(e) {
-    const icon = getEventTypeIcon(e.title);
-    const itemsArr = e.items && Array.isArray(e.items) ? e.items : [];
-    const countdown = formatCountdown(e.date, e.time);
-    
-    return `
-      <div class="bg-white rounded-xl shadow-md border-l-4 border-primary hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden group">
-        <div class="p-5">
-          <div class="flex items-start gap-3 mb-3">
-            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors duration-300">
-              <i class="bi ${icon} text-primary group-hover:text-white text-lg"></i>
-            </div>
-            <div class="flex-grow">
-              <h4 class="font-bold text-gray-800 text-sm leading-tight mb-1">${escapeHtml(e.title)}</h4>
-              <div class="flex items-center gap-2 text-xs text-gray-500">
-                <i class="bi bi-calendar3 text-primary"></i>
-                <span>${escapeHtml(e.date)}</span>
-              </div>
-            </div>
-          </div>
-          
-          <div class="space-y-2 text-sm text-gray-600 mb-3">
-            <div class="flex items-center gap-2">
-              <i class="bi bi-clock text-primary text-xs"></i>
-              <span>${escapeHtml(e.time || '—')}</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <i class="bi bi-geo-alt text-primary text-xs"></i>
-              <span>${escapeHtml(e.location || '—')}</span>
-            </div>
-          </div>
-          
-          ${itemsArr.length ? `
-            <div class="bg-gray-50 rounded-lg p-3 mb-3">
-              <p class="text-xs font-semibold text-gray-700 mb-2">Items to Bring:</p>
-              <ul class="space-y-1">
-                ${itemsArr.map(i => `<li class="text-xs text-gray-600 flex items-center gap-1"><i class="bi ${getItemIcon(i)} text-primary text-xs"></i>${escapeHtml(i)}</li>`).join('')}
-              </ul>
-            </div>
-          ` : ''}
-          
-          <div class="flex items-center justify-between pt-3 border-t border-gray-100">
-            <span class="text-xs font-semibold text-primary">${countdown}</span>
-            <span class="text-xs text-gray-400">Until event</span>
-          </div>
-        </div>
-      </div>
-    `;
-  }
 
   fetch('/api/events/upcoming').then(function(r) { return r.json(); }).then(function(events) {
     if (!events.length) {
-      upcomingEventsEl.innerHTML = '<div class="col-span-2 text-center py-8 text-gray-500"><i class="bi bi-calendar-x text-4xl mb-2 block"></i>No upcoming events.</div>';
+      upcomingEventsEl.innerHTML = `
+        <div class="col-span-2 text-center py-12">
+          <div class="w-20 h-20 mx-auto mb-4 rounded-2xl bg-gray-100 flex items-center justify-center">
+            <i class="fa-solid fa-calendar-xmark text-4xl text-gray-300"></i>
+          </div>
+          <p class="text-lg font-medium text-gray-500">No upcoming events.</p>
+          <p class="text-sm text-gray-400 mt-2">Check back later for updates!</p>
+        </div>
+      `;
       return;
     }
     
     const show = events.slice(0, 4);
-    upcomingEventsEl.innerHTML = show.map(renderEventCard).join('');
+    upcomingEventsEl.innerHTML = show.map(e => window.renderEventCard(e)).join('');
     
     updateNextEventBanner(events[0]);
     startCountdownTimer(events[0]);
@@ -381,62 +339,27 @@
     setInterval(updateCountdown, 1000);
   }
 
-  // Today's Subjects
+  // Today's Subjects with Enhanced Cards
   const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const today = days[new Date().getDay()];
   const todayContainer = document.getElementById('todaySubjects');
-
-  function renderSubjectCard(s) {
-    const type = (s.type || 'Theory').toLowerCase();
-    const typeConfig = {
-      theory: { color: 'theory', bg: 'bg-blue-50', border: 'border-blue-500', icon: 'bi-book', badgeBg: 'bg-blue-500' },
-      lab: { color: 'lab', bg: 'bg-green-50', border: 'border-green-500', icon: 'bi-droplet', badgeBg: 'bg-green-600' },
-      seminar: { color: 'seminar', bg: 'bg-yellow-50', border: 'border-yellow-500', icon: 'bi-people', badgeBg: 'bg-yellow-600' }
-    };
-    const config = typeConfig[type] || typeConfig.theory;
-    const hasItems = s.itemsNeeded && s.itemsNeeded.length;
-
-    return `
-      <div class="bg-white rounded-lg shadow-sm border-l-4 ${config.border} p-4 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
-        <div class="flex items-start gap-3">
-          <div class="flex-shrink-0 w-8 h-8 rounded-full ${config.bg} flex items-center justify-center">
-            <i class="bi ${config.icon} ${config.badgeBg.replace('bg-', 'text-').replace('500', '500').replace('600', '600')} text-sm"></i>
-          </div>
-          <div class="flex-grow">
-            <div class="flex items-center gap-2 mb-1">
-              <span class="px-2 py-0.5 ${config.badgeBg} text-white text-xs font-semibold rounded-full">${escapeHtml(s.type || 'Theory')}</span>
-              <span class="text-sm font-semibold text-gray-800">${escapeHtml(s.name)}</span>
-            </div>
-            ${s.time ? `<p class="text-xs text-gray-500 mb-1"><i class="bi bi-clock mr-1 text-primary"></i>${escapeHtml(s.time)}</p>` : ''}
-            ${s.location ? `<p class="text-xs text-gray-500 mb-1"><i class="bi bi-geo-alt mr-1 text-primary"></i>${escapeHtml(s.location)}</p>` : ''}
-            
-            ${hasItems ? `
-              <div class="mt-2 pt-2 border-t border-gray-100">
-                <p class="text-xs font-semibold text-gray-600 mb-1">Items:</p>
-                <div class="flex flex-wrap gap-1">
-                  ${s.itemsNeeded.map(i => `<span class="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded-full">${escapeHtml(i)}</span>`).join('')}
-                </div>
-              </div>
-            ` : ''}
-          </div>
-        </div>
-      </div>
-    `;
-  }
 
   fetch('/api/daily-subjects/day/' + today).then(function(r) { return r.json(); }).then(function(data) {
     const subjects = data.subjects || [];
     if (!subjects.length) {
       todayContainer.innerHTML = `
-        <div class="text-center py-6 bg-gray-50 rounded-lg">
-          <i class="bi bi-calendar-x text-3xl text-gray-400 mb-2"></i>
-          <p class="text-gray-500 text-sm">No subjects scheduled for today.</p>
+        <div class="text-center py-8 bg-gray-50 rounded-2xl">
+          <div class="w-16 h-16 mx-auto mb-3 rounded-2xl bg-gray-100 flex items-center justify-center">
+            <i class="fa-solid fa-calendar-xmark text-3xl text-gray-300"></i>
+          </div>
+          <p class="text-gray-500 font-medium">No subjects scheduled for today.</p>
+          <p class="text-xs text-gray-400 mt-1">Enjoy your free day!</p>
         </div>
       `;
       return;
     }
     
-    todayContainer.innerHTML = subjects.map(renderSubjectCard).join('');
+    todayContainer.innerHTML = subjects.map(s => window.renderCompactSubjectCard(s, today)).join('');
   }).catch(function() {
     if (todayContainer) todayContainer.innerHTML = '<p class="text-gray-500 text-center py-4">Could not load subjects.</p>';
   });

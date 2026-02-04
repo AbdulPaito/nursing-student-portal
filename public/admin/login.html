@@ -495,10 +495,11 @@
 
   <!-- Music Player Script -->
   <script>
-    // Compact Music Player for Login Card
+    // Compact Music Player for Login Card with IMMEDIATE AUTO-PLAY FIX
     let audio = null;
     let isPlaying = false;
     let isMuted = false;
+    let currentVolume = 0.5;
     
     async function initMusicPlayer() {
       try {
@@ -507,30 +508,48 @@
         
         if (response.ok && data._id) {
           audio = new Audio(data.filePath);
-          audio.volume = 0.5;
+          audio.volume = currentVolume;
           audio.loop = true;
           
-          // Force auto-play - Music active by default
-          const playMusic = () => {
-            audio.play().then(() => {
+          // CRITICAL FIX: Start muted, then unmute after playback begins
+          audio.muted = true;
+          
+          try {
+            // Start playing muted (bypasses autoplay restrictions)
+            await audio.play();
+            
+            // Immediately unmute after play starts
+            setTimeout(() => {
+              audio.muted = false;
+              isMuted = false;
               isPlaying = true;
               updateUI();
-              console.log('Background music playing');
-            }).catch(err => {
-              console.log('Autoplay blocked, will retry on user interaction');
-              // Retry on first user click
-              document.addEventListener('click', function retryPlay() {
-                audio.play().then(() => {
-                  isPlaying = true;
-                  updateUI();
-                  document.removeEventListener('click', retryPlay);
-                }).catch(e => console.log('Play retry failed:', e));
-              }, { once: true });
-            });
-          };
-          
-          // Try immediate play
-          setTimeout(playMusic, 500);
+              console.log('✅ Background music auto-playing (unmuted after start)');
+            }, 100);
+            
+          } catch (error) {
+            console.log('⚠️ Autoplay blocked, will start on user interaction');
+            
+            // Fallback: Start on any user interaction
+            const startOnInteraction = () => {
+              audio.muted = false;
+              audio.play().then(() => {
+                isMuted = false;
+                isPlaying = true;
+                updateUI();
+                console.log('✅ Music started after user interaction');
+              }).catch(e => console.error('Play failed:', e));
+              
+              // Remove listeners after first interaction
+              document.removeEventListener('click', startOnInteraction);
+              document.removeEventListener('keydown', startOnInteraction);
+              document.removeEventListener('touchstart', startOnInteraction);
+            };
+            
+            document.addEventListener('click', startOnInteraction, { once: true });
+            document.addEventListener('keydown', startOnInteraction, { once: true });
+            document.addEventListener('touchstart', startOnInteraction, { once: true });
+          }
         }
       } catch (error) {
         console.error('Music load error:', error);
@@ -540,6 +559,8 @@
     function updateUI() {
       const musicBtn = document.getElementById('musicBtn');
       const muteBtn = document.getElementById('muteBtn');
+      
+      if (!musicBtn || !muteBtn) return;
       
       // Update main music button
       if (isMuted) {
@@ -583,6 +604,14 @@
     document.getElementById('volumeSlider').addEventListener('input', (e) => {
       if (!audio) return;
       audio.volume = e.target.value / 100;
+      currentVolume = e.target.value / 100;
+      
+      // Unmute if volume is adjusted
+      if (isMuted && e.target.value > 0) {
+        audio.muted = false;
+        isMuted = false;
+        updateUI();
+      }
     });
     
     // Close popup when clicking outside
@@ -595,8 +624,10 @@
       }
     });
     
-    // Initialize on page load
-    window.addEventListener('DOMContentLoaded', initMusicPlayer);
+    // Initialize on page load with slight delay
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(initMusicPlayer, 300);
+    });
   </script>
 
   <script>
