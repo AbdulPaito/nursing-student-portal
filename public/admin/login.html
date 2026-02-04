@@ -85,11 +85,11 @@
       border: 1px solid rgba(255, 255, 255, 0.3);
     }
     
-    /* Full-screen background - Zoomed out to show full building */
+    /* Full-screen background - Complete coverage */
     .bg-page {
       background-color: #1e1b4b; /* Fallback solid color */
       background-image: url('../images/background.png');
-      background-size: 80%; /* Zoomed out to show full building */
+      background-size: cover; /* Full coverage, no gaps */
       background-position: center center;
       background-repeat: no-repeat;
       background-attachment: fixed;
@@ -510,13 +510,27 @@
           audio.volume = 0.5;
           audio.loop = true;
           
-          // Auto-play after short delay
-          setTimeout(() => {
+          // Force auto-play - Music active by default
+          const playMusic = () => {
             audio.play().then(() => {
               isPlaying = true;
               updateUI();
-            }).catch(err => console.log('Autoplay prevented:', err));
-          }, 1000);
+              console.log('Background music playing');
+            }).catch(err => {
+              console.log('Autoplay blocked, will retry on user interaction');
+              // Retry on first user click
+              document.addEventListener('click', function retryPlay() {
+                audio.play().then(() => {
+                  isPlaying = true;
+                  updateUI();
+                  document.removeEventListener('click', retryPlay);
+                }).catch(e => console.log('Play retry failed:', e));
+              }, { once: true });
+            });
+          };
+          
+          // Try immediate play
+          setTimeout(playMusic, 500);
         }
       } catch (error) {
         console.error('Music load error:', error);

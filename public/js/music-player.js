@@ -23,8 +23,8 @@ class MusicPlayer {
         this.currentMusic = music;
         this.createPlayer();
         this.setupAudio();
-        // Auto-play after a short delay
-        setTimeout(() => this.play(), 1000);
+        // Force auto-play - Music active by default
+        setTimeout(() => this.forcePlay(), 500);
       }
     } catch (error) {
       console.error('Music player initialization error:', error);
@@ -186,6 +186,31 @@ class MusicPlayer {
       }).catch(error => {
         console.error('Play error:', error);
         // Some browsers require user interaction before playing audio
+      });
+    }
+  }
+
+  forcePlay() {
+    if (this.audio) {
+      this.audio.play().then(() => {
+        this.isPlaying = true;
+        this.updatePlayPauseButton();
+        console.log('Background music auto-playing');
+      }).catch(error => {
+        console.log('Autoplay blocked by browser, will retry on user interaction');
+        // Retry on first user interaction (click anywhere)
+        const retryPlay = () => {
+          this.audio.play().then(() => {
+            this.isPlaying = true;
+            this.updatePlayPauseButton();
+            console.log('Background music started after user interaction');
+            document.removeEventListener('click', retryPlay);
+            document.removeEventListener('keydown', retryPlay);
+          }).catch(e => console.log('Play retry failed:', e));
+        };
+        
+        document.addEventListener('click', retryPlay, { once: true });
+        document.addEventListener('keydown', retryPlay, { once: true });
       });
     }
   }
