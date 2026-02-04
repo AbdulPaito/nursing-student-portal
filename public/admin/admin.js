@@ -1,6 +1,12 @@
 (function() {
   'use strict';
-  var API = '';
+  // API Configuration - Set your Render backend URL here
+  var API = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? '' // Local development - use relative URLs
+    : 'https://nursing-student-portal.onrender.com'; // Production - Render backend URL
+  
+  console.log('🔗 API URL configured:', API || 'Relative URLs (same domain)');
+  
   function getToken() { return localStorage.getItem('adminToken'); }
   function headers() { return { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + getToken() }; }
 
@@ -551,26 +557,33 @@
   var musicEmpty = document.getElementById('musicEmpty');
 
   async function loadMusicFiles() {
+    console.log('🎵 Loading music files...');
     if (musicLoading) musicLoading.classList.remove('hidden');
     if (musicGrid) musicGrid.classList.add('hidden');
     if (musicEmpty) musicEmpty.classList.add('hidden');
 
     try {
+      console.log('📡 Fetching from:', API + '/api/music');
       var res = await apiFetch('/api/music');
+      console.log('✅ Music response:', res);
       var raw = res.data;
       musicList = Array.isArray(raw) ? raw : [];
+      console.log('📊 Music count:', musicList.length);
       
       if (musicLoading) musicLoading.classList.add('hidden');
       
       if (musicList.length === 0) {
         if (musicEmpty) musicEmpty.classList.remove('hidden');
+        console.log('📭 No music files found');
       } else {
         if (musicGrid) {
           musicGrid.classList.remove('hidden');
           displayMusicFiles(musicList);
+          console.log('✅ Music files displayed');
         }
       }
     } catch (err) {
+      console.error('❌ Failed to load music:', err);
       if (musicLoading) {
         musicLoading.innerHTML = '<div class="glass rounded-3xl shadow-xl p-12 text-center"><i class="fa-solid fa-exclamation-circle text-4xl text-red-500 mb-4"></i><p class="text-red-600">' + (err.message || 'Failed to load') + '</p></div>';
       }
@@ -632,12 +645,17 @@
 
   document.getElementById('musicUploadForm').addEventListener('submit', async function(e) {
     e.preventDefault();
+    console.log('🎵 Starting music upload...');
+    
     var title = document.getElementById('musicTitle').value;
     var location = document.getElementById('musicLocation').value;
     var file = document.getElementById('musicFile').files[0];
 
+    console.log('📋 Upload details:', { title, location, fileName: file?.name, fileSize: file?.size });
+
     if (!file) {
       toast('Please select a music file', 'error');
+      console.error('❌ No file selected');
       return;
     }
 
@@ -651,22 +669,29 @@
     uploadBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading...';
 
     try {
-      var response = await fetch('/api/music/upload', {
+      var uploadUrl = API + '/api/music/upload';
+      console.log('📡 Uploading to:', uploadUrl);
+      
+      var response = await fetch(uploadUrl, {
         method: 'POST',
         headers: { 'Authorization': 'Bearer ' + getToken() },
         body: formData
       });
 
+      console.log('📥 Upload response status:', response.status);
       var data = await response.json();
+      console.log('📥 Upload response data:', data);
 
       if (!response.ok) {
         throw new Error(data.message || 'Upload failed');
       }
 
+      console.log('✅ Music uploaded successfully!');
       toast('Music uploaded successfully!');
       closeMusicUploadModal();
       loadMusicFiles();
     } catch (error) {
+      console.error('❌ Upload error:', error);
       toast('Error: ' + error.message, 'error');
     } finally {
       uploadBtn.disabled = false;
