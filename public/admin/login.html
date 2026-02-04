@@ -87,12 +87,25 @@
     
     /* Background image styling */
     .bg-page {
-      background-color: #4c1d95; /* Fallback solid color (purple-900) */
+      background-color: #1e1b4b; /* Fallback solid color (indigo-950) */
       background-image: url('../images/background.png');
-      background-size: cover;
-      background-position: center;
+      background-size: contain;
+      background-position: center top;
       background-repeat: no-repeat;
-      background-attachment: fixed;
+      background-attachment: scroll;
+    }
+    
+    /* Dark overlay for better contrast */
+    .bg-page::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      z-index: 0;
+      pointer-events: none;
     }
     
     /* Floating shapes */
