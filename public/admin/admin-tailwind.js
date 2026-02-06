@@ -489,6 +489,11 @@
     const q = (document.getElementById('eventsSearch') && document.getElementById('eventsSearch').value || '').toLowerCase();
     const filtered = q ? list.filter(function(e) { return (e.title || '').toLowerCase().includes(q); }) : list;
     
+    // Debug: Log events to see their structure
+    if (filtered.length > 0) {
+      console.log('Sample event:', filtered[0]);
+    }
+    
     if (!eventsTableBody) return;
     
     eventsTableBody.innerHTML = filtered.length ? filtered.map(function(e, index) {
