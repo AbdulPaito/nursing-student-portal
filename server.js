@@ -61,6 +61,15 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Admin routes redirects (without .html extension)
+app.get('/admin/login', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public/admin/login.html'));
+});
+
+app.get('/admin', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public/admin/index.html'));
+});
+
 // Request logging middleware (for debugging)
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);

@@ -282,6 +282,274 @@
     .hamburger-active .hamburger-line:last-child {
       transform: rotate(-45deg) translate(6px, -6px);
     }
+    
+    /* About Us Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 9998;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    
+    .modal-overlay.show {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: all;
+    }
+    
+    .modal-container {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    
+    .modal-container.show {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: all;
+    }
+    
+    .modal-content {
+      background: white;
+      border-radius: 1.5rem;
+      max-width: 56rem;
+      width: 100%;
+      max-height: 90vh;
+      overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      transform: scale(0.95) translateY(20px);
+      transition: transform 0.3s ease;
+    }
+    
+    .modal-container.show .modal-content {
+      transform: scale(1) translateY(0);
+    }
+    
+    .modal-header {
+      background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+      padding: 1.5rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: white;
+    }
+    
+    .modal-body {
+      padding: 2rem;
+      overflow-y: auto;
+      max-height: calc(90vh - 100px);
+    }
+    
+    .modal-body::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    .modal-body::-webkit-scrollbar-track {
+      background: rgba(124, 58, 237, 0.1);
+      border-radius: 4px;
+    }
+    
+    .modal-body::-webkit-scrollbar-thumb {
+      background: rgba(124, 58, 237, 0.3);
+      border-radius: 4px;
+    }
+    
+    .modal-section {
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+      background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+      border-radius: 1rem;
+      border-left: 4px solid #7c3aed;
+    }
+
+    /* About Card Hover Effects */
+    .about-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(124, 58, 237, 0.3) !important;
+    }
+
+    .about-card:hover img {
+      transform: scale(1.05);
+    }
+
+    /* Image Lightbox */
+    .image-lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .image-lightbox.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .lightbox-content {
+      max-width: 90vw;
+      max-height: 90vh;
+      position: relative;
+      animation: zoomIn 0.3s ease;
+    }
+
+    @keyframes zoomIn {
+      from {
+        transform: scale(0.8);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .lightbox-image {
+      max-width: 100%;
+      max-height: 90vh;
+      object-fit: contain;
+      border-radius: 1rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: -3rem;
+      right: 0;
+      width: 3rem;
+      height: 3rem;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      color: #7c3aed;
+      font-size: 1.5rem;
+    }
+
+    .lightbox-close:hover {
+      transform: rotate(90deg) scale(1.1);
+      background: #7c3aed;
+      color: white;
+    }
+
+    .lightbox-title {
+      position: absolute;
+      bottom: -3rem;
+      left: 0;
+      right: 0;
+      color: white;
+      text-align: center;
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+    
+    .modal-section:last-child {
+      margin-bottom: 0;
+    }
+    
+    .modal-section h3 {
+      color: #7c3aed;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .modal-section h4 {
+      color: #4f46e5;
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-top: 1.25rem;
+      margin-bottom: 0.75rem;
+    }
+    
+    .modal-section p {
+      color: #4b5563;
+      line-height: 1.75;
+      margin-bottom: 1rem;
+    }
+    
+    .modal-section ul {
+      list-style: none;
+      padding: 0;
+    }
+    
+    .modal-section ul li {
+      padding: 0.5rem 0;
+      color: #4b5563;
+      display: flex;
+      align-items: start;
+      gap: 0.75rem;
+    }
+    
+    .modal-section ul li::before {
+      content: "✓";
+      color: #7c3aed;
+      font-weight: bold;
+      flex-shrink: 0;
+      margin-top: 0.125rem;
+    }
+    
+    .faculty-card {
+      background: white;
+      padding: 1rem;
+      border-radius: 0.75rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .faculty-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px rgba(124, 58, 237, 0.15);
+    }
+    
+    .faculty-name {
+      color: #1f2937;
+      font-weight: 600;
+      font-size: 1rem;
+      margin-bottom: 0.25rem;
+    }
+    
+    .faculty-title {
+      color: #7c3aed;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    
+    .dedication-box {
+      background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+      color: white;
+      padding: 1.5rem;
+      border-radius: 1rem;
+      text-align: center;
+      margin-top: 1.5rem;
+      font-weight: 600;
+    }
   </style>
 </head>
 <body class="text-gray-800 antialiased">
@@ -304,7 +572,7 @@
               <!-- Actual Logo Image -->
               <img 
                 src="images/msu-logo.png" 
-                alt="MSU Logo" 
+                alt="MArSU Logo" 
                 class="h-full w-full object-contain relative z-10 drop-shadow-lg"
                 onerror="this.style.display='none'"
               >
@@ -318,7 +586,7 @@
             <a href="/" class="group block">
               <h1 class="text-xs sm:text-sm md:text-base lg:text-lg font-bold text-gray-900 tracking-tight leading-tight truncate max-w-[180px] sm:max-w-[250px] md:max-w-[350px] lg:max-w-none transition-colors duration-300 group-hover:text-primary-600">
                 <span class="hidden xs:inline">MARINDUQUE STATE UNIVERSITY</span>
-                <span class="xs:hidden">MSU</span>
+                <span class="xs:hidden">MArSU</span>
               </h1>
             </a>
             <span class="text-[10px] sm:text-xs md:text-sm text-primary-600 font-semibold tracking-wide uppercase truncate max-w-[200px] md:max-w-[350px] lg:max-w-none">
@@ -435,7 +703,7 @@
       <div class="flex flex-col items-center justify-center mb-8">
         <div class="relative mb-6">
           <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-white/20 flex items-center justify-center logo-glow mb-4">
-            <img src="images/msu-logo.png" alt="MSU Logo" class="w-20 h-20 sm:w-24 sm:h-24 object-contain" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\\'fa-solid fa-building-columns text-4xl sm:text-5xl text-white\\'></i>';">
+            <img src="images/msu-logo.png" alt="MArSU Logo" class="w-20 h-20 sm:w-24 sm:h-24 object-contain" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\\'fa-solid fa-building-columns text-4xl sm:text-5xl text-white\\'></i>';">
           </div>
           <div class="absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-emerald-400 border-4 border-primary-600 animate-pulse"></div>
         </div>
@@ -446,6 +714,19 @@
       <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 animate-fade-in-up">
         Welcome to the <span class="text-primary-200">Nursing</span> Student Portal
       </h1>
+      
+      <!-- About Us Button -->
+      <div class="flex justify-center mb-6 animate-fade-in" style="animation-delay: 0.2s;">
+        <button 
+          id="aboutUsBtn"
+          class="group px-6 py-3 bg-white/20 hover:bg-white/30 backdrop-blur-sm border border-white/40 rounded-full text-white font-semibold text-sm sm:text-base transition-all duration-300 hover:scale-105 hover:shadow-xl flex items-center gap-2"
+        >
+          <i class="fa-solid fa-circle-info group-hover:rotate-12 transition-transform duration-300"></i>
+          <span>About Us</span>
+          <i class="fa-solid fa-arrow-right text-xs group-hover:translate-x-1 transition-transform duration-300"></i>
+        </button>
+      </div>
+      
       <p class="text-lg sm:text-xl md:text-2xl opacity-95 mb-3" id="heroDate">Loading...</p>
       <p class="text-base sm:text-lg opacity-80 italic">Stay focused, stay healthy!</p>
       
@@ -794,7 +1075,7 @@
         <div class="text-center md:text-left">
           <div class="flex items-center justify-center md:justify-start gap-3 mb-4">
             <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-600 to-secondary-600 flex items-center justify-center">
-              <img src="images/msu-logo.png" alt="MSU Logo" class="w-10 h-10 object-contain" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\\'fa-solid fa-building-columns text-2xl text-white\\'></i>';">
+              <img src="images/msu-logo.png" alt="MArSU Logo" class="w-10 h-10 object-contain" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\\'fa-solid fa-building-columns text-2xl text-white\\'></i>';">
             </div>
             <div>
               <h3 class="text-lg font-bold text-gray-800">Marinduque State University</h3>
@@ -806,23 +1087,21 @@
         <!-- Contact Info -->
         <div class="text-center">
           <p class="text-gray-600 mb-2">
-            <span class="font-semibold">Program Coordinator:</span><br>
-            <a href="mailto:coordinator@nursing.edu" class="text-primary-600 hover:text-primary-700 hover:underline transition-colors">coordinator@nursing.edu</a>
+            <span class="font-semibold">Program Coordinator:</span> BSN 2C- AQUINO (2025-2026)
           </p>
-          <p class="text-sm text-gray-500">Healthcare Education</p>
         </div>
         
         <!-- Social & Feedback -->
         <div class="text-center md:text-right">
           <div class="flex justify-center md:justify-end gap-3 mb-4">
-            <a href="#" class="w-11 h-11 rounded-xl bg-white border border-gray-200 flex items-center justify-center text-primary-600 hover:bg-primary-600 hover:text-white hover:border-primary-600 transition-all duration-300 hover:scale-110 shadow-sm" aria-label="Facebook">
+            <a href="https://www.facebook.com/share/1EDn5tEczi/" target="_blank" rel="noopener noreferrer" class="w-11 h-11 rounded-xl bg-white border border-gray-200 flex items-center justify-center text-primary-600 hover:bg-primary-600 hover:text-white hover:border-primary-600 transition-all duration-300 hover:scale-110 shadow-sm" aria-label="Facebook">
               <i class="fa-brands fa-facebook-f text-lg"></i>
             </a>
-            <a href="#" class="w-11 h-11 rounded-xl bg-white border border-gray-200 flex items-center justify-center text-primary-600 hover:bg-primary-600 hover:text-white hover:border-primary-600 transition-all duration-300 hover:scale-110 shadow-sm" aria-label="Twitter">
-              <i class="fa-brands fa-x-twitter text-lg"></i>
+            <a href="https://www.facebook.com/share/1a8S2NnbQD/" target="_blank" rel="noopener noreferrer" class="w-11 h-11 rounded-xl bg-white border border-gray-200 flex items-center justify-center text-primary-600 hover:bg-primary-600 hover:text-white hover:border-primary-600 transition-all duration-300 hover:scale-110 shadow-sm" aria-label="Facebook">
+              <i class="fa-brands fa-facebook-f text-lg"></i>
             </a>
-            <a href="#" class="w-11 h-11 rounded-xl bg-white border border-gray-200 flex items-center justify-center text-primary-600 hover:bg-primary-600 hover:text-white hover:border-primary-600 transition-all duration-300 hover:scale-110 shadow-sm" aria-label="LinkedIn">
-              <i class="fa-brands fa-linkedin-in text-lg"></i>
+            <a href="https://www.facebook.com/panaceanherald" target="_blank" rel="noopener noreferrer" class="w-11 h-11 rounded-xl bg-white border border-gray-200 flex items-center justify-center text-primary-600 hover:bg-primary-600 hover:text-white hover:border-primary-600 transition-all duration-300 hover:scale-110 shadow-sm" aria-label="Panacean Herald Facebook">
+              <i class="fa-brands fa-facebook-f text-lg"></i>
             </a>
           </div>
           <button type="button" class="px-6 py-2.5 bg-gradient-to-r from-primary-600 to-secondary-600 text-white font-medium rounded-xl hover:shadow-lg hover:shadow-primary-500/30 transition-all duration-300" onclick="document.getElementById('feedbackModal').classList.remove('hidden')">
@@ -864,9 +1143,443 @@
   <!-- Enhanced Card Renderer -->
   <script src="js/enhanced-card-renderer.js"></script>
   
+  <!-- About Us Modal -->
+  <div class="modal-overlay" id="aboutUsOverlay"></div>
+  <div class="modal-container" id="aboutUsModal">
+    <div class="modal-content" style="max-width: 75rem;">
+      <!-- Modal Header with Logo -->
+      <div class="modal-header">
+        <div class="flex items-center gap-4">
+          <img src="/images/logo.png" alt="MarSU Logo" class="w-14 h-14 object-contain bg-white rounded-full p-1">
+          <h2 class="text-2xl font-bold flex items-center gap-2">
+            <i class="fa-solid fa-circle-info"></i>
+            About Us - Marinduque State University
+          </h2>
+        </div>
+        <button id="closeModalBtn" class="text-white hover:bg-white/20 rounded-full p-2 transition-all duration-200 hover:rotate-90">
+          <i class="fa-solid fa-xmark text-2xl"></i>
+        </button>
+      </div>
+      
+      <!-- Modal Body -->
+      <div class="modal-body" style="padding: 2rem;">
+        
+        <!-- College of Allied Health Sciences Section -->
+        <div class="modal-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-left-color: #0ea5e9;">
+          <h3 style="color: #0ea5e9;">
+            <i class="fa-solid fa-building-columns"></i>
+            College of Allied Health Sciences (CAHS)
+          </h3>
+          <p>
+            The College of Allied Health Sciences (CAHS) is a center of excellence committed to the development of competent, compassionate, and globally competitive Registered Nurses and Midwives. Grounded in strong values, faith, and service, CAHS proudly stands as <strong>"The Home of the Future Registered Professional Nurses and Midwives who are the Best for the Filipinos and the Choice of the World."</strong>
+          </p>
+          <p>
+            The College is dedicated to providing holistic education that integrates academic excellence, professional competence, ethical practice, and social responsibility. Through quality instruction, experiential learning, and values-based formation, CAHS prepares its students to respond effectively to the evolving demands of healthcare at the local, national, and international levels.
+          </p>
+        </div>
+
+        <!-- VMGO Section Header -->
+        <div style="text-align: center; margin: 2rem 0 1.5rem;">
+          <h3 style="color: #7c3aed; font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem;">
+            <i class="fa-solid fa-flag"></i> Vision, Mission, Goals, and Objectives (VMGO)
+          </h3>
+          <p style="color: #6b7280; font-size: 1rem;">
+            Guided by its Vision, Mission, Goals, and Objectives (VMGO), the College of Allied Health Sciences continuously strives to uphold quality education, relevant research, and meaningful community engagement in the field of health sciences.
+          </p>
+        </div>
+
+        <!-- Image-Based Cards Grid -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+          
+          <!-- Vision Card -->
+          <div class="about-card" data-image="/images/vision.jpg" data-title="MarSU Vision" style="background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%); border-radius: 1rem; overflow: hidden; border: 2px solid #7c3aed; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.15); cursor: pointer; transition: all 0.3s ease;">
+            <div style="padding: 1rem; background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);">
+              <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <div style="width: 2.5rem; height: 2.5rem; background: rgba(255,255,255,0.2); border-radius: 0.5rem; display: flex; align-items: center; justify-content: center;">
+                  <i class="fa-solid fa-eye" style="color: white; font-size: 1.25rem;"></i>
+                </div>
+                <h3 style="color: white; font-size: 1.25rem; font-weight: 700; margin: 0;">Vision</h3>
+              </div>
+            </div>
+            <div style="padding: 0; position: relative; overflow: hidden;">
+              <img src="/images/vision.jpg" alt="MarSU Vision" loading="lazy" style="width: 100%; height: 250px; object-fit: cover; display: block; transition: transform 0.3s ease;">
+              <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.7), transparent); padding: 1rem; color: white; font-size: 0.875rem;">
+                <i class="fa-solid fa-expand mr-2"></i>Click to view full image
+              </div>
+            </div>
+          </div>
+
+          <!-- Mission Card -->
+          <div class="about-card" data-image="/images/mission.jpg" data-title="MarSU Mission" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 1rem; overflow: hidden; border: 2px solid #f59e0b; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15); cursor: pointer; transition: all 0.3s ease;">
+            <div style="padding: 1rem; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+              <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <div style="width: 2.5rem; height: 2.5rem; background: rgba(255,255,255,0.2); border-radius: 0.5rem; display: flex; align-items: center; justify-content: center;">
+                  <i class="fa-solid fa-bullseye" style="color: white; font-size: 1.25rem;"></i>
+                </div>
+                <h3 style="color: white; font-size: 1.25rem; font-weight: 700; margin: 0;">Mission</h3>
+              </div>
+            </div>
+            <div style="padding: 0; position: relative; overflow: hidden;">
+              <img src="/images/mission.jpg" alt="MarSU Mission" loading="lazy" style="width: 100%; height: 250px; object-fit: cover; display: block; transition: transform 0.3s ease;">
+              <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.7), transparent); padding: 1rem; color: white; font-size: 0.875rem;">
+                <i class="fa-solid fa-expand mr-2"></i>Click to view full image
+              </div>
+            </div>
+          </div>
+
+          <!-- Mandate Card -->
+          <div class="about-card" data-image="/images/mandate.jpg" data-title="MarSU Mandate" style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 1rem; overflow: hidden; border: 2px solid #3b82f6; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15); cursor: pointer; transition: all 0.3s ease;">
+            <div style="padding: 1rem; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);">
+              <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <div style="width: 2.5rem; height: 2.5rem; background: rgba(255,255,255,0.2); border-radius: 0.5rem; display: flex; align-items: center; justify-content: center;">
+                  <i class="fa-solid fa-scroll" style="color: white; font-size: 1.25rem;"></i>
+                </div>
+                <h3 style="color: white; font-size: 1.25rem; font-weight: 700; margin: 0;">Mandate</h3>
+              </div>
+            </div>
+            <div style="padding: 0; position: relative; overflow: hidden;">
+              <img src="/images/mandate.jpg" alt="MarSU Mandate" loading="lazy" style="width: 100%; height: 250px; object-fit: cover; display: block; transition: transform 0.3s ease;">
+              <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.7), transparent); padding: 1rem; color: white; font-size: 0.875rem;">
+                <i class="fa-solid fa-expand mr-2"></i>Click to view full image
+              </div>
+            </div>
+          </div>
+
+          <!-- Core Values Card -->
+          <div class="about-card" data-image="/images/core values.jpg" data-title="MarSU Core Values" style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 1rem; overflow: hidden; border: 2px solid #ef4444; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15); cursor: pointer; transition: all 0.3s ease;">
+            <div style="padding: 1rem; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
+              <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <div style="width: 2.5rem; height: 2.5rem; background: rgba(255,255,255,0.2); border-radius: 0.5rem; display: flex; align-items: center; justify-content: center;">
+                  <i class="fa-solid fa-heart" style="color: white; font-size: 1.25rem;"></i>
+                </div>
+                <h3 style="color: white; font-size: 1.25rem; font-weight: 700; margin: 0;">Core Values</h3>
+              </div>
+            </div>
+            <div style="padding: 0; position: relative; overflow: hidden;">
+              <img src="/images/core values.jpg" alt="MarSU Core Values" loading="lazy" style="width: 100%; height: 250px; object-fit: cover; display: block; transition: transform 0.3s ease;">
+              <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.7), transparent); padding: 1rem; color: white; font-size: 0.875rem;">
+                <i class="fa-solid fa-expand mr-2"></i>Click to view full image
+              </div>
+            </div>
+          </div>
+
+          <!-- Quality Policy Card -->
+          <div class="about-card" data-image="/images/quality policy.jpg" data-title="MarSU Quality Policy" style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 1rem; overflow: hidden; border: 2px solid #10b981; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15); cursor: pointer; transition: all 0.3s ease;">
+            <div style="padding: 1rem; background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+              <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <div style="width: 2.5rem; height: 2.5rem; background: rgba(255,255,255,0.2); border-radius: 0.5rem; display: flex; align-items: center; justify-content: center;">
+                  <i class="fa-solid fa-award" style="color: white; font-size: 1.25rem;"></i>
+                </div>
+                <h3 style="color: white; font-size: 1.25rem; font-weight: 700; margin: 0;">Quality Policy</h3>
+              </div>
+            </div>
+            <div style="padding: 0; position: relative; overflow: hidden;">
+              <img src="/images/quality policy.jpg" alt="MarSU Quality Policy" loading="lazy" style="width: 100%; height: 250px; object-fit: cover; display: block; transition: transform 0.3s ease;">
+              <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.7), transparent); padding: 1rem; color: white; font-size: 0.875rem;">
+                <i class="fa-solid fa-expand mr-2"></i>Click to view full image
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <p style="text-align: center; color: #6b7280; font-size: 0.875rem; margin-bottom: 2rem;">
+          <i class="fa-solid fa-info-circle mr-1"></i>Click on any card to view the full image
+        </p>
+
+        <!-- Academic Programs Section -->
+        <div class="modal-section" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-left-color: #f59e0b;">
+          <h3 style="color: #f59e0b;">
+            <i class="fa-solid fa-graduation-cap"></i>
+            Academic Programs Offered
+          </h3>
+          <p>
+            The College of Allied Health Sciences offers academic programs designed to meet national and global healthcare standards:
+          </p>
+          <ul style="list-style: none; padding-left: 0; margin: 1rem 0;">
+            <li style="padding: 0.75rem; background: white; border-radius: 0.5rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.75rem;">
+              <i class="fa-solid fa-user-nurse" style="color: #f59e0b; font-size: 1.25rem;"></i>
+              <strong>Bachelor of Science in Nursing (BSN)</strong>
+            </li>
+            <li style="padding: 0.75rem; background: white; border-radius: 0.5rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.75rem;">
+              <i class="fa-solid fa-heart-pulse" style="color: #f59e0b; font-size: 1.25rem;"></i>
+              <strong>Bachelor of Science in Midwifery (BSM)</strong>
+            </li>
+          </ul>
+          <p>
+            These programs aim to produce graduates who are skilled, ethical, and compassionate professionals capable of delivering quality healthcare services across diverse settings.
+          </p>
+        </div>
+
+        <!-- VMGO Wellness Park Section -->
+        <div class="modal-section" style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-left-color: #10b981;">
+          <h3 style="color: #10b981;">
+            <i class="fa-solid fa-seedling"></i>
+            VMGO Wellness Park and Students' Study Center
+          </h3>
+          <p>
+            In support of its commitment to student development and well-being, the VMGO Wellness Park and Students' Study Center was established as a space dedicated to learning, reflection, collaboration, and wellness.
+          </p>
+          <p>
+            This initiative was led by the CAHS and CAHSSO Administration and made possible through the Lord's provisions and the collective support of:
+          </p>
+          <ul>
+            <li>MSC Administration (GSO and PPMO)</li>
+            <li>CAHS Students Organization (CAHSSO)</li>
+            <li>MSC Male Nurses and Midwives Society</li>
+            <li>Supreme Student Council Federation</li>
+            <li>CAHS Alumni</li>
+            <li>Numerous supporters of CAHS</li>
+          </ul>
+          <p>
+            The Wellness Park and Study Center is dedicated to the present and future students of the College of Allied Health Sciences, serving as a nurturing environment that promotes academic focus, mental well-being, and community building.
+          </p>
+          <div class="dedication-box">
+            <div class="text-lg mb-1"><i class="fa-solid fa-calendar-day"></i> Dedicated on 10 May 2024</div>
+            <div class="text-sm opacity-90"><i class="fa-solid fa-location-dot"></i> Boac, Marinduque, Philippines</div>
+          </div>
+        </div>
+
+        <!-- PANACEAN Core Values Section -->
+        <div class="modal-section" style="background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%); border-left-color: #8b5cf6;">
+          <h3 style="color: #8b5cf6;">
+            <i class="fa-solid fa-heart-pulse"></i>
+            The PANACEAN Core Values
+          </h3>
+          <p>
+            The College of Allied Health Sciences upholds the PANACEAN Core Values, which guide the character, conduct, and competence of its students, faculty, and staff:
+          </p>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0.75rem; margin: 1rem 0;">
+            <div style="display: flex; align-items: start; gap: 0.5rem;">
+              <i class="fa-solid fa-star" style="color: #8b5cf6; margin-top: 0.25rem;"></i>
+              <span><strong style="color: #8b5cf6;">P</strong> – Peace-loving and People-oriented</span>
+            </div>
+            <div style="display: flex; align-items: start; gap: 0.5rem;">
+              <i class="fa-solid fa-star" style="color: #8b5cf6; margin-top: 0.25rem;"></i>
+              <span><strong style="color: #8b5cf6;">A</strong> – Agile and Altruistic</span>
+            </div>
+            <div style="display: flex; align-items: start; gap: 0.5rem;">
+              <i class="fa-solid fa-star" style="color: #8b5cf6; margin-top: 0.25rem;"></i>
+              <span><strong style="color: #8b5cf6;">N</strong> – Nurturing and Noble-minded</span>
+            </div>
+            <div style="display: flex; align-items: start; gap: 0.5rem;">
+              <i class="fa-solid fa-star" style="color: #8b5cf6; margin-top: 0.25rem;"></i>
+              <span><strong style="color: #8b5cf6;">A</strong> – Amiable and Available</span>
+            </div>
+            <div style="display: flex; align-items: start; gap: 0.5rem;">
+              <i class="fa-solid fa-star" style="color: #8b5cf6; margin-top: 0.25rem;"></i>
+              <span><strong style="color: #8b5cf6;">C</strong> – Competent, Caring, and Compassionate</span>
+            </div>
+            <div style="display: flex; align-items: start; gap: 0.5rem;">
+              <i class="fa-solid fa-star" style="color: #8b5cf6; margin-top: 0.25rem;"></i>
+              <span><strong style="color: #8b5cf6;">E</strong> – Excellent and Empathetic</span>
+            </div>
+            <div style="display: flex; align-items: start; gap: 0.5rem;">
+              <i class="fa-solid fa-star" style="color: #8b5cf6; margin-top: 0.25rem;"></i>
+              <span><strong style="color: #8b5cf6;">A</strong> – Alert and Accountable</span>
+            </div>
+            <div style="display: flex; align-items: start; gap: 0.5rem;">
+              <i class="fa-solid fa-star" style="color: #8b5cf6; margin-top: 0.25rem;"></i>
+              <span><strong style="color: #8b5cf6;">N</strong> – Neat and Non-judgmental</span>
+            </div>
+          </div>
+          <p style="margin-top: 1rem;">
+            These values shape future health professionals who serve with integrity, empathy, professionalism, and excellence.
+          </p>
+        </div>
+
+        <!-- Administration and Leadership Section -->
+        <div class="modal-section">
+          <h3>
+            <i class="fa-solid fa-users"></i>
+            Administration and Leadership
+          </h3>
+          <p>
+            The College of Allied Health Sciences is guided by dedicated academic leaders who ensure quality education, effective governance, and student-centered services:
+          </p>
+
+          <div class="faculty-card">
+            <div class="faculty-name">Assoc. Prof. Marvin P. Plata, MAN, RN, RM</div>
+            <div class="faculty-title">Dean, College of Allied Health Sciences<br>Vice President, Student Affairs and Services (SAS)</div>
+          </div>
+
+          <div class="faculty-card">
+            <div class="faculty-name">Prof. Dr. Diosdado P. Zulueta</div>
+            <div class="faculty-title">SUC President III</div>
+          </div>
+        </div>
+
+        <!-- Faculty and Program Heads Section -->
+        <div class="modal-section">
+          <h3>
+            <i class="fa-solid fa-chalkboard-user"></i>
+            Faculty and Program Heads
+          </h3>
+          <p>
+            The academic programs of CAHS are led by experienced and committed faculty members:
+          </p>
+          
+          <div class="faculty-card">
+            <div class="faculty-name">Divina R. Vitto, RN, RM, BCHS, MPA</div>
+            <div class="faculty-title">Head, Midwifery Program</div>
+          </div>
+
+          <div class="faculty-card">
+            <div class="faculty-name">Joy Y. Maulay, RN, MAN</div>
+            <div class="faculty-title">Assistant Dean and Head, Nursing Program</div>
+          </div>
+
+          <div class="faculty-card">
+            <div class="faculty-name">Assoc. Prof. Marvin P. Plata, MAN, RN, RM</div>
+            <div class="faculty-title">Dean, CAHS / Vice President, SAS</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Image Lightbox -->
+  <div id="imageLightbox" class="image-lightbox">
+    <div class="lightbox-content">
+      <div class="lightbox-close" id="lightboxClose">
+        <i class="fa-solid fa-xmark"></i>
+      </div>
+      <img id="lightboxImage" class="lightbox-image" src="" alt="">
+      <div id="lightboxTitle" class="lightbox-title"></div>
+    </div>
+  </div>
+
   <!-- Persistent Music Player (works across all pages) -->
   <script src="js/persistent-music-player.js"></script>
   
   <script src="js/home-tailwind.js"></script>
+  
+  <!-- About Us Modal Script -->
+  <script>
+    // About Us Modal Functionality - Wait for DOM to be fully loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      const aboutUsBtn = document.getElementById('aboutUsBtn');
+      const aboutUsModal = document.getElementById('aboutUsModal');
+      const aboutUsOverlay = document.getElementById('aboutUsOverlay');
+      const closeModalBtn = document.getElementById('closeModalBtn');
+
+      console.log('About Us elements:', { aboutUsBtn, aboutUsModal, aboutUsOverlay, closeModalBtn });
+
+      // Open modal
+      function openAboutUsModal(e) {
+        if (e) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+        console.log('Opening About Us modal...');
+        document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        aboutUsOverlay.classList.add('show');
+        aboutUsModal.classList.add('show');
+      }
+
+      // Close modal
+      function closeAboutUsModal(e) {
+        if (e) {
+          e.stopPropagation();
+        }
+        console.log('Closing About Us modal...');
+        document.body.style.overflow = ''; // Restore scrolling
+        aboutUsOverlay.classList.remove('show');
+        aboutUsModal.classList.remove('show');
+      }
+
+      // Event listeners
+      if (aboutUsBtn) {
+        aboutUsBtn.addEventListener('click', openAboutUsModal);
+        console.log('About Us button listener attached!');
+      } else {
+        console.error('About Us button not found!');
+      }
+      
+      if (closeModalBtn) {
+        closeModalBtn.addEventListener('click', closeAboutUsModal);
+      }
+      
+      if (aboutUsOverlay) {
+        aboutUsOverlay.addEventListener('click', closeAboutUsModal);
+      }
+      
+      // Prevent modal from closing when clicking inside modal content
+      const modalContent = aboutUsModal?.querySelector('.modal-content');
+      if (modalContent) {
+        modalContent.addEventListener('click', (e) => {
+          e.stopPropagation();
+        });
+      }
+      
+      // Close on Escape key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && aboutUsModal && aboutUsModal.classList.contains('show')) {
+          closeAboutUsModal();
+        }
+      });
+
+      // Image Lightbox Functionality
+      const imageLightbox = document.getElementById('imageLightbox');
+      const lightboxImage = document.getElementById('lightboxImage');
+      const lightboxTitle = document.getElementById('lightboxTitle');
+      const lightboxClose = document.getElementById('lightboxClose');
+      const aboutCards = document.querySelectorAll('.about-card');
+
+      // Function to open lightbox
+      function openLightbox(imageSrc, title) {
+        lightboxImage.src = imageSrc;
+        lightboxImage.alt = title;
+        lightboxTitle.textContent = title;
+        imageLightbox.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+
+      // Function to close lightbox
+      function closeLightbox() {
+        imageLightbox.classList.remove('active');
+        document.body.style.overflow = '';
+        setTimeout(() => {
+          lightboxImage.src = '';
+          lightboxTitle.textContent = '';
+        }, 300);
+      }
+
+      // Add click event to each card
+      aboutCards.forEach(card => {
+        card.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const imageSrc = this.getAttribute('data-image');
+          const title = this.getAttribute('data-title');
+          openLightbox(imageSrc, title);
+        });
+      });
+
+      // Close lightbox on close button click
+      if (lightboxClose) {
+        lightboxClose.addEventListener('click', function(e) {
+          e.stopPropagation();
+          closeLightbox();
+        });
+      }
+
+      // Close lightbox on background click
+      if (imageLightbox) {
+        imageLightbox.addEventListener('click', function(e) {
+          if (e.target === imageLightbox) {
+            closeLightbox();
+          }
+        });
+      }
+
+      // Close lightbox on Escape key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && imageLightbox && imageLightbox.classList.contains('active')) {
+          closeLightbox();
+        }
+      });
+    });
+  </script>
 </body>
 </html>
