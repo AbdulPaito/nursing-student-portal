@@ -347,6 +347,14 @@
           <i class="fa-solid fa-chevron-right ml-auto text-xs opacity-0 group-hover:opacity-100 transition-opacity"></i>
         </a>
         
+        <a href="#" data-section="department-info" class="sidebar-link flex items-center gap-3 px-4 py-3.5 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 group">
+          <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
+            <i class="fa-solid fa-building-user text-lg"></i>
+          </div>
+          <span class="font-medium">Department Info</span>
+          <i class="fa-solid fa-chevron-right ml-auto text-xs opacity-0 group-hover:opacity-100 transition-opacity"></i>
+        </a>
+        
         <a href="#" data-section="events" class="sidebar-link flex items-center gap-3 px-4 py-3.5 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 group">
           <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
             <i class="fa-solid fa-calendar-days text-lg"></i>
@@ -359,7 +367,7 @@
           <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
             <i class="fa-solid fa-book-open text-lg"></i>
           </div>
-          <span class="font-medium">Daily Subjects</span>
+          <span class="font-medium">Courses or Subjects</span>
           <i class="fa-solid fa-chevron-right ml-auto text-xs opacity-0 group-hover:opacity-100 transition-opacity"></i>
         </a>
         
@@ -534,6 +542,174 @@
         </div>
       </section>
 
+      <!-- Department Info Section -->
+      <section id="section-department-info" class="admin-section hidden animate-fade-in">
+        <!-- Header -->
+        <div class="mb-8">
+          <h1 class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary-700 to-secondary-700 bg-clip-text text-transparent mb-2">
+            Department Information
+          </h1>
+          <p class="text-gray-500">Manage total counts for students and faculty members</p>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <!-- Total Students Card -->
+          <div class="glass rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 border border-blue-100">
+            <div class="flex items-center justify-between mb-6">
+              <div class="flex items-center gap-4">
+                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/30">
+                  <i class="fa-solid fa-user-graduate text-white text-2xl"></i>
+                </div>
+                <div>
+                  <h3 class="text-lg font-semibold text-gray-700">Total Students</h3>
+                  <p class="text-sm text-gray-500">Current enrollment count</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="mb-6">
+              <div class="text-5xl font-bold text-blue-600 mb-2" id="displayTotalStudents">0</div>
+              <div class="h-2 bg-blue-100 rounded-full overflow-hidden">
+                <div class="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full" style="width: 100%"></div>
+              </div>
+            </div>
+
+            <button onclick="openEditStudentsModal()" class="w-full px-6 py-3.5 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold rounded-xl shadow-lg shadow-blue-500/30 transition-all duration-300 hover:-translate-y-0.5 flex items-center justify-center gap-2 group">
+              <i class="fa-solid fa-pen-to-square group-hover:scale-110 transition-transform"></i>
+              <span>Update Count</span>
+            </button>
+          </div>
+
+          <!-- Total Faculty Card -->
+          <div class="glass rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 border border-emerald-100">
+            <div class="flex items-center justify-between mb-6">
+              <div class="flex items-center gap-4">
+                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/30">
+                  <i class="fa-solid fa-chalkboard-user text-white text-2xl"></i>
+                </div>
+                <div>
+                  <h3 class="text-lg font-semibold text-gray-700">Total Faculty</h3>
+                  <p class="text-sm text-gray-500">Teachers and staff count</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="mb-6">
+              <div class="text-5xl font-bold text-emerald-600 mb-2" id="displayTotalFaculty">0</div>
+              <div class="h-2 bg-emerald-100 rounded-full overflow-hidden">
+                <div class="h-full bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-full" style="width: 100%"></div>
+              </div>
+            </div>
+
+            <button onclick="openEditFacultyModal()" class="w-full px-6 py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold rounded-xl shadow-lg shadow-emerald-500/30 transition-all duration-300 hover:-translate-y-0.5 flex items-center justify-center gap-2 group">
+              <i class="fa-solid fa-pen-to-square group-hover:scale-110 transition-transform"></i>
+              <span>Update Count</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Last Updated Info -->
+        <div class="glass rounded-2xl p-4 flex items-center gap-3 text-sm text-gray-600">
+          <i class="fa-solid fa-clock text-gray-400"></i>
+          <span>Last updated: <span id="lastUpdatedInfo" class="font-medium">Never</span></span>
+        </div>
+      </section>
+
+      <!-- Edit Students Modal -->
+      <div id="editStudentsModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="glass rounded-3xl max-w-md w-full p-8 shadow-2xl animate-scale-in">
+          <div class="flex items-center justify-between mb-6">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/30">
+                <i class="fa-solid fa-user-graduate text-white text-xl"></i>
+              </div>
+              <h2 class="text-2xl font-bold text-gray-800">Update Students Count</h2>
+            </div>
+            <button onclick="closeEditStudentsModal()" class="w-10 h-10 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-600 flex items-center justify-center transition-all">
+              <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+          </div>
+
+          <form onsubmit="updateStudentsCount(event)">
+            <div class="mb-6">
+              <label class="block text-sm font-semibold text-gray-700 mb-2">
+                <i class="fa-solid fa-hashtag text-blue-600 mr-1"></i>
+                Total Number of Students
+              </label>
+              <input 
+                type="number" 
+                id="inputTotalStudents" 
+                min="0" 
+                required
+                class="w-full px-4 py-3.5 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring focus:ring-blue-200 transition-all outline-none text-lg font-semibold text-gray-800"
+                placeholder="Enter total students"
+              >
+              <p class="mt-2 text-xs text-gray-500">
+                <i class="fa-solid fa-info-circle mr-1"></i>
+                Enter the total count of enrolled students
+              </p>
+            </div>
+
+            <div class="flex gap-3">
+              <button type="button" onclick="closeEditStudentsModal()" class="flex-1 px-6 py-3.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl transition-all">
+                Cancel
+              </button>
+              <button type="submit" class="flex-1 px-6 py-3.5 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold rounded-xl shadow-lg shadow-blue-500/30 transition-all hover:-translate-y-0.5">
+                Save Changes
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Edit Faculty Modal -->
+      <div id="editFacultyModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="glass rounded-3xl max-w-md w-full p-8 shadow-2xl animate-scale-in">
+          <div class="flex items-center justify-between mb-6">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/30">
+                <i class="fa-solid fa-chalkboard-user text-white text-xl"></i>
+              </div>
+              <h2 class="text-2xl font-bold text-gray-800">Update Faculty Count</h2>
+            </div>
+            <button onclick="closeEditFacultyModal()" class="w-10 h-10 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-600 flex items-center justify-center transition-all">
+              <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+          </div>
+
+          <form onsubmit="updateFacultyCount(event)">
+            <div class="mb-6">
+              <label class="block text-sm font-semibold text-gray-700 mb-2">
+                <i class="fa-solid fa-hashtag text-emerald-600 mr-1"></i>
+                Total Number of Faculty
+              </label>
+              <input 
+                type="number" 
+                id="inputTotalFaculty" 
+                min="0" 
+                required
+                class="w-full px-4 py-3.5 rounded-xl border-2 border-gray-200 focus:border-emerald-500 focus:ring focus:ring-emerald-200 transition-all outline-none text-lg font-semibold text-gray-800"
+                placeholder="Enter total faculty"
+              >
+              <p class="mt-2 text-xs text-gray-500">
+                <i class="fa-solid fa-info-circle mr-1"></i>
+                Enter the total count of teachers and staff
+              </p>
+            </div>
+
+            <div class="flex gap-3">
+              <button type="button" onclick="closeEditFacultyModal()" class="flex-1 px-6 py-3.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl transition-all">
+                Cancel
+              </button>
+              <button type="submit" class="flex-1 px-6 py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold rounded-xl shadow-lg shadow-emerald-500/30 transition-all hover:-translate-y-0.5">
+                Save Changes
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
       <!-- Events Section -->
       <section id="section-events" class="admin-section hidden animate-fade-in">
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-8">
@@ -607,13 +783,13 @@
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-8">
           <div>
             <h1 class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary-700 to-secondary-700 bg-clip-text text-transparent mb-2">
-              Daily Subjects
+              Courses or Subjects
             </h1>
-            <p class="text-gray-500">Manage weekly class schedules and curriculum</p>
+            <p class="text-gray-500">Manage courses and subjects</p>
           </div>
-          <button type="button" class="btn-shimmer px-6 py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold rounded-2xl shadow-xl shadow-emerald-500/30 transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-2 group" onclick="openSubjectForm()">
+          <button type="button" class="btn-shimmer px-6 py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold rounded-2xl shadow-xl shadow-emerald-500/30 transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-2 group" onclick="openCourseModal()">
             <i class="fa-solid fa-plus group-hover:rotate-90 transition-transform"></i>
-            <span>Add Subject</span>
+            <span>Add Course or Subject</span>
           </button>
         </div>
 
@@ -629,20 +805,22 @@
             <table class="w-full">
               <thead class="bg-gray-50/80">
                 <tr>
-                  <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Day</th>
-                  <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Subject</th>
-                  <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Type</th>
-                  <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Items Needed</th>
+                  <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Code</th>
+                  <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Course or Subject</th>
+                  <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Unit</th>
+                  <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Year Level</th>
+                  <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Semester</th>
+                  <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Status</th>
                   <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Actions</th>
                 </tr>
               </thead>
               <tbody id="dailySubjectsTableBody" class="divide-y divide-gray-100">
                 <tr>
-                  <td colspan="5" class="px-6 py-12 text-center">
+                  <td colspan="7" class="px-6 py-12 text-center">
                     <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gray-100 mb-4">
                       <i class="fa-solid fa-spinner fa-spin text-2xl text-gray-400"></i>
                     </div>
-                    <p class="text-gray-500 font-medium">Loading subjects...</p>
+                    <p class="text-gray-500 font-medium">Loading courses...</p>
                   </td>
                 </tr>
               </tbody>
@@ -901,12 +1079,12 @@
     </div>
   </div>
 
-  <!-- Subject Modal -->
-  <div id="subjectModal" class="fixed inset-0 z-50 hidden">
-    <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity" onclick="closeModal('subjectModal')"></div>
-    <div class="flex items-center justify-center min-h-screen p-4">
-      <div class="glass rounded-3xl shadow-2xl max-w-lg w-full p-8 relative animate-scale-in">
-        <button type="button" class="absolute top-6 right-6 w-10 h-10 rounded-full bg-gray-100 text-gray-500 hover:text-gray-700 hover:bg-gray-200 flex items-center justify-center transition-all" onclick="closeModal('subjectModal')">
+  <!-- Course Modal -->
+  <div id="courseModal" class="fixed inset-0 z-50 hidden" style="display: none;">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity" onclick="closeCourseModal()"></div>
+    <div class="fixed inset-0 flex items-center justify-center p-4 z-10">
+      <div class="glass rounded-3xl shadow-2xl w-full max-w-2xl p-8 animate-scale-in">
+        <button type="button" class="absolute top-6 right-6 w-10 h-10 rounded-full bg-gray-100 text-gray-500 hover:text-gray-700 hover:bg-gray-200 flex items-center justify-center transition-all" onclick="closeCourseModal()">
           <i class="fa-solid fa-xmark text-xl"></i>
         </button>
         
@@ -914,65 +1092,83 @@
           <div class="w-12 h-12 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 flex items-center justify-center">
             <i class="fa-solid fa-book-medical text-white text-xl"></i>
           </div>
-          <h3 class="text-2xl font-bold text-gray-800" id="subjectModalTitle">Add Subject</h3>
+          <h3 class="text-2xl font-bold text-gray-800" id="courseModalTitle">Add Course or Subject</h3>
         </div>
         
-        <input type="hidden" id="subjectDocId">
-        <input type="hidden" id="subjectIndex">
+        <input type="hidden" id="courseId">
         
-        <div class="space-y-5">
+        <form id="courseForm" class="space-y-5">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">
+                <i class="fa-solid fa-hashtag text-primary-600 mr-1"></i>
+                Course Code
+              </label>
+              <input type="text" id="courseCode" required placeholder="e.g., NSG101" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow uppercase">
+            </div>
+            
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">
+                <i class="fa-solid fa-calculator text-primary-600 mr-1"></i>
+                Unit
+              </label>
+              <input type="number" id="courseUnit" required min="0" step="0.5" placeholder="e.g., 3" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
+            </div>
+          </div>
+          
           <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Day of Week</label>
-            <select id="subjectDay" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
-              <option value="Monday">Monday</option>
-              <option value="Tuesday">Tuesday</option>
-              <option value="Wednesday">Wednesday</option>
-              <option value="Thursday">Thursday</option>
-              <option value="Friday">Friday</option>
-              <option value="Saturday">Saturday</option>
-              <option value="Sunday">Sunday</option>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">
+              <i class="fa-solid fa-book text-primary-600 mr-1"></i>
+              Course or Subject Name
+            </label>
+            <input type="text" id="courseName" required placeholder="e.g., Fundamentals of Nursing" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">
+                <i class="fa-solid fa-user-graduate text-primary-600 mr-1"></i>
+                Year Level
+              </label>
+              <select id="courseYearLevel" required class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
+                <option value="">Select year level</option>
+                <option value="1st Year">1st Year</option>
+                <option value="2nd Year">2nd Year</option>
+                <option value="3rd Year">3rd Year</option>
+                <option value="4th Year">4th Year</option>
+              </select>
+            </div>
+            
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">
+                <i class="fa-solid fa-calendar-days text-primary-600 mr-1"></i>
+                Semester
+              </label>
+              <select id="courseSemester" required class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
+                <option value="">Select semester</option>
+                <option value="1st Semester">1st Semester</option>
+                <option value="2nd Semester">2nd Semester</option>
+                <option value="Midyear">Midyear</option>
+                <option value="Summer">Summer</option>
+              </select>
+            </div>
+          </div>
+          
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">
+              <i class="fa-solid fa-toggle-on text-primary-600 mr-1"></i>
+              Status
+            </label>
+            <select id="courseStatus" required class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
             </select>
           </div>
-          
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Subject Name</label>
-            <select id="subjectNameSelect" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
-              <option value="">Select subject</option>
-              <option value="Anatomy & Physiology">Anatomy & Physiology</option>
-              <option value="Clinical Skills Lab">Clinical Skills Lab</option>
-              <option value="Nursing Fundamentals">Nursing Fundamentals</option>
-              <option value="Pharmacology">Pharmacology</option>
-              <option value="Patient Care Seminar">Patient Care Seminar</option>
-              <option value="Medical-Surgical Nursing">Medical-Surgical Nursing</option>
-              <option value="Community Health">Community Health</option>
-              <option value="Maternal & Child">Maternal & Child</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-          
-          <div id="subjectNameOtherWrap" class="hidden">
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Custom Subject Name</label>
-            <input type="text" id="subjectNameOther" placeholder="Type subject name" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
-          </div>
-          
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Type</label>
-            <select id="subjectType" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
-              <option value="Theory">Theory</option>
-              <option value="Lab">Lab</option>
-              <option value="Seminar">Seminar</option>
-            </select>
-          </div>
-          
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Items Needed (one per line)</label>
-            <textarea id="subjectItems" rows="3" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow resize-none" placeholder="Stethoscope&#10;Lab coat&#10;Textbook"></textarea>
-          </div>
-        </div>
+        </form>
         
         <div class="flex justify-end gap-3 mt-8">
-          <button type="button" class="px-6 py-3 text-gray-600 hover:text-gray-800 font-semibold transition-colors" onclick="closeModal('subjectModal')">Cancel</button>
-          <button type="button" id="subjectSaveBtn" class="btn-shimmer px-8 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold rounded-xl transition-all duration-300 shadow-xl shadow-emerald-500/30">Save Subject</button>
+          <button type="button" class="px-6 py-3 text-gray-600 hover:text-gray-800 font-semibold transition-colors" onclick="closeCourseModal()">Cancel</button>
+          <button type="button" id="courseSaveBtn" onclick="saveCourse()" class="btn-shimmer px-8 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold rounded-xl transition-all duration-300 shadow-xl shadow-emerald-500/30">Save Course</button>
         </div>
       </div>
     </div>
@@ -1048,10 +1244,206 @@
         </div>
       </div>
     </div>
+
+  <!-- Subject Modal -->
+  <div id="subjectModal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity" onclick="closeModal('subjectModal')"></div>
+    <div class="flex items-center justify-center min-h-screen p-4">
+      <div class="glass rounded-3xl shadow-2xl max-w-2xl w-full p-8 relative animate-scale-in">
+        <button type="button" class="absolute top-6 right-6 w-10 h-10 rounded-full bg-gray-100 text-gray-500 hover:text-gray-700 hover:bg-gray-200 flex items-center justify-center transition-all" onclick="closeModal('subjectModal')">
+          <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+        
+        <div class="flex items-center gap-3 mb-6">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-r from-primary-500 to-secondary-500 flex items-center justify-center">
+            <i class="fa-solid fa-book-open text-white text-xl"></i>
+          </div>
+          <h3 class="text-2xl font-bold text-gray-800" id="subjectModalTitle">Add Subject</h3>
+        </div>
+        
+        <input type="hidden" id="subjectDocId">
+        <input type="hidden" id="subjectIndex">
+        
+        <div class="space-y-5">
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Day of Week <span class="text-rose-500">*</span></label>
+            <select id="subjectDay" required class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
+              <option value="Monday">Monday</option>
+              <option value="Tuesday">Tuesday</option>
+              <option value="Wednesday">Wednesday</option>
+              <option value="Thursday">Thursday</option>
+              <option value="Friday">Friday</option>
+              <option value="Saturday">Saturday</option>
+              <option value="Sunday">Sunday</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Subject Name <span class="text-rose-500">*</span></label>
+            <select id="subjectNameSelect" required class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
+              <option value="">Select a subject</option>
+              <option value="Mathematics">Mathematics</option>
+              <option value="Science">Science</option>
+              <option value="English">English</option>
+              <option value="History">History</option>
+              <option value="Physical Education">Physical Education</option>
+              <option value="Computer Science">Computer Science</option>
+              <option value="Other">Other (Specify below)</option>
+            </select>
+          </div>
+
+          <div id="subjectNameOtherWrap" class="hidden">
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Specify Subject Name <span class="text-rose-500">*</span></label>
+            <input type="text" id="subjectNameOther" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow" placeholder="Enter custom subject name">
+          </div>
+          
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Type</label>
+            <select id="subjectType" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
+              <option value="Theory">Theory</option>
+              <option value="Laboratory">Laboratory</option>
+              <option value="Lecture">Lecture</option>
+              <option value="Practical">Practical</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Items Needed (one per line)</label>
+            <textarea id="subjectItems" rows="3" placeholder="Item 1&#10;Item 2&#10;Item 3" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow resize-none"></textarea>
+          </div>
+        </div>
+        
+        <div class="flex justify-end gap-3 mt-8">
+          <button type="button" class="px-6 py-3 text-gray-600 hover:text-gray-800 font-semibold transition-colors" onclick="closeModal('subjectModal')">Cancel</button>
+          <button type="button" id="subjectSaveBtn" class="px-6 py-3.5 bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 text-white font-semibold rounded-xl shadow-xl shadow-primary-500/30 transition-all hover:-translate-y-0.5">Save Subject</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
   </div>
 
   <!-- Toast Container -->
   <div id="toastContainer" class="fixed top-6 right-6 z-[9999] space-y-3"></div>
+
+  <!-- Teacher Modal -->
+  <div id="teacherModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in" style="display: none;">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal('teacherModal')"></div>
+    <div class="glass rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto relative animate-scale-in p-8">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h3 class="text-2xl font-bold text-gray-800" id="teacherModalTitle">Add Teacher</h3>
+          <p class="text-gray-500 text-sm mt-1">Fill in the teacher information</p>
+        </div>
+        <button onclick="closeModal('teacherModal')" class="w-10 h-10 rounded-xl bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors">
+          <i class="fa-solid fa-xmark text-gray-600"></i>
+        </button>
+      </div>
+
+      <form id="teacherForm" class="space-y-4">
+        <input type="hidden" id="teacherId">
+        
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">Full Name *</label>
+          <input type="text" id="teacherName" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all" placeholder="Enter teacher's full name">
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">Position *</label>
+          <input type="text" id="teacherPosition" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all" placeholder="e.g., Professor, Instructor, Dean">
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">Department *</label>
+          <input type="text" id="teacherDepartment" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all" placeholder="e.g., Nursing, Medical Technology">
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">Contact Number</label>
+          <input type="text" id="teacherContact" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all" placeholder="e.g., 09xx-xxx-xxxx">
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">Email</label>
+          <input type="email" id="teacherEmail" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all" placeholder="teacher@example.com">
+        </div>
+
+        <div class="flex gap-3 pt-4">
+          <button type="button" onclick="closeModal('teacherModal')" class="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-all">
+            Cancel
+          </button>
+          <button type="button" id="teacherSaveBtn" class="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-xl font-semibold hover:from-emerald-600 hover:to-emerald-700 transition-all flex items-center justify-center gap-2">
+            <i class="fa-solid fa-save"></i>
+            Save Teacher
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Student Modal -->
+  <div id="studentModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in" style="display: none;">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal('studentModal')"></div>
+    <div class="glass rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto relative animate-scale-in p-8">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h3 class="text-2xl font-bold text-gray-800" id="studentModalTitle">Add Student</h3>
+          <p class="text-gray-500 text-sm mt-1">Fill in the student information</p>
+        </div>
+        <button onclick="closeModal('studentModal')" class="w-10 h-10 rounded-xl bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors">
+          <i class="fa-solid fa-xmark text-gray-600"></i>
+        </button>
+      </div>
+
+      <form id="studentForm" class="space-y-4">
+        <input type="hidden" id="studentId">
+        
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">Full Name *</label>
+          <input type="text" id="studentName" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all" placeholder="Enter student's full name">
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Year Level *</label>
+            <select id="studentYearLevel" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all">
+              <option value="">Select Year Level</option>
+              <option value="1st Year">1st Year</option>
+              <option value="2nd Year">2nd Year</option>
+              <option value="3rd Year">3rd Year</option>
+              <option value="4th Year">4th Year</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Section</label>
+            <input type="text" id="studentSection" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all" placeholder="e.g., A, B, C">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">Contact Number</label>
+          <input type="text" id="studentContact" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all" placeholder="e.g., 09xx-xxx-xxxx">
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">Email</label>
+          <input type="email" id="studentEmail" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all" placeholder="student@example.com">
+        </div>
+
+        <div class="flex gap-3 pt-4">
+          <button type="button" onclick="closeModal('studentModal')" class="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-all">
+            Cancel
+          </button>
+          <button type="button" id="studentSaveBtn" class="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-blue-700 transition-all flex items-center justify-center gap-2">
+            <i class="fa-solid fa-save"></i>
+            Save Student
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- JavaScript -->
   <script src="admin-tailwind.js"></script>

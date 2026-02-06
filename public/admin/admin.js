@@ -348,133 +348,185 @@
   var subjectsTableBody = document.getElementById('dailySubjectsTableBody');
   var subjectsTableWrap = document.getElementById('subjectsTableWrap');
   var subjectsLoading = document.getElementById('subjectsLoading');
+  // ========================================
+  // COURSES/SUBJECTS MANAGEMENT
+  // ========================================
+  
+  var coursesData = [];
+  
   function setSubjectsLoading(on) {
-    if (subjectsLoading) subjectsLoading.classList.toggle('d-none', !on);
-    if (subjectsTableWrap) subjectsTableWrap.classList.toggle('d-none', on);
+    var loadingDiv = document.getElementById('subjectsLoading');
+    var tableWrap = document.getElementById('subjectsTableWrap');
+    if (loadingDiv) loadingDiv.classList.toggle('hidden', !on);
+    if (tableWrap) tableWrap.classList.toggle('hidden', on);
   }
-  async function loadDailySubjects() {
+  
+  async function loadCourses() {
     setSubjectsLoading(true);
     try {
-      var res = await apiFetch('/api/daily-subjects');
-      var raw = res.data;
-      var list = Array.isArray(raw) ? raw : (raw && raw.data ? raw.data : []);
-      dailySubjectsFlat = [];
-      list.forEach(function(doc) {
-        var subs = Array.isArray(doc.subjects) ? doc.subjects : [];
-        subs.forEach(function(s, i) {
-          dailySubjectsFlat.push({ docId: doc._id, subjectIndex: i, dayOfWeek: doc.dayOfWeek || '', name: s.name || '', type: s.type || 'Theory', itemsNeeded: Array.isArray(s.itemsNeeded) ? s.itemsNeeded : [] });
-        });
-      });
-      renderDailySubjects();
+      var res = await fetch(API + '/api/courses');
+      var json = await res.json();
+      if (json.success) {
+        coursesData = json.data || [];
+        renderCourses();
+      } else {
+        throw new Error(json.error || 'Failed to load courses');
+      }
     } catch (err) {
-      if (subjectsTableBody) subjectsTableBody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">Failed to load.</td></tr>';
-      toast('Failed to load subjects', 'error');
+      var tbody = document.getElementById('dailySubjectsTableBody');
+      if (tbody) tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-12 text-center"><div class="text-rose-600 font-medium">Failed to load courses</div></td></tr>';
+      toast('Failed to load courses', 'error');
     }
     setSubjectsLoading(false);
   }
-  function renderDailySubjects() {
-    if (!subjectsTableBody) return;
-    subjectsTableBody.innerHTML = dailySubjectsFlat.length ? dailySubjectsFlat.map(function(s, idx) {
-      var badge = s.type === 'Lab' ? 'badge-lab' : s.type === 'Seminar' ? 'badge-seminar' : 'badge-theory';
-      var items = Array.isArray(s.itemsNeeded) ? s.itemsNeeded : [];
-      return '<tr><td>' + escapeHtml(s.dayOfWeek) + '</td><td>' + escapeHtml(s.name) + '</td><td><span class="badge ' + badge + '">' + escapeHtml(s.type) + '</span></td><td>' + (items.length ? items.map(escapeHtml).join(', ') : '—') + '</td><td><button class="btn btn-sm btn-edit me-1" onclick="window.editSubject(' + idx + ')">Edit</button><button class="btn btn-sm btn-delete" onclick="window.deleteSubject(\'' + s.docId + '\',' + s.subjectIndex + ')">Delete</button></td></tr>';
-    }).join('') : '<tr><td colspan="5" class="text-center text-muted">No subjects.</td></tr>';
-  }
-
-  var subjectNameSelect = document.getElementById('subjectNameSelect');
-  var subjectNameOtherWrap = document.getElementById('subjectNameOtherWrap');
-  var subjectNameOther = document.getElementById('subjectNameOther');
-  if (subjectNameSelect) {
-    subjectNameSelect.addEventListener('change', function() {
-      if (subjectNameOtherWrap) subjectNameOtherWrap.classList.toggle('d-none', this.value !== 'Other');
-      if (subjectNameOther) subjectNameOther.value = '';
-    });
-  }
-  function getSubjectNameValue() {
-    var sel = document.getElementById('subjectNameSelect');
-    var other = document.getElementById('subjectNameOther');
-    if (!sel) return (subjectNameOther && subjectNameOther.value) || '';
-    return sel.value === 'Other' ? (other ? other.value.trim() : '') : (sel.value || '');
-  }
-  function setSubjectNameValue(name) {
-    var sel = document.getElementById('subjectNameSelect');
-    var other = document.getElementById('subjectNameOther');
-    if (!sel) return;
-    var opts = Array.from(sel.options).map(function(o) { return o.value; });
-    if (name && opts.indexOf(name) >= 0) { sel.value = name; if (subjectNameOtherWrap) subjectNameOtherWrap.classList.add('d-none'); if (other) other.value = ''; }
-    else { sel.value = 'Other'; if (subjectNameOtherWrap) subjectNameOtherWrap.classList.remove('d-none'); if (other) other.value = name || ''; }
-  }
-  window.openSubjectForm = function() {
-    document.getElementById('subjectModalTitle').textContent = 'Add Subject';
-    document.getElementById('subjectDocId').value = '';
-    document.getElementById('subjectIndex').value = '';
-    document.getElementById('subjectDay').value = 'Monday';
-    setSubjectNameValue('');
-    document.getElementById('subjectType').value = 'Theory';
-    document.getElementById('subjectItems').value = '';
-  };
-  window.editSubject = function(idx) {
-    var s = dailySubjectsFlat[idx];
-    if (!s) return;
-    document.getElementById('subjectModalTitle').textContent = 'Edit Subject';
-    document.getElementById('subjectDocId').value = s.docId;
-    document.getElementById('subjectIndex').value = s.subjectIndex;
-    document.getElementById('subjectDay').value = s.dayOfWeek;
-    setSubjectNameValue(s.name || '');
-    document.getElementById('subjectType').value = s.type || 'Theory';
-    document.getElementById('subjectItems').value = (s.itemsNeeded && Array.isArray(s.itemsNeeded) && s.itemsNeeded.length) ? s.itemsNeeded.join('\n') : '';
-    new bootstrap.Modal(document.getElementById('subjectModal')).show();
-  };
-
-  var subjectSaveBtn = document.getElementById('subjectSaveBtn');
-  subjectSaveBtn.addEventListener('click', async function() {
-    var docId = document.getElementById('subjectDocId').value;
-    var subjectIndex = document.getElementById('subjectIndex').value;
-    var dayOfWeek = document.getElementById('subjectDay').value;
-    var name = getSubjectNameValue();
-    var type = document.getElementById('subjectType').value;
-    var itemsNeeded = (document.getElementById('subjectItems').value || '').split('\n').map(function(s) { return s.trim(); }).filter(Boolean);
-    if (!name) { toast('Please enter or select a subject name.', 'error'); subjectSaveBtn.disabled = false; subjectSaveBtn.textContent = 'Save'; return; }
-    subjectSaveBtn.disabled = true;
-    subjectSaveBtn.textContent = 'Saving...';
-    try {
-      if (!docId) {
-        var res = await apiFetch('/api/daily-subjects', { method: 'POST', headers: headers(), body: JSON.stringify({ dayOfWeek: dayOfWeek, subject: { name: name, type: type, itemsNeeded: itemsNeeded } }) });
-        if (!res.ok) throw new Error(res.data.error || 'Save failed');
-      } else {
-        var listRes = await apiFetch('/api/daily-subjects');
-        var list = Array.isArray(listRes.data) ? listRes.data : (listRes.data && listRes.data.data ? listRes.data.data : []);
-        var doc = list.find(function(d) { return d._id === docId; });
-        if (!doc) throw new Error('Document not found');
-        var subjects = Array.isArray(doc.subjects) ? doc.subjects : [];
-        var idx = parseInt(subjectIndex, 10);
-        if (idx < 0 || idx >= subjects.length) throw new Error('Invalid subject index');
-        subjects[idx] = { name: name, type: type, itemsNeeded: itemsNeeded };
-        doc.subjects = subjects;
-        var res = await apiFetch('/api/daily-subjects/' + docId, { method: 'PUT', headers: headers(), body: JSON.stringify({ dayOfWeek: doc.dayOfWeek, subjects: doc.subjects }) });
-        if (!res.ok) throw new Error(res.data.error || 'Save failed');
-      }
-      bootstrap.Modal.getInstance(document.getElementById('subjectModal')).hide();
-      toast('Saved.');
-      loadDailySubjects();
-      loadDashboard();
-    } catch (err) {
-      toast(err.message || 'Failed to save.', 'error');
+  
+  function renderCourses() {
+    var tbody = document.getElementById('dailySubjectsTableBody');
+    if (!tbody) return;
+    
+    if (!coursesData.length) {
+      tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-12 text-center"><div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gray-100 mb-4"><i class="fa-solid fa-book-open text-2xl text-gray-400"></i></div><p class="text-gray-500 font-medium">No courses added yet</p></td></tr>';
+      return;
     }
-    subjectSaveBtn.disabled = false;
-    subjectSaveBtn.textContent = 'Save';
-  });
+    
+    tbody.innerHTML = coursesData.map(function(course) {
+      var statusBadge = course.status === 'Active' 
+        ? '<span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-semibold">Active</span>'
+        : '<span class="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-semibold">Inactive</span>';
+      
+      return '<tr class="hover:bg-gray-50 transition-colors">' +
+        '<td class="px-6 py-4"><span class="font-mono font-semibold text-primary-600">' + escapeHtml(course.code) + '</span></td>' +
+        '<td class="px-6 py-4"><span class="font-medium text-gray-800">' + escapeHtml(course.name) + '</span></td>' +
+        '<td class="px-6 py-4 text-center"><span class="font-semibold text-gray-700">' + escapeHtml(course.unit.toString()) + '</span></td>' +
+        '<td class="px-6 py-4">' + escapeHtml(course.yearLevel) + '</td>' +
+        '<td class="px-6 py-4">' + escapeHtml(course.semester) + '</td>' +
+        '<td class="px-6 py-4">' + statusBadge + '</td>' +
+        '<td class="px-6 py-4"><div class="flex gap-2">' +
+        '<button onclick="editCourse(\'' + course._id + '\')" class="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-1"><i class="fa-solid fa-pen text-xs"></i> Edit</button>' +
+        '<button onclick="deleteCourse(\'' + course._id + '\')" class="px-3 py-1.5 bg-rose-500 hover:bg-rose-600 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-1"><i class="fa-solid fa-trash text-xs"></i> Delete</button>' +
+        '</div></td>' +
+        '</tr>';
+    }).join('');
+  }
 
-  window.deleteSubject = async function(docId, subjectIndex) {
-    var ok = await confirmDelete('Delete this subject?');
-    if (!ok) return;
+  // Open course form modal
+  window.openSubjectForm = function() {
+    console.log('Opening course modal...');
+    var modal = document.getElementById('courseModal');
+    console.log('Modal element:', modal);
+    
+    document.getElementById('courseModalTitle').textContent = 'Add Course or Subject';
+    document.getElementById('courseId').value = '';
+    document.getElementById('courseCode').value = '';
+    document.getElementById('courseName').value = '';
+    document.getElementById('courseUnit').value = '';
+    document.getElementById('courseYearLevel').value = '';
+    document.getElementById('courseSemester').value = '';
+    document.getElementById('courseStatus').value = 'Active';
+    
+    modal.classList.remove('hidden');
+    modal.style.display = 'block';
+    console.log('Modal should be visible now');
+  };
+  
+  // Close course modal
+  window.closeCourseModal = function() {
+    var modal = document.getElementById('courseModal');
+    modal.classList.add('hidden');
+    modal.style.display = 'none';
+  };
+  
+  // Save course (create or update)
+  window.saveCourse = async function() {
+    var courseId = document.getElementById('courseId').value;
+    var code = document.getElementById('courseCode').value.trim();
+    var name = document.getElementById('courseName').value.trim();
+    var unit = parseFloat(document.getElementById('courseUnit').value);
+    var yearLevel = document.getElementById('courseYearLevel').value;
+    var semester = document.getElementById('courseSemester').value;
+    var status = document.getElementById('courseStatus').value;
+    
+    // Validate
+    if (!code || !name || !unit || !yearLevel || !semester) {
+      toast('Please fill in all required fields', 'error');
+      return;
+    }
+    
+    var saveBtn = document.getElementById('courseSaveBtn');
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving...';
+    
     try {
-      var res = await apiFetch('/api/daily-subjects/' + docId + '?subjectIndex=' + subjectIndex, { method: 'DELETE', headers: headers() });
-      if (!res.ok) throw new Error(res.data.error || 'Delete failed');
-      toast(res.data.message || 'Deleted.');
-      loadDailySubjects();
-      loadDashboard();
-    } catch (err) { toast(err.message || 'Failed to delete.', 'error'); }
+      var url = courseId ? API + '/api/courses/' + courseId : API + '/api/courses';
+      var method = courseId ? 'PUT' : 'POST';
+      
+      var res = await fetch(url, {
+        method: method,
+        headers: headers(),
+        body: JSON.stringify({
+          code: code,
+          name: name,
+          unit: unit,
+          yearLevel: yearLevel,
+          semester: semester,
+          status: status
+        })
+      });
+      
+      var json = await res.json();
+      if (json.success) {
+        toast(courseId ? 'Course updated successfully!' : 'Course created successfully!', 'success');
+        closeCourseModal();
+        loadCourses();
+      } else {
+        throw new Error(json.error || 'Failed to save course');
+      }
+    } catch (err) {
+      toast('Error: ' + err.message, 'error');
+    }
+    
+    saveBtn.disabled = false;
+    saveBtn.textContent = 'Save Course';
+  };
+  
+  // Edit course
+  window.editCourse = async function(courseId) {
+    var course = coursesData.find(function(c) { return c._id === courseId; });
+    if (!course) return;
+    
+    document.getElementById('courseModalTitle').textContent = 'Edit Course or Subject';
+    document.getElementById('courseId').value = course._id;
+    document.getElementById('courseCode').value = course.code;
+    document.getElementById('courseName').value = course.name;
+    document.getElementById('courseUnit').value = course.unit;
+    document.getElementById('courseYearLevel').value = course.yearLevel;
+    document.getElementById('courseSemester').value = course.semester;
+    document.getElementById('courseStatus').value = course.status;
+    var modal = document.getElementById('courseModal');
+    modal.classList.remove('hidden');
+    modal.style.display = 'block';
+  };
+  
+  // Delete course
+  window.deleteCourse = async function(courseId) {
+    if (!confirm('Are you sure you want to delete this course?')) return;
+    
+    try {
+      var res = await fetch(API + '/api/courses/' + courseId, {
+        method: 'DELETE',
+        headers: headers()
+      });
+      
+      var json = await res.json();
+      if (json.success) {
+        toast('Course deleted successfully!', 'success');
+        loadCourses();
+      } else {
+        throw new Error(json.error || 'Failed to delete course');
+      }
+    } catch (err) {
+      toast('Error: ' + err.message, 'error');
+    }
   };
 
   // Announcements CRUD
@@ -572,7 +624,7 @@
 
   loadDashboard();
   loadEvents();
-  loadDailySubjects();
+  loadCourses();
   loadAnnouncements();
 
   // Music Management
@@ -782,6 +834,132 @@
     }
   });
 
+  // ========================================
+  // DEPARTMENT INFO FUNCTIONS
+  // ========================================
+  
+  // Load department info
+  window.loadDepartmentInfo = function() {
+    fetch(API + '/api/department-info')
+      .then(function(res) { return res.json(); })
+      .then(function(json) {
+        if (json.success && json.data) {
+          var data = json.data;
+          document.getElementById('displayTotalStudents').textContent = data.totalStudents || 0;
+          document.getElementById('displayTotalFaculty').textContent = data.totalFaculty || 0;
+          
+          if (data.updatedAt) {
+            var date = new Date(data.updatedAt);
+            document.getElementById('lastUpdatedInfo').textContent = date.toLocaleString();
+          }
+        }
+      })
+      .catch(function(err) {
+        console.error('Error loading department info:', err);
+      });
+  };
+
+  // Open edit students modal
+  window.openEditStudentsModal = function() {
+    var currentValue = document.getElementById('displayTotalStudents').textContent;
+    document.getElementById('inputTotalStudents').value = currentValue;
+    document.getElementById('editStudentsModal').classList.remove('hidden');
+    document.getElementById('inputTotalStudents').focus();
+  };
+
+  // Close edit students modal
+  window.closeEditStudentsModal = function() {
+    document.getElementById('editStudentsModal').classList.add('hidden');
+  };
+
+  // Open edit faculty modal
+  window.openEditFacultyModal = function() {
+    var currentValue = document.getElementById('displayTotalFaculty').textContent;
+    document.getElementById('inputTotalFaculty').value = currentValue;
+    document.getElementById('editFacultyModal').classList.remove('hidden');
+    document.getElementById('inputTotalFaculty').focus();
+  };
+
+  // Close edit faculty modal
+  window.closeEditFacultyModal = function() {
+    document.getElementById('editFacultyModal').classList.add('hidden');
+  };
+
+  // Update students count
+  window.updateStudentsCount = function(event) {
+    event.preventDefault();
+    var totalStudents = parseInt(document.getElementById('inputTotalStudents').value);
+    
+    if (isNaN(totalStudents) || totalStudents < 0) {
+      toast('Please enter a valid number', 'error');
+      return;
+    }
+
+    fetch(API + '/api/department-info', {
+      method: 'PUT',
+      headers: headers(),
+      body: JSON.stringify({ totalStudents: totalStudents })
+    })
+      .then(function(res) { return res.json(); })
+      .then(function(json) {
+        if (json.success) {
+          toast('Students count updated successfully!', 'success');
+          closeEditStudentsModal();
+          loadDepartmentInfo();
+        } else {
+          toast('Error: ' + (json.error || 'Failed to update'), 'error');
+        }
+      })
+      .catch(function(err) {
+        console.error('Error updating students count:', err);
+        toast('Error: ' + err.message, 'error');
+      });
+  };
+
+  // Update faculty count
+  window.updateFacultyCount = function(event) {
+    event.preventDefault();
+    var totalFaculty = parseInt(document.getElementById('inputTotalFaculty').value);
+    
+    if (isNaN(totalFaculty) || totalFaculty < 0) {
+      toast('Please enter a valid number', 'error');
+      return;
+    }
+
+    fetch(API + '/api/department-info', {
+      method: 'PUT',
+      headers: headers(),
+      body: JSON.stringify({ totalFaculty: totalFaculty })
+    })
+      .then(function(res) { return res.json(); })
+      .then(function(json) {
+        if (json.success) {
+          toast('Faculty count updated successfully!', 'success');
+          closeEditFacultyModal();
+          loadDepartmentInfo();
+        } else {
+          toast('Error: ' + (json.error || 'Failed to update'), 'error');
+        }
+      })
+      .catch(function(err) {
+        console.error('Error updating faculty count:', err);
+        toast('Error: ' + err.message, 'error');
+      });
+  };
+
+  // Close modals when clicking outside
+  document.addEventListener('click', function(e) {
+    if (e.target.id === 'editStudentsModal') {
+      closeEditStudentsModal();
+    }
+    if (e.target.id === 'editFacultyModal') {
+      closeEditFacultyModal();
+    }
+    if (e.target.id === 'courseModal') {
+      closeCourseModal();
+    }
+  });
+
   // Initialize - show dashboard by default
   document.addEventListener('DOMContentLoaded', function() {
     console.log('✅ Admin dashboard initialized');
@@ -789,6 +967,21 @@
     var dashboardSection = document.getElementById('section-dashboard');
     if (dashboardSection && !dashboardSection.classList.contains('hidden')) {
       console.log('✅ Dashboard is default section');
+    }
+    
+    // Load department info when department section is shown
+    var departmentSection = document.getElementById('section-department-info');
+    if (departmentSection) {
+      var observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          if (mutation.attributeName === 'class') {
+            if (!departmentSection.classList.contains('hidden')) {
+              loadDepartmentInfo();
+            }
+          }
+        });
+      });
+      observer.observe(departmentSection, { attributes: true });
     }
   });
 })();

@@ -10,6 +10,8 @@ const dailySubjectsRoutes = require('./routes/dailySubjects');
 const announcementsRoutes = require('./routes/announcements');
 const musicRoutes = require('./routes/music');
 const statsRoutes = require('./routes/stats');
+const departmentInfoRoutes = require('./routes/departmentInfo');
+const coursesRoutes = require('./routes/courses');
 
 const app = express();
 const path = require('path');
@@ -130,6 +132,8 @@ app.use('/api/daily-subjects', requireDb, dailySubjectsRoutes);
 app.use('/api/announcements', requireDb, announcementsRoutes);
 app.use('/api/music', requireDb, musicRoutes);
 app.use('/api/stats', requireDb, statsRoutes);
+app.use('/api/department-info', requireDb, departmentInfoRoutes);
+app.use('/api/courses', requireDb, coursesRoutes);
 
 // 404 handler
 app.use((req, res) => {

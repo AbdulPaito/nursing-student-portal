@@ -97,6 +97,13 @@
     }, 200);
   };
 
+  window.closeCourseModal = function() {
+    const modal = document.getElementById('courseModal');
+    modal.classList.add('hidden');
+    modal.style.display = 'none';
+    document.body.style.overflow = '';
+  };
+
   // Confirm delete
   let confirmDeleteResolve;
   const confirmModal = document.getElementById('confirmDeleteModal');
@@ -196,6 +203,12 @@
             if (section === 'music') {
               console.log('🎵 Music section loaded, fetching files...');
               loadMusicFiles();
+            }
+            
+            // Load courses when daily-subjects section is shown
+            if (section === 'daily-subjects') {
+              console.log('📚 Daily subjects section loaded, fetching courses...');
+              loadCourses();
             }
           }, 50);
         }
@@ -695,7 +708,7 @@
           </td>
         </tr>
       `;
-    }).join('') : '<tr><td colspan="5" class="px-6 py-12 text-center"><i class="fa-solid fa-inbox text-4xl text-gray-300 mb-3"></i><p class="text-gray-500">No subjects scheduled.</p></td></tr>';
+    }).join('') : '<tr><td colspan="5" class="px-6 py-12 text-center"><div class="flex flex-col items-center justify-center"><i class="fa-solid fa-inbox text-4xl text-gray-300 mb-3"></i><p class="text-gray-500 font-medium">No subjects scheduled.</p></div></td></tr>';
   }
 
   const subjectNameSelect = document.getElementById('subjectNameSelect');
@@ -730,6 +743,174 @@
     }
   }
 
+  // Course Management
+  let coursesData = [];
+  
+  function setSubjectsLoading(on) {
+    const loadingDiv = document.getElementById('subjectsLoading');
+    const tableWrap = document.getElementById('subjectsTableWrap');
+    if (loadingDiv) loadingDiv.classList.toggle('hidden', !on);
+    if (tableWrap) tableWrap.classList.toggle('hidden', on);
+  }
+  
+  async function loadCourses() {
+    setSubjectsLoading(true);
+    try {
+      const res = await fetch(API + '/api/courses');
+      const json = await res.json();
+      if (json.success) {
+        coursesData = json.data || [];
+        renderCourses();
+      } else {
+        throw new Error(json.error || 'Failed to load courses');
+      }
+    } catch (err) {
+      const tbody = document.getElementById('dailySubjectsTableBody');
+      if (tbody) tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-12 text-center"><div class="text-rose-600 font-medium">Failed to load courses</div></td></tr>';
+      toast('Failed to load courses', 'error');
+    }
+    setSubjectsLoading(false);
+  }
+  
+  function renderCourses() {
+    const tbody = document.getElementById('dailySubjectsTableBody');
+    if (!tbody) return;
+    
+    if (!coursesData.length) {
+      tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-12 text-center"><div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gray-100 mb-4"><i class="fa-solid fa-book-open text-2xl text-gray-400"></i></div><p class="text-gray-500 font-medium">No courses added yet</p></td></tr>';
+      return;
+    }
+    
+    tbody.innerHTML = coursesData.map(course => {
+      const statusBadge = course.status === 'Active' 
+        ? '<span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-semibold">Active</span>'
+        : '<span class="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-semibold">Inactive</span>';
+      
+      return `<tr class="hover:bg-gray-50 transition-colors">
+        <td class="px-6 py-4"><span class="font-mono font-semibold text-primary-600">${escapeHtml(course.code)}</span></td>
+        <td class="px-6 py-4"><span class="font-medium text-gray-800">${escapeHtml(course.name)}</span></td>
+        <td class="px-6 py-4 text-center"><span class="font-semibold text-gray-700">${escapeHtml(course.unit.toString())}</span></td>
+        <td class="px-6 py-4">${escapeHtml(course.yearLevel)}</td>
+        <td class="px-6 py-4">${escapeHtml(course.semester)}</td>
+        <td class="px-6 py-4">${statusBadge}</td>
+        <td class="px-6 py-4"><div class="flex gap-2">
+          <button onclick="editCourse('${course._id}')" class="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-1"><i class="fa-solid fa-pen text-xs"></i> Edit</button>
+          <button onclick="deleteCourse('${course._id}')" class="px-3 py-1.5 bg-rose-500 hover:bg-rose-600 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-1"><i class="fa-solid fa-trash text-xs"></i> Delete</button>
+        </div></td>
+      </tr>`;
+    }).join('');
+  }
+
+  // Function to open course modal
+  window.openCourseModal = function() {
+    document.getElementById('courseModalTitle').textContent = 'Add Course or Subject';
+    document.getElementById('courseId').value = '';
+    document.getElementById('courseCode').value = '';
+    document.getElementById('courseName').value = '';
+    document.getElementById('courseUnit').value = '';
+    document.getElementById('courseYearLevel').value = '';
+    document.getElementById('courseSemester').value = '';
+    document.getElementById('courseStatus').value = 'Active';
+    
+    const modal = document.getElementById('courseModal');
+    modal.classList.remove('hidden');
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  };
+
+  window.saveCourse = async function() {
+    const courseId = document.getElementById('courseId').value;
+    const code = document.getElementById('courseCode').value.trim();
+    const name = document.getElementById('courseName').value.trim();
+    const unit = parseFloat(document.getElementById('courseUnit').value);
+    const yearLevel = document.getElementById('courseYearLevel').value;
+    const semester = document.getElementById('courseSemester').value;
+    const status = document.getElementById('courseStatus').value;
+    
+    // Validate
+    if (!code || !name || !unit || !yearLevel || !semester) {
+      toast('Please fill in all required fields', 'error');
+      return;
+    }
+    
+    const saveBtn = document.getElementById('courseSaveBtn');
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving...';
+    
+    try {
+      const url = courseId ? API + '/api/courses/' + courseId : API + '/api/courses';
+      const method = courseId ? 'PUT' : 'POST';
+      
+      const res = await fetch(url, {
+        method: method,
+        headers: headers(),
+        body: JSON.stringify({
+          code: code,
+          name: name,
+          unit: unit,
+          yearLevel: yearLevel,
+          semester: semester,
+          status: status
+        })
+      });
+      
+      const json = await res.json();
+      if (json.success) {
+        toast(courseId ? 'Course updated successfully!' : 'Course created successfully!', 'success');
+        closeCourseModal();
+        loadCourses();
+      } else {
+        throw new Error(json.error || 'Failed to save course');
+      }
+    } catch (err) {
+      toast('Error: ' + err.message, 'error');
+    }
+    
+    saveBtn.disabled = false;
+    saveBtn.textContent = 'Save Course';
+  };
+  
+  window.editCourse = async function(courseId) {
+    const course = coursesData.find(c => c._id === courseId);
+    if (!course) return;
+    
+    document.getElementById('courseModalTitle').textContent = 'Edit Course or Subject';
+    document.getElementById('courseId').value = course._id;
+    document.getElementById('courseCode').value = course.code;
+    document.getElementById('courseName').value = course.name;
+    document.getElementById('courseUnit').value = course.unit;
+    document.getElementById('courseYearLevel').value = course.yearLevel;
+    document.getElementById('courseSemester').value = course.semester;
+    document.getElementById('courseStatus').value = course.status;
+    const modal = document.getElementById('courseModal');
+    modal.classList.remove('hidden');
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  };
+  
+  window.deleteCourse = async function(courseId) {
+    const ok = await confirmDelete('Are you sure you want to delete this course?');
+    if (!ok) return;
+    
+    try {
+      const res = await fetch(API + '/api/courses/' + courseId, {
+        method: 'DELETE',
+        headers: headers()
+      });
+      
+      const json = await res.json();
+      if (json.success) {
+        toast('Course deleted successfully!', 'success');
+        loadCourses();
+      } else {
+        throw new Error(json.error || 'Failed to delete course');
+      }
+    } catch (err) {
+      toast('Error: ' + err.message, 'error');
+    }
+  };
+
+  // Function to open daily subject modal
   window.openSubjectForm = function() {
     document.getElementById('subjectModalTitle').textContent = 'Add Subject';
     document.getElementById('subjectDocId').value = '';
@@ -1196,4 +1377,190 @@
       toast('Error: ' + error.message, 'error');
     }
   });
+
+  // Department Info - Teachers & Students
+  let teachersList = [];
+  let studentsList = [];
+
+  // Tab switching
+  window.showDepartmentTab = function(tab) {
+    document.querySelectorAll('.department-tab').forEach(function(btn) {
+      btn.classList.remove('text-primary-600', 'border-primary-600');
+      btn.classList.add('text-gray-500', 'border-transparent');
+    });
+    document.getElementById('tab-' + tab).classList.remove('text-gray-500', 'border-transparent');
+    document.getElementById('tab-' + tab).classList.add('text-primary-600', 'border-primary-600');
+    
+    document.querySelectorAll('.department-content').forEach(function(content) {
+      content.classList.add('hidden');
+    });
+    document.getElementById('content-' + tab).classList.remove('hidden');
+    
+    if (tab === 'teachers' && teachersList.length === 0) loadTeachers();
+    if (tab === 'students' && studentsList.length === 0) loadStudents();
+  };
+
+  // Teachers CRUD
+  function loadTeachers() {
+    const stored = localStorage.getItem('teachersList');
+    teachersList = stored ? JSON.parse(stored) : [];
+    renderTeachers();
+  }
+
+  function saveTeachersToStorage() {
+    localStorage.setItem('teachersList', JSON.stringify(teachersList));
+  }
+
+  function renderTeachers() {
+    const tbody = document.getElementById('teachersTableBody');
+    if (!tbody) return;
+    
+    tbody.innerHTML = teachersList.length ? teachersList.map(function(t, index) {
+      return '<tr class="hover:bg-gray-50/80 transition-colors opacity-0 animate-fade-in" style="animation-delay: ' + (index * 0.05) + 's; animation-fill-mode: forwards;"><td class="px-6 py-4"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 flex items-center justify-center"><i class="fa-solid fa-chalkboard-user text-white text-sm"></i></div><span class="text-sm font-semibold text-gray-800">' + escapeHtml(t.name) + '</span></div></td><td class="px-6 py-4"><span class="text-sm text-gray-600">' + escapeHtml(t.position) + '</span></td><td class="px-6 py-4"><span class="text-sm text-gray-600">' + escapeHtml(t.department) + '</span></td><td class="px-6 py-4"><div class="text-sm text-gray-600">' + (t.contact ? '<div><i class="fa-solid fa-phone text-xs mr-1"></i>' + escapeHtml(t.contact) + '</div>' : '') + (t.email ? '<div><i class="fa-solid fa-envelope text-xs mr-1"></i>' + escapeHtml(t.email) + '</div>' : '') + (!t.contact && !t.email ? '<span class="text-gray-400">—</span>' : '') + '</div></td><td class="px-6 py-4"><div class="flex items-center gap-2"><button class="w-9 h-9 rounded-xl bg-amber-100 text-amber-600 hover:bg-amber-200 flex items-center justify-center transition-colors" onclick="editTeacher(' + index + ')" title="Edit"><i class="fa-solid fa-pen text-sm"></i></button><button class="w-9 h-9 rounded-xl bg-rose-100 text-rose-600 hover:bg-rose-200 flex items-center justify-center transition-colors" onclick="deleteTeacher(' + index + ')" title="Delete"><i class="fa-solid fa-trash text-sm"></i></button></div></td></tr>';
+    }).join('') : '<tr><td colspan="5" class="px-6 py-12 text-center"><div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gray-100 mb-4"><i class="fa-solid fa-chalkboard-user text-2xl text-gray-400"></i></div><p class="text-gray-500 font-medium">No teachers added yet</p></td></tr>';
+  }
+
+  window.openTeacherForm = function() {
+    document.getElementById('teacherModalTitle').textContent = 'Add Teacher';
+    document.getElementById('teacherId').value = '';
+    document.getElementById('teacherName').value = '';
+    document.getElementById('teacherPosition').value = '';
+    document.getElementById('teacherDepartment').value = '';
+    document.getElementById('teacherContact').value = '';
+    document.getElementById('teacherEmail').value = '';
+    openModal('teacherModal');
+  };
+
+  window.editTeacher = function(index) {
+    const t = teachersList[index];
+    if (!t) return;
+    document.getElementById('teacherModalTitle').textContent = 'Edit Teacher';
+    document.getElementById('teacherId').value = index;
+    document.getElementById('teacherName').value = t.name || '';
+    document.getElementById('teacherPosition').value = t.position || '';
+    document.getElementById('teacherDepartment').value = t.department || '';
+    document.getElementById('teacherContact').value = t.contact || '';
+    document.getElementById('teacherEmail').value = t.email || '';
+    openModal('teacherModal');
+  };
+
+  const teacherSaveBtn = document.getElementById('teacherSaveBtn');
+  if (teacherSaveBtn) {
+    teacherSaveBtn.addEventListener('click', function() {
+      const id = document.getElementById('teacherId').value;
+      const teacher = {
+        name: document.getElementById('teacherName').value.trim(),
+        position: document.getElementById('teacherPosition').value.trim(),
+        department: document.getElementById('teacherDepartment').value.trim(),
+        contact: document.getElementById('teacherContact').value.trim(),
+        email: document.getElementById('teacherEmail').value.trim()
+      };
+      if (!teacher.name || !teacher.position || !teacher.department) {
+        toast('Please fill in all required fields', 'error');
+        return;
+      }
+      if (id === '') {
+        teachersList.push(teacher);
+        toast('Teacher added successfully!');
+      } else {
+        teachersList[parseInt(id)] = teacher;
+        toast('Teacher updated successfully!');
+      }
+      saveTeachersToStorage();
+      renderTeachers();
+      closeModal('teacherModal');
+    });
+  }
+
+  window.deleteTeacher = async function(index) {
+    const ok = await confirmDelete('Are you sure you want to delete this teacher?');
+    if (!ok) return;
+    teachersList.splice(index, 1);
+    saveTeachersToStorage();
+    renderTeachers();
+    toast('Teacher deleted successfully!');
+  };
+
+  // Students CRUD
+  function loadStudents() {
+    const stored = localStorage.getItem('studentsList');
+    studentsList = stored ? JSON.parse(stored) : [];
+    renderStudents();
+  }
+
+  function saveStudentsToStorage() {
+    localStorage.setItem('studentsList', JSON.stringify(studentsList));
+  }
+
+  function renderStudents() {
+    const tbody = document.getElementById('studentsTableBody');
+    if (!tbody) return;
+    tbody.innerHTML = studentsList.length ? studentsList.map(function(s, index) {
+      return '<tr class="hover:bg-gray-50/80 transition-colors opacity-0 animate-fade-in" style="animation-delay: ' + (index * 0.05) + 's; animation-fill-mode: forwards;"><td class="px-6 py-4"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-500 flex items-center justify-center"><i class="fa-solid fa-user-graduate text-white text-sm"></i></div><span class="text-sm font-semibold text-gray-800">' + escapeHtml(s.name) + '</span></div></td><td class="px-6 py-4"><span class="text-sm text-gray-600">' + escapeHtml(s.yearLevel) + '</span></td><td class="px-6 py-4"><span class="text-sm text-gray-600">' + (s.section ? escapeHtml(s.section) : '<span class="text-gray-400">—</span>') + '</span></td><td class="px-6 py-4"><div class="text-sm text-gray-600">' + (s.contact ? '<div><i class="fa-solid fa-phone text-xs mr-1"></i>' + escapeHtml(s.contact) + '</div>' : '') + (s.email ? '<div><i class="fa-solid fa-envelope text-xs mr-1"></i>' + escapeHtml(s.email) + '</div>' : '') + (!s.contact && !s.email ? '<span class="text-gray-400">—</span>' : '') + '</div></td><td class="px-6 py-4"><div class="flex items-center gap-2"><button class="w-9 h-9 rounded-xl bg-amber-100 text-amber-600 hover:bg-amber-200 flex items-center justify-center transition-colors" onclick="editStudent(' + index + ')" title="Edit"><i class="fa-solid fa-pen text-sm"></i></button><button class="w-9 h-9 rounded-xl bg-rose-100 text-rose-600 hover:bg-rose-200 flex items-center justify-center transition-colors" onclick="deleteStudent(' + index + ')" title="Delete"><i class="fa-solid fa-trash text-sm"></i></button></div></td></tr>';
+    }).join('') : '<tr><td colspan="5" class="px-6 py-12 text-center"><div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gray-100 mb-4"><i class="fa-solid fa-user-graduate text-2xl text-gray-400"></i></div><p class="text-gray-500 font-medium">No students added yet</p></td></tr>';
+  }
+
+  window.openStudentForm = function() {
+    document.getElementById('studentModalTitle').textContent = 'Add Student';
+    document.getElementById('studentId').value = '';
+    document.getElementById('studentName').value = '';
+    document.getElementById('studentYearLevel').value = '';
+    document.getElementById('studentSection').value = '';
+    document.getElementById('studentContact').value = '';
+    document.getElementById('studentEmail').value = '';
+    openModal('studentModal');
+  };
+
+  window.editStudent = function(index) {
+    const s = studentsList[index];
+    if (!s) return;
+    document.getElementById('studentModalTitle').textContent = 'Edit Student';
+    document.getElementById('studentId').value = index;
+    document.getElementById('studentName').value = s.name || '';
+    document.getElementById('studentYearLevel').value = s.yearLevel || '';
+    document.getElementById('studentSection').value = s.section || '';
+    document.getElementById('studentContact').value = s.contact || '';
+    document.getElementById('studentEmail').value = s.email || '';
+    openModal('studentModal');
+  };
+
+  const studentSaveBtn = document.getElementById('studentSaveBtn');
+  if (studentSaveBtn) {
+    studentSaveBtn.addEventListener('click', function() {
+      const id = document.getElementById('studentId').value;
+      const student = {
+        name: document.getElementById('studentName').value.trim(),
+        yearLevel: document.getElementById('studentYearLevel').value,
+        section: document.getElementById('studentSection').value.trim(),
+        contact: document.getElementById('studentContact').value.trim(),
+        email: document.getElementById('studentEmail').value.trim()
+      };
+      if (!student.name || !student.yearLevel) {
+        toast('Please fill in all required fields', 'error');
+        return;
+      }
+      if (id === '') {
+        studentsList.push(student);
+        toast('Student added successfully!');
+      } else {
+        studentsList[parseInt(id)] = student;
+        toast('Student updated successfully!');
+      }
+      saveStudentsToStorage();
+      renderStudents();
+      closeModal('studentModal');
+    });
+  }
+
+  window.deleteStudent = async function(index) {
+    const ok = await confirmDelete('Are you sure you want to delete this student?');
+    if (!ok) return;
+    studentsList.splice(index, 1);
+    saveStudentsToStorage();
+    renderStudents();
+    toast('Student deleted successfully!');
+  };
+
+  loadTeachers();
+  loadStudents();
 })();
