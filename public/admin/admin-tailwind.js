@@ -479,7 +479,7 @@
       eventsList = Array.isArray(res.data) ? res.data : [];
       renderEvents(eventsList);
     } catch (err) {
-      if (eventsTableBody) eventsTableBody.innerHTML = '<tr><td colspan="7" class="px-6 py-12 text-center"><i class="fa-solid fa-triangle-exclamation text-4xl text-rose-300 mb-3"></i><p class="text-gray-500">Failed to load events.</p></td></tr>';
+      if (eventsTableBody) eventsTableBody.innerHTML = '<tr><td colspan="6" class="px-6 py-12 text-center"><i class="fa-solid fa-triangle-exclamation text-4xl text-rose-300 mb-3"></i><p class="text-gray-500">Failed to load events.</p></td></tr>';
       toast('Failed to load events', 'error');
     }
     setEventsLoading(false);
@@ -488,11 +488,6 @@
   function renderEvents(list) {
     const q = (document.getElementById('eventsSearch') && document.getElementById('eventsSearch').value || '').toLowerCase();
     const filtered = q ? list.filter(function(e) { return (e.title || '').toLowerCase().includes(q); }) : list;
-    
-    // Debug: Log events to see their structure
-    if (filtered.length > 0) {
-      console.log('Sample event:', filtered[0]);
-    }
     
     if (!eventsTableBody) return;
     
@@ -517,10 +512,7 @@
             </div>
           </td>
           <td class="px-6 py-4">
-            <span class="text-gray-700">${formatTime(e.startTime || e.time)}</span>
-          </td>
-          <td class="px-6 py-4">
-            <span class="text-gray-700">${e.endTime ? formatTime(e.endTime) : '—'}</span>
+            <span class="text-gray-700">${formatTime(e.time)}</span>
           </td>
           <td class="px-6 py-4">
             <div class="text-sm text-gray-800 font-medium">${escapeHtml(e.startDate || e.date)}</div>
@@ -551,7 +543,7 @@
           </td>
         </tr>
       `;
-    }).join('') : '<tr><td colspan="7" class="px-6 py-12 text-center"><i class="fa-solid fa-inbox text-4xl text-gray-300 mb-3"></i><p class="text-gray-500">No events found.</p></td></tr>';
+    }).join('') : '<tr><td colspan="6" class="px-6 py-12 text-center"><i class="fa-solid fa-inbox text-4xl text-gray-300 mb-3"></i><p class="text-gray-500">No events found.</p></td></tr>';
   }
 
   if (document.getElementById('eventsSearch')) {
@@ -611,9 +603,7 @@
     
     document.getElementById('eventStartDate').value = e.startDate || e.date || '';
     document.getElementById('eventEndDate').value = e.endDate || '';
-    document.getElementById('eventTime').value = e.time || '09:00'; // Keep for backward compatibility
-    document.getElementById('eventStartTime').value = e.startTime || e.time || '09:00';
-    document.getElementById('eventEndTime').value = e.endTime || '';
+    document.getElementById('eventTime').value = e.time || '09:00';
     document.getElementById('eventLocation').value = e.location || '';
     document.getElementById('eventItems').value = (e.items && e.items.length) ? e.items.join('\n') : '';
     
@@ -638,24 +628,19 @@
         return;
       }
       
-      const startTime = document.getElementById('eventStartTime').value;
-      const endTime = document.getElementById('eventEndTime').value;
-      
       const body = {
         title: document.getElementById('eventTitle').value.trim(),
         description: document.getElementById('eventDescription').value.trim(),
         category: category,
-        date: startDate, // For backward compatibility
+        date: startDate,
         startDate: startDate,
         endDate: endDate,
-        time: startTime, // For backward compatibility
-        startTime: startTime,
-        endTime: endTime,
+        time: document.getElementById('eventTime').value,
         location: document.getElementById('eventLocation').value.trim(),
         items: (document.getElementById('eventItems').value || '').split('\n').map(function(s) { return s.trim(); }).filter(Boolean)
       };
       
-      if (!body.title || !body.startDate || !body.startTime) {
+      if (!body.title || !body.startDate || !body.time) {
         toast('Please fill in all required fields', 'error');
         return;
       }
