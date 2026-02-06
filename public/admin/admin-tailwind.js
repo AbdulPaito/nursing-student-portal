@@ -69,6 +69,20 @@
     return d.innerHTML;
   }
 
+  // Format time from 24-hour to 12-hour format
+  function formatTime(time24) {
+    if (!time24 || time24 === '—') return time24 || '—';
+    try {
+      const [hours, minutes] = time24.split(':');
+      const hour = parseInt(hours, 10);
+      const ampm = hour >= 12 ? 'PM' : 'AM';
+      const displayHour = hour % 12 || 12;
+      return `${displayHour}:${minutes} ${ampm}`;
+    } catch (e) {
+      return time24;
+    }
+  }
+
   // Modal functions with animations
   window.openModal = function(modalId) {
     const modal = document.getElementById(modalId);
@@ -969,6 +983,29 @@
     document.body.style.overflow = 'hidden';
   };
 
+  // Auto-select day when date is changed
+  document.addEventListener('DOMContentLoaded', function() {
+    const dateInput = document.getElementById('dailySubjectDate');
+    if (dateInput) {
+      dateInput.addEventListener('change', function() {
+        const selectedDate = this.value;
+        if (selectedDate) {
+          const date = new Date(selectedDate + 'T00:00:00');
+          const dayIndex = date.getDay(); // 0 = Sunday, 1 = Monday, etc.
+          const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+          const dayName = dayNames[dayIndex];
+          
+          // Update hidden day input and switch to that day's tab
+          document.getElementById('dailySubjectDay').value = dayName;
+          currentDay = dayName;
+          switchAdminDay(dayName);
+          
+          toast(`Day auto-selected: ${dayName}`, 'success');
+        }
+      });
+    }
+  });
+
   // Toggle custom type input
   window.toggleDailySubjectCustomType = function() {
     const selectElement = document.getElementById('dailySubjectType');
@@ -1006,6 +1043,8 @@
     const instructor = document.getElementById('dailySubjectInstructor').value.trim();
     const day = document.getElementById('dailySubjectDay').value || currentDay;
 
+    console.log('Saving subject to day:', day); // Debug
+    console.log('Current day:', currentDay); // Debug
     console.log('Saving subject with instructor:', instructor); // Debug
 
     if (!code || !name || !type || !startTime || !endTime) {
@@ -1095,7 +1134,7 @@
     if (!subjects.length) {
       tbody.innerHTML = `
         <tr>
-          <td colspan="7" class="px-6 py-12 text-center">
+          <td colspan="9" class="px-6 py-12 text-center">
             <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gray-100 mb-4">
               <i class="fa-solid fa-calendar-xmark text-2xl text-gray-400"></i>
             </div>
@@ -1132,7 +1171,13 @@
             ${typeBadge}
           </td>
           <td class="px-6 py-4">
-            <span class="text-gray-700">${escapeHtml(subject.startTime || subject.time || '')} - ${escapeHtml(subject.endTime || '')}</span>
+            <span class="text-gray-700">${formatTime(subject.startTime || subject.time)}</span>
+          </td>
+          <td class="px-6 py-4">
+            <span class="text-gray-700">${formatTime(subject.endTime)}</span>
+          </td>
+          <td class="px-6 py-4">
+            <span class="text-gray-700">${escapeHtml(subject.date || '—')}</span>
           </td>
           <td class="px-6 py-4">
             <span class="text-gray-700">${escapeHtml(subject.room || subject.location || '—')}</span>

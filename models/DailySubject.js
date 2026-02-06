@@ -7,6 +7,11 @@ const subjectItemSchema = new mongoose.Schema({
   time: { type: String, default: '' }, // HH:MM format (e.g., "09:00")
   date: { type: String, default: '' }, // YYYY-MM-DD format (optional for specific dates)
   location: { type: String, default: '' }, // Room or location
+  room: { type: String, default: '' }, // Room or location (alias)
+  instructor: { type: String, default: '' }, // Instructor name
+  code: { type: String, default: '' }, // Subject code
+  startTime: { type: String, default: '' }, // Start time (HH:MM format)
+  endTime: { type: String, default: '' }, // End time (HH:MM format)
   itemsNeeded: [{ type: String }], // Now stores year level (e.g., "1st Year", "2nd Year")
   sem: { type: String, default: '' }, // Semester (e.g., "1st Sem", "2nd Sem", "Midyear")
   isActive: { type: Boolean, default: true } // Active/Inactive status

@@ -865,7 +865,6 @@
               <button class="admin-day-tab px-5 py-3 rounded-xl text-sm font-semibold transition-all duration-300" data-day="Thursday" onclick="switchAdminDay('Thursday')">Thursday</button>
               <button class="admin-day-tab px-5 py-3 rounded-xl text-sm font-semibold transition-all duration-300" data-day="Friday" onclick="switchAdminDay('Friday')">Friday</button>
               <button class="admin-day-tab px-5 py-3 rounded-xl text-sm font-semibold transition-all duration-300" data-day="Saturday" onclick="switchAdminDay('Saturday')">Saturday</button>
-              <button class="admin-day-tab px-5 py-3 rounded-xl text-sm font-semibold transition-all duration-300" data-day="Sunday" onclick="switchAdminDay('Sunday')">Sunday</button>
             </div>
           </div>
 
@@ -878,7 +877,9 @@
                     <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Subject Code</th>
                     <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Subject Name</th>
                     <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Type</th>
-                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Time</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Start Time</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">End Time</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Date</th>
                     <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Room</th>
                     <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Instructor</th>
                     <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Actions</th>
@@ -886,7 +887,7 @@
                 </thead>
                 <tbody id="dailyScheduleTableBody" class="divide-y divide-gray-100">
                   <tr>
-                    <td colspan="7" class="px-6 py-12 text-center">
+                    <td colspan="9" class="px-6 py-12 text-center">
                       <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary-100 mb-4">
                         <i class="fa-solid fa-spinner fa-spin text-2xl text-primary-600"></i>
                       </div>
@@ -1116,6 +1117,7 @@
               <option value="Training">Training</option>
               <option value="Workshops">Workshops</option>
               <option value="Seminars">Seminars</option>
+              <option value="Examination">Examination</option>
               <option value="Social Events">Social Events</option>
               <option value="Other">Other</option>
             </select>

@@ -372,14 +372,36 @@
           <button class="day-tab px-5 py-3 rounded-xl text-sm font-semibold bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition-all duration-300" data-day="Thursday">Thursday</button>
           <button class="day-tab px-5 py-3 rounded-xl text-sm font-semibold bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition-all duration-300" data-day="Friday">Friday</button>
           <button class="day-tab px-5 py-3 rounded-xl text-sm font-semibold bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition-all duration-300" data-day="Saturday">Saturday</button>
-          <button class="day-tab px-5 py-3 rounded-xl text-sm font-semibold bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition-all duration-300" data-day="Sunday">Sunday</button>
         </div>
       </div>
 
-      <!-- Subjects Content -->
-      <div id="subjectsContent" class="min-h-[200px]">
-        <div class="flex justify-center py-12">
-          <div class="spinner"></div>
+      <!-- Schedule Table -->
+      <div class="glass rounded-3xl shadow-xl overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead class="bg-gray-50/80">
+              <tr>
+                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Subject Code</th>
+                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Subject Name</th>
+                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Type</th>
+                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Start Time</th>
+                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">End Time</th>
+                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Date</th>
+                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Room</th>
+                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Instructor</th>
+              </tr>
+            </thead>
+            <tbody id="subjectsContent" class="divide-y divide-gray-100">
+              <tr>
+                <td colspan="8" class="px-6 py-12 text-center">
+                  <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary-100 mb-4">
+                    <i class="fa-solid fa-spinner fa-spin text-2xl text-primary-600"></i>
+                  </div>
+                  <p class="text-gray-500 font-medium">Loading schedule...</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -468,7 +490,21 @@
         return d.innerHTML;
       }
 
-      const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+      // Format time from 24-hour to 12-hour format
+      function formatTime(time24) {
+        if (!time24 || time24 === '—') return time24 || '—';
+        try {
+          const [hours, minutes] = time24.split(':');
+          const hour = parseInt(hours, 10);
+          const ampm = hour >= 12 ? 'PM' : 'AM';
+          const displayHour = hour % 12 || 12;
+          return `${displayHour}:${minutes} ${ampm}`;
+        } catch (e) {
+          return time24;
+        }
+      }
+
+      const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
       let dataByDay = {};
       let currentDay = 'Monday';
 
@@ -504,28 +540,66 @@
       }
 
       function renderDay(day) {
-        const container = document.getElementById('subjectsContent');
+        const tbody = document.getElementById('subjectsContent');
         const subjects = dataByDay[day] || [];
         
         if (!subjects.length) {
-          container.innerHTML = `
-            <div class="text-center py-16 bg-white/50 rounded-2xl border border-gray-200">
-              <div class="w-24 h-24 mx-auto mb-4 rounded-2xl bg-gray-100 flex items-center justify-center">
-                <i class="fa-solid fa-calendar-xmark text-5xl text-gray-300"></i>
-              </div>
-              <h3 class="text-xl font-bold text-gray-600 mb-2">No Subjects Scheduled</h3>
-              <p class="text-gray-500">There are no classes scheduled for ${day}.</p>
-              <p class="text-sm text-gray-400 mt-2">Enjoy your free day!</p>
-            </div>
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="8" class="px-6 py-12 text-center">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gray-100 mb-4">
+                  <i class="fa-solid fa-calendar-xmark text-2xl text-gray-400"></i>
+                </div>
+                <p class="text-gray-500 font-medium">No subjects scheduled for ${day}</p>
+              </td>
+            </tr>
           `;
           return;
         }
         
-        container.innerHTML = `
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            ${subjects.map(s => window.renderSubjectCard(s, day)).join('')}
-          </div>
-        `;
+        tbody.innerHTML = subjects.map((subject, index) => {
+          const type = subject.type || '';
+          let typeBadge = '<span class="text-gray-400 text-sm">—</span>';
+          
+          if (type === 'Lecture') {
+            typeBadge = '<span class="px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold">Lecture</span>';
+          } else if (type === 'Practical/Lab') {
+            typeBadge = '<span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold">Practical/Lab</span>';
+          } else if (type === 'Seminar') {
+            typeBadge = '<span class="px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-xs font-semibold">Seminar</span>';
+          } else if (type) {
+            typeBadge = `<span class="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-semibold">${escapeHtml(type)}</span>`;
+          }
+          
+          return `
+            <tr class="hover:bg-gray-50 transition-colors">
+              <td class="px-6 py-4">
+                <span class="font-mono font-semibold text-primary-600">${escapeHtml(subject.code || subject.name)}</span>
+              </td>
+              <td class="px-6 py-4">
+                <span class="font-medium text-gray-800">${escapeHtml(subject.name || subject.customName || '')}</span>
+              </td>
+              <td class="px-6 py-4">
+                ${typeBadge}
+              </td>
+              <td class="px-6 py-4">
+                <span class="text-gray-700">${formatTime(subject.startTime || subject.time)}</span>
+              </td>
+              <td class="px-6 py-4">
+                <span class="text-gray-700">${formatTime(subject.endTime)}</span>
+              </td>
+              <td class="px-6 py-4">
+                <span class="text-gray-700">${escapeHtml(subject.date || '—')}</span>
+              </td>
+              <td class="px-6 py-4">
+                <span class="text-gray-700">${escapeHtml(subject.room || subject.location || '—')}</span>
+              </td>
+              <td class="px-6 py-4">
+                <span class="text-gray-700">${escapeHtml(subject.instructor || '—')}</span>
+              </td>
+            </tr>
+          `;
+        }).join('');
       }
 
       function setActiveTab(day) {
@@ -549,7 +623,14 @@
 
       // Load today's day initially
       const today = new Date();
-      const todayDayName = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][today.getDay()];
+      const todayDayIndex = today.getDay();
+      const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      let todayDayName = dayNames[todayDayIndex];
+      
+      // If today is Sunday, default to Monday
+      if (todayDayName === 'Sunday') {
+        todayDayName = 'Monday';
+      }
 
       // Load data
       fetch('/api/daily-subjects').then(r => r.json()).then(list => {
@@ -565,10 +646,14 @@
         setActiveTab(todayDayName);
       }).catch(() => {
         document.getElementById('subjectsContent').innerHTML = `
-          <div class="text-center py-12 text-gray-500">
-            <i class="bi bi-exclamation-circle text-4xl mb-3 block"></i>
-            Could not load subjects. Please try again later.
-          </div>
+          <tr>
+            <td colspan="8" class="px-6 py-12 text-center">
+              <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-red-100 mb-4">
+                <i class="fa-solid fa-exclamation-circle text-2xl text-red-600"></i>
+              </div>
+              <p class="text-gray-500 font-medium">Could not load subjects. Please try again later.</p>
+            </td>
+          </tr>
         `;
       });
     })();
