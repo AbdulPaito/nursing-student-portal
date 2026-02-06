@@ -515,7 +515,7 @@
             <span class="text-gray-700">${formatTime(e.startTime || e.time)}</span>
           </td>
           <td class="px-6 py-4">
-            <span class="text-gray-700">${formatTime(e.endTime) || '—'}</span>
+            <span class="text-gray-700">${e.endTime ? formatTime(e.endTime) : '—'}</span>
           </td>
           <td class="px-6 py-4">
             <div class="text-sm text-gray-800 font-medium">${escapeHtml(e.startDate || e.date)}</div>
