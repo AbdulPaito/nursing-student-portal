@@ -363,11 +363,11 @@
           <i class="fa-solid fa-chevron-right ml-auto text-xs opacity-0 group-hover:opacity-100 transition-opacity"></i>
         </a>
         
-        <a href="#" data-section="daily-subjects" class="sidebar-link flex items-center gap-3 px-4 py-3.5 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 group">
+        <a href="#" data-section="courses-subjects" class="sidebar-link flex items-center gap-3 px-4 py-3.5 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 group">
           <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
             <i class="fa-solid fa-book-open text-lg"></i>
           </div>
-          <span class="font-medium">Courses or Subjects</span>
+          <span class="font-medium">Courses & Subjects</span>
           <i class="fa-solid fa-chevron-right ml-auto text-xs opacity-0 group-hover:opacity-100 transition-opacity"></i>
         </a>
         
@@ -778,53 +778,124 @@
         </div>
       </section>
 
-      <!-- Daily Subjects Section -->
-      <section id="section-daily-subjects" class="admin-section hidden animate-fade-in">
+      <!-- Courses & Subjects Section (Combined) -->
+      <section id="section-courses-subjects" class="admin-section hidden animate-fade-in">
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-8">
           <div>
             <h1 class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary-700 to-secondary-700 bg-clip-text text-transparent mb-2">
-              Courses or Subjects
+              Courses & Subjects
             </h1>
-            <p class="text-gray-500">Manage courses and subjects</p>
+            <p class="text-gray-500">Manage course catalog and weekly schedule</p>
           </div>
-          <button type="button" class="btn-shimmer px-6 py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold rounded-2xl shadow-xl shadow-emerald-500/30 transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-2 group" onclick="openCourseModal()">
-            <i class="fa-solid fa-plus group-hover:rotate-90 transition-transform"></i>
-            <span>Add Course or Subject</span>
-          </button>
         </div>
 
-        <div class="glass rounded-3xl shadow-xl overflow-hidden">
-          <div id="subjectsLoading" class="hidden p-12 text-center">
-            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary-100 mb-4">
-              <i class="fa-solid fa-spinner fa-spin text-2xl text-primary-600"></i>
-            </div>
-            <p class="text-gray-500 font-medium">Loading subjects...</p>
+        <!-- Tab Buttons -->
+        <div class="mb-6">
+          <div class="glass rounded-2xl p-2 inline-flex gap-2 border border-white/50 shadow-lg">
+            <button id="adminCatalogTab" class="admin-main-tab px-6 py-3 rounded-xl text-sm font-bold transition-all duration-300 bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-md" onclick="switchAdminTab('catalog')">
+              <i class="fa-solid fa-book-open mr-2"></i>Course Catalog
+            </button>
+            <button id="adminScheduleTab" class="admin-main-tab px-6 py-3 rounded-xl text-sm font-bold transition-all duration-300 bg-white text-gray-600 hover:bg-gray-50" onclick="switchAdminTab('schedule')">
+              <i class="fa-solid fa-calendar-week mr-2"></i>Weekly Schedule
+            </button>
+          </div>
+        </div>
+
+        <!-- Course Catalog Tab Content -->
+        <div id="adminCatalogSection">
+          <div class="flex justify-end mb-4">
+            <button type="button" class="btn-shimmer px-6 py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold rounded-2xl shadow-xl shadow-emerald-500/30 transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-2 group" onclick="openCourseModal()">
+              <i class="fa-solid fa-plus group-hover:rotate-90 transition-transform"></i>
+              <span>Add Course or Subject</span>
+            </button>
           </div>
 
-          <div id="subjectsTableWrap" class="overflow-x-auto">
-            <table class="w-full">
-              <thead class="bg-gray-50/80">
-                <tr>
-                  <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Code</th>
-                  <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Course or Subject</th>
-                  <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Unit</th>
-                  <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Year Level</th>
-                  <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Semester</th>
-                  <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Status</th>
-                  <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Actions</th>
-                </tr>
-              </thead>
-              <tbody id="dailySubjectsTableBody" class="divide-y divide-gray-100">
-                <tr>
-                  <td colspan="7" class="px-6 py-12 text-center">
-                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gray-100 mb-4">
-                      <i class="fa-solid fa-spinner fa-spin text-2xl text-gray-400"></i>
-                    </div>
-                    <p class="text-gray-500 font-medium">Loading courses...</p>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+          <div class="glass rounded-3xl shadow-xl overflow-hidden">
+            <div id="subjectsLoading" class="hidden p-12 text-center">
+              <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary-100 mb-4">
+                <i class="fa-solid fa-spinner fa-spin text-2xl text-primary-600"></i>
+              </div>
+              <p class="text-gray-500 font-medium">Loading subjects...</p>
+            </div>
+
+            <div id="subjectsTableWrap" class="overflow-x-auto">
+              <table class="w-full">
+                <thead class="bg-gray-50/80">
+                  <tr>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Code</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Course or Subject</th>
+                    <th class="px-6 py-4 text-center text-sm font-semibold text-gray-700">Unit</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Type</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Year Level</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Semester</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Status</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="dailySubjectsTableBody" class="divide-y divide-gray-100">
+                  <tr>
+                    <td colspan="8" class="px-6 py-12 text-center">
+                      <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gray-100 mb-4">
+                        <i class="fa-solid fa-spinner fa-spin text-2xl text-gray-400"></i>
+                      </div>
+                      <p class="text-gray-500 font-medium">Loading courses...</p>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Weekly Schedule Tab Content -->
+        <div id="adminScheduleSection" class="hidden">
+          <div class="flex justify-end mb-4">
+            <button type="button" class="btn-shimmer px-6 py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold rounded-2xl shadow-xl shadow-emerald-500/30 transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-2 group" onclick="openDailySubjectModal()">
+              <i class="fa-solid fa-plus group-hover:rotate-90 transition-transform"></i>
+              <span>Add Daily Subject</span>
+            </button>
+          </div>
+
+          <!-- Day Tabs -->
+          <div class="mb-6 overflow-x-auto pb-2">
+            <div class="flex gap-2 min-w-max" id="adminDayTabs">
+              <button class="admin-day-tab px-5 py-3 rounded-xl text-sm font-semibold transition-all duration-300" data-day="Monday" onclick="switchAdminDay('Monday')">Monday</button>
+              <button class="admin-day-tab px-5 py-3 rounded-xl text-sm font-semibold transition-all duration-300" data-day="Tuesday" onclick="switchAdminDay('Tuesday')">Tuesday</button>
+              <button class="admin-day-tab px-5 py-3 rounded-xl text-sm font-semibold transition-all duration-300" data-day="Wednesday" onclick="switchAdminDay('Wednesday')">Wednesday</button>
+              <button class="admin-day-tab px-5 py-3 rounded-xl text-sm font-semibold transition-all duration-300" data-day="Thursday" onclick="switchAdminDay('Thursday')">Thursday</button>
+              <button class="admin-day-tab px-5 py-3 rounded-xl text-sm font-semibold transition-all duration-300" data-day="Friday" onclick="switchAdminDay('Friday')">Friday</button>
+              <button class="admin-day-tab px-5 py-3 rounded-xl text-sm font-semibold transition-all duration-300" data-day="Saturday" onclick="switchAdminDay('Saturday')">Saturday</button>
+              <button class="admin-day-tab px-5 py-3 rounded-xl text-sm font-semibold transition-all duration-300" data-day="Sunday" onclick="switchAdminDay('Sunday')">Sunday</button>
+            </div>
+          </div>
+
+          <!-- Schedule Table -->
+          <div class="glass rounded-3xl shadow-xl overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full">
+                <thead class="bg-gray-50/80">
+                  <tr>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Subject Code</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Subject Name</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Type</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Time</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Room</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Instructor</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="dailyScheduleTableBody" class="divide-y divide-gray-100">
+                  <tr>
+                    <td colspan="7" class="px-6 py-12 text-center">
+                      <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary-100 mb-4">
+                        <i class="fa-solid fa-spinner fa-spin text-2xl text-primary-600"></i>
+                      </div>
+                      <p class="text-gray-500 font-medium">Loading schedule...</p>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </section>
@@ -1011,8 +1082,8 @@
   <!-- Event Modal -->
   <div id="eventModal" class="fixed inset-0 z-50 hidden">
     <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity" onclick="closeModal('eventModal')"></div>
-    <div class="flex items-center justify-center min-h-screen p-4">
-      <div class="glass rounded-3xl shadow-2xl max-w-2xl w-full p-8 relative animate-scale-in">
+    <div class="flex items-center justify-center min-h-screen p-4 overflow-y-auto">
+      <div class="glass rounded-3xl shadow-2xl max-w-2xl w-full p-8 relative animate-scale-in my-8">
         <button type="button" class="absolute top-6 right-6 w-10 h-10 rounded-full bg-gray-100 text-gray-500 hover:text-gray-700 hover:bg-gray-200 flex items-center justify-center transition-all" onclick="closeModal('eventModal')">
           <i class="fa-solid fa-xmark text-xl"></i>
         </button>
@@ -1039,25 +1110,32 @@
           
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-2">Category</label>
-            <select id="eventCategory" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
+            <select id="eventCategory" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow" onchange="toggleCustomCategory()">
               <option value="">Select category</option>
               <option value="Orientation">Orientation</option>
               <option value="Training">Training</option>
               <option value="Workshops">Workshops</option>
               <option value="Seminars">Seminars</option>
               <option value="Social Events">Social Events</option>
+              <option value="Other">Other</option>
             </select>
+            <input type="text" id="eventCategoryCustom" placeholder="Enter custom category" class="hidden w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow mt-3">
           </div>
           
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2">Date <span class="text-rose-500">*</span></label>
-              <input type="date" id="eventDate" required class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Start Date <span class="text-rose-500">*</span></label>
+              <input type="date" id="eventStartDate" required class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
             </div>
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2">Time <span class="text-rose-500">*</span></label>
-              <input type="time" id="eventTime" required class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
+              <label class="block text-sm font-semibold text-gray-700 mb-2">End Date</label>
+              <input type="date" id="eventEndDate" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
             </div>
+          </div>
+          
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Time <span class="text-rose-500">*</span></label>
+            <input type="time" id="eventTime" required class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
           </div>
           
           <div>
@@ -1082,8 +1160,8 @@
   <!-- Course Modal -->
   <div id="courseModal" class="fixed inset-0 z-50 hidden" style="display: none;">
     <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity" onclick="closeCourseModal()"></div>
-    <div class="fixed inset-0 flex items-center justify-center p-4 z-10">
-      <div class="glass rounded-3xl shadow-2xl w-full max-w-2xl p-8 animate-scale-in">
+    <div class="fixed inset-0 flex items-center justify-center p-4 z-10 overflow-y-auto">
+      <div class="glass rounded-3xl shadow-2xl w-full max-w-2xl p-8 animate-scale-in my-8">
         <button type="button" class="absolute top-6 right-6 w-10 h-10 rounded-full bg-gray-100 text-gray-500 hover:text-gray-700 hover:bg-gray-200 flex items-center justify-center transition-all" onclick="closeCourseModal()">
           <i class="fa-solid fa-xmark text-xl"></i>
         </button>
@@ -1122,6 +1200,21 @@
               Course or Subject Name
             </label>
             <input type="text" id="courseName" required placeholder="e.g., Fundamentals of Nursing" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
+          </div>
+          
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">
+              <i class="fa-solid fa-flask text-primary-600 mr-1"></i>
+              Subject Type
+            </label>
+            <select id="courseSubjectType" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow" onchange="toggleCustomSubjectType()">
+              <option value="">Select type (optional)</option>
+              <option value="Lab">Lab</option>
+              <option value="Lecture">Lecture</option>
+              <option value="Seminar">Seminar</option>
+              <option value="Other">Other</option>
+            </select>
+            <input type="text" id="courseSubjectTypeCustom" placeholder="Enter custom subject type" class="hidden w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow mt-3">
           </div>
           
           <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -1446,6 +1539,90 @@
   </div>
 
   <!-- JavaScript -->
+  <!-- Daily Subject Modal -->
+  <div id="dailySubjectModal" class="fixed inset-0 z-50 hidden" style="display: none;">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity" onclick="closeDailySubjectModal()"></div>
+    <div class="fixed inset-0 flex items-center justify-center p-4 z-10 overflow-y-auto">
+      <div class="glass rounded-3xl shadow-2xl w-full max-w-2xl p-8 animate-scale-in my-8">
+        <button type="button" class="absolute top-6 right-6 w-10 h-10 rounded-full bg-gray-100 text-gray-500 hover:text-gray-700 hover:bg-gray-200 flex items-center justify-center transition-all" onclick="closeDailySubjectModal()">
+          <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+        
+        <div class="flex items-center gap-3 mb-6">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-r from-primary-500 to-secondary-500 flex items-center justify-center">
+            <i class="fa-solid fa-calendar-plus text-white text-xl"></i>
+          </div>
+          <h3 class="text-2xl font-bold text-gray-800" id="dailySubjectModalTitle">Add Daily Subject</h3>
+        </div>
+        
+        <input type="hidden" id="dailySubjectId">
+        <input type="hidden" id="dailySubjectDay">
+        
+        <div class="space-y-5">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Subject Code <span class="text-rose-500">*</span></label>
+              <input type="text" id="dailySubjectCode" required class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow" placeholder="e.g., NS101">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Subject Name <span class="text-rose-500">*</span></label>
+              <input type="text" id="dailySubjectName" required class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow" placeholder="e.g., Fundamentals of Nursing">
+            </div>
+          </div>
+          
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Start Time <span class="text-rose-500">*</span></label>
+              <input type="time" id="dailySubjectStartTime" required class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">End Time <span class="text-rose-500">*</span></label>
+              <input type="time" id="dailySubjectEndTime" required class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
+            </div>
+          </div>
+          
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Type <span class="text-rose-500">*</span></label>
+              <select id="dailySubjectType" required class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow" onchange="toggleDailySubjectCustomType()">
+                <option value="">Select type</option>
+                <option value="Lecture">Lecture</option>
+                <option value="Practical/Lab">Practical/Lab</option>
+                <option value="Seminar">Seminar</option>
+                <option value="Other">Other</option>
+              </select>
+              <input type="text" id="dailySubjectTypeCustom" placeholder="Enter custom type" class="hidden w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow mt-3">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Date (Optional)</label>
+              <input type="date" id="dailySubjectDate" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
+              <p class="text-xs text-gray-500 mt-1">For specific date</p>
+            </div>
+          </div>
+          
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Room/Location</label>
+            <input type="text" id="dailySubjectRoom" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow" placeholder="e.g., Room 101">
+          </div>
+          
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Instructor</label>
+            <input type="text" id="dailySubjectInstructor" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow" placeholder="e.g., Prof. Juan Dela Cruz">
+          </div>
+        </div>
+        
+        <div class="flex gap-3 mt-8">
+          <button type="button" onclick="closeDailySubjectModal()" class="flex-1 px-6 py-3.5 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-all">
+            Cancel
+          </button>
+          <button type="button" id="dailySubjectSaveBtn" onclick="saveDailySubject()" class="flex-1 px-6 py-3.5 bg-gradient-to-r from-primary-600 to-secondary-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all">
+            Save Subject
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="admin-tailwind.js"></script>
 </body>
 </html>

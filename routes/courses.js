@@ -31,7 +31,7 @@ router.get('/:id', async (req, res) => {
 // POST create new course - requires authentication
 router.post('/', authMiddleware, async (req, res) => {
   try {
-    const { code, name, unit, yearLevel, semester, status } = req.body;
+    const { code, name, unit, subjectType, yearLevel, semester, status } = req.body;
 
     // Validate required fields
     if (!code || !name || unit === undefined || !yearLevel || !semester) {
@@ -54,6 +54,7 @@ router.post('/', authMiddleware, async (req, res) => {
       code: code.trim().toUpperCase(),
       name: name.trim(),
       unit: Number(unit),
+      subjectType: subjectType ? subjectType.trim() : '',
       yearLevel,
       semester,
       status: status || 'Active'
@@ -70,7 +71,7 @@ router.post('/', authMiddleware, async (req, res) => {
 // PUT update course - requires authentication
 router.put('/:id', authMiddleware, async (req, res) => {
   try {
-    const { code, name, unit, yearLevel, semester, status } = req.body;
+    const { code, name, unit, subjectType, yearLevel, semester, status } = req.body;
 
     // Check if course exists
     const course = await Course.findById(req.params.id);
@@ -96,6 +97,7 @@ router.put('/:id', authMiddleware, async (req, res) => {
     if (code) course.code = code.trim().toUpperCase();
     if (name) course.name = name.trim();
     if (unit !== undefined) course.unit = Number(unit);
+    if (subjectType !== undefined) course.subjectType = subjectType ? subjectType.trim() : '';
     if (yearLevel) course.yearLevel = yearLevel;
     if (semester) course.semester = semester;
     if (status) course.status = status;

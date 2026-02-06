@@ -205,9 +205,9 @@
               loadMusicFiles();
             }
             
-            // Load courses when daily-subjects section is shown
-            if (section === 'daily-subjects') {
-              console.log('📚 Daily subjects section loaded, fetching courses...');
+            // Load courses when courses-subjects section is shown
+            if (section === 'courses-subjects') {
+              console.log('📚 Courses & subjects section loaded, fetching courses...');
               loadCourses();
             }
           }, 50);
@@ -498,7 +498,8 @@
             </div>
           </td>
           <td class="px-6 py-4">
-            <div class="text-sm text-gray-800 font-medium">${escapeHtml(e.date)}</div>
+            <div class="text-sm text-gray-800 font-medium">${escapeHtml(e.startDate || e.date)}</div>
+            ${e.endDate && e.endDate !== e.startDate ? `<div class="text-xs text-gray-500">to ${escapeHtml(e.endDate)}</div>` : ''}
             <div class="text-xs text-gray-500">${escapeHtml(e.time)}</div>
           </td>
           <td class="px-6 py-4">
@@ -539,7 +540,12 @@
     document.getElementById('eventTitle').value = '';
     document.getElementById('eventDescription').value = '';
     if (document.getElementById('eventCategory')) document.getElementById('eventCategory').value = '';
-    document.getElementById('eventDate').value = '';
+    if (document.getElementById('eventCategoryCustom')) {
+      document.getElementById('eventCategoryCustom').value = '';
+      document.getElementById('eventCategoryCustom').classList.add('hidden');
+    }
+    document.getElementById('eventStartDate').value = '';
+    document.getElementById('eventEndDate').value = '';
     document.getElementById('eventTime').value = '09:00';
     document.getElementById('eventLocation').value = '';
     document.getElementById('eventItems').value = '';
@@ -554,8 +560,33 @@
     document.getElementById('eventId').value = e._id;
     document.getElementById('eventTitle').value = e.title || '';
     document.getElementById('eventDescription').value = e.description || '';
-    if (document.getElementById('eventCategory')) document.getElementById('eventCategory').value = e.category || '';
-    document.getElementById('eventDate').value = e.date || '';
+    
+    // Handle category
+    const category = e.category || '';
+    const knownCategories = ['Orientation', 'Training', 'Workshops', 'Seminars', 'Social Events'];
+    const categorySelect = document.getElementById('eventCategory');
+    const customInput = document.getElementById('eventCategoryCustom');
+    
+    if (categorySelect) {
+      if (category && knownCategories.indexOf(category) === -1 && category !== '') {
+        // Custom category
+        categorySelect.value = 'Other';
+        if (customInput) {
+          customInput.value = category;
+          customInput.classList.remove('hidden');
+        }
+      } else {
+        // Standard category or empty
+        categorySelect.value = category;
+        if (customInput) {
+          customInput.value = '';
+          customInput.classList.add('hidden');
+        }
+      }
+    }
+    
+    document.getElementById('eventStartDate').value = e.startDate || e.date || '';
+    document.getElementById('eventEndDate').value = e.endDate || '';
     document.getElementById('eventTime').value = e.time || '09:00';
     document.getElementById('eventLocation').value = e.location || '';
     document.getElementById('eventItems').value = (e.items && e.items.length) ? e.items.join('\n') : '';
@@ -567,17 +598,33 @@
   if (eventSaveBtn) {
     eventSaveBtn.addEventListener('click', async function() {
       const id = document.getElementById('eventId').value;
+      const startDate = document.getElementById('eventStartDate').value;
+      const endDate = document.getElementById('eventEndDate').value;
+      
+      // Handle category
+      const categorySelect = document.getElementById('eventCategory') ? document.getElementById('eventCategory').value : '';
+      const categoryCustom = document.getElementById('eventCategoryCustom') ? document.getElementById('eventCategoryCustom').value.trim() : '';
+      const category = categorySelect === 'Other' ? categoryCustom : categorySelect;
+      
+      // Validate custom category if Other is selected
+      if (categorySelect === 'Other' && !categoryCustom) {
+        toast('Please enter a custom category', 'error');
+        return;
+      }
+      
       const body = {
         title: document.getElementById('eventTitle').value.trim(),
         description: document.getElementById('eventDescription').value.trim(),
-        category: (document.getElementById('eventCategory') && document.getElementById('eventCategory').value) || '',
-        date: document.getElementById('eventDate').value,
+        category: category,
+        date: startDate, // For backward compatibility
+        startDate: startDate,
+        endDate: endDate,
         time: document.getElementById('eventTime').value,
         location: document.getElementById('eventLocation').value.trim(),
         items: (document.getElementById('eventItems').value || '').split('\n').map(function(s) { return s.trim(); }).filter(Boolean)
       };
       
-      if (!body.title || !body.date || !body.time) {
+      if (!body.title || !body.startDate || !body.time) {
         toast('Please fill in all required fields', 'error');
         return;
       }
@@ -777,19 +824,26 @@
     if (!tbody) return;
     
     if (!coursesData.length) {
-      tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-12 text-center"><div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gray-100 mb-4"><i class="fa-solid fa-book-open text-2xl text-gray-400"></i></div><p class="text-gray-500 font-medium">No courses added yet</p></td></tr>';
+      tbody.innerHTML = '<tr><td colspan="8" class="px-6 py-12 text-center"><div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gray-100 mb-4"><i class="fa-solid fa-book-open text-2xl text-gray-400"></i></div><p class="text-gray-500 font-medium">No courses added yet</p></td></tr>';
       return;
     }
     
     tbody.innerHTML = coursesData.map(course => {
+      console.log('Rendering course:', course.code, 'subjectType:', course.subjectType);
+      
       const statusBadge = course.status === 'Active' 
         ? '<span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-semibold">Active</span>'
         : '<span class="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-semibold">Inactive</span>';
+      
+      const subjectTypeDisplay = course.subjectType && course.subjectType !== ''
+        ? `<span class="px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold">${escapeHtml(course.subjectType)}</span>`
+        : '<span class="text-gray-400 text-sm">—</span>';
       
       return `<tr class="hover:bg-gray-50 transition-colors">
         <td class="px-6 py-4"><span class="font-mono font-semibold text-primary-600">${escapeHtml(course.code)}</span></td>
         <td class="px-6 py-4"><span class="font-medium text-gray-800">${escapeHtml(course.name)}</span></td>
         <td class="px-6 py-4 text-center"><span class="font-semibold text-gray-700">${escapeHtml(course.unit.toString())}</span></td>
+        <td class="px-6 py-4">${subjectTypeDisplay}</td>
         <td class="px-6 py-4">${escapeHtml(course.yearLevel)}</td>
         <td class="px-6 py-4">${escapeHtml(course.semester)}</td>
         <td class="px-6 py-4">${statusBadge}</td>
@@ -808,6 +862,9 @@
     document.getElementById('courseCode').value = '';
     document.getElementById('courseName').value = '';
     document.getElementById('courseUnit').value = '';
+    document.getElementById('courseSubjectType').value = '';
+    document.getElementById('courseSubjectTypeCustom').value = '';
+    document.getElementById('courseSubjectTypeCustom').classList.add('hidden');
     document.getElementById('courseYearLevel').value = '';
     document.getElementById('courseSemester').value = '';
     document.getElementById('courseStatus').value = 'Active';
@@ -817,12 +874,363 @@
     modal.style.display = 'flex';
     document.body.style.overflow = 'hidden';
   };
+  
+  // Toggle custom subject type input
+  window.toggleCustomSubjectType = function() {
+    const selectElement = document.getElementById('courseSubjectType');
+    const customInput = document.getElementById('courseSubjectTypeCustom');
+    
+    if (selectElement.value === 'Other') {
+      customInput.classList.remove('hidden');
+      customInput.focus();
+    } else {
+      customInput.classList.add('hidden');
+      customInput.value = '';
+    }
+  };
+  
+  // Toggle custom category input for events
+  window.toggleCustomCategory = function() {
+    const selectElement = document.getElementById('eventCategory');
+    const customInput = document.getElementById('eventCategoryCustom');
+    
+    if (selectElement.value === 'Other') {
+      customInput.classList.remove('hidden');
+      customInput.focus();
+    } else {
+      customInput.classList.add('hidden');
+      customInput.value = '';
+    }
+  };
+
+  // Switch between Course Catalog and Weekly Schedule tabs in admin
+  window.switchAdminTab = function(tab) {
+    const catalogTab = document.getElementById('adminCatalogTab');
+    const scheduleTab = document.getElementById('adminScheduleTab');
+    const catalogSection = document.getElementById('adminCatalogSection');
+    const scheduleSection = document.getElementById('adminScheduleSection');
+    
+    if (tab === 'catalog') {
+      catalogTab.className = 'admin-main-tab px-6 py-3 rounded-xl text-sm font-bold transition-all duration-300 bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-md';
+      scheduleTab.className = 'admin-main-tab px-6 py-3 rounded-xl text-sm font-bold transition-all duration-300 bg-white text-gray-600 hover:bg-gray-50';
+      catalogSection.classList.remove('hidden');
+      scheduleSection.classList.add('hidden');
+    } else if (tab === 'schedule') {
+      scheduleTab.className = 'admin-main-tab px-6 py-3 rounded-xl text-sm font-bold transition-all duration-300 bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-md';
+      catalogTab.className = 'admin-main-tab px-6 py-3 rounded-xl text-sm font-bold transition-all duration-300 bg-white text-gray-600 hover:bg-gray-50';
+      scheduleSection.classList.remove('hidden');
+      catalogSection.classList.add('hidden');
+      // Load daily subjects when switching to schedule tab
+      if (!window.dailySubjectsLoaded) {
+        loadDailySubjects();
+      }
+    }
+  };
+
+  // ====================
+  // Daily Subjects Management
+  // ====================
+  let dailySubjectsData = {};
+  let currentDay = 'Monday';
+  window.dailySubjectsLoaded = false;
+
+  // Switch day tab
+  window.switchAdminDay = function(day) {
+    currentDay = day;
+    document.querySelectorAll('.admin-day-tab').forEach(btn => {
+      if (btn.getAttribute('data-day') === day) {
+        btn.className = 'admin-day-tab px-5 py-3 rounded-xl text-sm font-semibold transition-all duration-300 bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-md';
+      } else {
+        btn.className = 'admin-day-tab px-5 py-3 rounded-xl text-sm font-semibold transition-all duration-300 bg-white text-gray-600 border border-gray-200 hover:bg-gray-50';
+      }
+    });
+    renderDailySubjects(day);
+  };
+
+  // Open modal
+  window.openDailySubjectModal = function() {
+    document.getElementById('dailySubjectModalTitle').textContent = 'Add Daily Subject';
+    document.getElementById('dailySubjectId').value = '';
+    document.getElementById('dailySubjectDay').value = currentDay;
+    document.getElementById('dailySubjectCode').value = '';
+    document.getElementById('dailySubjectName').value = '';
+    document.getElementById('dailySubjectType').value = '';
+    document.getElementById('dailySubjectTypeCustom').value = '';
+    document.getElementById('dailySubjectTypeCustom').classList.add('hidden');
+    document.getElementById('dailySubjectStartTime').value = '';
+    document.getElementById('dailySubjectEndTime').value = '';
+    document.getElementById('dailySubjectDate').value = '';
+    document.getElementById('dailySubjectRoom').value = '';
+    document.getElementById('dailySubjectInstructor').value = '';
+    
+    const modal = document.getElementById('dailySubjectModal');
+    modal.classList.remove('hidden');
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  };
+
+  // Toggle custom type input
+  window.toggleDailySubjectCustomType = function() {
+    const selectElement = document.getElementById('dailySubjectType');
+    const customInput = document.getElementById('dailySubjectTypeCustom');
+    
+    if (selectElement.value === 'Other') {
+      customInput.classList.remove('hidden');
+      customInput.focus();
+    } else {
+      customInput.classList.add('hidden');
+      customInput.value = '';
+    }
+  };
+
+  // Close modal
+  window.closeDailySubjectModal = function() {
+    const modal = document.getElementById('dailySubjectModal');
+    modal.classList.add('hidden');
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+  };
+
+  // Save daily subject
+  window.saveDailySubject = async function() {
+    const subjectId = document.getElementById('dailySubjectId').value; // Check if editing
+    const code = document.getElementById('dailySubjectCode').value.trim();
+    const name = document.getElementById('dailySubjectName').value.trim();
+    const typeSelect = document.getElementById('dailySubjectType').value;
+    const typeCustom = document.getElementById('dailySubjectTypeCustom').value.trim();
+    const type = typeSelect === 'Other' ? typeCustom : typeSelect;
+    const startTime = document.getElementById('dailySubjectStartTime').value;
+    const endTime = document.getElementById('dailySubjectEndTime').value;
+    const date = document.getElementById('dailySubjectDate').value;
+    const room = document.getElementById('dailySubjectRoom').value.trim();
+    const instructor = document.getElementById('dailySubjectInstructor').value.trim();
+    const day = document.getElementById('dailySubjectDay').value || currentDay;
+
+    console.log('Saving subject with instructor:', instructor); // Debug
+
+    if (!code || !name || !type || !startTime || !endTime) {
+      toast('Please fill in all required fields', 'error');
+      return;
+    }
+
+    if (typeSelect === 'Other' && !typeCustom) {
+      toast('Please enter a custom type', 'error');
+      return;
+    }
+
+    const saveBtn = document.getElementById('dailySubjectSaveBtn');
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving...';
+
+    try {
+      const subjectData = {
+        code: code,
+        name: name,
+        type: type,
+        startTime: startTime,
+        endTime: endTime,
+        date: date,
+        room: room,
+        instructor: instructor
+      };
+
+      // If editing, delete old and create new (simpler approach)
+      if (subjectId !== '') {
+        await fetch(API + '/api/daily-subjects/' + day + '/' + subjectId, {
+          method: 'DELETE',
+          headers: headers()
+        });
+      }
+
+      const res = await fetch(API + '/api/daily-subjects/' + day, {
+        method: 'POST',
+        headers: headers(),
+        body: JSON.stringify(subjectData)
+      });
+
+      const json = await res.json();
+      if (json.success) {
+        toast(subjectId !== '' ? 'Subject updated successfully!' : 'Daily subject added successfully!', 'success');
+        closeDailySubjectModal();
+        loadDailySubjects();
+      } else {
+        throw new Error(json.error || 'Failed to save daily subject');
+      }
+    } catch (err) {
+      toast('Error: ' + err.message, 'error');
+    }
+
+    saveBtn.disabled = false;
+    saveBtn.textContent = 'Save Subject';
+  };
+
+  // Load daily subjects
+  async function loadDailySubjects() {
+    try {
+      const res = await fetch(API + '/api/daily-subjects', { headers: headers() });
+      const json = await res.json();
+      
+      dailySubjectsData = {};
+      if (Array.isArray(json)) {
+        json.forEach(doc => {
+          dailySubjectsData[doc.dayOfWeek] = doc.subjects || [];
+        });
+      }
+
+      window.dailySubjectsLoaded = true;
+      
+      // Set Monday as default active tab
+      switchAdminDay('Monday');
+    } catch (err) {
+      console.error('Error loading daily subjects:', err);
+      toast('Error loading daily subjects', 'error');
+    }
+  }
+
+  // Render daily subjects table
+  function renderDailySubjects(day) {
+    const tbody = document.getElementById('dailyScheduleTableBody');
+    const subjects = dailySubjectsData[day] || [];
+
+    if (!subjects.length) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="7" class="px-6 py-12 text-center">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gray-100 mb-4">
+              <i class="fa-solid fa-calendar-xmark text-2xl text-gray-400"></i>
+            </div>
+            <p class="text-gray-500 font-medium">No subjects scheduled for ${day}</p>
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    tbody.innerHTML = subjects.map((subject, index) => {
+      const type = subject.type || '';
+      let typeBadge = '<span class="text-gray-400 text-sm">—</span>';
+      
+      if (type === 'Lecture') {
+        typeBadge = '<span class="px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold">Lecture</span>';
+      } else if (type === 'Practical/Lab') {
+        typeBadge = '<span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold">Practical/Lab</span>';
+      } else if (type === 'Seminar') {
+        typeBadge = '<span class="px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-xs font-semibold">Seminar</span>';
+      } else if (type) {
+        typeBadge = `<span class="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-semibold">${escapeHtml(type)}</span>`;
+      }
+      
+      return `
+        <tr class="hover:bg-gray-50 transition-colors">
+          <td class="px-6 py-4">
+            <span class="font-mono font-semibold text-primary-600">${escapeHtml(subject.code || subject.name)}</span>
+          </td>
+          <td class="px-6 py-4">
+            <span class="font-medium text-gray-800">${escapeHtml(subject.name || subject.customName || '')}</span>
+          </td>
+          <td class="px-6 py-4">
+            ${typeBadge}
+          </td>
+          <td class="px-6 py-4">
+            <span class="text-gray-700">${escapeHtml(subject.startTime || subject.time || '')} - ${escapeHtml(subject.endTime || '')}</span>
+          </td>
+          <td class="px-6 py-4">
+            <span class="text-gray-700">${escapeHtml(subject.room || subject.location || '—')}</span>
+          </td>
+          <td class="px-6 py-4">
+            <span class="text-gray-700">${escapeHtml(subject.instructor || '—')}</span>
+          </td>
+          <td class="px-6 py-4">
+            <div class="flex gap-2">
+              <button onclick="editDailySubject('${day}', ${index})" class="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-1">
+                <i class="fa-solid fa-pen text-xs"></i> Edit
+              </button>
+              <button onclick="deleteDailySubject('${day}', ${index})" class="px-3 py-1.5 bg-rose-500 hover:bg-rose-600 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-1">
+                <i class="fa-solid fa-trash text-xs"></i> Delete
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  // Edit daily subject
+  window.editDailySubject = function(day, index) {
+    const subjects = dailySubjectsData[day] || [];
+    const subject = subjects[index];
+    
+    if (!subject) {
+      toast('Subject not found', 'error');
+      return;
+    }
+
+    document.getElementById('dailySubjectModalTitle').textContent = 'Edit Daily Subject';
+    document.getElementById('dailySubjectId').value = index; // Store index
+    document.getElementById('dailySubjectDay').value = day;
+    document.getElementById('dailySubjectCode').value = subject.code || '';
+    document.getElementById('dailySubjectName').value = subject.name || '';
+    
+    // Handle type
+    const type = subject.type || '';
+    const knownTypes = ['Lecture', 'Practical/Lab', 'Seminar'];
+    const typeSelect = document.getElementById('dailySubjectType');
+    const customInput = document.getElementById('dailySubjectTypeCustom');
+    
+    if (type && knownTypes.indexOf(type) === -1 && type !== '') {
+      // Custom type
+      typeSelect.value = 'Other';
+      customInput.value = type;
+      customInput.classList.remove('hidden');
+    } else {
+      // Standard type or empty
+      typeSelect.value = type;
+      customInput.value = '';
+      customInput.classList.add('hidden');
+    }
+    
+    document.getElementById('dailySubjectStartTime').value = subject.startTime || subject.time || '';
+    document.getElementById('dailySubjectEndTime').value = subject.endTime || '';
+    document.getElementById('dailySubjectDate').value = subject.date || '';
+    document.getElementById('dailySubjectRoom').value = subject.room || subject.location || '';
+    document.getElementById('dailySubjectInstructor').value = subject.instructor || '';
+    
+    const modal = document.getElementById('dailySubjectModal');
+    modal.classList.remove('hidden');
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  };
+
+  // Delete daily subject
+  window.deleteDailySubject = async function(day, index) {
+    if (!confirm('Are you sure you want to delete this subject?')) return;
+
+    try {
+      const res = await fetch(API + '/api/daily-subjects/' + day + '/' + index, {
+        method: 'DELETE',
+        headers: headers()
+      });
+
+      const json = await res.json();
+      if (json.success) {
+        toast('Subject deleted successfully!', 'success');
+        loadDailySubjects();
+      } else {
+        throw new Error(json.error || 'Failed to delete subject');
+      }
+    } catch (err) {
+      toast('Error: ' + err.message, 'error');
+    }
+  };
 
   window.saveCourse = async function() {
     const courseId = document.getElementById('courseId').value;
     const code = document.getElementById('courseCode').value.trim();
     const name = document.getElementById('courseName').value.trim();
     const unit = parseFloat(document.getElementById('courseUnit').value);
+    const subjectTypeSelect = document.getElementById('courseSubjectType').value;
+    const subjectTypeCustom = document.getElementById('courseSubjectTypeCustom').value.trim();
+    const subjectType = subjectTypeSelect === 'Other' ? subjectTypeCustom : subjectTypeSelect;
     const yearLevel = document.getElementById('courseYearLevel').value;
     const semester = document.getElementById('courseSemester').value;
     const status = document.getElementById('courseStatus').value;
@@ -830,6 +1238,12 @@
     // Validate
     if (!code || !name || !unit || !yearLevel || !semester) {
       toast('Please fill in all required fields', 'error');
+      return;
+    }
+    
+    // Validate custom type if Other is selected
+    if (subjectTypeSelect === 'Other' && !subjectTypeCustom) {
+      toast('Please enter a custom subject type', 'error');
       return;
     }
     
@@ -848,6 +1262,7 @@
           code: code,
           name: name,
           unit: unit,
+          subjectType: subjectType,
           yearLevel: yearLevel,
           semester: semester,
           status: status
@@ -879,6 +1294,24 @@
     document.getElementById('courseCode').value = course.code;
     document.getElementById('courseName').value = course.name;
     document.getElementById('courseUnit').value = course.unit;
+    
+    // Handle subject type
+    const subjectType = course.subjectType || '';
+    const knownTypes = ['Lab', 'Lecture', 'Seminar'];
+    const customInput = document.getElementById('courseSubjectTypeCustom');
+    
+    if (subjectType && knownTypes.indexOf(subjectType) === -1 && subjectType !== '') {
+      // Custom type
+      document.getElementById('courseSubjectType').value = 'Other';
+      customInput.value = subjectType;
+      customInput.classList.remove('hidden');
+    } else {
+      // Standard type or empty
+      document.getElementById('courseSubjectType').value = subjectType;
+      customInput.value = '';
+      customInput.classList.add('hidden');
+    }
+    
     document.getElementById('courseYearLevel').value = course.yearLevel;
     document.getElementById('courseSemester').value = course.semester;
     document.getElementById('courseStatus').value = course.status;

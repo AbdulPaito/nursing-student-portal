@@ -265,53 +265,122 @@
         <div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center animate-pulse">
           <i class="bi bi-journal-bookmark-fill text-2xl"></i>
         </div>
-        <h1 class="text-3xl md:text-4xl font-bold">Daily Subjects</h1>
+        <h1 class="text-3xl md:text-4xl font-bold">Courses & Subjects</h1>
       </div>
-      <p class="text-lg opacity-90">Today's scheduled classes and academic activities by day of the week.</p>
+      <p class="text-lg opacity-90">Browse course catalog and view your weekly class schedule</p>
     </div>
   </section>
 
   <!-- Main Content -->
   <main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <!-- Legend -->
-    <div class="glass rounded-2xl p-5 mb-6 border border-white/50 shadow-lg">
-      <p class="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
-        <i class="fa-solid fa-palette text-primary-600"></i>
-        Type Color Coding:
-      </p>
-      <div class="flex flex-wrap items-center gap-3">
-        <span class="inline-flex items-center gap-2 px-4 py-2 bg-blue-500 text-white text-sm font-bold rounded-full shadow-sm hover:shadow-md transition-shadow">
-          <i class="fa-solid fa-book"></i> Theory
-        </span>
-        <span class="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white text-sm font-bold rounded-full shadow-sm hover:shadow-md transition-shadow">
-          <i class="fa-solid fa-flask"></i> Practical/Lab
-        </span>
-        <span class="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 text-white text-sm font-bold rounded-full shadow-sm hover:shadow-md transition-shadow">
-          <i class="fa-solid fa-users"></i> Seminar
-        </span>
-        <span class="inline-flex items-center gap-2 px-4 py-2 bg-gray-500 text-white text-sm font-bold rounded-full shadow-sm hover:shadow-md transition-shadow">
-          <i class="fa-solid fa-tag"></i> Other
-        </span>
+    <!-- Main Tabs (Course Catalog vs Weekly Schedule) -->
+    <div class="mb-6">
+      <div class="glass rounded-2xl p-2 inline-flex gap-2 border border-white/50 shadow-lg">
+        <button id="catalogTab" class="main-tab px-6 py-3 rounded-xl text-sm font-bold transition-all duration-300 bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-md">
+          <i class="fa-solid fa-book-open mr-2"></i>Course Catalog
+        </button>
+        <button id="scheduleTab" class="main-tab px-6 py-3 rounded-xl text-sm font-bold transition-all duration-300 bg-white text-gray-600 hover:bg-gray-50">
+          <i class="fa-solid fa-calendar-week mr-2"></i>Weekly Schedule
+        </button>
       </div>
     </div>
 
-    <!-- Day Tabs -->
-    <div class="mb-6 overflow-x-auto pb-2">
-      <div class="flex gap-2 min-w-max" id="dayTabs">
-        <button class="day-tab px-5 py-3 rounded-xl text-sm font-semibold bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition-all duration-300" data-day="Monday">Monday</button>
-        <button class="day-tab px-5 py-3 rounded-xl text-sm font-semibold bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition-all duration-300" data-day="Tuesday">Tuesday</button>
-        <button class="day-tab px-5 py-3 rounded-xl text-sm font-semibold bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition-all duration-300" data-day="Wednesday">Wednesday</button>
-        <button class="day-tab px-5 py-3 rounded-xl text-sm font-semibold bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition-all duration-300" data-day="Thursday">Thursday</button>
-        <button class="day-tab px-5 py-3 rounded-xl text-sm font-semibold bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition-all duration-300" data-day="Friday">Friday</button>
-        <button class="day-tab px-5 py-3 rounded-xl text-sm font-semibold bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition-all duration-300" data-day="Saturday">Saturday</button>
-        <button class="day-tab px-5 py-3 rounded-xl text-sm font-semibold bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition-all duration-300" data-day="Sunday">Sunday</button>
+    <!-- Course Catalog Section -->
+    <div id="catalogSection" class="animate-fade-in">
+      <!-- Filter Tabs -->
+      <div class="mb-6">
+        <div class="glass rounded-2xl p-4 border border-white/50 shadow-lg">
+          <div class="flex flex-wrap gap-2" id="filterTabs">
+            <button class="filter-tab px-4 py-2 rounded-lg text-sm font-semibold bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-sm" data-filter="all">
+              All Courses
+            </button>
+            <button class="filter-tab px-4 py-2 rounded-lg text-sm font-semibold bg-white text-gray-600 hover:bg-gray-50 transition-all" data-filter="1st Year">
+              1st Year
+            </button>
+            <button class="filter-tab px-4 py-2 rounded-lg text-sm font-semibold bg-white text-gray-600 hover:bg-gray-50 transition-all" data-filter="2nd Year">
+              2nd Year
+            </button>
+            <button class="filter-tab px-4 py-2 rounded-lg text-sm font-semibold bg-white text-gray-600 hover:bg-gray-50 transition-all" data-filter="3rd Year">
+              3rd Year
+            </button>
+            <button class="filter-tab px-4 py-2 rounded-lg text-sm font-semibold bg-white text-gray-600 hover:bg-gray-50 transition-all" data-filter="4th Year">
+              4th Year
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Courses Table -->
+      <div class="glass rounded-2xl shadow-xl overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead class="bg-gray-50/80">
+              <tr>
+                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Code</th>
+                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Course or Subject</th>
+                <th class="px-6 py-4 text-center text-sm font-semibold text-gray-700">Unit</th>
+                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Type</th>
+                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Year Level</th>
+                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Semester</th>
+              </tr>
+            </thead>
+            <tbody id="coursesContent" class="divide-y divide-gray-100">
+              <tr>
+                <td colspan="6" class="px-6 py-12 text-center">
+                  <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary-100 mb-4">
+                    <i class="fa-solid fa-spinner fa-spin text-2xl text-primary-600"></i>
+                  </div>
+                  <p class="text-gray-500 font-medium">Loading courses...</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
 
-    <!-- Subjects Content -->
-    <div id="subjectsContent" class="min-h-[200px]">
-      <div class="flex justify-center py-12">
-        <div class="spinner"></div>
+    <!-- Weekly Schedule Section -->
+    <div id="scheduleSection" class="hidden">
+      <!-- Legend -->
+      <div class="glass rounded-2xl p-5 mb-6 border border-white/50 shadow-lg">
+        <p class="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+          <i class="fa-solid fa-palette text-primary-600"></i>
+          Type Color Coding:
+        </p>
+        <div class="flex flex-wrap items-center gap-3">
+          <span class="inline-flex items-center gap-2 px-4 py-2 bg-blue-500 text-white text-sm font-bold rounded-full shadow-sm hover:shadow-md transition-shadow">
+            <i class="fa-solid fa-book"></i> Lecture
+          </span>
+          <span class="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white text-sm font-bold rounded-full shadow-sm hover:shadow-md transition-shadow">
+            <i class="fa-solid fa-flask"></i> Practical/Lab
+          </span>
+          <span class="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 text-white text-sm font-bold rounded-full shadow-sm hover:shadow-md transition-shadow">
+            <i class="fa-solid fa-users"></i> Seminar
+          </span>
+          <span class="inline-flex items-center gap-2 px-4 py-2 bg-gray-500 text-white text-sm font-bold rounded-full shadow-sm hover:shadow-md transition-shadow">
+            <i class="fa-solid fa-tag"></i> Other
+          </span>
+        </div>
+      </div>
+
+      <!-- Day Tabs -->
+      <div class="mb-6 overflow-x-auto pb-2">
+        <div class="flex gap-2 min-w-max" id="dayTabs">
+          <button class="day-tab px-5 py-3 rounded-xl text-sm font-semibold bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition-all duration-300" data-day="Monday">Monday</button>
+          <button class="day-tab px-5 py-3 rounded-xl text-sm font-semibold bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition-all duration-300" data-day="Tuesday">Tuesday</button>
+          <button class="day-tab px-5 py-3 rounded-xl text-sm font-semibold bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition-all duration-300" data-day="Wednesday">Wednesday</button>
+          <button class="day-tab px-5 py-3 rounded-xl text-sm font-semibold bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition-all duration-300" data-day="Thursday">Thursday</button>
+          <button class="day-tab px-5 py-3 rounded-xl text-sm font-semibold bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition-all duration-300" data-day="Friday">Friday</button>
+          <button class="day-tab px-5 py-3 rounded-xl text-sm font-semibold bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition-all duration-300" data-day="Saturday">Saturday</button>
+          <button class="day-tab px-5 py-3 rounded-xl text-sm font-semibold bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition-all duration-300" data-day="Sunday">Sunday</button>
+        </div>
+      </div>
+
+      <!-- Subjects Content -->
+      <div id="subjectsContent" class="min-h-[200px]">
+        <div class="flex justify-center py-12">
+          <div class="spinner"></div>
+        </div>
       </div>
     </div>
   </main>
@@ -328,6 +397,9 @@
 
   <!-- Enhanced Card Renderer -->
   <script src="js/enhanced-card-renderer.js"></script>
+  
+  <!-- Course Catalog & Weekly Schedule Tabs -->
+  <script src="js/courses-tabs.js"></script>
   
   <!-- Persistent Music Player -->
   <script src="js/persistent-music-player.js"></script>

@@ -89,4 +89,80 @@ router.delete('/:id', auth, async (req, res) => {
   }
 });
 
+// Admin: add subject to a specific day (by day name)
+router.post('/:day', auth, async (req, res) => {
+  try {
+    const day = req.params.day;
+    const { code, name, type, startTime, endTime, room, instructor, date } = req.body;
+
+    if (!name || !startTime || !endTime) {
+      return res.status(400).json({ success: false, error: 'Name, start time, and end time are required.' });
+    }
+
+    let doc = await DailySubject.findOne({ dayOfWeek: day });
+    
+    const subjectData = {
+      name: name,
+      code: code || '',
+      customName: '',
+      type: type || '',
+      time: startTime,
+      startTime: startTime,
+      endTime: endTime,
+      date: date || '',
+      location: room || '',
+      room: room || '',
+      instructor: instructor || '',
+      itemsNeeded: [],
+      sem: '',
+      isActive: true
+    };
+
+    if (doc) {
+      doc.subjects = doc.subjects || [];
+      doc.subjects.push(subjectData);
+      await doc.save();
+    } else {
+      doc = new DailySubject({
+        dayOfWeek: day,
+        subjects: [subjectData]
+      });
+      await doc.save();
+    }
+
+    res.status(201).json({ success: true, message: 'Subject added successfully.', data: doc });
+  } catch (err) {
+    res.status(400).json({ success: false, error: err.message });
+  }
+});
+
+// Admin: delete subject by day and index
+router.delete('/:day/:index', auth, async (req, res) => {
+  try {
+    const day = req.params.day;
+    const index = parseInt(req.params.index, 10);
+
+    const doc = await DailySubject.findOne({ dayOfWeek: day });
+    if (!doc) return res.status(404).json({ success: false, error: 'Day not found.' });
+
+    const subjects = doc.subjects || [];
+    if (index < 0 || index >= subjects.length) {
+      return res.status(400).json({ success: false, error: 'Invalid subject index.' });
+    }
+
+    subjects.splice(index, 1);
+    doc.subjects = subjects;
+
+    if (subjects.length === 0) {
+      await DailySubject.findByIdAndDelete(doc._id);
+    } else {
+      await doc.save();
+    }
+
+    res.json({ success: true, message: 'Subject deleted successfully.' });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 module.exports = router;

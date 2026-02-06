@@ -135,13 +135,33 @@ app.use('/api/stats', requireDb, statsRoutes);
 app.use('/api/department-info', requireDb, departmentInfoRoutes);
 app.use('/api/courses', requireDb, coursesRoutes);
 
-// 404 handler
-app.use((req, res) => {
+// Serve HTML pages for specific routes
+app.get('/events', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'events.html'));
+});
+
+app.get('/daily-subjects', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'daily-subjects.html'));
+});
+
+app.get('/announcements', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'announcements.html'));
+});
+
+// 404 handler for API routes only
+app.use('/api/*', (req, res) => {
   res.status(404).json({ 
     success: false,
-    error: 'Not found',
+    error: 'API endpoint not found',
     path: req.path,
     method: req.method
+  });
+});
+
+// 404 handler for other routes
+app.use((req, res) => {
+  res.status(404).sendFile(path.join(__dirname, 'public', '404.html')).catch(() => {
+    res.status(404).send('Page not found');
   });
 });
 

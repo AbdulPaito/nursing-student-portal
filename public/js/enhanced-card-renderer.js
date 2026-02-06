@@ -44,6 +44,31 @@
       return dateStr;
     }
   }
+  
+  // Format date range for multi-day events
+  function formatDateRange(startDate, endDate) {
+    if (!startDate) return '';
+    if (!endDate || endDate === startDate) return formatDate(startDate);
+    
+    try {
+      const start = new Date(startDate + 'T00:00:00');
+      const end = new Date(endDate + 'T00:00:00');
+      
+      const startFormatted = start.toLocaleDateString('en-US', { 
+        month: 'short', 
+        day: 'numeric' 
+      });
+      const endFormatted = end.toLocaleDateString('en-US', { 
+        month: 'short', 
+        day: 'numeric',
+        year: 'numeric'
+      });
+      
+      return `${startFormatted} - ${endFormatted}`;
+    } catch (e) {
+      return startDate;
+    }
+  }
 
   // Get day of week from date
   function getDayOfWeek(dateStr) {
@@ -59,7 +84,9 @@
   // Type color configurations
   const typeColors = {
     // Subject/Entry types
+    'lecture': { bg: 'bg-blue-50', border: 'border-blue-500', text: 'text-blue-700', badge: 'bg-blue-500', icon: 'fa-book' },
     'theory': { bg: 'bg-blue-50', border: 'border-blue-500', text: 'text-blue-700', badge: 'bg-blue-500', icon: 'fa-book' },
+    'practical/lab': { bg: 'bg-green-50', border: 'border-green-500', text: 'text-green-700', badge: 'bg-green-600', icon: 'fa-flask' },
     'practical': { bg: 'bg-green-50', border: 'border-green-500', text: 'text-green-700', badge: 'bg-green-600', icon: 'fa-flask' },
     'lab': { bg: 'bg-green-50', border: 'border-green-500', text: 'text-green-700', badge: 'bg-green-600', icon: 'fa-microscope' },
     'seminar': { bg: 'bg-purple-50', border: 'border-purple-500', text: 'text-purple-700', badge: 'bg-purple-600', icon: 'fa-users' },
@@ -82,7 +109,7 @@
    * Shows: Day of Week, Subject Name, Custom Name, Type, Time, Date, Items Needed
    */
   window.renderSubjectCard = function(subject, dayOfWeek) {
-    const type = subject.type || 'Theory';
+    const type = subject.type || 'Lecture';
     const config = getTypeConfig(type);
     const hasItems = subject.itemsNeeded && subject.itemsNeeded.length > 0;
     const displayName = subject.customName || subject.name;
@@ -169,15 +196,18 @@
     const type = event.type || 'General';
     const config = getTypeConfig(type);
     const hasItems = event.items && event.items.length > 0;
-    const dayOfWeek = getDayOfWeek(event.date);
+    const startDate = event.startDate || event.date;
+    const endDate = event.endDate;
+    const dayOfWeek = getDayOfWeek(startDate);
     const displayName = event.customName || event.title;
+    const isMultiDay = endDate && endDate !== startDate;
     
     return `
       <div class="glass rounded-2xl border-l-4 ${config.border} p-5 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 animate-fade-in-up">
         <!-- Day of Week Badge -->
         <div class="flex items-center justify-between mb-3">
           <span class="px-3 py-1 bg-gradient-to-r from-primary-500 to-secondary-500 text-white text-sm font-bold rounded-full shadow-sm">
-            ${escapeHtml(dayOfWeek)}
+            ${escapeHtml(dayOfWeek)}${isMultiDay ? ' <i class="fa-solid fa-arrow-right mx-1"></i>' + escapeHtml(getDayOfWeek(endDate)) : ''}
           </span>
           <span class="px-3 py-1 ${config.badge} text-white text-xs font-bold rounded-full">
             ${escapeHtml(type)}
@@ -205,9 +235,9 @@
             <span><strong>Time:</strong> ${escapeHtml(formatTime(event.time))}</span>
           </div>
           
-          <div class="flex items-center gap-2 text-sm text-gray-600">
+          <div class="flex items-center gap-2 text-sm text-gray-600 ${isMultiDay ? 'col-span-full' : ''}">
             <i class="fa-solid fa-calendar text-primary-600"></i>
-            <span><strong>Date:</strong> ${escapeHtml(event.date)}</span>
+            <span><strong>Date:</strong> ${isMultiDay ? escapeHtml(formatDateRange(startDate, endDate)) : escapeHtml(startDate)}</span>
           </div>
           
           ${event.location ? `
@@ -324,7 +354,7 @@
    * Render Compact Subject Card (for Today's Subjects sidebar)
    */
   window.renderCompactSubjectCard = function(subject, dayOfWeek) {
-    const type = subject.type || 'Theory';
+    const type = subject.type || 'Lecture';
     const config = getTypeConfig(type);
     const hasItems = subject.itemsNeeded && subject.itemsNeeded.length > 0;
     

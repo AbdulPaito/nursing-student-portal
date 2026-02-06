@@ -16,6 +16,11 @@ const courseSchema = new mongoose.Schema({
     required: true,
     min: 0
   },
+  subjectType: {
+    type: String,
+    trim: true,
+    default: ''
+  },
   yearLevel: {
     type: String,
     required: true,
@@ -24,7 +29,7 @@ const courseSchema = new mongoose.Schema({
   semester: {
     type: String,
     required: true,
-    enum: ['1st Semester', '2nd Semester', 'Summer']
+    enum: ['1st Semester', '2nd Semester', 'Midyear', 'Summer']
   },
   status: {
     type: String,

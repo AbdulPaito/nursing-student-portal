@@ -385,19 +385,26 @@
     if (!tbody) return;
     
     if (!coursesData.length) {
-      tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-12 text-center"><div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gray-100 mb-4"><i class="fa-solid fa-book-open text-2xl text-gray-400"></i></div><p class="text-gray-500 font-medium">No courses added yet</p></td></tr>';
+      tbody.innerHTML = '<tr><td colspan="8" class="px-6 py-12 text-center"><div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gray-100 mb-4"><i class="fa-solid fa-book-open text-2xl text-gray-400"></i></div><p class="text-gray-500 font-medium">No courses added yet</p></td></tr>';
       return;
     }
     
     tbody.innerHTML = coursesData.map(function(course) {
+      console.log('Rendering course:', course.code, 'subjectType:', course.subjectType);
+      
       var statusBadge = course.status === 'Active' 
         ? '<span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-semibold">Active</span>'
         : '<span class="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-semibold">Inactive</span>';
+      
+      var subjectTypeDisplay = course.subjectType && course.subjectType !== ''
+        ? '<span class="px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold">' + escapeHtml(course.subjectType) + '</span>'
+        : '<span class="text-gray-400 text-sm">—</span>';
       
       return '<tr class="hover:bg-gray-50 transition-colors">' +
         '<td class="px-6 py-4"><span class="font-mono font-semibold text-primary-600">' + escapeHtml(course.code) + '</span></td>' +
         '<td class="px-6 py-4"><span class="font-medium text-gray-800">' + escapeHtml(course.name) + '</span></td>' +
         '<td class="px-6 py-4 text-center"><span class="font-semibold text-gray-700">' + escapeHtml(course.unit.toString()) + '</span></td>' +
+        '<td class="px-6 py-4">' + subjectTypeDisplay + '</td>' +
         '<td class="px-6 py-4">' + escapeHtml(course.yearLevel) + '</td>' +
         '<td class="px-6 py-4">' + escapeHtml(course.semester) + '</td>' +
         '<td class="px-6 py-4">' + statusBadge + '</td>' +
@@ -420,6 +427,9 @@
     document.getElementById('courseCode').value = '';
     document.getElementById('courseName').value = '';
     document.getElementById('courseUnit').value = '';
+    document.getElementById('courseSubjectType').value = '';
+    document.getElementById('courseSubjectTypeCustom').value = '';
+    document.getElementById('courseSubjectTypeCustom').classList.add('hidden');
     document.getElementById('courseYearLevel').value = '';
     document.getElementById('courseSemester').value = '';
     document.getElementById('courseStatus').value = 'Active';
@@ -427,6 +437,23 @@
     modal.classList.remove('hidden');
     modal.style.display = 'block';
     console.log('Modal should be visible now');
+  };
+  
+  // Also add alias for openCourseModal
+  window.openCourseModal = window.openSubjectForm;
+  
+  // Toggle custom subject type input
+  window.toggleCustomSubjectType = function() {
+    var selectElement = document.getElementById('courseSubjectType');
+    var customInput = document.getElementById('courseSubjectTypeCustom');
+    
+    if (selectElement.value === 'Other') {
+      customInput.classList.remove('hidden');
+      customInput.focus();
+    } else {
+      customInput.classList.add('hidden');
+      customInput.value = '';
+    }
   };
   
   // Close course modal
@@ -442,6 +469,9 @@
     var code = document.getElementById('courseCode').value.trim();
     var name = document.getElementById('courseName').value.trim();
     var unit = parseFloat(document.getElementById('courseUnit').value);
+    var subjectTypeSelect = document.getElementById('courseSubjectType').value;
+    var subjectTypeCustom = document.getElementById('courseSubjectTypeCustom').value.trim();
+    var subjectType = subjectTypeSelect === 'Other' ? subjectTypeCustom : subjectTypeSelect;
     var yearLevel = document.getElementById('courseYearLevel').value;
     var semester = document.getElementById('courseSemester').value;
     var status = document.getElementById('courseStatus').value;
@@ -449,6 +479,12 @@
     // Validate
     if (!code || !name || !unit || !yearLevel || !semester) {
       toast('Please fill in all required fields', 'error');
+      return;
+    }
+    
+    // Validate custom type if Other is selected
+    if (subjectTypeSelect === 'Other' && !subjectTypeCustom) {
+      toast('Please enter a custom subject type', 'error');
       return;
     }
     
@@ -467,6 +503,7 @@
           code: code,
           name: name,
           unit: unit,
+          subjectType: subjectType,
           yearLevel: yearLevel,
           semester: semester,
           status: status
@@ -499,6 +536,24 @@
     document.getElementById('courseCode').value = course.code;
     document.getElementById('courseName').value = course.name;
     document.getElementById('courseUnit').value = course.unit;
+    
+    // Handle subject type
+    var subjectType = course.subjectType || '';
+    var knownTypes = ['Lab', 'Lecture', 'Seminar'];
+    var customInput = document.getElementById('courseSubjectTypeCustom');
+    
+    if (subjectType && knownTypes.indexOf(subjectType) === -1 && subjectType !== '') {
+      // Custom type
+      document.getElementById('courseSubjectType').value = 'Other';
+      customInput.value = subjectType;
+      customInput.classList.remove('hidden');
+    } else {
+      // Standard type or empty
+      document.getElementById('courseSubjectType').value = subjectType;
+      customInput.value = '';
+      customInput.classList.add('hidden');
+    }
+    
     document.getElementById('courseYearLevel').value = course.yearLevel;
     document.getElementById('courseSemester').value = course.semester;
     document.getElementById('courseStatus').value = course.status;

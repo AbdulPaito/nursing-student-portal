@@ -165,6 +165,12 @@
       var icon = getEventTypeIcon(e.title);
       var itemsArr = e.items && Array.isArray(e.items) ? e.items : [];
       var itemsHtml = '<p class="mb-1"><strong>Items to Bring:</strong></p>' + (itemsArr.length ? '<ul class="list-items mb-0 small"><li>' + itemsArr.map(function(i) { return escapeHtml(i); }).join('</li><li>') + '</li></ul>' : '<p class="mb-0 small text-muted">No items required.</p>');
+      var startDate = e.startDate || e.date;
+      var endDate = e.endDate;
+      var dateDisplay = startDate;
+      if (endDate && endDate !== startDate) {
+        dateDisplay = startDate + ' to ' + endDate;
+      }
       return (
         '<div class="col-12 col-md-6">' +
           '<div class="card card-event h-100">' +
@@ -173,11 +179,11 @@
               '<span>' + escapeHtml(e.title) + '</span>' +
             '</div>' +
             '<div class="card-body">' +
-              '<p class="mb-1"><i class="bi bi-calendar3 me-1 text-muted"></i>' + escapeHtml(e.date) + '</p>' +
+              '<p class="mb-1"><i class="bi bi-calendar3 me-1 text-muted"></i>' + escapeHtml(dateDisplay) + '</p>' +
               '<p class="mb-1"><i class="bi bi-clock me-1 text-muted"></i>' + escapeHtml(e.time) + '</p>' +
               '<p class="mb-1"><i class="bi bi-geo-alt me-1 text-muted"></i>' + escapeHtml(e.location || '—') + '</p>' +
               '<div class="mt-1">' + itemsHtml + '</div>' +
-              '<div class="event-countdown small fw-bold text-primary" data-date="' + escapeHtml(e.date) + '" data-time="' + escapeHtml(e.time || '') + '" data-title="' + escapeHtml(e.title) + '">' + formatCountdown(e.date, e.time) + '</div>' +
+              '<div class="event-countdown small fw-bold text-primary" data-date="' + escapeHtml(startDate) + '" data-time="' + escapeHtml(e.time || '') + '" data-title="' + escapeHtml(e.title) + '">' + formatCountdown(startDate, e.time) + '</div>' +
             '</div>' +
           '</div>' +
         '</div>'
@@ -248,10 +254,31 @@
     var eventDates = {};
     var eventTitlesByDate = {};
     events.forEach(function(e) {
-      if (e.date) {
-        eventDates[e.date] = (eventDates[e.date] || 0) + 1;
-        if (!eventTitlesByDate[e.date]) eventTitlesByDate[e.date] = [];
-        eventTitlesByDate[e.date].push(e.title || 'Event');
+      var startDate = e.startDate || e.date;
+      var endDate = e.endDate;
+      
+      if (startDate) {
+        // Add start date
+        eventDates[startDate] = (eventDates[startDate] || 0) + 1;
+        if (!eventTitlesByDate[startDate]) eventTitlesByDate[startDate] = [];
+        eventTitlesByDate[startDate].push(e.title || 'Event');
+        
+        // For multi-day events, mark all days in between
+        if (endDate && endDate !== startDate) {
+          var current = new Date(startDate + 'T00:00:00');
+          var end = new Date(endDate + 'T00:00:00');
+          current.setDate(current.getDate() + 1); // Start from day after start
+          
+          while (current <= end) {
+            var dateStr = current.getFullYear() + '-' + 
+                          String(current.getMonth() + 1).padStart(2, '0') + '-' + 
+                          String(current.getDate()).padStart(2, '0');
+            eventDates[dateStr] = (eventDates[dateStr] || 0) + 1;
+            if (!eventTitlesByDate[dateStr]) eventTitlesByDate[dateStr] = [];
+            eventTitlesByDate[dateStr].push(e.title || 'Event');
+            current.setDate(current.getDate() + 1);
+          }
+        }
       }
     });
     var now = new Date();
