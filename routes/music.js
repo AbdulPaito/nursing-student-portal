@@ -52,8 +52,8 @@ const upload = multer({
 // @access  Admin only
 router.post('/upload', auth, upload.single('music'), async (req, res) => {
   try {
-    // Check if user is admin
-    if (req.user.role !== 'admin') {
+    // Check if user is admin or superadmin
+    if (req.user.role !== 'admin' && req.user.role !== 'superadmin') {
       // Delete uploaded file from Cloudinary if not admin
       if (req.file && req.file.public_id) {
         await cloudinary.uploader.destroy(req.file.public_id, { resource_type: 'video' });
@@ -111,8 +111,8 @@ router.post('/upload', auth, upload.single('music'), async (req, res) => {
 // @access  Admin only
 router.get('/', auth, async (req, res) => {
   try {
-    // Check if user is admin
-    if (req.user.role !== 'admin') {
+    // Check if user is admin or superadmin
+    if (req.user.role !== 'admin' && req.user.role !== 'superadmin') {
       return res.status(403).json({ message: 'Access denied. Admin only.' });
     }
 
@@ -163,8 +163,8 @@ router.get('/active/:location', async (req, res) => {
 // @access  Admin only
 router.put('/:id/toggle', auth, async (req, res) => {
   try {
-    // Check if user is admin
-    if (req.user.role !== 'admin') {
+    // Check if user is admin or superadmin
+    if (req.user.role !== 'admin' && req.user.role !== 'superadmin') {
       return res.status(403).json({ message: 'Access denied. Admin only.' });
     }
 
@@ -192,8 +192,8 @@ router.put('/:id/toggle', auth, async (req, res) => {
 // @access  Admin only
 router.delete('/:id', auth, async (req, res) => {
   try {
-    // Check if user is admin
-    if (req.user.role !== 'admin') {
+    // Check if user is admin or superadmin
+    if (req.user.role !== 'admin' && req.user.role !== 'superadmin') {
       return res.status(403).json({ message: 'Access denied. Admin only.' });
     }
 
@@ -228,8 +228,8 @@ router.delete('/:id', auth, async (req, res) => {
 // @access  Admin only
 router.put('/:id', auth, async (req, res) => {
   try {
-    // Check if user is admin
-    if (req.user.role !== 'admin') {
+    // Check if user is admin or superadmin
+    if (req.user.role !== 'admin' && req.user.role !== 'superadmin') {
       return res.status(403).json({ message: 'Access denied. Admin only.' });
     }
 

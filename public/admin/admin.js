@@ -34,6 +34,14 @@
     setTimeout(function() { if (el && el.parentNode) el.remove(); }, 4000);
   }
 
+  // Close modal function (global utility)
+  window.closeModal = function(modalId) {
+    var modal = document.getElementById(modalId);
+    if (modal) {
+      modal.classList.add('hidden');
+    }
+  };
+
   // Confirm delete
   var confirmDeleteResolve;
   var confirmModal = document.getElementById('confirmDeleteModal');
@@ -147,10 +155,12 @@
   // Dashboard
   var recentActivityList = document.getElementById('recentActivityList');
   async function loadDashboard() {
+    console.log('🏠 Loading dashboard...');
     try {
       var eventsRes = await apiFetch('/api/events');
       var subjectsRes = await apiFetch('/api/daily-subjects');
       var announcementsRes = await apiFetch('/api/announcements');
+      console.log('📊 Dashboard API responses:', { eventsRes, subjectsRes, announcementsRes });
       var events = Array.isArray(eventsRes.data) ? eventsRes.data : (eventsRes.data && eventsRes.data.data ? eventsRes.data.data : []);
       var dailySubjects = Array.isArray(subjectsRes.data) ? subjectsRes.data : (subjectsRes.data && subjectsRes.data.data ? subjectsRes.data.data : []);
       var announcements = Array.isArray(announcementsRes.data) ? announcementsRes.data : (announcementsRes.data && announcementsRes.data.data ? announcementsRes.data.data : []);
@@ -266,7 +276,7 @@
       eventsList = Array.isArray(raw) ? raw : (raw && raw.data ? raw.data : []);
       renderEvents(eventsList);
     } catch (err) {
-      if (eventsTableBody) eventsTableBody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">Failed to load.</td></tr>';
+      if (eventsTableBody) eventsTableBody.innerHTML = '<tr><td colspan="6" class="px-6 py-12 text-center"><div class="text-rose-600 font-medium">Failed to load events</div></td></tr>';
       toast('Failed to load events', 'error');
     }
     setEventsLoading(false);
@@ -275,9 +285,26 @@
     var q = (document.getElementById('eventsSearch') && document.getElementById('eventsSearch').value || '').toLowerCase();
     var filtered = q ? list.filter(function(e) { return (e.title || '').toLowerCase().includes(q); }) : list;
     if (!eventsTableBody) return;
-    eventsTableBody.innerHTML = filtered.length ? filtered.map(function(e) {
-      return '<tr><td>' + escapeHtml(e.title) + '</td><td>' + escapeHtml(e.date) + '</td><td>' + escapeHtml(e.time) + '</td><td>' + escapeHtml(e.location || '') + '</td><td>' + (e.items && e.items.length ? e.items.map(escapeHtml).join(', ') : '—') + '</td><td><button class="btn btn-sm btn-edit me-1" onclick="window.editEvent(\'' + escapeHtml(e._id) + '\')">Edit</button><button class="btn btn-sm btn-delete" onclick="window.deleteEvent(\'' + escapeHtml(e._id) + '\')">Delete</button></td></tr>';
-    }).join('') : '<tr><td colspan="6" class="text-center text-muted">No events.</td></tr>';
+    
+    if (!filtered.length) {
+      eventsTableBody.innerHTML = '<tr><td colspan="6" class="px-6 py-12 text-center"><div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gray-100 mb-4"><i class="fa-solid fa-calendar-days text-2xl text-gray-400"></i></div><p class="text-gray-500 font-medium">No events found</p></td></tr>';
+      return;
+    }
+    
+    eventsTableBody.innerHTML = filtered.map(function(e) {
+      var itemsList = e.items && e.items.length ? e.items.map(escapeHtml).join(', ') : '<span class="text-gray-400">—</span>';
+      return '<tr class="hover:bg-gray-50 transition-colors">' +
+        '<td class="px-6 py-4"><span class="font-semibold text-gray-800">' + escapeHtml(e.title) + '</span></td>' +
+        '<td class="px-6 py-4"><span class="font-medium text-gray-700">' + escapeHtml(e.time || '—') + '</span></td>' +
+        '<td class="px-6 py-4"><span class="font-medium text-gray-700">' + escapeHtml(e.date) + '</span></td>' +
+        '<td class="px-6 py-4"><span class="text-gray-600">' + escapeHtml(e.location || '—') + '</span></td>' +
+        '<td class="px-6 py-4"><span class="text-sm text-gray-600">' + itemsList + '</span></td>' +
+        '<td class="px-6 py-4"><div class="flex gap-2">' +
+        '<button onclick="window.editEvent(\'' + escapeHtml(e._id) + '\')" class="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-1"><i class="fa-solid fa-pen text-xs"></i> Edit</button>' +
+        '<button onclick="window.deleteEvent(\'' + escapeHtml(e._id) + '\')" class="px-3 py-1.5 bg-rose-500 hover:bg-rose-600 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-1"><i class="fa-solid fa-trash text-xs"></i> Delete</button>' +
+        '</div></td>' +
+        '</tr>';
+    }).join('');
   }
   if (document.getElementById('eventsSearch')) document.getElementById('eventsSearch').addEventListener('input', function() { renderEvents(eventsList); });
 
@@ -287,10 +314,14 @@
     document.getElementById('eventTitle').value = '';
     document.getElementById('eventDescription').value = '';
     if (document.getElementById('eventCategory')) document.getElementById('eventCategory').value = '';
-    document.getElementById('eventDate').value = '';
+    document.getElementById('eventStartDate').value = '';
+    document.getElementById('eventEndDate').value = '';
     document.getElementById('eventTime').value = '09:00';
     document.getElementById('eventLocation').value = '';
     document.getElementById('eventItems').value = '';
+    // Show modal
+    var modal = document.getElementById('eventModal');
+    if (modal) modal.classList.remove('hidden');
   };
   window.editEvent = function(id) {
     var e = eventsList.find(function(x) { return x._id === id; });
@@ -300,40 +331,60 @@
     document.getElementById('eventTitle').value = e.title || '';
     document.getElementById('eventDescription').value = e.description || '';
     if (document.getElementById('eventCategory')) document.getElementById('eventCategory').value = e.category || '';
-    document.getElementById('eventDate').value = e.date || '';
+    document.getElementById('eventStartDate').value = e.startDate || e.date || '';
+    document.getElementById('eventEndDate').value = e.endDate || '';
     document.getElementById('eventTime').value = e.time || '09:00';
     document.getElementById('eventLocation').value = e.location || '';
     document.getElementById('eventItems').value = (e.items && e.items.length) ? e.items.join('\n') : '';
-    new bootstrap.Modal(document.getElementById('eventModal')).show();
+    // Show modal
+    var modal = document.getElementById('eventModal');
+    if (modal) modal.classList.remove('hidden');
   };
 
   var eventSaveBtn = document.getElementById('eventSaveBtn');
-  eventSaveBtn.addEventListener('click', async function() {
+  if (eventSaveBtn) {
+    console.log('✅ Event save button found, attaching listener');
+    eventSaveBtn.addEventListener('click', async function() {
+    console.log('🎯 Event save button clicked!');
     var id = document.getElementById('eventId').value;
+    var startDate = document.getElementById('eventStartDate').value;
+    var endDate = document.getElementById('eventEndDate').value;
     var body = {
       title: document.getElementById('eventTitle').value.trim(),
       description: document.getElementById('eventDescription').value.trim(),
       category: (document.getElementById('eventCategory') && document.getElementById('eventCategory').value) || '',
-      date: document.getElementById('eventDate').value,
+      date: startDate, // Use startDate as the primary date for backward compatibility
+      startDate: startDate,
+      endDate: endDate,
       time: document.getElementById('eventTime').value,
       location: document.getElementById('eventLocation').value.trim(),
       items: (document.getElementById('eventItems').value || '').split('\n').map(function(s) { return s.trim(); }).filter(Boolean)
     };
+    console.log('📋 Event data to save:', body);
     eventSaveBtn.disabled = true;
     eventSaveBtn.textContent = 'Saving...';
     try {
+      console.log('📡 Sending request to:', '/api/events' + (id ? '/' + id : ''));
       var res = await apiFetch('/api/events' + (id ? '/' + id : ''), { method: id ? 'PUT' : 'POST', headers: headers(), body: JSON.stringify(body) });
+      console.log('📥 Response:', res);
       if (!res.ok) throw new Error(res.data.error || 'Save failed');
-      bootstrap.Modal.getInstance(document.getElementById('eventModal')).hide();
+      // Hide modal
+      var modal = document.getElementById('eventModal');
+      if (modal) modal.classList.add('hidden');
       toast(res.data.message || 'Saved.');
+      console.log('✅ Event saved successfully!');
       loadEvents();
       loadDashboard();
     } catch (err) {
+      console.error('❌ Save error:', err);
       toast(err.message || 'Failed to save.', 'error');
     }
     eventSaveBtn.disabled = false;
-    eventSaveBtn.textContent = 'Save';
-  });
+    eventSaveBtn.textContent = 'Save Event';
+    });
+  } else {
+    console.error('❌ eventSaveBtn not found - check if element ID exists in HTML');
+  }
 
   window.deleteEvent = async function(id) {
     var ok = await confirmDelete('Delete this event?');
@@ -604,15 +655,31 @@
       var raw = res.data;
       announcementsList = Array.isArray(raw) ? raw : (raw && raw.data ? raw.data : []);
       if (announcementsTableBody) {
-        announcementsTableBody.innerHTML = announcementsList.length ? announcementsList.map(function(a) {
-          var msg = (a.message || '').substring(0, 60) + ((a.message || '').length > 60 ? '…' : '');
-          var active = a.active !== false;
-          var dt = a.date + (a.time ? ' ' + a.time : '');
-          return '<tr><td>' + escapeHtml(a.title) + '</td><td>' + escapeHtml(msg) + '</td><td>' + escapeHtml(dt) + '</td><td><span class="badge ' + (active ? 'bg-success' : 'bg-secondary') + '">' + (active ? 'Active' : 'Inactive') + '</span></td><td><button class="btn btn-sm btn-edit me-1" onclick="window.editAnnouncement(\'' + escapeHtml(a._id) + '\')">Edit</button><button class="btn btn-sm btn-delete" onclick="window.deleteAnnouncement(\'' + escapeHtml(a._id) + '\')">Delete</button></td></tr>';
-        }).join('') : '<tr><td colspan="5" class="text-center text-muted">No announcements.</td></tr>';
+        if (!announcementsList.length) {
+          announcementsTableBody.innerHTML = '<tr><td colspan="5" class="px-6 py-12 text-center"><div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gray-100 mb-4"><i class="fa-solid fa-bullhorn text-2xl text-gray-400"></i></div><p class="text-gray-500 font-medium">No announcements found</p></td></tr>';
+        } else {
+          announcementsTableBody.innerHTML = announcementsList.map(function(a) {
+            var msg = (a.message || '').substring(0, 60) + ((a.message || '').length > 60 ? '…' : '');
+            var active = a.active !== false;
+            var statusBadge = active 
+              ? '<span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-semibold">Active</span>'
+              : '<span class="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-semibold">Inactive</span>';
+            
+            return '<tr class="hover:bg-gray-50 transition-colors">' +
+              '<td class="px-6 py-4"><span class="font-semibold text-gray-800">' + escapeHtml(a.title) + '</span></td>' +
+              '<td class="px-6 py-4"><span class="text-gray-600">' + escapeHtml(msg) + '</span></td>' +
+              '<td class="px-6 py-4"><span class="font-medium text-gray-700">' + escapeHtml(a.date) + '</span></td>' +
+              '<td class="px-6 py-4">' + statusBadge + '</td>' +
+              '<td class="px-6 py-4"><div class="flex gap-2">' +
+              '<button onclick="window.editAnnouncement(\'' + escapeHtml(a._id) + '\')" class="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-1"><i class="fa-solid fa-pen text-xs"></i> Edit</button>' +
+              '<button onclick="window.deleteAnnouncement(\'' + escapeHtml(a._id) + '\')" class="px-3 py-1.5 bg-rose-500 hover:bg-rose-600 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-1"><i class="fa-solid fa-trash text-xs"></i> Delete</button>' +
+              '</div></td>' +
+              '</tr>';
+          }).join('');
+        }
       }
     } catch (err) {
-      if (announcementsTableBody) announcementsTableBody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">Failed to load.</td></tr>';
+      if (announcementsTableBody) announcementsTableBody.innerHTML = '<tr><td colspan="5" class="px-6 py-12 text-center"><div class="text-rose-600 font-medium">Failed to load announcements</div></td></tr>';
       toast('Failed to load announcements', 'error');
     }
     setAnnouncementsLoading(false);
@@ -627,6 +694,9 @@
     var timeEl = document.getElementById('announcementTime');
     if (timeEl) timeEl.value = '09:00';
     document.getElementById('announcementActive').checked = true;
+    // Show modal
+    var modal = document.getElementById('announcementModal');
+    if (modal) modal.classList.remove('hidden');
   };
   window.editAnnouncement = function(id) {
     var a = announcementsList.find(function(x) { return x._id === id; });
@@ -639,11 +709,14 @@
     var timeEl = document.getElementById('announcementTime');
     if (timeEl) timeEl.value = (a.time || '09:00').substring(0, 5);
     document.getElementById('announcementActive').checked = a.active !== false;
-    new bootstrap.Modal(document.getElementById('announcementModal')).show();
+    // Show modal
+    var modal = document.getElementById('announcementModal');
+    if (modal) modal.classList.remove('hidden');
   };
 
   var announcementSaveBtn = document.getElementById('announcementSaveBtn');
-  announcementSaveBtn.addEventListener('click', async function() {
+  if (announcementSaveBtn) {
+    announcementSaveBtn.addEventListener('click', async function() {
     var id = document.getElementById('announcementId').value;
     var timeEl = document.getElementById('announcementTime');
     var body = {
@@ -658,7 +731,9 @@
     try {
       var res = await apiFetch('/api/announcements' + (id ? '/' + id : ''), { method: id ? 'PUT' : 'POST', headers: headers(), body: JSON.stringify(body) });
       if (!res.ok) throw new Error(res.data.error || 'Save failed');
-      bootstrap.Modal.getInstance(document.getElementById('announcementModal')).hide();
+      // Hide modal
+      var modal = document.getElementById('announcementModal');
+      if (modal) modal.classList.add('hidden');
       toast(res.data.message || 'Saved.');
       loadAnnouncements();
       loadDashboard();
@@ -666,8 +741,11 @@
       toast(err.message || 'Failed to save.', 'error');
     }
     announcementSaveBtn.disabled = false;
-    announcementSaveBtn.textContent = 'Save';
-  });
+    announcementSaveBtn.textContent = 'Save Announcement';
+    });
+  } else {
+    console.error('❌ announcementSaveBtn not found - check if element ID exists in HTML');
+  }
 
   window.deleteAnnouncement = async function(id) {
     var ok = await confirmDelete('Delete this announcement?');
@@ -779,7 +857,9 @@
     }
   };
 
-  document.getElementById('musicUploadForm').addEventListener('submit', async function(e) {
+  var musicUploadForm = document.getElementById('musicUploadForm');
+  if (musicUploadForm) {
+    musicUploadForm.addEventListener('submit', async function(e) {
     e.preventDefault();
     console.log('🎵 Starting music upload...');
     
@@ -833,7 +913,10 @@
       uploadBtn.disabled = false;
       uploadBtn.innerHTML = 'Upload';
     }
-  });
+    });
+  } else {
+    console.error('❌ musicUploadForm not found - check if element ID exists in HTML');
+  }
 
   window.toggleMusicStatus = async function(id, currentStatus) {
     try {
@@ -871,7 +954,9 @@
     document.getElementById('musicEditModal').classList.add('hidden');
   };
 
-  document.getElementById('musicEditForm').addEventListener('submit', async function(e) {
+  var musicEditForm = document.getElementById('musicEditForm');
+  if (musicEditForm) {
+    musicEditForm.addEventListener('submit', async function(e) {
     e.preventDefault();
     var id = document.getElementById('editMusicId').value;
     var title = document.getElementById('editMusicTitle').value;
@@ -891,7 +976,10 @@
     } catch (error) {
       toast('Error: ' + error.message, 'error');
     }
-  });
+    });
+  } else {
+    console.error('❌ musicEditForm not found - check if element ID exists in HTML');
+  }
 
   // ========================================
   // DEPARTMENT INFO FUNCTIONS
