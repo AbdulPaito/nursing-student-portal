@@ -92,6 +92,10 @@
         console.log('🎵 Music section loaded, fetching files...');
         loadMusicFiles();
       }
+      if (sectionName === 'department-info') {
+        console.log('📊 Department Info section loaded, fetching data...');
+        loadDepartmentInfo();
+      }
     } else {
       console.error('❌ Section not found:', 'section-' + sectionName);
     }
@@ -893,26 +897,165 @@
   // DEPARTMENT INFO FUNCTIONS
   // ========================================
   
-  // Load department info
+  // Load department info with enhanced statistics and charts
+  var departmentPieChart = null;
+  var departmentBarChart = null;
+  
   window.loadDepartmentInfo = function() {
     fetch(API + '/api/department-info')
       .then(function(res) { return res.json(); })
       .then(function(json) {
         if (json.success && json.data) {
           var data = json.data;
-          document.getElementById('displayTotalStudents').textContent = data.totalStudents || 0;
-          document.getElementById('displayTotalFaculty').textContent = data.totalFaculty || 0;
+          var students = data.totalStudents || 0;
+          var faculty = data.totalFaculty || 0;
           
+          // Update main counts
+          document.getElementById('displayTotalStudents').textContent = students;
+          document.getElementById('displayTotalFaculty').textContent = faculty;
+          
+          // Calculate and display enhanced statistics
+          var totalMembers = students + faculty;
+          var ratio = faculty > 0 ? (students / faculty).toFixed(1) : '—';
+          var maxCapacity = 1000; // Set your department's max capacity
+          var capacityPercent = Math.min((students / maxCapacity) * 100, 100);
+          
+          document.getElementById('totalMembersDisplay').textContent = totalMembers;
+          document.getElementById('ratioDisplay').textContent = ratio + ':1';
+          document.getElementById('capacityDisplay').textContent = Math.round(capacityPercent) + '%';
+          document.getElementById('capacityBar').style.width = capacityPercent + '%';
+          
+          // Update timestamp
           if (data.updatedAt) {
             var date = new Date(data.updatedAt);
             document.getElementById('lastUpdatedInfo').textContent = date.toLocaleString();
           }
+          
+          // Render charts
+          renderDepartmentCharts(students, faculty);
         }
       })
       .catch(function(err) {
         console.error('Error loading department info:', err);
       });
   };
+  
+  // Render Department Charts
+  function renderDepartmentCharts(students, faculty) {
+    // Pie Chart - Distribution
+    var pieCanvas = document.getElementById('departmentPieChart');
+    if (pieCanvas && typeof Chart !== 'undefined') {
+      if (departmentPieChart) departmentPieChart.destroy();
+      
+      departmentPieChart = new Chart(pieCanvas.getContext('2d'), {
+        type: 'doughnut',
+        data: {
+          labels: ['Students', 'Faculty'],
+          datasets: [{
+            data: [students, faculty],
+            backgroundColor: [
+              'rgba(59, 130, 246, 0.8)',
+              'rgba(16, 185, 129, 0.8)'
+            ],
+            borderColor: [
+              'rgb(59, 130, 246)',
+              'rgb(16, 185, 129)'
+            ],
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                padding: 15,
+                font: {
+                  size: 12,
+                  weight: '600'
+                }
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  var label = context.label || '';
+                  var value = context.parsed || 0;
+                  var total = students + faculty;
+                  var percent = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                  return label + ': ' + value + ' (' + percent + '%)';
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+    
+    // Bar Chart - Comparison
+    var barCanvas = document.getElementById('departmentBarChart');
+    if (barCanvas && typeof Chart !== 'undefined') {
+      if (departmentBarChart) departmentBarChart.destroy();
+      
+      departmentBarChart = new Chart(barCanvas.getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels: ['Current Semester'],
+          datasets: [
+            {
+              label: 'Students',
+              data: [students],
+              backgroundColor: 'rgba(59, 130, 246, 0.8)',
+              borderColor: 'rgb(59, 130, 246)',
+              borderWidth: 2,
+              borderRadius: 8
+            },
+            {
+              label: 'Faculty',
+              data: [faculty],
+              backgroundColor: 'rgba(16, 185, 129, 0.8)',
+              borderColor: 'rgb(16, 185, 129)',
+              borderWidth: 2,
+              borderRadius: 8
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                stepSize: 50
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                padding: 15,
+                font: {
+                  size: 12,
+                  weight: '600'
+                }
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return context.dataset.label + ': ' + context.parsed.y + ' members';
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+  }
 
   // Open edit students modal
   window.openEditStudentsModal = function() {
@@ -1039,4 +1182,570 @@
       observer.observe(departmentSection, { attributes: true });
     }
   });
+
+  // ==========================================
+  // USER MANAGEMENT FUNCTIONS
+  // ==========================================
+
+  // Load users when section is shown
+  document.addEventListener('DOMContentLoaded', function() {
+    const usersSection = document.getElementById('section-users');
+    if (usersSection) {
+      const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          if (mutation.attributeName === 'class') {
+            if (!usersSection.classList.contains('hidden')) {
+              loadUsers();
+            }
+          }
+        });
+      });
+      observer.observe(usersSection, { attributes: true });
+    }
+  });
+
+  // Load all users
+  window.loadUsers = async function() {
+    const tbody = document.getElementById('usersTableBody');
+    tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-12 text-center text-gray-500"><i class="fa-solid fa-spinner fa-spin text-3xl mb-3 text-primary-500"></i><p>Loading users...</p></td></tr>';
+
+    try {
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch('/api/users', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        if (data.users.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-8 text-center text-gray-500">No users found</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = data.users.map(user => {
+          const createdDate = new Date(user.createdAt).toLocaleDateString();
+          const statusBadge = user.mustChangePassword 
+            ? '<span class="px-2 py-1 rounded-full bg-amber-100 text-amber-700 text-xs font-semibold">Must Change Password</span>'
+            : '<span class="px-2 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-semibold">Active</span>';
+          
+          const currentUserId = JSON.parse(atob(token.split('.')[1])).id;
+          const isSelf = user._id === currentUserId;
+
+          return `
+            <tr class="hover:bg-gray-50 transition-colors">
+              <td class="px-6 py-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center text-white font-semibold">
+                    ${user.name.charAt(0).toUpperCase()}
+                  </div>
+                  <div>
+                    <div class="font-semibold text-gray-800">${user.name}</div>
+                    ${isSelf ? '<span class="text-xs text-gray-500">(You)</span>' : ''}
+                  </div>
+                </div>
+              </td>
+              <td class="px-6 py-4 text-gray-600">${user.email}</td>
+              <td class="px-6 py-4">
+                <span class="px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold">${user.role}</span>
+              </td>
+              <td class="px-6 py-4 text-gray-600">${createdDate}</td>
+              <td class="px-6 py-4">${statusBadge}</td>
+              <td class="px-6 py-4">
+                <div class="flex items-center justify-center gap-2">
+                  <button onclick="openResetPasswordModal('${user._id}', '${user.name}')" class="px-3 py-2 bg-amber-100 text-amber-700 rounded-lg hover:bg-amber-200 transition-colors text-sm font-medium" title="Reset Password">
+                    <i class="fa-solid fa-key"></i>
+                  </button>
+                  ${!isSelf ? `
+                    <button onclick="deleteUser('${user._id}', '${user.name}')" class="px-3 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors text-sm font-medium" title="Delete User">
+                      <i class="fa-solid fa-trash"></i>
+                    </button>
+                  ` : ''}
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      } else {
+        tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-red-500">${data.error || 'Failed to load users'}</td></tr>`;
+      }
+    } catch (error) {
+      console.error('Load users error:', error);
+      tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-8 text-center text-red-500">Error loading users</td></tr>';
+    }
+  };
+
+  // Add User Modal Functions
+  window.openAddUserModal = function() {
+    document.getElementById('addUserModal').classList.remove('hidden');
+    document.getElementById('addUserForm').reset();
+    document.getElementById('addUserMessage').classList.add('hidden');
+  };
+
+  window.closeAddUserModal = function() {
+    document.getElementById('addUserModal').classList.add('hidden');
+  };
+
+  window.generatePassword = async function() {
+    try {
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch('/api/users/generate-password', {
+        method: 'POST',
+        headers: { 
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        document.getElementById('userPassword').value = data.password;
+      }
+    } catch (error) {
+      console.error('Generate password error:', error);
+    }
+  };
+
+  // Add User Form Submit
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('addUserForm');
+    if (form) {
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const messageDiv = document.getElementById('addUserMessage');
+        const submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Adding...';
+
+        const userData = {
+          name: document.getElementById('userName').value,
+          email: document.getElementById('userEmail').value,
+          password: document.getElementById('userPassword').value,
+          role: document.getElementById('userRole').value
+        };
+
+        try {
+          const token = localStorage.getItem('adminToken');
+          const response = await fetch('/api/users', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(userData)
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            messageDiv.className = 'p-4 bg-emerald-50 border-l-4 border-emerald-500 rounded-r-xl';
+            messageDiv.innerHTML = `
+              <div class="flex items-start gap-3 text-emerald-800">
+                <i class="fa-solid fa-check-circle text-lg"></i>
+                <div class="text-sm">
+                  <p class="font-semibold mb-1">User created successfully!</p>
+                  <p>Temporary Password: <strong class="font-mono">${data.temporaryPassword}</strong></p>
+                  <p class="text-xs mt-1">Please provide this password to the user. They will be required to change it on first login.</p>
+                </div>
+              </div>
+            `;
+            messageDiv.classList.remove('hidden');
+            form.reset();
+            loadUsers();
+            
+            setTimeout(() => {
+              closeAddUserModal();
+            }, 5000);
+          } else {
+            messageDiv.className = 'p-4 bg-red-50 border-l-4 border-red-500 rounded-r-xl';
+            messageDiv.innerHTML = `
+              <div class="flex items-center gap-3 text-red-800">
+                <i class="fa-solid fa-exclamation-circle text-lg"></i>
+                <span class="text-sm font-medium">${data.error || 'Failed to create user'}</span>
+              </div>
+            `;
+            messageDiv.classList.remove('hidden');
+          }
+        } catch (error) {
+          console.error('Add user error:', error);
+          messageDiv.className = 'p-4 bg-red-50 border-l-4 border-red-500 rounded-r-xl';
+          messageDiv.innerHTML = `
+            <div class="flex items-center gap-3 text-red-800">
+              <i class="fa-solid fa-exclamation-circle text-lg"></i>
+              <span class="text-sm font-medium">Error creating user</span>
+            </div>
+          `;
+          messageDiv.classList.remove('hidden');
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = 'Add User';
+        }
+      });
+    }
+  });
+
+  // Reset Password Modal Functions
+  window.openResetPasswordModal = function(userId, userName) {
+    document.getElementById('resetUserId').value = userId;
+    document.getElementById('resetUserName').textContent = userName;
+    document.getElementById('resetPasswordModal').classList.remove('hidden');
+    document.getElementById('resetPasswordForm').reset();
+    document.getElementById('resetPasswordMessage').classList.add('hidden');
+  };
+
+  window.closeResetPasswordModal = function() {
+    document.getElementById('resetPasswordModal').classList.add('hidden');
+  };
+
+  window.generateResetPassword = async function() {
+    try {
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch('/api/users/generate-password', {
+        method: 'POST',
+        headers: { 
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        document.getElementById('resetNewPassword').value = data.password;
+      }
+    } catch (error) {
+      console.error('Generate password error:', error);
+    }
+  };
+
+  // Reset Password Form Submit
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('resetPasswordForm');
+    if (form) {
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const messageDiv = document.getElementById('resetPasswordMessage');
+        const submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Resetting...';
+
+        const userId = document.getElementById('resetUserId').value;
+        const newPassword = document.getElementById('resetNewPassword').value;
+
+        try {
+          const token = localStorage.getItem('adminToken');
+          const response = await fetch(`/api/users/${userId}/reset-password`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ newPassword })
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            messageDiv.className = 'p-4 bg-emerald-50 border-l-4 border-emerald-500 rounded-r-xl';
+            messageDiv.innerHTML = `
+              <div class="flex items-start gap-3 text-emerald-800">
+                <i class="fa-solid fa-check-circle text-lg"></i>
+                <div class="text-sm flex-1">
+                  <p class="font-semibold mb-2">✅ Password reset successfully!</p>
+                  
+                  <div class="bg-white border-2 border-emerald-300 rounded-lg p-3 mb-2">
+                    <p class="text-xs text-gray-600 mb-1">Temporary Password:</p>
+                    <div class="flex items-center gap-2">
+                      <code class="text-lg font-bold text-blue-600 flex-1" id="tempPasswordDisplay">${data.temporaryPassword}</code>
+                      <button onclick="copyTempPassword('${data.temporaryPassword}')" class="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white text-xs rounded-lg transition-all">
+                        <i class="fa-solid fa-copy"></i> Copy
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div class="bg-amber-50 border-l-4 border-amber-500 p-2 rounded-r-lg">
+                    <p class="text-xs text-amber-800 font-semibold mb-1">
+                      ⚠️ IMPORTANT: You must notify the user!
+                    </p>
+                    <p class="text-xs text-amber-700">
+                      Send this password to the user via email, SMS, or in person. 
+                      They will be required to change it on next login.
+                    </p>
+                  </div>
+                  
+                  ${data.emailSent ? `
+                    <div class="mt-2 flex items-center gap-2 text-xs text-emerald-700">
+                      <i class="fa-solid fa-envelope-circle-check"></i>
+                      <span>Email notification sent to user!</span>
+                    </div>
+                  ` : ''}
+                </div>
+              </div>
+            `;
+            messageDiv.classList.remove('hidden');
+            loadUsers();
+            
+            // Don't auto-close so admin can copy the password
+            // setTimeout(() => {
+            //   closeResetPasswordModal();
+            // }, 5000);
+          } else {
+            messageDiv.className = 'p-4 bg-red-50 border-l-4 border-red-500 rounded-r-xl';
+            messageDiv.innerHTML = `
+              <div class="flex items-center gap-3 text-red-800">
+                <i class="fa-solid fa-exclamation-circle text-lg"></i>
+                <span class="text-sm font-medium">${data.error || 'Failed to reset password'}</span>
+              </div>
+            `;
+            messageDiv.classList.remove('hidden');
+          }
+        } catch (error) {
+          console.error('Reset password error:', error);
+          messageDiv.className = 'p-4 bg-red-50 border-l-4 border-red-500 rounded-r-xl';
+          messageDiv.innerHTML = `
+            <div class="flex items-center gap-3 text-red-800">
+              <i class="fa-solid fa-exclamation-circle text-lg"></i>
+              <span class="text-sm font-medium">Error resetting password</span>
+            </div>
+          `;
+          messageDiv.classList.remove('hidden');
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = 'Reset Password';
+        }
+      });
+    }
+  });
+
+  // Delete User Function
+  window.deleteUser = async function(userId, userName) {
+    if (!confirm(`Are you sure you want to delete user "${userName}"? This action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch(`/api/users/${userId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        showNotification('User deleted successfully', 'success');
+        loadUsers();
+      } else {
+        showNotification(data.error || 'Failed to delete user', 'error');
+      }
+    } catch (error) {
+      console.error('Delete user error:', error);
+      showNotification('Error deleting user', 'error');
+    }
+  };
+
+  // ==========================================
+  // CHANGE PASSWORD FUNCTIONS
+  // ==========================================
+
+  // Toggle Password Visibility
+  window.togglePasswordVisibility = function(inputId) {
+    const input = document.getElementById(inputId);
+    const icon = input.nextElementSibling.querySelector('i');
+    
+    if (input.type === 'password') {
+      input.type = 'text';
+      icon.classList.remove('fa-eye');
+      icon.classList.add('fa-eye-slash');
+    } else {
+      input.type = 'password';
+      icon.classList.remove('fa-eye-slash');
+      icon.classList.add('fa-eye');
+    }
+  };
+
+  // Change Password Form Submit with Enhanced Validation
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('changePasswordForm');
+    if (form) {
+      // Real-time password strength indicator
+      const newPasswordInput = document.getElementById('newPassword');
+      if (newPasswordInput) {
+        newPasswordInput.addEventListener('input', function() {
+          updatePasswordStrengthIndicator(this.value);
+        });
+      }
+
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const currentPassword = document.getElementById('currentPassword').value;
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        const messageDiv = document.getElementById('changePasswordMessage');
+        const submitBtn = form.querySelector('button[type="submit"]');
+
+        // Enhanced Validation
+        if (newPassword !== confirmPassword) {
+          showChangePasswordError(messageDiv, 'New passwords do not match');
+          return;
+        }
+
+        if (newPassword.length < 8) {
+          showChangePasswordError(messageDiv, 'Password must be at least 8 characters long');
+          return;
+        }
+
+        // Check password strength
+        const hasUpperCase = /[A-Z]/.test(newPassword);
+        const hasLowerCase = /[a-z]/.test(newPassword);
+        const hasNumbers = /\d/.test(newPassword);
+
+        if (!hasUpperCase || !hasLowerCase || !hasNumbers) {
+          showChangePasswordError(messageDiv, 'Password must contain uppercase, lowercase, and numbers');
+          return;
+        }
+
+        // Check if same as current
+        if (currentPassword === newPassword) {
+          showChangePasswordError(messageDiv, 'New password must be different from current password');
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Changing Password...';
+
+        try {
+          const token = localStorage.getItem('adminToken');
+          const response = await fetch('/api/auth/change-password', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ currentPassword, newPassword })
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            messageDiv.className = 'p-4 bg-emerald-50 border-l-4 border-emerald-500 rounded-r-xl';
+            messageDiv.innerHTML = `
+              <div class="flex items-center gap-3 text-emerald-800">
+                <i class="fa-solid fa-check-circle text-lg"></i>
+                <div class="text-sm">
+                  <p class="font-semibold">Password changed successfully!</p>
+                  <p class="text-xs mt-1">Your password has been updated securely.</p>
+                </div>
+              </div>
+            `;
+            messageDiv.classList.remove('hidden');
+            form.reset();
+            
+            // Hide password strength indicator
+            const strengthIndicator = document.getElementById('passwordStrengthIndicator');
+            if (strengthIndicator) {
+              strengthIndicator.classList.add('hidden');
+            }
+          } else {
+            showChangePasswordError(messageDiv, data.error || 'Failed to change password');
+          }
+        } catch (error) {
+          console.error('Change password error:', error);
+          showChangePasswordError(messageDiv, 'Network error. Please try again.');
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="fa-solid fa-check"></i> Change Password';
+        }
+      });
+    }
+  });
+
+  // Helper function to show error messages
+  function showChangePasswordError(messageDiv, errorText) {
+    messageDiv.className = 'p-4 bg-red-50 border-l-4 border-red-500 rounded-r-xl';
+    messageDiv.innerHTML = `
+      <div class="flex items-center gap-3 text-red-800">
+        <i class="fa-solid fa-exclamation-circle text-lg"></i>
+        <span class="text-sm font-medium">${errorText}</span>
+      </div>
+    `;
+    messageDiv.classList.remove('hidden');
+  }
+
+  // Copy temporary password to clipboard
+  window.copyTempPassword = function(password) {
+    navigator.clipboard.writeText(password).then(() => {
+      // Show toast notification
+      const toast = document.createElement('div');
+      toast.className = 'fixed bottom-4 right-4 bg-emerald-600 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in-up';
+      toast.innerHTML = `
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-check-circle"></i>
+          <span class="font-medium">Password copied to clipboard!</span>
+        </div>
+      `;
+      document.body.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.remove();
+      }, 3000);
+    }).catch(err => {
+      console.error('Failed to copy:', err);
+      alert('Failed to copy password. Please copy manually.');
+    });
+  };
+
+  // Password strength indicator
+  function updatePasswordStrengthIndicator(password) {
+    const strengthIndicator = document.getElementById('passwordStrengthIndicator');
+    if (!strengthIndicator) return;
+
+    if (password.length === 0) {
+      strengthIndicator.classList.add('hidden');
+      return;
+    }
+
+    strengthIndicator.classList.remove('hidden');
+    
+    let strength = 0;
+    let strengthText = '';
+    let strengthColor = '';
+    let strengthWidth = '0%';
+
+    // Calculate strength
+    if (password.length >= 8) strength++;
+    if (password.length >= 12) strength++;
+    if (/[a-z]/.test(password)) strength++;
+    if (/[A-Z]/.test(password)) strength++;
+    if (/[0-9]/.test(password)) strength++;
+    if (/[^A-Za-z0-9]/.test(password)) strength++;
+
+    // Set strength level
+    if (strength <= 2) {
+      strengthText = 'Weak';
+      strengthColor = 'bg-red-500';
+      strengthWidth = '33%';
+    } else if (strength <= 4) {
+      strengthText = 'Medium';
+      strengthColor = 'bg-amber-500';
+      strengthWidth = '66%';
+    } else {
+      strengthText = 'Strong';
+      strengthColor = 'bg-emerald-500';
+      strengthWidth = '100%';
+    }
+
+    strengthIndicator.innerHTML = `
+      <div class="flex items-center justify-between mb-1">
+        <span class="text-xs font-semibold text-gray-600">Password Strength:</span>
+        <span class="text-xs font-bold ${strengthColor === 'bg-emerald-500' ? 'text-emerald-600' : strengthColor === 'bg-amber-500' ? 'text-amber-600' : 'text-red-600'}">${strengthText}</span>
+      </div>
+      <div class="w-full bg-gray-200 rounded-full h-2">
+        <div class="${strengthColor} h-2 rounded-full transition-all duration-300" style="width: ${strengthWidth}"></div>
+      </div>
+    `;
+  }
+
 })();

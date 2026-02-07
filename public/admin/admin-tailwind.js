@@ -21,6 +21,27 @@
     if (e.persisted && !getToken()) window.location.replace('/admin/login');
   });
 
+  // Check for forced password change on first login
+  window.addEventListener('DOMContentLoaded', function() {
+    const mustChangePassword = localStorage.getItem('mustChangePassword');
+    if (mustChangePassword === 'true') {
+      // Auto-navigate to change password section
+      setTimeout(() => {
+        // Show notification
+        toast('You must change your password before continuing', 'info');
+        
+        // Navigate to change password section
+        const changePasswordLink = document.querySelector('[data-section="change-password"]');
+        if (changePasswordLink) {
+          changePasswordLink.click();
+        }
+        
+        // Clear the flag after showing once
+        localStorage.removeItem('mustChangePassword');
+      }, 1000);
+    }
+  });
+
   // Toast with enhanced animations
   function toast(message, type) {
     type = type || 'success';

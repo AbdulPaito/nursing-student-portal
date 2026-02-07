@@ -5,7 +5,17 @@ const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  role: { type: String, default: 'admin' }
+  role: { 
+    type: String, 
+    enum: ['admin', 'superadmin'], 
+    default: 'admin' 
+  },
+  isFirstLogin: { type: Boolean, default: true },
+  mustChangePassword: { type: Boolean, default: false },
+  createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  // Password reset PIN
+  resetPasswordPIN: { type: String },
+  resetPasswordPINExpires: { type: Date }
 }, { timestamps: true });
 
 userSchema.pre('save', async function (next) {

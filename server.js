@@ -12,6 +12,7 @@ const musicRoutes = require('./routes/music');
 const statsRoutes = require('./routes/stats');
 const departmentInfoRoutes = require('./routes/departmentInfo');
 const coursesRoutes = require('./routes/courses');
+const usersRoutes = require('./routes/users');
 
 const app = express();
 const path = require('path');
@@ -127,6 +128,7 @@ function requireDb(req, res, next) {
 // API routes
 app.use('/api/auth', requireDb, authRoutes);
 app.use('/api/admin', requireDb, authRoutes);  // Alias for auth routes
+app.use('/api/users', requireDb, usersRoutes);
 app.use('/api/events', requireDb, eventsRoutes);
 app.use('/api/daily-subjects', requireDb, dailySubjectsRoutes);
 app.use('/api/announcements', requireDb, announcementsRoutes);

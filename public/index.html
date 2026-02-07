@@ -751,9 +751,9 @@
                 </div>
               </div>
               <div class="text-center">
-                <div class="bg-white/20 rounded-xl sm:rounded-2xl p-3 sm:p-4">
+                <div class="bg-white/30 rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-white/40">
                   <div class="text-2xl sm:text-3xl md:text-4xl font-bold mb-1">--</div>
-                  <div class="text-xs opacity-70 uppercase tracking-wider">Minutes</div>
+                  <div class="text-xs font-semibold uppercase tracking-wider">Minutes</div>
                 </div>
               </div>
               <div class="text-center">
@@ -981,7 +981,7 @@
             </div>
             <h2 class="text-2xl sm:text-3xl font-bold gradient-text">Today's Subjects</h2>
           </div>
-          <div id="todaySubjects" class="space-y-4">
+          <div id="todaySubjects" class="space-y-3">
             <div class="flex justify-center py-12">
               <div class="flex flex-col items-center gap-4">
                 <div class="w-16 h-16 rounded-2xl bg-emerald-100 flex items-center justify-center animate-pulse">
@@ -1286,6 +1286,151 @@
         <p style="text-align: center; color: #6b7280; font-size: 0.875rem; margin-bottom: 2rem;">
           <i class="fa-solid fa-info-circle mr-1"></i>Click on any card to view the full image
         </p>
+
+        <!-- Organization Chart Section -->
+        <div style="margin-top: 3rem; margin-bottom: 3rem;">
+          <div style="text-align: center; margin-bottom: 2rem;">
+            <h3 style="color: #0284c7; font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem;">
+              <i class="fa-solid fa-sitemap"></i> Organization Chart
+            </h3>
+            <p style="color: #6b7280; font-size: 1rem;">
+              College of Allied Health Sciences (CAHS) - Department Structure
+            </p>
+          </div>
+
+          <!-- Organization Chart Card -->
+          <div style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 1.5rem; overflow: hidden; border: 3px solid #0284c7; box-shadow: 0 8px 24px rgba(2, 132, 199, 0.2); max-width: 1000px; margin: 0 auto;">
+            
+            <!-- Chart Header -->
+            <div style="padding: 1.5rem; background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); text-align: center;">
+              <h4 style="color: white; font-size: 1.5rem; font-weight: 700; margin: 0;">
+                <i class="fa-solid fa-building-columns mr-2"></i>
+                CAHS Organizational Structure
+              </h4>
+            </div>
+
+            <!-- Organization Chart Visual -->
+            <div style="padding: 3rem 2rem; background: white;">
+              
+              <!-- Dean Level -->
+              <div style="text-align: center; margin-bottom: 2rem;">
+                <div style="display: inline-block; position: relative;">
+                  <div style="background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%); color: white; padding: 1.5rem 2.5rem; border-radius: 1rem; box-shadow: 0 4px 16px rgba(124, 58, 237, 0.3); min-width: 300px;">
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                      <i class="fa-solid fa-user-tie" style="font-size: 2rem;"></i>
+                      <div style="text-align: left;">
+                        <div style="font-size: 0.875rem; opacity: 0.9; font-weight: 500;">Dean</div>
+                        <div style="font-size: 1.25rem; font-weight: 700;">College of Allied Health Sciences</div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Connector Line Down -->
+                  <div style="position: absolute; left: 50%; bottom: -2rem; width: 3px; height: 2rem; background: linear-gradient(to bottom, #7c3aed, #0284c7); transform: translateX(-50%);"></div>
+                </div>
+              </div>
+
+              <!-- Department Heads Level -->
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2.5rem; position: relative; margin-top: 2rem;">
+                
+                <!-- Top Connector Line -->
+                <div style="position: absolute; top: -2rem; left: 10%; right: 10%; height: 2px; background: linear-gradient(to right, #0284c7, #10b981); display: none;"></div>
+
+                <!-- Nursing Department -->
+                <div style="position: relative;">
+                  <!-- Connector Line Up -->
+                  <div style="position: absolute; left: 50%; top: -2rem; width: 3px; height: 2rem; background: #0284c7; transform: translateX(-50%);"></div>
+                  
+                  <div style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: white; padding: 1.5rem; border-radius: 1rem; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3); text-align: center;">
+                    <div style="background: rgba(255,255,255,0.2); width: 4rem; height: 4rem; border-radius: 1rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+                      <i class="fa-solid fa-user-nurse" style="font-size: 2rem;"></i>
+                    </div>
+                    <div style="font-size: 0.75rem; opacity: 0.9; font-weight: 500; margin-bottom: 0.25rem;">Department Head</div>
+                    <div style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Nursing Department</div>
+                    <div style="font-size: 0.875rem; opacity: 0.9;">BSN Program</div>
+                  </div>
+
+                  <!-- Faculty Under Nursing -->
+                  <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(2, 132, 199, 0.05); border: 2px dashed #0284c7; border-radius: 0.75rem;">
+                    <div style="font-size: 0.875rem; font-weight: 600; color: #0369a1; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                      <i class="fa-solid fa-chalkboard-user"></i>
+                      Faculty Members
+                    </div>
+                    <ul style="font-size: 0.75rem; color: #0369a1; margin: 0; padding-left: 1.25rem; line-height: 1.6;">
+                      <li>Clinical Instructors</li>
+                      <li>Theoretical Instructors</li>
+                      <li>Research Coordinators</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <!-- Midwifery Department -->
+                <div style="position: relative;">
+                  <!-- Connector Line Up -->
+                  <div style="position: absolute; left: 50%; top: -2rem; width: 3px; height: 2rem; background: #10b981; transform: translateX(-50%);"></div>
+                  
+                  <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 1rem; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); text-align: center;">
+                    <div style="background: rgba(255,255,255,0.2); width: 4rem; height: 4rem; border-radius: 1rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+                      <i class="fa-solid fa-baby-carriage" style="font-size: 2rem;"></i>
+                    </div>
+                    <div style="font-size: 0.75rem; opacity: 0.9; font-weight: 500; margin-bottom: 0.25rem;">Department Head</div>
+                    <div style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Midwifery Department</div>
+                    <div style="font-size: 0.875rem; opacity: 0.9;">Midwifery Program</div>
+                  </div>
+
+                  <!-- Faculty Under Midwifery -->
+                  <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(16, 185, 129, 0.05); border: 2px dashed #10b981; border-radius: 0.75rem;">
+                    <div style="font-size: 0.875rem; font-weight: 600; color: #059669; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                      <i class="fa-solid fa-chalkboard-user"></i>
+                      Faculty Members
+                    </div>
+                    <ul style="font-size: 0.75rem; color: #059669; margin: 0; padding-left: 1.25rem; line-height: 1.6;">
+                      <li>Clinical Instructors</li>
+                      <li>Theoretical Instructors</li>
+                      <li>Community Health Coordinators</li>
+                    </ul>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Support Staff Section -->
+              <div style="margin-top: 3rem; padding: 1.5rem; background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 1rem; border: 2px solid #f59e0b;">
+                <div style="text-align: center; margin-bottom: 1rem;">
+                  <i class="fa-solid fa-users-gear" style="font-size: 1.5rem; color: #d97706;"></i>
+                  <h5 style="color: #d97706; font-size: 1.125rem; font-weight: 700; margin: 0.5rem 0;">Support Staff & Administrative Team</h5>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; text-align: center;">
+                  <div style="background: rgba(255,255,255,0.6); padding: 0.75rem; border-radius: 0.5rem;">
+                    <i class="fa-solid fa-clipboard-list" style="color: #d97706; margin-bottom: 0.25rem;"></i>
+                    <div style="font-size: 0.875rem; font-weight: 600; color: #92400e;">Administrative Staff</div>
+                  </div>
+                  <div style="background: rgba(255,255,255,0.6); padding: 0.75rem; border-radius: 0.5rem;">
+                    <i class="fa-solid fa-book-medical" style="color: #d97706; margin-bottom: 0.25rem;"></i>
+                    <div style="font-size: 0.875rem; font-weight: 600; color: #92400e;">Skills Lab Coordinators</div>
+                  </div>
+                  <div style="background: rgba(255,255,255,0.6); padding: 0.75rem; border-radius: 0.5rem;">
+                    <i class="fa-solid fa-flask" style="color: #d97706; margin-bottom: 0.25rem;"></i>
+                    <div style="font-size: 0.875rem; font-weight: 600; color: #92400e;">Laboratory Technicians</div>
+                  </div>
+                  <div style="background: rgba(255,255,255,0.6); padding: 0.75rem; border-radius: 0.5rem;">
+                    <i class="fa-solid fa-books" style="color: #d97706; margin-bottom: 0.25rem;"></i>
+                    <div style="font-size: 0.875rem; font-weight: 600; color: #92400e;">Library Staff</div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Chart Footer -->
+            <div style="padding: 1rem; background: rgba(2, 132, 199, 0.05); text-align: center; border-top: 2px solid #bfdbfe;">
+              <p style="color: #6b7280; font-size: 0.75rem; margin: 0;">
+                <i class="fa-solid fa-info-circle mr-1"></i>
+                This organizational structure represents the administrative hierarchy of CAHS
+              </p>
+            </div>
+
+          </div>
+        </div>
 
         <!-- Academic Programs Section -->
         <div class="modal-section" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-left-color: #f59e0b;">
