@@ -654,11 +654,137 @@
         hasEvent ? 'hover:scale-110' : ''
       ].filter(Boolean).join(' ');
       
-      html += `<span class="${classes}" title="${escapeHtml(tooltip)}">${d}</span>`;
+      const dateClickAttr = hasEvent ? `data-date="${dateStr}" data-events='${JSON.stringify(eventTitlesByDate[dateStr] || [])}'` : '';
+      html += `<span class="${classes}" title="${escapeHtml(tooltip)}" ${dateClickAttr}>${d}</span>`;
     }
     
     if (calendarGrid) calendarGrid.innerHTML = html;
+    
+    // Add click event listeners to calendar dates with events
+    setTimeout(function() {
+      const eventDates = calendarGrid.querySelectorAll('[data-date]');
+      eventDates.forEach(function(dateEl) {
+        dateEl.addEventListener('click', function() {
+          const date = this.getAttribute('data-date');
+          showEventModal(date, events);
+        });
+      });
+    }, 100);
   }).catch(function() {
     if (calendarGrid) calendarGrid.innerHTML = '<p class="text-sm text-gray-500 text-center col-span-7 py-4">Unable to load calendar.</p>';
+  });
+
+  // Event Modal Function
+  function showEventModal(dateStr, allEvents) {
+    const dateEvents = allEvents.filter(function(e) { return e.date === dateStr; });
+    if (!dateEvents.length) return;
+
+    const dateObj = new Date(dateStr + 'T00:00:00');
+    const formattedDate = dateObj.toLocaleDateString('en-US', { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+
+    let modalHTML = `
+      <div id="eventModal" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="background: rgba(0,0,0,0.7); animation: fadeIn 0.3s;">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden" style="animation: scaleIn 0.3s;">
+          <!-- Header -->
+          <div class="bg-gradient-to-r from-emerald-500 to-teal-500 p-6 text-white">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="text-2xl font-bold mb-1">
+                  <i class="fa-solid fa-calendar-day mr-2"></i>Events on ${formattedDate}
+                </h3>
+                <p class="text-emerald-100 text-sm">${dateEvents.length} Event${dateEvents.length > 1 ? 's' : ''} Scheduled</p>
+              </div>
+              <button onclick="closeEventModal()" class="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-all duration-200 hover:rotate-90">
+                <i class="fa-solid fa-xmark text-2xl"></i>
+              </button>
+            </div>
+          </div>
+          
+          <!-- Events List -->
+          <div class="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+            <div class="space-y-4">
+    `;
+
+    dateEvents.forEach(function(event, index) {
+      const timeDisplay = event.time ? `<i class="fa-solid fa-clock text-emerald-600"></i> ${event.time}` : '';
+      const locationDisplay = event.location ? `<i class="fa-solid fa-location-dot text-emerald-600"></i> ${escapeHtml(event.location)}` : '';
+      
+      modalHTML += `
+        <div class="glass rounded-2xl p-5 border-l-4 border-emerald-500 hover:shadow-lg transition-all duration-200">
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
+              ${index + 1}
+            </div>
+            <div class="flex-1">
+              <h4 class="text-xl font-bold text-gray-800 mb-2">${escapeHtml(event.title)}</h4>
+              
+              ${event.description ? `
+                <p class="text-gray-600 mb-3 leading-relaxed">${escapeHtml(event.description)}</p>
+              ` : ''}
+              
+              <div class="flex flex-wrap gap-3 text-sm text-gray-500">
+                ${timeDisplay ? `<span class="flex items-center gap-1">${timeDisplay}</span>` : ''}
+                ${locationDisplay ? `<span class="flex items-center gap-1">${locationDisplay}</span>` : ''}
+              </div>
+              
+              ${event.requirements ? `
+                <div class="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                  <p class="text-sm font-semibold text-amber-800 mb-1">
+                    <i class="fa-solid fa-clipboard-list mr-1"></i> What to Bring:
+                  </p>
+                  <p class="text-sm text-amber-700">${escapeHtml(event.requirements)}</p>
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        </div>
+      `;
+    });
+
+    modalHTML += `
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // Remove existing modal if any
+    const existingModal = document.getElementById('eventModal');
+    if (existingModal) existingModal.remove();
+
+    // Add modal to page
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    document.body.style.overflow = 'hidden';
+  }
+
+  // Close modal function
+  window.closeEventModal = function() {
+    const modal = document.getElementById('eventModal');
+    if (modal) {
+      modal.style.animation = 'fadeOut 0.3s';
+      setTimeout(function() {
+        modal.remove();
+        document.body.style.overflow = '';
+      }, 300);
+    }
+  };
+
+  // Close on background click
+  document.addEventListener('click', function(e) {
+    if (e.target && e.target.id === 'eventModal') {
+      closeEventModal();
+    }
+  });
+
+  // Close on Escape key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      closeEventModal();
+    }
   });
 })();
