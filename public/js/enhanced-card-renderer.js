@@ -191,6 +191,7 @@
   /**
    * Render Event Card
    * Shows: Day of Week, Event Title, Custom Name, Type, Time, Date, Location, Items
+   * Enhanced with better message handling and modern card design
    */
   window.renderEventCard = function(event) {
     const type = event.type || 'General';
@@ -201,97 +202,138 @@
     const dayOfWeek = getDayOfWeek(startDate);
     const displayName = event.customName || event.title;
     const isMultiDay = endDate && endDate !== startDate;
+    const description = event.description || '';
+    const isLongMessage = description.length > 120;
+    const shortDescription = isLongMessage ? description.substring(0, 120) + '...' : description;
+    const eventId = `event-${Math.random().toString(36).substr(2, 9)}`;
     
     return `
-      <div class="glass rounded-2xl border-l-4 ${config.border} p-5 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 animate-fade-in-up">
-        <!-- Day of Week Badge -->
-        <div class="flex items-center justify-between mb-3">
-          <span class="px-3 py-1 bg-gradient-to-r from-primary-500 to-secondary-500 text-white text-sm font-bold rounded-full shadow-sm">
+      <div class="group relative glass rounded-2xl border-l-4 ${config.border} p-4 hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 animate-fade-in-up overflow-hidden">
+        
+        <!-- Decorative gradient overlay -->
+        <div class="absolute top-0 right-0 w-24 h-24 ${config.bg} opacity-20 blur-3xl rounded-full -z-10 group-hover:opacity-40 transition-opacity duration-300"></div>
+        
+        <!-- Header: Day Badge & Type Badge -->
+        <div class="flex items-center justify-between gap-2 mb-3">
+          <span class="px-3 py-1.5 bg-gradient-to-r from-primary-600 to-secondary-600 text-white text-xs font-bold rounded-full shadow-md flex items-center gap-1.5">
+            <i class="fa-solid fa-calendar-day text-xs"></i>
             ${escapeHtml(dayOfWeek)}${isMultiDay ? ' <i class="fa-solid fa-arrow-right mx-1"></i>' + escapeHtml(getDayOfWeek(endDate)) : ''}
           </span>
-          <span class="px-3 py-1 ${config.badge} text-white text-xs font-bold rounded-full">
+          <span class="px-2.5 py-1 ${config.badge} text-white text-xs font-bold rounded-full shadow-md">
             ${escapeHtml(type)}
           </span>
         </div>
 
-        <!-- Event Information -->
-        <div class="mb-4">
-          <div class="flex items-start gap-3 mb-2">
-            <div class="flex-shrink-0 w-10 h-10 rounded-xl ${config.bg} flex items-center justify-center">
-              <i class="fa-solid ${config.icon} ${config.text} text-lg"></i>
+        <!-- Title Section -->
+        <div class="mb-3 bg-gradient-to-br from-blue-50 to-white rounded-lg p-3 border border-blue-200">
+          <p class="text-sm text-gray-700 leading-relaxed break-words">
+            <span class="font-bold text-gray-800">Title:</span> ${escapeHtml(event.title)}
+          </p>
+        </div>
+
+        <!-- Message Section -->
+        ${description ? `
+          <div class="mb-3 bg-gradient-to-br from-gray-50 to-white rounded-lg p-3 border border-gray-200">
+            <div id="${eventId}-short" class="${isLongMessage ? '' : 'hidden'}">
+              <p class="text-sm text-gray-700 leading-relaxed break-words whitespace-pre-wrap">
+                <span class="font-bold text-gray-800">Message:</span> ${escapeHtml(shortDescription)}
+              </p>
+              <button onclick="document.getElementById('${eventId}-short').classList.add('hidden'); document.getElementById('${eventId}-full').classList.remove('hidden')" 
+                      class="mt-2 text-xs font-semibold text-primary-600 hover:text-primary-700 flex items-center gap-1 transition-colors">
+                <i class="fa-solid fa-chevron-down"></i>
+                Read More
+              </button>
             </div>
-            <div class="flex-grow">
-              <!-- Event Title -->
-              <div class="mb-2">
-                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">
-                  <i class="fa-solid fa-flag mr-1"></i> Event Title
-                </p>
-                <h4 class="font-bold text-gray-800 text-lg">${escapeHtml(event.title)}</h4>
-              </div>
-              
-              ${event.customName ? `<p class="text-sm ${config.text} font-semibold">${escapeHtml(event.customName)}</p>` : ''}
-              
-              <!-- Message/Description -->
-              ${event.description ? `
-                <div class="mt-2">
-                  <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">
-                    <i class="fa-solid fa-message mr-1"></i> Message
-                  </p>
-                  <p class="text-sm text-gray-600">${escapeHtml(event.description)}</p>
-                </div>
+            <div id="${eventId}-full" class="${isLongMessage ? 'hidden' : ''}">
+              <p class="text-sm text-gray-700 leading-relaxed break-words whitespace-pre-wrap">
+                <span class="font-bold text-gray-800">Message:</span> ${escapeHtml(description)}
+              </p>
+              ${isLongMessage ? `
+                <button onclick="document.getElementById('${eventId}-full').classList.add('hidden'); document.getElementById('${eventId}-short').classList.remove('hidden')" 
+                        class="mt-2 text-xs font-semibold text-gray-500 hover:text-gray-700 flex items-center gap-1 transition-colors">
+                  <i class="fa-solid fa-chevron-up"></i>
+                  Show Less
+                </button>
               ` : ''}
             </div>
           </div>
-        </div>
+        ` : ''}
 
-        <!-- Details Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-          <div class="flex items-center gap-2 text-sm text-gray-600">
-            <i class="fa-solid fa-clock text-primary-600"></i>
-            <span><strong>Time:</strong> ${escapeHtml(formatTime(event.time))}</span>
-          </div>
-          
-          <div class="flex items-center gap-2 text-sm text-gray-600 ${isMultiDay ? 'col-span-full' : ''}">
-            <i class="fa-solid fa-calendar text-primary-600"></i>
-            <span><strong>Date:</strong> ${isMultiDay ? escapeHtml(formatDateRange(startDate, endDate)) : escapeHtml(startDate)}</span>
-          </div>
-          
-          ${event.location ? `
-            <div class="flex items-center gap-2 text-sm text-gray-600 col-span-full">
-              <i class="fa-solid fa-location-dot text-primary-600"></i>
-              <span><strong>Location:</strong> ${escapeHtml(event.location)}</span>
+        <!-- Event Details Grid - 2x2 Layout -->
+        <div class="bg-white/50 rounded-lg p-3 mb-3 border border-gray-100">
+          <div class="grid grid-cols-2 gap-3 text-xs">
+            <!-- Row 1: Time | Date -->
+            <!-- Time -->
+            <div class="flex items-center gap-2">
+              <div class="w-6 h-6 rounded-lg bg-primary-100 flex items-center justify-center flex-shrink-0">
+                <i class="fa-solid fa-clock text-primary-600 text-xs"></i>
+              </div>
+              <div class="min-w-0">
+                <span class="text-gray-500 font-medium block text-xs">Time</span>
+                <span class="text-gray-800 font-bold text-xs truncate block">${escapeHtml(formatTime(event.time))}</span>
+              </div>
             </div>
-          ` : ''}
-          
-          ${event.category ? `
-            <div class="flex items-center gap-2 text-sm text-gray-600 col-span-full">
-              <i class="fa-solid fa-tag text-primary-600"></i>
-              <span><strong>Category:</strong> ${escapeHtml(event.category)}</span>
+            
+            <!-- Date -->
+            <div class="flex items-center gap-2">
+              <div class="w-6 h-6 rounded-lg bg-secondary-100 flex items-center justify-center flex-shrink-0">
+                <i class="fa-solid fa-calendar text-secondary-600 text-xs"></i>
+              </div>
+              <div class="min-w-0">
+                <span class="text-gray-500 font-medium block text-xs">Date</span>
+                <span class="text-gray-800 font-bold text-xs truncate block">
+                  ${isMultiDay ? escapeHtml(formatDateRange(startDate, endDate)) : escapeHtml(startDate)}
+                </span>
+              </div>
             </div>
-          ` : ''}
+            
+            <!-- Row 2: Location | Category -->
+            <!-- Location -->
+            <div class="flex items-center gap-2">
+              <div class="w-6 h-6 rounded-lg bg-green-100 flex items-center justify-center flex-shrink-0">
+                <i class="fa-solid fa-location-dot text-green-600 text-xs"></i>
+              </div>
+              <div class="min-w-0">
+                <span class="text-gray-500 font-medium block text-xs">Location</span>
+                <span class="text-gray-800 font-bold text-xs truncate block">${escapeHtml(event.location || 'N/A')}</span>
+              </div>
+            </div>
+            
+            <!-- Category -->
+            <div class="flex items-center gap-2">
+              <div class="w-6 h-6 rounded-lg bg-purple-100 flex items-center justify-center flex-shrink-0">
+                <i class="fa-solid fa-tag text-purple-600 text-xs"></i>
+              </div>
+              <div class="min-w-0">
+                <span class="text-gray-500 font-medium block text-xs">Category</span>
+                <span class="text-gray-800 font-bold text-xs truncate block">${escapeHtml(event.category || 'General')}</span>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Items Needed Section -->
         ${hasItems ? `
-          <div class="bg-gradient-to-r from-gray-50 to-white rounded-xl p-4 border border-gray-200">
-            <p class="text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
-              <i class="fa-solid fa-list-check text-primary-600"></i>
-              Items Needed:
-            </p>
-            <ul class="space-y-2">
+          <div class="bg-gradient-to-br from-orange-50 to-amber-50 rounded-lg p-3 border border-orange-200">
+            <div class="flex items-center gap-1.5 mb-2">
+              <div class="w-6 h-6 rounded-lg bg-orange-500 flex items-center justify-center">
+                <i class="fa-solid fa-list-check text-white text-xs"></i>
+              </div>
+              <span class="text-xs font-bold text-orange-900">Items Needed</span>
+            </div>
+            <ul class="space-y-1.5">
               ${event.items.map(item => `
-                <li class="flex items-start gap-2 text-sm text-gray-700">
-                  <i class="fa-solid fa-circle-check text-green-600 text-xs mt-1 flex-shrink-0"></i>
-                  <span class="break-words">${escapeHtml(item)}</span>
+                <li class="flex items-start gap-2 text-xs text-gray-800">
+                  <i class="fa-solid fa-circle-check text-green-600 text-sm mt-0.5 flex-shrink-0"></i>
+                  <span class="break-words flex-1 leading-relaxed">${escapeHtml(item)}</span>
                 </li>
               `).join('')}
             </ul>
           </div>
-        ` : `
-          <div class="bg-gray-50 rounded-lg p-3 text-center">
-            <p class="text-xs text-gray-500"><i class="fa-solid fa-check-circle text-green-500 mr-1"></i>No items required</p>
-          </div>
-        `}
+        ` : ''}
+        
+        <!-- Bottom accent line -->
+        <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary-500 via-secondary-500 to-primary-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
       </div>
     `;
   };
@@ -319,29 +361,70 @@
           </span>
         </div>
 
-        <!-- Announcement Information -->
-        <div class="mb-4">
-          <div class="flex items-start gap-3 mb-2">
-            <div class="flex-shrink-0 w-10 h-10 rounded-xl ${config.bg} flex items-center justify-center">
-              <i class="fa-solid ${config.icon} ${config.text} text-lg"></i>
-            </div>
-            <div class="flex-grow">
-              <h4 class="font-bold text-gray-800 text-lg mb-1">${escapeHtml(announcement.title)}</h4>
-              <p class="text-sm text-gray-600 mt-2 leading-relaxed">${escapeHtml(announcement.message)}</p>
-            </div>
-          </div>
+        <!-- Title Section -->
+        <div class="mb-3 bg-gradient-to-br from-blue-50 to-white rounded-lg p-3 border border-blue-200">
+          <p class="text-sm text-gray-700 leading-relaxed break-words">
+            <span class="font-bold text-gray-800">Title:</span> ${escapeHtml(announcement.title)}
+          </p>
         </div>
 
-        <!-- Details Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-          <div class="flex items-center gap-2 text-sm text-gray-600">
-            <i class="fa-solid fa-clock text-primary-600"></i>
-            <span><strong>Time:</strong> ${escapeHtml(formatTime(announcement.time))}</span>
+        <!-- Message Section -->
+        ${announcement.message ? `
+          <div class="mb-3 bg-gradient-to-br from-gray-50 to-white rounded-lg p-3 border border-gray-200">
+            <p class="text-sm text-gray-700 leading-relaxed break-words whitespace-pre-wrap">
+              <span class="font-bold text-gray-800">Message:</span> ${escapeHtml(announcement.message)}
+            </p>
           </div>
-          
-          <div class="flex items-center gap-2 text-sm text-gray-600">
-            <i class="fa-solid fa-calendar text-primary-600"></i>
-            <span><strong>Date:</strong> ${escapeHtml(announcement.date)}</span>
+        ` : ''}
+
+        <!-- Details Grid - 2x2 Layout -->
+        <div class="bg-white/50 rounded-lg p-3 mb-4 border border-gray-100">
+          <div class="grid grid-cols-2 gap-3 text-xs">
+            <!-- Row 1: Time | Date -->
+            <!-- Time -->
+            <div class="flex items-center gap-2">
+              <div class="w-6 h-6 rounded-lg bg-primary-100 flex items-center justify-center flex-shrink-0">
+                <i class="fa-solid fa-clock text-primary-600 text-xs"></i>
+              </div>
+              <div class="min-w-0">
+                <span class="text-gray-500 font-medium block text-xs">Time</span>
+                <span class="text-gray-800 font-bold text-xs truncate block">${escapeHtml(formatTime(announcement.time))}</span>
+              </div>
+            </div>
+            
+            <!-- Date -->
+            <div class="flex items-center gap-2">
+              <div class="w-6 h-6 rounded-lg bg-secondary-100 flex items-center justify-center flex-shrink-0">
+                <i class="fa-solid fa-calendar text-secondary-600 text-xs"></i>
+              </div>
+              <div class="min-w-0">
+                <span class="text-gray-500 font-medium block text-xs">Date</span>
+                <span class="text-gray-800 font-bold text-xs truncate block">${escapeHtml(announcement.date)}</span>
+              </div>
+            </div>
+            
+            <!-- Row 2: Location | Category -->
+            <!-- Location -->
+            <div class="flex items-center gap-2">
+              <div class="w-6 h-6 rounded-lg bg-green-100 flex items-center justify-center flex-shrink-0">
+                <i class="fa-solid fa-location-dot text-green-600 text-xs"></i>
+              </div>
+              <div class="min-w-0">
+                <span class="text-gray-500 font-medium block text-xs">Location</span>
+                <span class="text-gray-800 font-bold text-xs truncate block">${escapeHtml(announcement.location || 'N/A')}</span>
+              </div>
+            </div>
+            
+            <!-- Category -->
+            <div class="flex items-center gap-2">
+              <div class="w-6 h-6 rounded-lg bg-purple-100 flex items-center justify-center flex-shrink-0">
+                <i class="fa-solid fa-tag text-purple-600 text-xs"></i>
+              </div>
+              <div class="min-w-0">
+                <span class="text-gray-500 font-medium block text-xs">Category</span>
+                <span class="text-gray-800 font-bold text-xs truncate block">${escapeHtml(announcement.category || announcement.type || 'General')}</span>
+              </div>
+            </div>
           </div>
         </div>
 
