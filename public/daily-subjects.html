@@ -366,6 +366,9 @@
       <!-- Day Tabs -->
       <div class="mb-6 overflow-x-auto pb-2">
         <div class="flex gap-2 min-w-max" id="dayTabs">
+          <button class="day-tab px-5 py-3 rounded-xl text-sm font-semibold bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition-all duration-300" data-day="All">
+            <i class="fa-solid fa-calendar-days mr-1"></i>All
+          </button>
           <button class="day-tab px-5 py-3 rounded-xl text-sm font-semibold bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition-all duration-300" data-day="Monday">Monday</button>
           <button class="day-tab px-5 py-3 rounded-xl text-sm font-semibold bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition-all duration-300" data-day="Tuesday">Tuesday</button>
           <button class="day-tab px-5 py-3 rounded-xl text-sm font-semibold bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition-all duration-300" data-day="Wednesday">Wednesday</button>
@@ -383,6 +386,7 @@
               <tr>
                 <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Subject Code</th>
                 <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Subject Name</th>
+                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Section</th>
                 <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Type</th>
                 <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Start Time</th>
                 <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">End Time</th>
@@ -506,7 +510,7 @@
 
       const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
       let dataByDay = {};
-      let currentDay = 'Monday';
+      let currentDay = 'All';
 
       const typeConfig = {
         theory: { 
@@ -541,16 +545,26 @@
 
       function renderDay(day) {
         const tbody = document.getElementById('subjectsContent');
-        const subjects = dataByDay[day] || [];
+        let subjects = [];
+        
+        // If "All" is selected, combine all days
+        if (day === 'All') {
+          days.forEach(d => {
+            const daySubjects = (dataByDay[d] || []).map(s => ({...s, dayOfWeek: d}));
+            subjects = subjects.concat(daySubjects);
+          });
+        } else {
+          subjects = dataByDay[day] || [];
+        }
         
         if (!subjects.length) {
           tbody.innerHTML = `
             <tr>
-              <td colspan="8" class="px-6 py-12 text-center">
+              <td colspan="9" class="px-6 py-12 text-center">
                 <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gray-100 mb-4">
                   <i class="fa-solid fa-calendar-xmark text-2xl text-gray-400"></i>
                 </div>
-                <p class="text-gray-500 font-medium">No subjects scheduled for ${day}</p>
+                <p class="text-gray-500 font-medium">No subjects scheduled ${day === 'All' ? 'this week' : 'for ' + day}</p>
               </td>
             </tr>
           `;
@@ -571,13 +585,19 @@
             typeBadge = `<span class="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-semibold">${escapeHtml(type)}</span>`;
           }
           
+          // Add day badge if showing "All"
+          const dayBadge = subject.dayOfWeek ? `<span class="px-2 py-1 rounded-md bg-emerald-100 text-emerald-700 text-xs font-semibold mr-2">${subject.dayOfWeek}</span>` : '';
+          
           return `
             <tr class="hover:bg-gray-50 transition-colors">
               <td class="px-6 py-4">
-                <span class="font-mono font-semibold text-primary-600">${escapeHtml(subject.code || subject.name)}</span>
+                ${dayBadge}<span class="font-mono font-semibold text-primary-600">${escapeHtml(subject.code || subject.name)}</span>
               </td>
               <td class="px-6 py-4">
                 <span class="font-medium text-gray-800">${escapeHtml(subject.name || subject.customName || '')}</span>
+              </td>
+              <td class="px-6 py-4">
+                <span class="px-2 py-1 rounded-md bg-indigo-100 text-indigo-700 text-xs font-semibold">${escapeHtml(subject.section || '—')}</span>
               </td>
               <td class="px-6 py-4">
                 ${typeBadge}
@@ -621,17 +641,6 @@
         });
       });
 
-      // Load today's day initially
-      const today = new Date();
-      const todayDayIndex = today.getDay();
-      const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-      let todayDayName = dayNames[todayDayIndex];
-      
-      // If today is Sunday, default to Monday
-      if (todayDayName === 'Sunday') {
-        todayDayName = 'Monday';
-      }
-
       // Load data
       fetch('/api/daily-subjects').then(r => r.json()).then(list => {
         list.forEach(doc => { 
@@ -643,7 +652,8 @@
           if (!dataByDay[day]) dataByDay[day] = [];
         });
         
-        setActiveTab(todayDayName);
+        // Set default to "All"
+        setActiveTab('All');
       }).catch(() => {
         document.getElementById('subjectsContent').innerHTML = `
           <tr>

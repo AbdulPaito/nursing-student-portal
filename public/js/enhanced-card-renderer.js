@@ -126,41 +126,75 @@
           </span>
         </div>
 
-        <!-- Subject Information -->
-        <div class="mb-4">
-          <div class="flex items-start gap-3 mb-2">
-            <div class="flex-shrink-0 w-10 h-10 rounded-xl ${config.bg} flex items-center justify-center">
-              <i class="fa-solid ${config.icon} ${config.text} text-lg"></i>
-            </div>
-            <div class="flex-grow">
-              <h4 class="font-bold text-gray-800 text-lg mb-1">${escapeHtml(subject.name)}</h4>
-              ${subject.customName ? `<p class="text-sm ${config.text} font-semibold">${escapeHtml(subject.customName)}</p>` : ''}
-            </div>
-          </div>
+        <!-- Subject Name Section -->
+        <div class="mb-3 bg-gradient-to-br from-blue-50 to-white rounded-lg p-3 border border-blue-200">
+          <p class="text-sm text-gray-700 leading-relaxed break-words">
+            <span class="font-bold text-gray-800">Subject:</span> ${escapeHtml(subject.name)}
+          </p>
         </div>
 
-        <!-- Details Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-          ${subject.time ? `
-            <div class="flex items-center gap-2 text-sm text-gray-600">
-              <i class="fa-solid fa-clock text-primary-600"></i>
-              <span><strong>Time:</strong> ${escapeHtml(formatTime(subject.time))}</span>
-            </div>
-          ` : ''}
-          
-          ${subject.date ? `
-            <div class="flex items-center gap-2 text-sm text-gray-600">
-              <i class="fa-solid fa-calendar text-primary-600"></i>
-              <span><strong>Date:</strong> ${escapeHtml(subject.date)}</span>
-            </div>
-          ` : ''}
-          
-          ${subject.location ? `
-            <div class="flex items-center gap-2 text-sm text-gray-600 col-span-full">
-              <i class="fa-solid fa-location-dot text-primary-600"></i>
-              <span><strong>Location:</strong> ${escapeHtml(subject.location)}</span>
-            </div>
-          ` : ''}
+        <!-- Custom Name/Description Section -->
+        ${subject.customName ? `
+          <div class="mb-3 bg-gradient-to-br from-gray-50 to-white rounded-lg p-3 border border-gray-200">
+            <p class="text-sm text-gray-700 leading-relaxed break-words">
+              <span class="font-bold text-gray-800">Description:</span> ${escapeHtml(subject.customName)}
+            </p>
+          </div>
+        ` : ''}
+
+        <!-- Details Grid - 2x2 Layout -->
+        <div class="bg-white/50 rounded-lg p-3 mb-3 border border-gray-100">
+          <div class="grid grid-cols-2 gap-3 text-xs">
+            <!-- Row 1: Time | Date -->
+            ${subject.time ? `
+              <div class="flex items-center gap-2">
+                <div class="w-6 h-6 rounded-lg bg-primary-100 flex items-center justify-center flex-shrink-0">
+                  <i class="fa-solid fa-clock text-primary-600 text-xs"></i>
+                </div>
+                <div class="min-w-0">
+                  <span class="text-gray-500 font-medium block text-xs">Time</span>
+                  <span class="text-gray-800 font-bold text-xs truncate block">${escapeHtml(formatTime(subject.time))}</span>
+                </div>
+              </div>
+            ` : ''}
+            
+            ${subject.date ? `
+              <div class="flex items-center gap-2">
+                <div class="w-6 h-6 rounded-lg bg-secondary-100 flex items-center justify-center flex-shrink-0">
+                  <i class="fa-solid fa-calendar text-secondary-600 text-xs"></i>
+                </div>
+                <div class="min-w-0">
+                  <span class="text-gray-500 font-medium block text-xs">Date</span>
+                  <span class="text-gray-800 font-bold text-xs truncate block">${escapeHtml(subject.date)}</span>
+                </div>
+              </div>
+            ` : ''}
+            
+            <!-- Row 2: Location | Instructor -->
+            ${subject.location || subject.room ? `
+              <div class="flex items-center gap-2">
+                <div class="w-6 h-6 rounded-lg bg-green-100 flex items-center justify-center flex-shrink-0">
+                  <i class="fa-solid fa-location-dot text-green-600 text-xs"></i>
+                </div>
+                <div class="min-w-0">
+                  <span class="text-gray-500 font-medium block text-xs">Location</span>
+                  <span class="text-gray-800 font-bold text-xs truncate block">${escapeHtml(subject.location || subject.room)}</span>
+                </div>
+              </div>
+            ` : ''}
+            
+            ${subject.instructor ? `
+              <div class="flex items-center gap-2">
+                <div class="w-6 h-6 rounded-lg bg-purple-100 flex items-center justify-center flex-shrink-0">
+                  <i class="fa-solid fa-chalkboard-user text-purple-600 text-xs"></i>
+                </div>
+                <div class="min-w-0">
+                  <span class="text-gray-500 font-medium block text-xs">Instructor</span>
+                  <span class="text-gray-800 font-bold text-xs truncate block">${escapeHtml(subject.instructor)}</span>
+                </div>
+              </div>
+            ` : ''}
+          </div>
         </div>
 
         <!-- Items Needed Section -->
@@ -469,7 +503,30 @@
               <span class="text-sm font-bold text-gray-800 truncate">${escapeHtml(subject.name)}</span>
             </div>
             ${subject.customName ? `<p class="text-xs ${config.text} font-semibold mb-1 truncate">${escapeHtml(subject.customName)}</p>` : ''}
-            ${subject.time ? `<p class="text-xs text-gray-500"><i class="fa-solid fa-clock mr-1 text-primary-600"></i>${escapeHtml(formatTime(subject.time))}</p>` : ''}
+            
+            <!-- Time and Teacher Info -->
+            <div class="space-y-1 mt-2 bg-gray-50 rounded-lg p-2 border border-gray-200">
+              ${subject.time ? `
+                <p class="text-xs text-gray-600 flex items-center gap-1">
+                  <i class="fa-solid fa-clock text-primary-600"></i>
+                  <span><span class="font-bold text-gray-700">Time:</span> ${escapeHtml(formatTime(subject.time))}</span>
+                </p>
+              ` : ''}
+              
+              ${subject.instructor ? `
+                <p class="text-xs text-gray-600 flex items-center gap-1">
+                  <i class="fa-solid fa-chalkboard-user text-emerald-600"></i>
+                  <span><span class="font-bold text-gray-700">Teacher:</span> ${escapeHtml(subject.instructor)}</span>
+                </p>
+              ` : ''}
+              
+              ${subject.location || subject.room ? `
+                <p class="text-xs text-gray-600 flex items-center gap-1">
+                  <i class="fa-solid fa-location-dot text-purple-600"></i>
+                  <span><span class="font-bold text-gray-700">Location:</span> ${escapeHtml(subject.location || subject.room)}</span>
+                </p>
+              ` : ''}
+            </div>
             
             ${hasItems ? `
               <details class="mt-2 pt-2 border-t border-gray-200">

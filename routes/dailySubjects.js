@@ -93,7 +93,7 @@ router.delete('/:id', auth, async (req, res) => {
 router.post('/:day', auth, async (req, res) => {
   try {
     const day = req.params.day;
-    const { code, name, type, startTime, endTime, room, instructor, date } = req.body;
+    const { code, name, section, type, startTime, endTime, room, instructor, date } = req.body;
 
     if (!name || !startTime || !endTime) {
       return res.status(400).json({ success: false, error: 'Name, start time, and end time are required.' });
@@ -104,6 +104,7 @@ router.post('/:day', auth, async (req, res) => {
     const subjectData = {
       name: name,
       code: code || '',
+      section: section || '',
       customName: '',
       type: type || '',
       time: startTime,

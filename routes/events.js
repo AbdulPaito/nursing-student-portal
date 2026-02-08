@@ -18,8 +18,13 @@ router.get('/', async (req, res) => {
 router.get('/upcoming', async (req, res) => {
   try {
     const today = new Date().toISOString().split('T')[0];
-    const events = await Event.find({ date: { $gte: today } }).sort({ date: 1, time: 1 });
-    res.json(events);
+    // Filter events where endDate (or date/startDate if no endDate) is >= today
+    const events = await Event.find().sort({ startDate: 1, date: 1, time: 1 });
+    const upcomingEvents = events.filter(event => {
+      const endDate = event.endDate || event.startDate || event.date;
+      return endDate >= today;
+    });
+    res.json(upcomingEvents);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

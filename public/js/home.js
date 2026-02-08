@@ -139,9 +139,14 @@
     renderAnnouncements(list);
   }).catch(function() {});
 
-  // Events: cards with shadow, icon, per-card countdown
-  var upcomingEventsEl = document.getElementById('upcomingEvents');
-  var eventsList = [];
+  // Events: carousel with auto-play
+  var eventsCarouselTrack = document.getElementById('eventsCarouselTrack');
+  var eventsIndicators = document.getElementById('eventsIndicators');
+  var eventsPrev = document.getElementById('eventsPrev');
+  var eventsNext = document.getElementById('eventsNext');
+  var eventIndex = 0;
+  var eventSlides = [];
+  var eventInterval;
 
   function updateEventCountdowns() {
     var now = new Date();
@@ -154,45 +159,117 @@
     });
   }
 
-  fetch('/api/events/upcoming').then(function(r) { return r.json(); }).then(function(events) {
-    eventsList = events;
-    if (!events.length) {
-      upcomingEventsEl.innerHTML = '<div class="col-12"><p class="text-muted">No upcoming events.</p></div>';
+  function renderEventsCarousel(events) {
+    // Filter out past events on client-side as well
+    var today = new Date().toISOString().split('T')[0];
+    var upcomingEvents = events.filter(function(e) {
+      var endDate = e.endDate || e.startDate || e.date;
+      return endDate >= today;
+    });
+
+    if (!upcomingEvents.length) {
+      eventsCarouselTrack.innerHTML = '<div class="flex-shrink-0 w-full"><div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6"><div class="col-span-full text-center py-16"><p class="text-gray-500">No upcoming events.</p></div></div></div>';
       return;
     }
-    var show = events.slice(0, 4);
-    upcomingEventsEl.innerHTML = show.map(function(e) {
-      var icon = getEventTypeIcon(e.title);
-      var itemsArr = e.items && Array.isArray(e.items) ? e.items : [];
-      var itemsHtml = '<p class="mb-1"><strong>Items to Bring:</strong></p>' + (itemsArr.length ? '<ul class="list-items mb-0 small"><li>' + itemsArr.map(function(i) { return escapeHtml(i); }).join('</li><li>') + '</li></ul>' : '<p class="mb-0 small text-muted">No items required.</p>');
-      var startDate = e.startDate || e.date;
-      var endDate = e.endDate;
-      var dateDisplay = startDate;
-      if (endDate && endDate !== startDate) {
-        dateDisplay = startDate + ' to ' + endDate;
-      }
-      return (
-        '<div class="col-12 col-md-6">' +
-          '<div class="card card-event h-100">' +
-            '<div class="card-header card-event-header d-flex align-items-center">' +
-              '<i class="bi ' + icon + ' me-2 event-type-icon"></i>' +
-              '<span>' + escapeHtml(e.title) + '</span>' +
-            '</div>' +
-            '<div class="card-body">' +
-              '<p class="mb-1"><i class="bi bi-calendar3 me-1 text-muted"></i>' + escapeHtml(dateDisplay) + '</p>' +
-              '<p class="mb-1"><i class="bi bi-clock me-1 text-muted"></i>' + escapeHtml(e.time) + '</p>' +
-              '<p class="mb-1"><i class="bi bi-geo-alt me-1 text-muted"></i>' + escapeHtml(e.location || '—') + '</p>' +
-              '<div class="mt-1">' + itemsHtml + '</div>' +
-              '<div class="event-countdown small fw-bold text-primary" data-date="' + escapeHtml(startDate) + '" data-time="' + escapeHtml(e.time || '') + '" data-title="' + escapeHtml(e.title) + '">' + formatCountdown(startDate, e.time) + '</div>' +
-            '</div>' +
-          '</div>' +
-        '</div>'
-      );
+
+    // Split events into groups of 4
+    var chunks = [];
+    for (var i = 0; i < upcomingEvents.length; i += 4) {
+      chunks.push(upcomingEvents.slice(i, i + 4));
+    }
+
+    eventSlides = chunks;
+    var slidesHtml = chunks.map(function(chunk) {
+      var cardsHtml = chunk.map(function(e) {
+        // Use renderEventCard from enhanced-card-renderer.js
+        if (typeof window.renderEventCard === 'function') {
+          return window.renderEventCard(e);
+        }
+        // Fallback rendering if renderEventCard not loaded yet
+        return '<div class="p-4 glass rounded-lg"><h3 class="font-bold">' + escapeHtml(e.title) + '</h3><p class="text-sm text-gray-600">' + escapeHtml(e.date || e.startDate) + '</p></div>';
+      }).join('');
+      
+      return '<div class="flex-shrink-0 w-full"><div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">' + cardsHtml + '</div></div>';
     }).join('');
+
+    eventsCarouselTrack.innerHTML = slidesHtml;
+    
+    // Create indicators
+    if (chunks.length > 1) {
+      eventsIndicators.innerHTML = chunks.map(function(_, idx) {
+        return '<button class="w-2 h-2 rounded-full transition-all duration-300 ' + (idx === 0 ? 'bg-primary-600 w-6' : 'bg-gray-300 hover:bg-gray-400') + '" data-slide="' + idx + '"></button>';
+      }).join('');
+      
+      eventsIndicators.querySelectorAll('button').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          eventIndex = parseInt(this.getAttribute('data-slide'));
+          updateEventsCarouselPosition();
+          resetEventInterval();
+        });
+      });
+    } else {
+      eventsIndicators.innerHTML = '';
+    }
+
+    eventIndex = 0;
+    updateEventsCarouselPosition();
+    
+    // Start auto-play
+    if (chunks.length > 1) {
+      eventInterval = setInterval(function() {
+        eventIndex = (eventIndex + 1) % eventSlides.length;
+        updateEventsCarouselPosition();
+      }, 5000);
+    }
+    
     setInterval(updateEventCountdowns, 60000);
     updateNextEventBanner(events[0]);
+  }
+
+  function updateEventsCarouselPosition() {
+    if (!eventSlides.length) return;
+    eventIndex = (eventIndex + eventSlides.length) % eventSlides.length;
+    var translatePct = eventIndex * 100;
+    eventsCarouselTrack.style.transform = 'translateX(-' + translatePct + '%)';
+    
+    // Update indicators
+    eventsIndicators.querySelectorAll('button').forEach(function(btn, idx) {
+      if (idx === eventIndex) {
+        btn.classList.remove('bg-gray-300', 'w-2');
+        btn.classList.add('bg-primary-600', 'w-6');
+      } else {
+        btn.classList.remove('bg-primary-600', 'w-6');
+        btn.classList.add('bg-gray-300', 'w-2');
+      }
+    });
+  }
+
+  function resetEventInterval() {
+    if (eventInterval) clearInterval(eventInterval);
+    if (eventSlides.length > 1) {
+      eventInterval = setInterval(function() {
+        eventIndex = (eventIndex + 1) % eventSlides.length;
+        updateEventsCarouselPosition();
+      }, 5000);
+    }
+  }
+
+  if (eventsPrev) eventsPrev.addEventListener('click', function() {
+    eventIndex = (eventIndex - 1 + eventSlides.length) % Math.max(1, eventSlides.length);
+    updateEventsCarouselPosition();
+    resetEventInterval();
+  });
+
+  if (eventsNext) eventsNext.addEventListener('click', function() {
+    eventIndex = (eventIndex + 1) % Math.max(1, eventSlides.length);
+    updateEventsCarouselPosition();
+    resetEventInterval();
+  });
+
+  fetch('/api/events/upcoming').then(function(r) { return r.json(); }).then(function(events) {
+    renderEventsCarousel(events);
   }).catch(function() {
-    if (upcomingEventsEl) upcomingEventsEl.innerHTML = '<div class="col-12"><p class="text-muted">Could not load events.</p></div>';
+    if (eventsCarouselTrack) eventsCarouselTrack.innerHTML = '<div class="flex-shrink-0 w-full"><div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6"><div class="col-span-full text-center py-16"><p class="text-gray-500">Could not load events.</p></div></div></div>';
   });
 
   // Next event banner

@@ -946,17 +946,30 @@
     const scheduleTab = document.getElementById('adminScheduleTab');
     const catalogSection = document.getElementById('adminCatalogSection');
     const scheduleSection = document.getElementById('adminScheduleSection');
+    const addCourseBtn = document.getElementById('addCourseBtn');
+    const addDailySubjectBtn = document.getElementById('addDailySubjectBtn');
+    const dayTabsContainer = document.getElementById('adminDayTabsContainer');
     
     if (tab === 'catalog') {
       catalogTab.className = 'admin-main-tab px-6 py-3 rounded-xl text-sm font-bold transition-all duration-300 bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-md';
       scheduleTab.className = 'admin-main-tab px-6 py-3 rounded-xl text-sm font-bold transition-all duration-300 bg-white text-gray-600 hover:bg-gray-50';
       catalogSection.classList.remove('hidden');
       scheduleSection.classList.add('hidden');
+      // Show Add Course button, hide Add Daily Subject button
+      if (addCourseBtn) addCourseBtn.classList.remove('hidden');
+      if (addDailySubjectBtn) addDailySubjectBtn.classList.add('hidden');
+      // Hide day tabs
+      if (dayTabsContainer) dayTabsContainer.classList.add('hidden');
     } else if (tab === 'schedule') {
       scheduleTab.className = 'admin-main-tab px-6 py-3 rounded-xl text-sm font-bold transition-all duration-300 bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-md';
       catalogTab.className = 'admin-main-tab px-6 py-3 rounded-xl text-sm font-bold transition-all duration-300 bg-white text-gray-600 hover:bg-gray-50';
       scheduleSection.classList.remove('hidden');
       catalogSection.classList.add('hidden');
+      // Hide Add Course button, show Add Daily Subject button
+      if (addCourseBtn) addCourseBtn.classList.add('hidden');
+      if (addDailySubjectBtn) addDailySubjectBtn.classList.remove('hidden');
+      // Show day tabs
+      if (dayTabsContainer) dayTabsContainer.classList.remove('hidden');
       // Load daily subjects when switching to schedule tab
       if (!window.dailySubjectsLoaded) {
         loadDailySubjects();
@@ -968,7 +981,7 @@
   // Daily Subjects Management
   // ====================
   let dailySubjectsData = {};
-  let currentDay = 'Monday';
+  let currentDay = 'All';
   window.dailySubjectsLoaded = false;
 
   // Switch day tab
@@ -988,9 +1001,10 @@
   window.openDailySubjectModal = function() {
     document.getElementById('dailySubjectModalTitle').textContent = 'Add Daily Subject';
     document.getElementById('dailySubjectId').value = '';
-    document.getElementById('dailySubjectDay').value = currentDay;
+    document.getElementById('dailySubjectDay').value = currentDay === 'All' ? 'Monday' : currentDay;
     document.getElementById('dailySubjectCode').value = '';
     document.getElementById('dailySubjectName').value = '';
+    document.getElementById('dailySubjectSection').value = '';
     document.getElementById('dailySubjectType').value = '';
     document.getElementById('dailySubjectTypeCustom').value = '';
     document.getElementById('dailySubjectTypeCustom').classList.add('hidden');
@@ -1056,6 +1070,7 @@
     const subjectId = document.getElementById('dailySubjectId').value; // Check if editing
     const code = document.getElementById('dailySubjectCode').value.trim();
     const name = document.getElementById('dailySubjectName').value.trim();
+    const section = document.getElementById('dailySubjectSection').value.trim();
     const typeSelect = document.getElementById('dailySubjectType').value;
     const typeCustom = document.getElementById('dailySubjectTypeCustom').value.trim();
     const type = typeSelect === 'Other' ? typeCustom : typeSelect;
@@ -1064,7 +1079,7 @@
     const date = document.getElementById('dailySubjectDate').value;
     const room = document.getElementById('dailySubjectRoom').value.trim();
     const instructor = document.getElementById('dailySubjectInstructor').value.trim();
-    const day = document.getElementById('dailySubjectDay').value || currentDay;
+    const day = document.getElementById('dailySubjectDay').value || (currentDay === 'All' ? 'Monday' : currentDay);
 
     console.log('Saving subject to day:', day); // Debug
     console.log('Current day:', currentDay); // Debug
@@ -1088,6 +1103,7 @@
       const subjectData = {
         code: code,
         name: name,
+        section: section,
         type: type,
         startTime: startTime,
         endTime: endTime,
@@ -1141,8 +1157,8 @@
 
       window.dailySubjectsLoaded = true;
       
-      // Set Monday as default active tab
-      switchAdminDay('Monday');
+      // Set All as default active tab
+      switchAdminDay('All');
     } catch (err) {
       console.error('Error loading daily subjects:', err);
       toast('Error loading daily subjects', 'error');
@@ -1152,16 +1168,27 @@
   // Render daily subjects table
   function renderDailySubjects(day) {
     const tbody = document.getElementById('dailyScheduleTableBody');
-    const subjects = dailySubjectsData[day] || [];
+    let subjects = [];
+    
+    // If "All" is selected, combine all days
+    if (day === 'All') {
+      const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      days.forEach(d => {
+        const daySubjects = (dailySubjectsData[d] || []).map(s => ({...s, dayOfWeek: d, originalDay: d}));
+        subjects = subjects.concat(daySubjects);
+      });
+    } else {
+      subjects = dailySubjectsData[day] || [];
+    }
 
     if (!subjects.length) {
       tbody.innerHTML = `
         <tr>
-          <td colspan="9" class="px-6 py-12 text-center">
+          <td colspan="10" class="px-6 py-12 text-center">
             <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gray-100 mb-4">
               <i class="fa-solid fa-calendar-xmark text-2xl text-gray-400"></i>
             </div>
-            <p class="text-gray-500 font-medium">No subjects scheduled for ${day}</p>
+            <p class="text-gray-500 font-medium">No subjects scheduled ${day === 'All' ? 'this week' : 'for ' + day}</p>
           </td>
         </tr>
       `;
@@ -1182,13 +1209,20 @@
         typeBadge = `<span class="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-semibold">${escapeHtml(type)}</span>`;
       }
       
+      // Add day badge if showing "All"
+      const dayBadge = subject.dayOfWeek ? `<span class="px-2 py-1 rounded-md bg-emerald-100 text-emerald-700 text-xs font-semibold mr-2">${subject.dayOfWeek}</span>` : '';
+      const actualDay = subject.originalDay || day;
+      
       return `
         <tr class="hover:bg-gray-50 transition-colors">
           <td class="px-6 py-4">
-            <span class="font-mono font-semibold text-primary-600">${escapeHtml(subject.code || subject.name)}</span>
+            ${dayBadge}<span class="font-mono font-semibold text-primary-600">${escapeHtml(subject.code || subject.name)}</span>
           </td>
           <td class="px-6 py-4">
             <span class="font-medium text-gray-800">${escapeHtml(subject.name || subject.customName || '')}</span>
+          </td>
+          <td class="px-6 py-4">
+            ${subject.section ? `<span class="px-2 py-1 rounded-md bg-indigo-100 text-indigo-700 text-xs font-semibold">${escapeHtml(subject.section)}</span>` : '<span class="text-gray-400 text-sm">—</span>'}
           </td>
           <td class="px-6 py-4">
             ${typeBadge}
@@ -1210,10 +1244,10 @@
           </td>
           <td class="px-6 py-4">
             <div class="flex gap-2">
-              <button onclick="editDailySubject('${day}', ${index})" class="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-1">
+              <button onclick="editDailySubject('${actualDay}', ${index})" class="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-1">
                 <i class="fa-solid fa-pen text-xs"></i> Edit
               </button>
-              <button onclick="deleteDailySubject('${day}', ${index})" class="px-3 py-1.5 bg-rose-500 hover:bg-rose-600 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-1">
+              <button onclick="deleteDailySubject('${actualDay}', ${index})" class="px-3 py-1.5 bg-rose-500 hover:bg-rose-600 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-1">
                 <i class="fa-solid fa-trash text-xs"></i> Delete
               </button>
             </div>
@@ -1238,6 +1272,7 @@
     document.getElementById('dailySubjectDay').value = day;
     document.getElementById('dailySubjectCode').value = subject.code || '';
     document.getElementById('dailySubjectName').value = subject.name || '';
+    document.getElementById('dailySubjectSection').value = subject.section || '';
     
     // Handle type
     const type = subject.type || '';

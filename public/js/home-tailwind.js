@@ -381,30 +381,146 @@
     renderAnnouncements(list);
   }).catch(function() {});
 
-  // Events with Enhanced Cards
-  const upcomingEventsEl = document.getElementById('upcomingEvents');
+  // Events Carousel with Enhanced Cards
+  const eventsCarouselTrack = document.getElementById('eventsCarouselTrack');
+  const eventsIndicators = document.getElementById('eventsIndicators');
+  const eventsPrev = document.getElementById('eventsPrev');
+  const eventsNext = document.getElementById('eventsNext');
+  let eventIndex = 0;
+  let eventSlides = [];
+  let eventInterval;
 
-  fetch('/api/events/upcoming').then(function(r) { return r.json(); }).then(function(events) {
-    if (!events.length) {
-      upcomingEventsEl.innerHTML = `
-        <div class="col-span-2 text-center py-12">
-          <div class="w-20 h-20 mx-auto mb-4 rounded-2xl bg-gray-100 flex items-center justify-center">
-            <i class="fa-solid fa-calendar-xmark text-4xl text-gray-300"></i>
+  function renderEventsCarousel(events) {
+    // Filter out past events
+    const today = new Date().toISOString().split('T')[0];
+    const upcomingEvents = events.filter(e => {
+      const endDate = e.endDate || e.startDate || e.date;
+      return endDate >= today;
+    });
+
+    if (!upcomingEvents.length) {
+      eventsCarouselTrack.innerHTML = `
+        <div class="flex-shrink-0 w-full">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+            <div class="col-span-full text-center py-16">
+              <div class="w-20 h-20 mx-auto mb-4 rounded-2xl bg-gray-100 flex items-center justify-center">
+                <i class="fa-solid fa-calendar-xmark text-4xl text-gray-300"></i>
+              </div>
+              <p class="text-lg font-medium text-gray-500">No upcoming events.</p>
+              <p class="text-sm text-gray-400 mt-2">Check back later for updates!</p>
+            </div>
           </div>
-          <p class="text-lg font-medium text-gray-500">No upcoming events.</p>
-          <p class="text-sm text-gray-400 mt-2">Check back later for updates!</p>
         </div>
       `;
       return;
     }
+
+    // Split events into groups of 4
+    const chunks = [];
+    for (let i = 0; i < upcomingEvents.length; i += 4) {
+      chunks.push(upcomingEvents.slice(i, i + 4));
+    }
+
+    eventSlides = chunks;
+    const slidesHtml = chunks.map(chunk => {
+      const cardsHtml = chunk.map(e => {
+        if (typeof window.renderEventCard === 'function') {
+          return window.renderEventCard(e);
+        }
+        return `<div class="p-4 glass rounded-lg"><h3 class="font-bold">${e.title}</h3><p class="text-sm text-gray-600">${e.date || e.startDate}</p></div>`;
+      }).join('');
+      
+      return `<div class="flex-shrink-0 w-full"><div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">${cardsHtml}</div></div>`;
+    }).join('');
+
+    eventsCarouselTrack.innerHTML = slidesHtml;
     
-    const show = events.slice(0, 4);
-    upcomingEventsEl.innerHTML = show.map(e => window.renderEventCard(e)).join('');
+    // Create indicators
+    if (chunks.length > 1) {
+      eventsIndicators.innerHTML = chunks.map((_, idx) => 
+        `<button class="w-2 h-2 rounded-full transition-all duration-300 ${idx === 0 ? 'bg-primary-600 w-6' : 'bg-gray-300 hover:bg-gray-400'}" data-slide="${idx}"></button>`
+      ).join('');
+      
+      eventsIndicators.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', function() {
+          eventIndex = parseInt(this.getAttribute('data-slide'));
+          updateEventsCarouselPosition();
+          resetEventInterval();
+        });
+      });
+    } else {
+      eventsIndicators.innerHTML = '';
+    }
+
+    eventIndex = 0;
+    updateEventsCarouselPosition();
     
-    updateNextEventBanner(events[0]);
-    startCountdownTimer(events[0]);
-  }).catch(function() {
-    if (upcomingEventsEl) upcomingEventsEl.innerHTML = '<div class="col-span-2 text-center py-8 text-gray-500">Could not load events.</div>';
+    // Start auto-play
+    if (chunks.length > 1) {
+      eventInterval = setInterval(() => {
+        eventIndex = (eventIndex + 1) % eventSlides.length;
+        updateEventsCarouselPosition();
+      }, 5000);
+    }
+    
+    updateNextEventBanner(upcomingEvents[0]);
+    startCountdownTimer(upcomingEvents[0]);
+  }
+
+  function updateEventsCarouselPosition() {
+    if (!eventSlides.length) return;
+    eventIndex = (eventIndex + eventSlides.length) % eventSlides.length;
+    const translatePct = eventIndex * 100;
+    eventsCarouselTrack.style.transform = `translateX(-${translatePct}%)`;
+    
+    // Update indicators
+    eventsIndicators.querySelectorAll('button').forEach((btn, idx) => {
+      if (idx === eventIndex) {
+        btn.classList.remove('bg-gray-300', 'w-2');
+        btn.classList.add('bg-primary-600', 'w-6');
+      } else {
+        btn.classList.remove('bg-primary-600', 'w-6');
+        btn.classList.add('bg-gray-300', 'w-2');
+      }
+    });
+  }
+
+  function resetEventInterval() {
+    if (eventInterval) clearInterval(eventInterval);
+    if (eventSlides.length > 1) {
+      eventInterval = setInterval(() => {
+        eventIndex = (eventIndex + 1) % eventSlides.length;
+        updateEventsCarouselPosition();
+      }, 5000);
+    }
+  }
+
+  if (eventsPrev) eventsPrev.addEventListener('click', () => {
+    eventIndex = (eventIndex - 1 + eventSlides.length) % Math.max(1, eventSlides.length);
+    updateEventsCarouselPosition();
+    resetEventInterval();
+  });
+
+  if (eventsNext) eventsNext.addEventListener('click', () => {
+    eventIndex = (eventIndex + 1) % Math.max(1, eventSlides.length);
+    updateEventsCarouselPosition();
+    resetEventInterval();
+  });
+
+  fetch('/api/events/upcoming').then(r => r.json()).then(events => {
+    renderEventsCarousel(events);
+  }).catch(() => {
+    if (eventsCarouselTrack) {
+      eventsCarouselTrack.innerHTML = `
+        <div class="flex-shrink-0 w-full">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+            <div class="col-span-full text-center py-16">
+              <p class="text-gray-500">Could not load events.</p>
+            </div>
+          </div>
+        </div>
+      `;
+    }
   });
 
   // Next Event Banner
@@ -505,30 +621,223 @@
     setInterval(updateCountdown, 1000);
   }
 
-  // Today's Subjects with Enhanced Cards
+  // Today's Subjects Carousel - 1 subject per slide
   const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const today = days[new Date().getDay()];
-  const todayContainer = document.getElementById('todaySubjects');
+  const subjectsCarouselTrack = document.getElementById('subjectsCarouselTrack');
+  const subjectsIndicators = document.getElementById('subjectsIndicators');
+  const subjectsPrev = document.getElementById('subjectsPrev');
+  const subjectsNext = document.getElementById('subjectsNext');
+  let subjectIndex = 0;
+  let subjectSlides = [];
+  let subjectInterval;
+  let allTodaySubjects = [];
 
-  fetch('/api/daily-subjects/day/' + today).then(function(r) { return r.json(); }).then(function(data) {
-    const subjects = data.subjects || [];
+  function renderSubjectsCarousel(subjects) {
+    allTodaySubjects = subjects;
+    
     if (!subjects.length) {
-      todayContainer.innerHTML = `
-        <div class="text-center py-8 bg-gray-50 rounded-2xl">
-          <div class="w-16 h-16 mx-auto mb-3 rounded-2xl bg-gray-100 flex items-center justify-center">
-            <i class="fa-solid fa-calendar-xmark text-3xl text-gray-300"></i>
+      subjectsCarouselTrack.innerHTML = `
+        <div class="flex-shrink-0 w-full">
+          <div class="text-center py-8 bg-gray-50 rounded-2xl">
+            <div class="w-16 h-16 mx-auto mb-3 rounded-2xl bg-gray-100 flex items-center justify-center">
+              <i class="fa-solid fa-calendar-xmark text-3xl text-gray-300"></i>
+            </div>
+            <p class="text-gray-500 font-medium">No subjects scheduled for today.</p>
+            <p class="text-xs text-gray-400 mt-1">Enjoy your free day!</p>
           </div>
-          <p class="text-gray-500 font-medium">No subjects scheduled for today.</p>
-          <p class="text-xs text-gray-400 mt-1">Enjoy your free day!</p>
         </div>
       `;
       return;
     }
+
+    // Each subject gets its own slide
+    subjectSlides = subjects;
+    const slidesHtml = subjects.map((s, idx) => {
+      let cardHtml = window.renderCompactSubjectCard ? window.renderCompactSubjectCard(s, today) : '';
+      // Make card clickable
+      cardHtml = cardHtml.replace('<div class="glass rounded-xl', `<div class="glass rounded-xl cursor-pointer" onclick="showSubjectDetails(${idx})"`);
+      return `<div class="flex-shrink-0 w-full">${cardHtml}</div>`;
+    }).join('');
+
+    subjectsCarouselTrack.innerHTML = slidesHtml;
     
-    todayContainer.innerHTML = subjects.map(s => window.renderCompactSubjectCard(s, today)).join('');
-  }).catch(function() {
-    if (todayContainer) todayContainer.innerHTML = '<p class="text-gray-500 text-center py-4">Could not load subjects.</p>';
+    // Create indicators
+    if (subjects.length > 1) {
+      subjectsIndicators.innerHTML = subjects.map((_, idx) => 
+        `<button class="w-2 h-2 rounded-full transition-all duration-300 ${idx === 0 ? 'bg-emerald-600 w-6' : 'bg-gray-300 hover:bg-gray-400'}" data-slide="${idx}"></button>`
+      ).join('');
+      
+      subjectsIndicators.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', function() {
+          subjectIndex = parseInt(this.getAttribute('data-slide'));
+          updateSubjectsCarouselPosition();
+          resetSubjectInterval();
+        });
+      });
+    } else {
+      subjectsIndicators.innerHTML = '';
+    }
+
+    subjectIndex = 0;
+    updateSubjectsCarouselPosition();
+    
+    // Start auto-play
+    if (subjects.length > 1) {
+      subjectInterval = setInterval(() => {
+        subjectIndex = (subjectIndex + 1) % subjectSlides.length;
+        updateSubjectsCarouselPosition();
+      }, 5000);
+    }
+  }
+
+  function updateSubjectsCarouselPosition() {
+    if (!subjectSlides.length) return;
+    subjectIndex = (subjectIndex + subjectSlides.length) % subjectSlides.length;
+    const translatePct = subjectIndex * 100;
+    subjectsCarouselTrack.style.transform = `translateX(-${translatePct}%)`;
+    
+    // Update indicators
+    subjectsIndicators.querySelectorAll('button').forEach((btn, idx) => {
+      if (idx === subjectIndex) {
+        btn.classList.remove('bg-gray-300', 'w-2');
+        btn.classList.add('bg-emerald-600', 'w-6');
+      } else {
+        btn.classList.remove('bg-emerald-600', 'w-6');
+        btn.classList.add('bg-gray-300', 'w-2');
+      }
+    });
+  }
+
+  function resetSubjectInterval() {
+    if (subjectInterval) clearInterval(subjectInterval);
+    if (subjectSlides.length > 1) {
+      subjectInterval = setInterval(() => {
+        subjectIndex = (subjectIndex + 1) % subjectSlides.length;
+        updateSubjectsCarouselPosition();
+      }, 5000);
+    }
+  }
+
+  if (subjectsPrev) subjectsPrev.addEventListener('click', () => {
+    subjectIndex = (subjectIndex - 1 + subjectSlides.length) % Math.max(1, subjectSlides.length);
+    updateSubjectsCarouselPosition();
+    resetSubjectInterval();
   });
+
+  if (subjectsNext) subjectsNext.addEventListener('click', () => {
+    subjectIndex = (subjectIndex + 1) % Math.max(1, subjectSlides.length);
+    updateSubjectsCarouselPosition();
+    resetSubjectInterval();
+  });
+
+  fetch('/api/daily-subjects/day/' + today).then(function(r) { return r.json(); }).then(function(data) {
+    const subjects = data.subjects || [];
+    renderSubjectsCarousel(subjects);
+  }).catch(function() {
+    if (subjectsCarouselTrack) {
+      subjectsCarouselTrack.innerHTML = `
+        <div class="flex-shrink-0 w-full">
+          <div class="text-center py-8">
+            <p class="text-gray-500">Could not load subjects.</p>
+          </div>
+        </div>
+      `;
+    }
+  });
+
+  // Show all subjects modal
+  window.showAllSubjectsModal = function() {
+    if (!allTodaySubjects.length) return;
+    
+    let modalHTML = `
+      <div id="subjectsModal" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="background: rgba(0,0,0,0.7); animation: fadeIn 0.3s;">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden" style="animation: scaleIn 0.3s;">
+          <!-- Header -->
+          <div class="bg-gradient-to-r from-emerald-500 to-teal-500 p-6 text-white">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="text-2xl font-bold mb-1">
+                  <i class="fa-solid fa-book-open mr-2"></i>Today's Subjects - ${today}
+                </h3>
+                <p class="text-emerald-100 text-sm">${allTodaySubjects.length} Subject${allTodaySubjects.length > 1 ? 's' : ''} Scheduled</p>
+              </div>
+              <button onclick="closeSubjectsModal()" class="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-all duration-200 hover:rotate-90">
+                <i class="fa-solid fa-xmark text-2xl"></i>
+              </button>
+            </div>
+          </div>
+          
+          <!-- Subjects List -->
+          <div class="p-6 overflow-y-auto max-h-[calc(90vh-120px)] bg-gradient-to-br from-gray-50 to-white">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              ${allTodaySubjects.map(s => window.renderSubjectCard ? window.renderSubjectCard(s, today) : '').join('')}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    document.body.style.overflow = 'hidden';
+  };
+
+  // Show individual subject details
+  window.showSubjectDetails = function(index) {
+    if (!allTodaySubjects[index]) return;
+    const subject = allTodaySubjects[index];
+    
+    let modalHTML = `
+      <div id="subjectDetailModal" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="background: rgba(0,0,0,0.7); animation: fadeIn 0.3s;">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden" style="animation: scaleIn 0.3s;">
+          <!-- Header -->
+          <div class="bg-gradient-to-r from-primary-600 to-secondary-600 p-6 text-white">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="text-2xl font-bold mb-1">
+                  <i class="fa-solid fa-book mr-2"></i>Subject Details
+                </h3>
+              </div>
+              <button onclick="closeSubjectDetailModal()" class="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-all duration-200 hover:rotate-90">
+                <i class="fa-solid fa-xmark text-2xl"></i>
+              </button>
+            </div>
+          </div>
+          
+          <!-- Subject Details -->
+          <div class="p-6 overflow-y-auto max-h-[calc(90vh-120px)] bg-gradient-to-br from-gray-50 to-white">
+            ${window.renderSubjectCard ? window.renderSubjectCard(subject, today) : ''}
+          </div>
+        </div>
+      </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    document.body.style.overflow = 'hidden';
+  };
+
+  // Close modals
+  window.closeSubjectsModal = function() {
+    const modal = document.getElementById('subjectsModal');
+    if (modal) {
+      modal.style.animation = 'fadeOut 0.3s';
+      setTimeout(function() {
+        modal.remove();
+        document.body.style.overflow = '';
+      }, 300);
+    }
+  };
+
+  window.closeSubjectDetailModal = function() {
+    const modal = document.getElementById('subjectDetailModal');
+    if (modal) {
+      modal.style.animation = 'fadeOut 0.3s';
+      setTimeout(function() {
+        modal.remove();
+        document.body.style.overflow = '';
+      }, 300);
+    }
+  };
 
   // Statistics Cards - Fetch Real Data
   const statEvents = document.getElementById('statEvents');
@@ -689,15 +998,15 @@
 
     let modalHTML = `
       <div id="eventModal" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="background: rgba(0,0,0,0.7); animation: fadeIn 0.3s;">
-        <div class="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden" style="animation: scaleIn 0.3s;">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden" style="animation: scaleIn 0.3s;">
           <!-- Header -->
-          <div class="bg-gradient-to-r from-emerald-500 to-teal-500 p-6 text-white">
+          <div class="bg-gradient-to-r from-primary-600 to-secondary-600 p-6 text-white">
             <div class="flex items-center justify-between">
               <div>
                 <h3 class="text-2xl font-bold mb-1">
                   <i class="fa-solid fa-calendar-day mr-2"></i>Events on ${formattedDate}
                 </h3>
-                <p class="text-emerald-100 text-sm">${dateEvents.length} Event${dateEvents.length > 1 ? 's' : ''} Scheduled</p>
+                <p class="text-primary-100 text-sm">${dateEvents.length} Event${dateEvents.length > 1 ? 's' : ''} Scheduled</p>
               </div>
               <button onclick="closeEventModal()" class="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-all duration-200 hover:rotate-90">
                 <i class="fa-solid fa-xmark text-2xl"></i>
@@ -705,58 +1014,28 @@
             </div>
           </div>
           
-          <!-- Events List -->
-          <div class="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
-            <div class="space-y-4">
+          <!-- Events List with Enhanced Cards -->
+          <div class="p-6 overflow-y-auto max-h-[calc(90vh-120px)] bg-gradient-to-br from-gray-50 to-white">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
     `;
 
-    dateEvents.forEach(function(event, index) {
-      const timeDisplay = event.time ? `<i class="fa-solid fa-clock text-emerald-600"></i> ${event.time}` : '';
-      const locationDisplay = event.location ? `<i class="fa-solid fa-location-dot text-emerald-600"></i> ${escapeHtml(event.location)}` : '';
-      
-      modalHTML += `
-        <div class="glass rounded-2xl p-5 border-l-4 border-emerald-500 hover:shadow-lg transition-all duration-200">
-          <div class="flex items-start gap-4">
-            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
-              ${index + 1}
-            </div>
-            <div class="flex-1">
-              <!-- Event Title Section -->
-              <div class="mb-3">
-                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">
-                  <i class="fa-solid fa-flag mr-1"></i> Event Title
-                </p>
-                <h4 class="text-xl font-bold text-gray-800">${escapeHtml(event.title)}</h4>
-              </div>
-              
-              <!-- Event Description/Message Section -->
-              ${event.description ? `
-                <div class="mb-3">
-                  <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">
-                    <i class="fa-solid fa-message mr-1"></i> Message / Details
-                  </p>
-                  <p class="text-gray-600 leading-relaxed">${escapeHtml(event.description)}</p>
-                </div>
-              ` : ''}
-              
-              <!-- Time & Location Section -->
-              <div class="flex flex-wrap gap-3 text-sm text-gray-500 mb-3">
-                ${timeDisplay ? `<span class="flex items-center gap-1">${timeDisplay}</span>` : ''}
-                ${locationDisplay ? `<span class="flex items-center gap-1">${locationDisplay}</span>` : ''}
-              </div>
-              
-              ${event.requirements ? `
-                <div class="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-                  <p class="text-sm font-semibold text-amber-800 mb-1">
-                    <i class="fa-solid fa-clipboard-list mr-1"></i> What to Bring:
-                  </p>
-                  <p class="text-sm text-amber-700">${escapeHtml(event.requirements)}</p>
-                </div>
-              ` : ''}
+    dateEvents.forEach(function(event) {
+      // Use the same renderEventCard function from enhanced-card-renderer.js
+      if (typeof window.renderEventCard === 'function') {
+        modalHTML += window.renderEventCard(event);
+      } else {
+        // Fallback if renderEventCard is not available
+        modalHTML += `
+          <div class="glass rounded-2xl p-5 border-l-4 border-primary-500">
+            <h4 class="text-lg font-bold text-gray-800 mb-2">${escapeHtml(event.title)}</h4>
+            ${event.description ? `<p class="text-sm text-gray-600 mb-3">${escapeHtml(event.description)}</p>` : ''}
+            <div class="text-xs text-gray-500">
+              ${event.time ? `<p><i class="fa-solid fa-clock mr-1"></i>${event.time}</p>` : ''}
+              ${event.location ? `<p><i class="fa-solid fa-location-dot mr-1"></i>${escapeHtml(event.location)}</p>` : ''}
             </div>
           </div>
-        </div>
-      `;
+        `;
+      }
     });
 
     modalHTML += `

@@ -984,15 +984,39 @@
           <h2 class="text-2xl sm:text-3xl font-bold gradient-text">Upcoming Events</h2>
         </div>
         
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6" id="upcomingEvents">
-          <!-- Loading State -->
-          <div class="col-span-full flex justify-center py-16">
-            <div class="flex flex-col items-center gap-4">
-              <div class="w-16 h-16 rounded-2xl bg-primary-100 flex items-center justify-center animate-pulse">
-                <i class="fa-solid fa-spinner fa-spin text-3xl text-primary-600"></i>
+        <!-- Events Carousel Container -->
+        <div class="relative">
+          <!-- Navigation Buttons -->
+          <button id="eventsPrev" class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 w-10 h-10 rounded-full bg-white shadow-lg hover:shadow-xl flex items-center justify-center text-primary-600 hover:text-primary-700 transition-all duration-300 hover:scale-110">
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+          <button id="eventsNext" class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 w-10 h-10 rounded-full bg-white shadow-lg hover:shadow-xl flex items-center justify-center text-primary-600 hover:text-primary-700 transition-all duration-300 hover:scale-110">
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+          
+          <!-- Carousel Track -->
+          <div class="overflow-hidden rounded-2xl">
+            <div id="eventsCarouselTrack" class="flex transition-transform duration-500 ease-in-out">
+              <!-- Events will be loaded here in groups of 4 -->
+              <div class="flex-shrink-0 w-full">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6" id="upcomingEvents">
+                  <!-- Loading State -->
+                  <div class="col-span-full flex justify-center py-16">
+                    <div class="flex flex-col items-center gap-4">
+                      <div class="w-16 h-16 rounded-2xl bg-primary-100 flex items-center justify-center animate-pulse">
+                        <i class="fa-solid fa-spinner fa-spin text-3xl text-primary-600"></i>
+                      </div>
+                      <p class="text-gray-500 font-medium">Loading events...</p>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <p class="text-gray-500 font-medium">Loading events...</p>
             </div>
+          </div>
+          
+          <!-- Carousel Indicators -->
+          <div id="eventsIndicators" class="flex justify-center gap-2 mt-4">
+            <!-- Indicators will be added dynamically -->
           </div>
         </div>
       </div>
@@ -1007,14 +1031,40 @@
             </div>
             <h2 class="text-2xl sm:text-3xl font-bold gradient-text">Today's Subjects</h2>
           </div>
-          <div id="todaySubjects" class="space-y-3">
-            <div class="flex justify-center py-12">
-              <div class="flex flex-col items-center gap-4">
-                <div class="w-16 h-16 rounded-2xl bg-emerald-100 flex items-center justify-center animate-pulse">
-                  <i class="fa-solid fa-spinner fa-spin text-3xl text-emerald-600"></i>
+          
+          <!-- Subjects Carousel Container -->
+          <div class="relative">
+            <!-- Navigation Buttons -->
+            <button id="subjectsPrev" class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 w-10 h-10 rounded-full bg-white shadow-lg hover:shadow-xl flex items-center justify-center text-emerald-600 hover:text-emerald-700 transition-all duration-300 hover:scale-110">
+              <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <button id="subjectsNext" class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 w-10 h-10 rounded-full bg-white shadow-lg hover:shadow-xl flex items-center justify-center text-emerald-600 hover:text-emerald-700 transition-all duration-300 hover:scale-110">
+              <i class="fa-solid fa-chevron-right"></i>
+            </button>
+            
+            <!-- Carousel Track -->
+            <div class="overflow-hidden rounded-2xl">
+              <div id="subjectsCarouselTrack" class="flex transition-transform duration-500 ease-in-out">
+                <!-- Subjects will be loaded here one per slide -->
+                <div class="flex-shrink-0 w-full">
+                  <div id="todaySubjects">
+                    <!-- Loading State -->
+                    <div class="flex justify-center py-12">
+                      <div class="flex flex-col items-center gap-4">
+                        <div class="w-16 h-16 rounded-2xl bg-emerald-100 flex items-center justify-center animate-pulse">
+                          <i class="fa-solid fa-spinner fa-spin text-3xl text-emerald-600"></i>
+                        </div>
+                        <p class="text-gray-500 font-medium">Loading subjects...</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <p class="text-gray-500 font-medium">Loading subjects...</p>
               </div>
+            </div>
+            
+            <!-- Carousel Indicators -->
+            <div id="subjectsIndicators" class="flex justify-center gap-2 mt-4">
+              <!-- Indicators will be added dynamically -->
             </div>
           </div>
         </div>

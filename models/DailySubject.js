@@ -9,6 +9,7 @@ const subjectItemSchema = new mongoose.Schema({
   location: { type: String, default: '' }, // Room or location
   room: { type: String, default: '' }, // Room or location (alias)
   instructor: { type: String, default: '' }, // Instructor name
+  section: { type: String, default: '' }, // Section (e.g., "BSN 2C", "A", "B")
   code: { type: String, default: '' }, // Subject code
   startTime: { type: String, default: '' }, // Start time (HH:MM format)
   endTime: { type: String, default: '' }, // End time (HH:MM format)
