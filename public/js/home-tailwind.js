@@ -650,7 +650,7 @@
       const classes = [
         'aspect-square flex items-center justify-center rounded-lg text-sm font-medium transition-all duration-200 cursor-pointer',
         isToday ? 'bg-primary text-white shadow-md' : 'hover:bg-gray-100',
-        hasEvent && !isToday ? 'bg-primary-dark text-white' : '',
+        hasEvent && !isToday ? 'bg-emerald-500 text-white' : '',
         hasEvent ? 'hover:scale-110' : ''
       ].filter(Boolean).join(' ');
       
