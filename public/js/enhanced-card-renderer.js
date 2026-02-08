@@ -221,9 +221,25 @@
               <i class="fa-solid ${config.icon} ${config.text} text-lg"></i>
             </div>
             <div class="flex-grow">
-              <h4 class="font-bold text-gray-800 text-lg mb-1">${escapeHtml(event.title)}</h4>
+              <!-- Event Title -->
+              <div class="mb-2">
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">
+                  <i class="fa-solid fa-flag mr-1"></i> Event Title
+                </p>
+                <h4 class="font-bold text-gray-800 text-lg">${escapeHtml(event.title)}</h4>
+              </div>
+              
               ${event.customName ? `<p class="text-sm ${config.text} font-semibold">${escapeHtml(event.customName)}</p>` : ''}
-              ${event.description ? `<p class="text-sm text-gray-600 mt-2">${escapeHtml(event.description)}</p>` : ''}
+              
+              <!-- Message/Description -->
+              ${event.description ? `
+                <div class="mt-2">
+                  <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">
+                    <i class="fa-solid fa-message mr-1"></i> Message
+                  </p>
+                  <p class="text-sm text-gray-600">${escapeHtml(event.description)}</p>
+                </div>
+              ` : ''}
             </div>
           </div>
         </div>

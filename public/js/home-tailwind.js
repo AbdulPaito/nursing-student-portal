@@ -721,13 +721,26 @@
               ${index + 1}
             </div>
             <div class="flex-1">
-              <h4 class="text-xl font-bold text-gray-800 mb-2">${escapeHtml(event.title)}</h4>
+              <!-- Event Title Section -->
+              <div class="mb-3">
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">
+                  <i class="fa-solid fa-flag mr-1"></i> Event Title
+                </p>
+                <h4 class="text-xl font-bold text-gray-800">${escapeHtml(event.title)}</h4>
+              </div>
               
+              <!-- Event Description/Message Section -->
               ${event.description ? `
-                <p class="text-gray-600 mb-3 leading-relaxed">${escapeHtml(event.description)}</p>
+                <div class="mb-3">
+                  <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">
+                    <i class="fa-solid fa-message mr-1"></i> Message / Details
+                  </p>
+                  <p class="text-gray-600 leading-relaxed">${escapeHtml(event.description)}</p>
+                </div>
               ` : ''}
               
-              <div class="flex flex-wrap gap-3 text-sm text-gray-500">
+              <!-- Time & Location Section -->
+              <div class="flex flex-wrap gap-3 text-sm text-gray-500 mb-3">
                 ${timeDisplay ? `<span class="flex items-center gap-1">${timeDisplay}</span>` : ''}
                 ${locationDisplay ? `<span class="flex items-center gap-1">${locationDisplay}</span>` : ''}
               </div>
