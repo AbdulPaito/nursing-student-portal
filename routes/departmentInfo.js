@@ -6,7 +6,27 @@ const authMiddleware = require('../middleware/auth');
 // GET department info
 router.get('/', async (req, res) => {
   try {
-    const info = await DepartmentInfo.getSingleton();
+    let info = await DepartmentInfo.findOne();
+    if (!info) {
+      info = await DepartmentInfo.create({
+        totalStudents: 0,
+        totalFaculty: 0,
+        yearLevels: 4,
+        subjectsCount: 20,
+        programCoordinator: {
+          name: 'BSN 2C - AQUINO (2025-2026)',
+          email: 'nursing@msu.edu.ph'
+        }
+      });
+    }
+    // Ensure programCoordinator exists
+    if (!info.programCoordinator) {
+      info.programCoordinator = {
+        name: 'BSN 2C - AQUINO (2025-2026)',
+        email: 'nursing@msu.edu.ph'
+      };
+      await info.save();
+    }
     res.json({ success: true, data: info });
   } catch (error) {
     console.error('Error fetching department info:', error);
