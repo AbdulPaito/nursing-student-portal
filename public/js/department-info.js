@@ -166,10 +166,10 @@
       if (doc.fileType === 'pdf') {
         contentHtml = `
           <div class="bg-gray-900 rounded-2xl p-4 mb-6">
-            <iframe src="${doc.fileUrl}" class="w-full h-[600px] rounded-xl" frameborder="0"></iframe>
+            <iframe src="/api/department-documents/${doc._id}/file" class="w-full h-[600px] rounded-xl" frameborder="0"></iframe>
           </div>
           <div class="flex gap-3">
-            <a href="${doc.fileUrl}" target="_blank" class="flex-1 px-6 py-3 bg-blue-500 text-white font-semibold rounded-xl hover:bg-blue-600 transition-all text-center">
+            <a href="/api/department-documents/${doc._id}/file" target="_blank" class="flex-1 px-6 py-3 bg-blue-500 text-white font-semibold rounded-xl hover:bg-blue-600 transition-all text-center">
               <i class="fa-solid fa-external-link mr-2"></i>Open in New Tab
             </a>
             <button onclick="downloadDocument('${doc._id}')" class="flex-1 px-6 py-3 bg-green-500 text-white font-semibold rounded-xl hover:bg-green-600 transition-all">
@@ -180,7 +180,7 @@
       } else if (doc.fileType === 'jpg' || doc.fileType === 'jpeg' || doc.fileType === 'png') {
         contentHtml = `
           <div class="mb-6">
-            <img src="${doc.fileUrl}" alt="${doc.title}" class="w-full rounded-2xl shadow-lg">
+            <img src="/api/department-documents/${doc._id}/file" alt="${doc.title}" class="w-full rounded-2xl shadow-lg">
           </div>
           <button onclick="downloadDocument('${doc._id}')" class="w-full px-6 py-3 bg-green-500 text-white font-semibold rounded-xl hover:bg-green-600 transition-all">
             <i class="fa-solid fa-download mr-2"></i>Download Image
@@ -297,13 +297,12 @@
       const response = await fetch(`/api/department-documents/${docId}/download`, {
         method: 'POST'
       });
-      
+
       const data = await response.json();
-      
-      if (data.success && data.fileUrl) {
-        // Create a temporary link and trigger download
+
+      if (data.success) {
         const a = document.createElement('a');
-        a.href = data.fileUrl;
+        a.href = `/api/department-documents/${docId}/file`;
         a.download = '';
         document.body.appendChild(a);
         a.click();

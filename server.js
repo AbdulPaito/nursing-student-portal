@@ -139,6 +139,51 @@ app.use('/api/department-info', requireDb, departmentInfoRoutes);
 app.use('/api/department-documents', requireDb, departmentDocumentsRoutes);
 app.use('/api/courses', requireDb, coursesRoutes);
 
+// Proxy route for Cloudinary files to avoid 401 errors
+app.get('/api/department-documents/:id/file', async (req, res) => {
+  try {
+    const DepartmentDocument = require('./models/DepartmentDocument');
+    const document = await DepartmentDocument.findById(req.params.id);
+
+    if (!document) {
+      return res.status(404).send('Document not found');
+    }
+
+    if (document.contentType !== 'file' || !document.fileUrl) {
+      return res.status(400).send('No file attached to this document');
+    }
+
+    // Get file extension
+    const fileType = document.fileType ? document.fileType.toLowerCase() : '';
+    
+    // Set appropriate content-type header
+    const contentTypes = {
+      'pdf': 'application/pdf',
+      'doc': 'application/msword',
+      'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'jpg': 'image/jpeg',
+      'jpeg': 'image/jpeg',
+      'png': 'image/png',
+      'txt': 'text/plain'
+    };
+
+    if (contentTypes[fileType]) {
+      res.setHeader('Content-Type', contentTypes[fileType]);
+    }
+
+    // Force download for PDFs
+    if (fileType === 'pdf') {
+      res.setHeader('Content-Disposition', `attachment; filename="${document.fileName || 'document.pdf'}"`);
+    }
+
+    // Redirect to the original Cloudinary URL
+    res.redirect(document.fileUrl);
+  } catch (err) {
+    console.error('Proxy error:', err);
+    res.status(500).send('Server error');
+  }
+});
+
 // Serve HTML pages for specific routes
 app.get('/events', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'events.html'));
@@ -164,8 +209,11 @@ app.use('/api/*', (req, res) => {
 
 // 404 handler for other routes
 app.use((req, res) => {
-  res.status(404).sendFile(path.join(__dirname, 'public', '404.html')).catch(() => {
-    res.status(404).send('Page not found');
+  const filePath = path.join(__dirname, 'public', '404.html');
+  res.status(404).sendFile(filePath, (err) => {
+    if (err) {
+      res.status(404).send('Page not found');
+    }
   });
 });
 

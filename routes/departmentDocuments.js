@@ -5,6 +5,13 @@ const auth = require('../middleware/auth');
 const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
 
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
 // Multer configuration for file uploads
 const storage = multer.memoryStorage();
 const upload = multer({
@@ -13,11 +20,10 @@ const upload = multer({
     fileSize: 10 * 1024 * 1024 // 10MB limit
   },
   fileFilter: (req, file, cb) => {
-    const allowedTypes = /pdf|doc|docx|jpg|jpeg|png|txt/;
-    const extname = allowedTypes.test(file.originalname.toLowerCase());
-    const mimetype = allowedTypes.test(file.mimetype);
+    const allowedExtensions = ['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png', 'txt'];
+    const fileExt = file.originalname.split('.').pop().toLowerCase();
     
-    if (extname && mimetype) {
+    if (allowedExtensions.includes(fileExt)) {
       return cb(null, true);
     } else {
       cb(new Error('Invalid file type. Only PDF, Word, Images, and Text files are allowed.'));
@@ -70,11 +76,23 @@ router.post('/', auth, upload.single('file'), async (req, res) => {
         });
       }
 
+      // Determine resource type based on file extension
+      const fileExt = req.file.originalname.split('.').pop().toLowerCase();
+      let resourceType = 'raw';
+      const imageExts = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+      const videoExts = ['mp4', 'mov', 'avi', 'webm'];
+      
+      if (imageExts.includes(fileExt)) {
+        resourceType = 'image';
+      } else if (videoExts.includes(fileExt)) {
+        resourceType = 'video';
+      }
+
       // Upload to Cloudinary
       const uploadStream = cloudinary.uploader.upload_stream(
         {
           folder: 'department-documents',
-          resource_type: 'auto'
+          resource_type: resourceType
         },
         async (error, result) => {
           if (error) {
@@ -84,9 +102,6 @@ router.post('/', auth, upload.single('file'), async (req, res) => {
               error: 'Error uploading file'
             });
           }
-
-          // Get file extension
-          const fileExt = req.file.originalname.split('.').pop().toLowerCase();
 
           documentData.fileUrl = result.secure_url;
           documentData.fileName = req.file.originalname;
