@@ -1063,22 +1063,32 @@
   
   // Open edit department modal
   window.openEditDepartmentModal = function() {
-    var data = window.currentDepartmentInfo || {};
-    
-    document.getElementById('editTotalStudents').value = data.totalStudents || 0;
-    document.getElementById('editTotalFaculty').value = data.totalFaculty || 0;
-    document.getElementById('editYearLevels').value = data.yearLevels || 4;
-    document.getElementById('editSubjectsCount').value = data.subjectsCount || 20;
-    
-    if (data.programCoordinator) {
-      document.getElementById('editCoordinatorName').value = data.programCoordinator.name || '';
-      document.getElementById('editCoordinatorEmail').value = data.programCoordinator.email || '';
-    } else {
-      document.getElementById('editCoordinatorName').value = '';
-      document.getElementById('editCoordinatorEmail').value = '';
-    }
-    
-    document.getElementById('editDepartmentModal').classList.remove('hidden');
+    fetch(API + '/api/department-info')
+      .then(function(res) { return res.json(); })
+      .then(function(json) {
+        if (json.success && json.data) {
+          var data = json.data;
+          window.currentDepartmentInfo = data;
+          
+          document.getElementById('editTotalStudents').value = data.totalStudents || 0;
+          document.getElementById('editTotalFaculty').value = data.totalFaculty || 0;
+          document.getElementById('editYearLevels').value = data.yearLevels || 4;
+          document.getElementById('editSubjectsCount').value = data.subjectsCount || 20;
+          
+          if (data.programCoordinator) {
+            document.getElementById('editCoordinatorName').value = data.programCoordinator.name || '';
+            document.getElementById('editCoordinatorEmail').value = data.programCoordinator.email || '';
+          } else {
+            document.getElementById('editCoordinatorName').value = '';
+            document.getElementById('editCoordinatorEmail').value = '';
+          }
+          
+          document.getElementById('editDepartmentModal').classList.remove('hidden');
+        }
+      })
+      .catch(function(err) {
+        console.error('Error loading department info for edit:', err);
+      });
   };
   
   // Close edit department modal
