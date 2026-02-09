@@ -59,7 +59,11 @@ departmentInfoSchema.statics.getSingleton = async function() {
       totalStudents: 0,
       totalFaculty: 0,
       yearLevels: 4,
-      subjectsCount: 20
+      subjectsCount: 20,
+      programCoordinator: {
+        name: 'BSN 2C - AQUINO (2025-2026)',
+        email: 'nursing@msu.edu.ph'
+      }
     });
   }
   return info;
