@@ -1010,7 +1010,7 @@
   var departmentPieChart = null;
   var departmentBarChart = null;
   
-   window.loadDepartmentInfo = function() {
+    window.loadDepartmentInfo = function() {
      fetch(API + '/api/department-info')
        .then(function(res) { return res.json(); })
        .then(function(json) {
@@ -1022,35 +1022,44 @@
            var yearLevels = data.yearLevels || 4;
            var subjectsCount = data.subjectsCount || 20;
            
-           // Update main counts
-           document.getElementById('displayTotalStudents').textContent = students;
-           document.getElementById('displayTotalFaculty').textContent = faculty;
-           document.getElementById('displayYearLevels').textContent = yearLevels;
-           document.getElementById('displaySubjectsCount').textContent = subjectsCount;
+           // Update main counts - with null checks
+           var displayTotalStudents = document.getElementById('displayTotalStudents');
+           if (displayTotalStudents) displayTotalStudents.textContent = students;
+           
+           var displayTotalFaculty = document.getElementById('displayTotalFaculty');
+           if (displayTotalFaculty) displayTotalFaculty.textContent = faculty;
+           
+           var displayYearLevels = document.getElementById('displayYearLevels');
+           if (displayYearLevels) displayYearLevels.textContent = yearLevels;
+           
+           var displaySubjectsCount = document.getElementById('displaySubjectsCount');
+           if (displaySubjectsCount) displaySubjectsCount.textContent = subjectsCount;
            
            // Calculate total members
            var totalMembers = students + faculty;
-           document.getElementById('displayTotalMembers').textContent = totalMembers;
+           var displayTotalMembers = document.getElementById('displayTotalMembers');
+           if (displayTotalMembers) displayTotalMembers.textContent = totalMembers;
            
-           // Update coordinator info - handle nested object properly
+           // Update coordinator info - with null checks
            var coordName = data.programCoordinator && data.programCoordinator.name ? data.programCoordinator.name : '--';
            var coordEmail = data.programCoordinator && data.programCoordinator.email ? data.programCoordinator.email : '--';
-           document.getElementById('displayCoordinatorName').textContent = coordName;
-           document.getElementById('displayCoordinatorEmail').textContent = coordEmail;
+           
+           var displayCoordinatorName = document.getElementById('displayCoordinatorName');
+           if (displayCoordinatorName) displayCoordinatorName.textContent = coordName;
+           
+           var displayCoordinatorEmail = document.getElementById('displayCoordinatorEmail');
+           if (displayCoordinatorEmail) displayCoordinatorEmail.textContent = coordEmail;
            
            // Calculate ratio
            var ratio = faculty > 0 ? (students / faculty).toFixed(1) + ':1' : '—';
-           document.getElementById('displayRatio').textContent = ratio;
+           var displayRatio = document.getElementById('displayRatio');
+           if (displayRatio) displayRatio.textContent = ratio;
            
-           // Update mission, vision, goals
-           document.getElementById('displayMission').textContent = data.mission || '--';
-           document.getElementById('displayVision').textContent = data.vision || '--';
-           document.getElementById('displayGoals').textContent = data.goals || '--';
-           
-           // Update timestamp
-           if (data.updatedAt) {
+           // Update timestamp if element exists
+           var lastUpdatedInfo = document.getElementById('lastUpdatedInfo');
+           if (lastUpdatedInfo && data.updatedAt) {
              var date = new Date(data.updatedAt);
-             document.getElementById('lastUpdatedInfo').textContent = date.toLocaleString();
+             lastUpdatedInfo.textContent = date.toLocaleString();
            }
            
            // Store current data for editing
@@ -1060,7 +1069,7 @@
        .catch(function(err) {
          console.error('Error loading department info:', err);
        });
-   };
+    };
   
   // Open edit department modal
   window.openEditDepartmentModal = function() {
