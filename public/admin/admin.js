@@ -86,48 +86,51 @@
     });
   }
 
-  // Section switching + active highlight
-  function showSection(sectionName) {
-    console.log('📄 Switching to section:', sectionName);
-    document.querySelectorAll('.admin-section').forEach(function(s) { s.classList.add('hidden'); });
-    var target = document.getElementById('section-' + sectionName);
-    if (target) {
-      target.classList.remove('hidden');
-      console.log('✅ Section visible:', sectionName);
-      
-      // Load data when section is shown
-      if (sectionName === 'music') {
-        console.log('🎵 Music section loaded, fetching files...');
-        loadMusicFiles();
-      }
-      if (sectionName === 'department-documents') {
-        console.log('📄 Department Info section loaded, fetching documents...');
-        loadDepartmentDocuments();
-      }
-    } else {
-      console.error('❌ Section not found:', 'section-' + sectionName);
-    }
-  }
+   // Section switching + active highlight
+   function showSection(sectionName) {
+     console.log('📄 Switching to section:', sectionName);
+     document.querySelectorAll('.admin-section').forEach(function(s) { s.classList.add('hidden'); });
+     var target = document.getElementById('section-' + sectionName);
+     if (target) {
+       target.classList.remove('hidden');
+       console.log('✅ Section visible:', sectionName);
+     } else {
+       console.error('❌ Section not found:', 'section-' + sectionName);
+     }
+   }
 
-  document.querySelectorAll('.admin-sidebar .nav-link[data-section]').forEach(function(link) {
-    link.addEventListener('click', function(e) {
-      if (this.getAttribute('href') === '#') e.preventDefault();
-      var section = this.getAttribute('data-section');
-      
-      // Show the selected section (this calls loadMusicFiles if music section)
-      showSection(section);
-      
-      // Update active link styling
-      document.querySelectorAll('.admin-sidebar .nav-link').forEach(function(n) { n.classList.remove('active'); });
-      this.classList.add('active');
-      
-      // Close mobile sidebar
-      if (sidebar && window.innerWidth < 992) { 
-        sidebar.classList.remove('show'); 
-        if (sidebarBackdrop) sidebarBackdrop.classList.remove('show'); 
-      }
-    });
-  });
+   document.querySelectorAll('.admin-sidebar .nav-link[data-section]').forEach(function(link) {
+     link.addEventListener('click', function(e) {
+       if (this.getAttribute('href') === '#') e.preventDefault();
+       var section = this.getAttribute('data-section');
+       
+       // Show the selected section
+       showSection(section);
+       
+       // Load section-specific data
+       if (section === 'department') {
+         setTimeout(function() { loadDepartmentInfo(); }, 50);
+       }
+       if (section === 'music') {
+         console.log('🎵 Music section loaded, fetching files...');
+         loadMusicFiles();
+       }
+       if (section === 'department-documents') {
+         console.log('📄 Department Info section loaded, fetching documents...');
+         loadDepartmentDocuments();
+       }
+       
+       // Update active link styling
+       document.querySelectorAll('.admin-sidebar .nav-link').forEach(function(n) { n.classList.remove('active'); });
+       this.classList.add('active');
+       
+       // Close mobile sidebar
+       if (sidebar && window.innerWidth < 992) { 
+         sidebar.classList.remove('show'); 
+         if (sidebarBackdrop) sidebarBackdrop.classList.remove('show'); 
+       }
+     });
+   });
   document.getElementById('logoutLink').addEventListener('click', async function(e) {
     e.preventDefault();
     
@@ -1146,61 +1149,63 @@
     }
   });
 
-  // Initialize - show dashboard by default
-  document.addEventListener('DOMContentLoaded', function() {
-    console.log('✅ Admin dashboard initialized');
-    // Dashboard section should be visible by default
-    var dashboardSection = document.getElementById('section-dashboard');
-    if (dashboardSection && !dashboardSection.classList.contains('hidden')) {
-      console.log('✅ Dashboard is default section');
-    }
+   // Initialize - show dashboard by default
+   document.addEventListener('DOMContentLoaded', function() {
+     console.log('✅ Admin dashboard initialized');
+     // Dashboard section should be visible by default
+     var dashboardSection = document.getElementById('section-dashboard');
+     if (dashboardSection && !dashboardSection.classList.contains('hidden')) {
+       console.log('✅ Dashboard is default section');
+     }
 
-    // Load department info when department section is shown
-    var departmentSection = document.getElementById('section-department');
-    if (departmentSection) {
-      var observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
-          if (mutation.attributeName === 'class') {
-            if (!departmentSection.classList.contains('hidden')) {
-              // Load totals by default when section is shown
-              switchDeptTab('totals');
-            }
-          }
-        });
-      });
-      observer.observe(departmentSection, { attributes: true });
-    }
-  });
+     // Load department info when department section is shown
+     var departmentSection = document.getElementById('section-department');
+     if (departmentSection) {
+       var observer = new MutationObserver(function(mutations) {
+         mutations.forEach(function(mutation) {
+           if (mutation.attributeName === 'class') {
+             if (!departmentSection.classList.contains('hidden')) {
+               // Load totals when section becomes visible
+               setTimeout(function() {
+                 loadDepartmentInfo();
+               }, 100);
+             }
+           }
+         });
+       });
+       observer.observe(departmentSection, { attributes: true });
+     }
+   });
 
   // ==========================================
   // DEPARTMENT SECTION TABS
   // ==========================================
 
-  // Switch between department totals and documents tabs
-  window.switchDeptTab = function(tab) {
-    const totalsSection = document.getElementById('deptTotalsSection');
-    const docsSection = document.getElementById('deptDocsSection');
-    const totalsTab = document.getElementById('deptTotalsTab');
-    const docsTab = document.getElementById('deptDocsTab');
+   // Switch between department totals and documents tabs
+   window.switchDeptTab = function(tab) {
+     const totalsSection = document.getElementById('deptTotalsSection');
+     const docsSection = document.getElementById('deptDocsSection');
+     const totalsTab = document.getElementById('deptTotalsTab');
+     const docsTab = document.getElementById('deptDocsTab');
 
-    if (tab === 'totals') {
-      totalsSection.classList.remove('hidden');
-      docsSection.classList.add('hidden');
-      totalsTab.classList.add('bg-gradient-to-r', 'from-primary-600', 'to-primary-700', 'text-white', 'shadow-md');
-      totalsTab.classList.remove('bg-white', 'text-gray-600');
-      docsTab.classList.remove('bg-gradient-to-r', 'from-primary-600', 'to-primary-700', 'text-white', 'shadow-md');
-      docsTab.classList.add('bg-white', 'text-gray-600');
-      loadDepartmentInfo();
-    } else {
-      totalsSection.classList.add('hidden');
-      docsSection.classList.remove('hidden');
-      docsTab.classList.add('bg-gradient-to-r', 'from-primary-600', 'to-primary-700', 'text-white', 'shadow-md');
-      docsTab.classList.remove('bg-white', 'text-gray-600');
-      totalsTab.classList.remove('bg-gradient-to-r', 'from-primary-600', 'to-primary-700', 'text-white', 'shadow-md');
-      totalsTab.classList.add('bg-white', 'text-gray-600');
-      loadDepartmentDocuments();
-    }
-  };
+     if (tab === 'totals') {
+       totalsSection.classList.remove('hidden');
+       docsSection.classList.add('hidden');
+       totalsTab.classList.add('bg-gradient-to-r', 'from-primary-600', 'to-primary-700', 'text-white', 'shadow-md');
+       totalsTab.classList.remove('bg-white', 'text-gray-600');
+       docsTab.classList.remove('bg-gradient-to-r', 'from-primary-600', 'to-primary-700', 'text-white', 'shadow-md');
+       docsTab.classList.add('bg-white', 'text-gray-600');
+       setTimeout(function() { loadDepartmentInfo(); }, 50);
+     } else {
+       totalsSection.classList.add('hidden');
+       docsSection.classList.remove('hidden');
+       docsTab.classList.add('bg-gradient-to-r', 'from-primary-600', 'to-primary-700', 'text-white', 'shadow-md');
+       docsTab.classList.remove('bg-white', 'text-gray-600');
+       totalsTab.classList.remove('bg-gradient-to-r', 'from-primary-600', 'to-primary-700', 'text-white', 'shadow-md');
+       totalsTab.classList.add('bg-white', 'text-gray-600');
+       loadDepartmentDocuments();
+     }
+   };
 
   // ==========================================
   // USER MANAGEMENT FUNCTIONS
