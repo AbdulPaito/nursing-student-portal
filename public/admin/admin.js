@@ -1007,59 +1007,57 @@
   var departmentPieChart = null;
   var departmentBarChart = null;
   
-  window.loadDepartmentInfo = function() {
-    fetch(API + '/api/department-info')
-      .then(function(res) { return res.json(); })
-      .then(function(json) {
-        if (json.success && json.data) {
-          var data = json.data;
-          var students = data.totalStudents || 0;
-          var faculty = data.totalFaculty || 0;
-          var yearLevels = data.yearLevels || 4;
-          var subjectsCount = data.subjectsCount || 20;
-          
-          // Update main counts
-          document.getElementById('displayTotalStudents').textContent = students;
-          document.getElementById('displayTotalFaculty').textContent = faculty;
-          document.getElementById('displayYearLevels').textContent = yearLevels;
-          document.getElementById('displaySubjectsCount').textContent = subjectsCount;
-          
-          // Calculate total members
-          var totalMembers = students + faculty;
-          document.getElementById('displayTotalMembers').textContent = totalMembers;
-          
-          // Update coordinator info
-          if (data.programCoordinator) {
-            document.getElementById('displayCoordinatorName').textContent = data.programCoordinator.name || '--';
-            document.getElementById('displayCoordinatorEmail').textContent = data.programCoordinator.email || '--';
-          } else {
-            document.getElementById('displayCoordinatorName').textContent = '--';
-            document.getElementById('displayCoordinatorEmail').textContent = '--';
-          }
-          
-          // Calculate ratio
-          var ratio = faculty > 0 ? (students / faculty).toFixed(1) + ':1' : '—';
-          document.getElementById('displayRatio').textContent = ratio;
-          
-          // Update mission, vision, goals
-          document.getElementById('displayMission').textContent = data.mission || '--';
-          document.getElementById('displayVision').textContent = data.vision || '--';
-          document.getElementById('displayGoals').textContent = data.goals || '--';
-          
-          // Update timestamp
-          if (data.updatedAt) {
-            var date = new Date(data.updatedAt);
-            document.getElementById('lastUpdatedInfo').textContent = date.toLocaleString();
-          }
-          
-          // Store current data for editing
-          window.currentDepartmentInfo = data;
-        }
-      })
-      .catch(function(err) {
-        console.error('Error loading department info:', err);
-      });
-  };
+   window.loadDepartmentInfo = function() {
+     fetch(API + '/api/department-info')
+       .then(function(res) { return res.json(); })
+       .then(function(json) {
+         console.log('Department Info API response:', json);
+         if (json.success && json.data) {
+           var data = json.data;
+           var students = data.totalStudents || 0;
+           var faculty = data.totalFaculty || 0;
+           var yearLevels = data.yearLevels || 4;
+           var subjectsCount = data.subjectsCount || 20;
+           
+           // Update main counts
+           document.getElementById('displayTotalStudents').textContent = students;
+           document.getElementById('displayTotalFaculty').textContent = faculty;
+           document.getElementById('displayYearLevels').textContent = yearLevels;
+           document.getElementById('displaySubjectsCount').textContent = subjectsCount;
+           
+           // Calculate total members
+           var totalMembers = students + faculty;
+           document.getElementById('displayTotalMembers').textContent = totalMembers;
+           
+           // Update coordinator info - handle nested object properly
+           var coordName = data.programCoordinator && data.programCoordinator.name ? data.programCoordinator.name : '--';
+           var coordEmail = data.programCoordinator && data.programCoordinator.email ? data.programCoordinator.email : '--';
+           document.getElementById('displayCoordinatorName').textContent = coordName;
+           document.getElementById('displayCoordinatorEmail').textContent = coordEmail;
+           
+           // Calculate ratio
+           var ratio = faculty > 0 ? (students / faculty).toFixed(1) + ':1' : '—';
+           document.getElementById('displayRatio').textContent = ratio;
+           
+           // Update mission, vision, goals
+           document.getElementById('displayMission').textContent = data.mission || '--';
+           document.getElementById('displayVision').textContent = data.vision || '--';
+           document.getElementById('displayGoals').textContent = data.goals || '--';
+           
+           // Update timestamp
+           if (data.updatedAt) {
+             var date = new Date(data.updatedAt);
+             document.getElementById('lastUpdatedInfo').textContent = date.toLocaleString();
+           }
+           
+           // Store current data for editing
+           window.currentDepartmentInfo = data;
+         }
+       })
+       .catch(function(err) {
+         console.error('Error loading department info:', err);
+       });
+   };
   
   // Open edit department modal
   window.openEditDepartmentModal = function() {
