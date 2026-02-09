@@ -538,10 +538,10 @@
             document.getElementById('totalMembers').textContent = totalMembers;
             
             // Update coordinator info
-            if (info.programCoordinator) {
-              document.getElementById('coordinatorName').textContent = info.programCoordinator.name || '--';
-              document.getElementById('coordinatorEmail').textContent = info.programCoordinator.email || '--';
-            }
+            var coordName = info.programCoordinator && info.programCoordinator.name ? info.programCoordinator.name : '--';
+            var coordEmail = info.programCoordinator && info.programCoordinator.email ? info.programCoordinator.email : '--';
+            document.getElementById('coordinatorName').textContent = coordName;
+            document.getElementById('coordinatorEmail').textContent = coordEmail;
           }
         } catch (error) {
           console.error('Error loading department info:', error);
