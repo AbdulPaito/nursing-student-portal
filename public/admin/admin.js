@@ -1003,7 +1003,7 @@
   // DEPARTMENT INFO FUNCTIONS
   // ========================================
   
-  // Load department info with enhanced statistics and charts
+  // Load department info with enhanced statistics
   var departmentPieChart = null;
   var departmentBarChart = null;
   
@@ -1015,21 +1015,33 @@
           var data = json.data;
           var students = data.totalStudents || 0;
           var faculty = data.totalFaculty || 0;
+          var yearLevels = data.yearLevels || 4;
+          var subjectsCount = data.subjectsCount || 20;
           
           // Update main counts
           document.getElementById('displayTotalStudents').textContent = students;
           document.getElementById('displayTotalFaculty').textContent = faculty;
+          document.getElementById('displayYearLevels').textContent = yearLevels;
+          document.getElementById('displaySubjectsCount').textContent = subjectsCount;
           
-          // Calculate and display enhanced statistics
+          // Calculate total members
           var totalMembers = students + faculty;
-          var ratio = faculty > 0 ? (students / faculty).toFixed(1) : '—';
-          var maxCapacity = 1000; // Set your department's max capacity
-          var capacityPercent = Math.min((students / maxCapacity) * 100, 100);
+          document.getElementById('displayTotalMembers').textContent = totalMembers;
           
-          document.getElementById('totalMembersDisplay').textContent = totalMembers;
-          document.getElementById('ratioDisplay').textContent = ratio + ':1';
-          document.getElementById('capacityDisplay').textContent = Math.round(capacityPercent) + '%';
-          document.getElementById('capacityBar').style.width = capacityPercent + '%';
+          // Update coordinator info
+          if (data.programCoordinator) {
+            document.getElementById('displayCoordinatorName').textContent = data.programCoordinator.name || '--';
+            document.getElementById('displayCoordinatorEmail').textContent = data.programCoordinator.email || '--';
+          }
+          
+          // Calculate ratio
+          var ratio = faculty > 0 ? (students / faculty).toFixed(1) + ':1' : '—';
+          document.getElementById('displayRatio').textContent = ratio;
+          
+          // Update mission, vision, goals
+          document.getElementById('displayMission').textContent = data.mission || '--';
+          document.getElementById('displayVision').textContent = data.vision || '--';
+          document.getElementById('displayGoals').textContent = data.goals || '--';
           
           // Update timestamp
           if (data.updatedAt) {
@@ -1037,8 +1049,8 @@
             document.getElementById('lastUpdatedInfo').textContent = date.toLocaleString();
           }
           
-          // Render charts
-          renderDepartmentCharts(students, faculty);
+          // Store current data for editing
+          window.currentDepartmentInfo = data;
         }
       })
       .catch(function(err) {
@@ -1046,221 +1058,77 @@
       });
   };
   
-  // Render Department Charts
-  function renderDepartmentCharts(students, faculty) {
-    // Pie Chart - Distribution
-    var pieCanvas = document.getElementById('departmentPieChart');
-    if (pieCanvas && typeof Chart !== 'undefined') {
-      if (departmentPieChart) departmentPieChart.destroy();
-      
-      departmentPieChart = new Chart(pieCanvas.getContext('2d'), {
-        type: 'doughnut',
-        data: {
-          labels: ['Students', 'Faculty'],
-          datasets: [{
-            data: [students, faculty],
-            backgroundColor: [
-              'rgba(59, 130, 246, 0.8)',
-              'rgba(16, 185, 129, 0.8)'
-            ],
-            borderColor: [
-              'rgb(59, 130, 246)',
-              'rgb(16, 185, 129)'
-            ],
-            borderWidth: 2
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: true,
-          plugins: {
-            legend: {
-              position: 'bottom',
-              labels: {
-                padding: 15,
-                font: {
-                  size: 12,
-                  weight: '600'
-                }
-              }
-            },
-            tooltip: {
-              callbacks: {
-                label: function(context) {
-                  var label = context.label || '';
-                  var value = context.parsed || 0;
-                  var total = students + faculty;
-                  var percent = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
-                  return label + ': ' + value + ' (' + percent + '%)';
-                }
-              }
-            }
-          }
-        }
-      });
+  // Open edit department modal
+  window.openEditDepartmentModal = function() {
+    var data = window.currentDepartmentInfo || {};
+    
+    document.getElementById('editTotalStudents').value = data.totalStudents || 0;
+    document.getElementById('editTotalFaculty').value = data.totalFaculty || 0;
+    document.getElementById('editYearLevels').value = data.yearLevels || 4;
+    document.getElementById('editSubjectsCount').value = data.subjectsCount || 20;
+    
+    if (data.programCoordinator) {
+      document.getElementById('editCoordinatorName').value = data.programCoordinator.name || '';
+      document.getElementById('editCoordinatorEmail').value = data.programCoordinator.email || '';
     }
     
-    // Bar Chart - Comparison
-    var barCanvas = document.getElementById('departmentBarChart');
-    if (barCanvas && typeof Chart !== 'undefined') {
-      if (departmentBarChart) departmentBarChart.destroy();
-      
-      departmentBarChart = new Chart(barCanvas.getContext('2d'), {
-        type: 'bar',
-        data: {
-          labels: ['Current Semester'],
-          datasets: [
-            {
-              label: 'Students',
-              data: [students],
-              backgroundColor: 'rgba(59, 130, 246, 0.8)',
-              borderColor: 'rgb(59, 130, 246)',
-              borderWidth: 2,
-              borderRadius: 8
-            },
-            {
-              label: 'Faculty',
-              data: [faculty],
-              backgroundColor: 'rgba(16, 185, 129, 0.8)',
-              borderColor: 'rgb(16, 185, 129)',
-              borderWidth: 2,
-              borderRadius: 8
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: true,
-          scales: {
-            y: {
-              beginAtZero: true,
-              ticks: {
-                stepSize: 50
-              }
-            }
-          },
-          plugins: {
-            legend: {
-              position: 'bottom',
-              labels: {
-                padding: 15,
-                font: {
-                  size: 12,
-                  weight: '600'
-                }
-              }
-            },
-            tooltip: {
-              callbacks: {
-                label: function(context) {
-                  return context.dataset.label + ': ' + context.parsed.y + ' members';
-                }
-              }
-            }
-          }
-        }
-      });
-    }
-  }
-
-  // Open edit students modal
-  window.openEditStudentsModal = function() {
-    var currentValue = document.getElementById('displayTotalStudents').textContent;
-    document.getElementById('inputTotalStudents').value = currentValue;
-    document.getElementById('editStudentsModal').classList.remove('hidden');
-    document.getElementById('inputTotalStudents').focus();
+    document.getElementById('editDepartmentModal').classList.remove('hidden');
   };
-
-  // Close edit students modal
-  window.closeEditStudentsModal = function() {
-    document.getElementById('editStudentsModal').classList.add('hidden');
+  
+  // Close edit department modal
+  window.closeEditDepartmentModal = function() {
+    document.getElementById('editDepartmentModal').classList.add('hidden');
   };
-
-  // Open edit faculty modal
-  window.openEditFacultyModal = function() {
-    var currentValue = document.getElementById('displayTotalFaculty').textContent;
-    document.getElementById('inputTotalFaculty').value = currentValue;
-    document.getElementById('editFacultyModal').classList.remove('hidden');
-    document.getElementById('inputTotalFaculty').focus();
-  };
-
-  // Close edit faculty modal
-  window.closeEditFacultyModal = function() {
-    document.getElementById('editFacultyModal').classList.add('hidden');
-  };
-
-  // Update students count
-  window.updateStudentsCount = function(event) {
+  
+  // Update department info
+  window.updateDepartmentInfo = function(event) {
     event.preventDefault();
-    var totalStudents = parseInt(document.getElementById('inputTotalStudents').value);
     
-    if (isNaN(totalStudents) || totalStudents < 0) {
-      toast('Please enter a valid number', 'error');
-      return;
-    }
-
+    var submitBtn = document.querySelector('#editDepartmentModal button[type="submit"]');
+    
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Saving...';
+    
+    var data = {
+      totalStudents: parseInt(document.getElementById('editTotalStudents').value) || 0,
+      totalFaculty: parseInt(document.getElementById('editTotalFaculty').value) || 0,
+      yearLevels: parseInt(document.getElementById('editYearLevels').value) || 4,
+      subjectsCount: parseInt(document.getElementById('editSubjectsCount').value) || 20,
+      programCoordinator: {
+        name: document.getElementById('editCoordinatorName').value,
+        email: document.getElementById('editCoordinatorEmail').value
+      }
+    };
+    
     fetch(API + '/api/department-info', {
       method: 'PUT',
       headers: headers(),
-      body: JSON.stringify({ totalStudents: totalStudents })
+      body: JSON.stringify(data)
     })
       .then(function(res) { return res.json(); })
       .then(function(json) {
         if (json.success) {
-          toast('Students count updated successfully!', 'success');
-          closeEditStudentsModal();
+          toast('Department info updated successfully!', 'success');
+          closeEditDepartmentModal();
           loadDepartmentInfo();
         } else {
-          toast('Error: ' + (json.error || 'Failed to update'), 'error');
+          alert('Error: ' + (json.error || 'Failed to update'));
         }
       })
       .catch(function(err) {
-        console.error('Error updating students count:', err);
-        toast('Error: ' + err.message, 'error');
-      });
-  };
-
-  // Update faculty count
-  window.updateFacultyCount = function(event) {
-    event.preventDefault();
-    var totalFaculty = parseInt(document.getElementById('inputTotalFaculty').value);
-    
-    if (isNaN(totalFaculty) || totalFaculty < 0) {
-      toast('Please enter a valid number', 'error');
-      return;
-    }
-
-    fetch(API + '/api/department-info', {
-      method: 'PUT',
-      headers: headers(),
-      body: JSON.stringify({ totalFaculty: totalFaculty })
-    })
-      .then(function(res) { return res.json(); })
-      .then(function(json) {
-        if (json.success) {
-          toast('Faculty count updated successfully!', 'success');
-          closeEditFacultyModal();
-          loadDepartmentInfo();
-        } else {
-          toast('Error: ' + (json.error || 'Failed to update'), 'error');
-        }
+        console.error('Error updating department info:', err);
+        alert('Network error. Please try again.');
       })
-      .catch(function(err) {
-        console.error('Error updating faculty count:', err);
-        toast('Error: ' + err.message, 'error');
+      .finally(function() {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fa-solid fa-save mr-2"></i>Save Changes';
       });
   };
-
+  
   // Close modals when clicking outside
   document.addEventListener('click', function(e) {
-    if (e.target.id === 'editStudentsModal') {
-      closeEditStudentsModal();
-    }
-    if (e.target.id === 'editFacultyModal') {
-      closeEditFacultyModal();
-    }
-    if (e.target.id === 'courseModal') {
-      closeCourseModal();
+    if (e.target.id === 'editDepartmentModal') {
+      closeEditDepartmentModal();
     }
   });
 
@@ -1272,15 +1140,16 @@
     if (dashboardSection && !dashboardSection.classList.contains('hidden')) {
       console.log('✅ Dashboard is default section');
     }
-    
+
     // Load department info when department section is shown
-    var departmentSection = document.getElementById('section-department-info');
+    var departmentSection = document.getElementById('section-department');
     if (departmentSection) {
       var observer = new MutationObserver(function(mutations) {
         mutations.forEach(function(mutation) {
           if (mutation.attributeName === 'class') {
             if (!departmentSection.classList.contains('hidden')) {
-              loadDepartmentInfo();
+              // Load totals by default when section is shown
+              switchDeptTab('totals');
             }
           }
         });
@@ -1288,6 +1157,36 @@
       observer.observe(departmentSection, { attributes: true });
     }
   });
+
+  // ==========================================
+  // DEPARTMENT SECTION TABS
+  // ==========================================
+
+  // Switch between department totals and documents tabs
+  window.switchDeptTab = function(tab) {
+    const totalsSection = document.getElementById('deptTotalsSection');
+    const docsSection = document.getElementById('deptDocsSection');
+    const totalsTab = document.getElementById('deptTotalsTab');
+    const docsTab = document.getElementById('deptDocsTab');
+
+    if (tab === 'totals') {
+      totalsSection.classList.remove('hidden');
+      docsSection.classList.add('hidden');
+      totalsTab.classList.add('bg-gradient-to-r', 'from-primary-600', 'to-primary-700', 'text-white', 'shadow-md');
+      totalsTab.classList.remove('bg-white', 'text-gray-600');
+      docsTab.classList.remove('bg-gradient-to-r', 'from-primary-600', 'to-primary-700', 'text-white', 'shadow-md');
+      docsTab.classList.add('bg-white', 'text-gray-600');
+      loadDepartmentInfo();
+    } else {
+      totalsSection.classList.add('hidden');
+      docsSection.classList.remove('hidden');
+      docsTab.classList.add('bg-gradient-to-r', 'from-primary-600', 'to-primary-700', 'text-white', 'shadow-md');
+      docsTab.classList.remove('bg-white', 'text-gray-600');
+      totalsTab.classList.remove('bg-gradient-to-r', 'from-primary-600', 'to-primary-700', 'text-white', 'shadow-md');
+      totalsTab.classList.add('bg-white', 'text-gray-600');
+      loadDepartmentDocuments();
+    }
+  };
 
   // ==========================================
   // USER MANAGEMENT FUNCTIONS
@@ -1312,18 +1211,19 @@
 
   // Load department documents when section is shown
   document.addEventListener('DOMContentLoaded', function() {
-    const documentsSection = document.getElementById('section-department-documents');
-    if (documentsSection) {
+    const departmentSection = document.getElementById('section-department');
+    if (departmentSection) {
       const observer = new MutationObserver(function(mutations) {
         mutations.forEach(function(mutation) {
           if (mutation.attributeName === 'class') {
-            if (!documentsSection.classList.contains('hidden')) {
-              loadDepartmentDocuments();
+            if (!departmentSection.classList.contains('hidden')) {
+              // Default to totals tab when section is shown
+              switchDeptTab('totals');
             }
           }
         });
       });
-      observer.observe(documentsSection, { attributes: true });
+      observer.observe(departmentSection, { attributes: true });
     }
   });
 

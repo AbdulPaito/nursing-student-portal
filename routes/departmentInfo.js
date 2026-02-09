@@ -17,7 +17,13 @@ router.get('/', async (req, res) => {
 // PUT (update) department info - requires authentication
 router.put('/', authMiddleware, async (req, res) => {
   try {
-    const { totalStudents, totalFaculty } = req.body;
+    const {
+      totalStudents,
+      totalFaculty,
+      yearLevels,
+      subjectsCount,
+      programCoordinator
+    } = req.body;
 
     // Validate inputs
     if (totalStudents !== undefined && (typeof totalStudents !== 'number' || totalStudents < 0)) {
@@ -28,12 +34,27 @@ router.put('/', authMiddleware, async (req, res) => {
       return res.status(400).json({ success: false, error: 'Total faculty must be a non-negative number' });
     }
 
+    if (yearLevels !== undefined && (typeof yearLevels !== 'number' || yearLevels < 1)) {
+      return res.status(400).json({ success: false, error: 'Year levels must be at least 1' });
+    }
+
+    if (subjectsCount !== undefined && (typeof subjectsCount !== 'number' || subjectsCount < 0)) {
+      return res.status(400).json({ success: false, error: 'Subjects count must be a non-negative number' });
+    }
+
     const info = await DepartmentInfo.getSingleton();
-    
+
     if (totalStudents !== undefined) info.totalStudents = totalStudents;
     if (totalFaculty !== undefined) info.totalFaculty = totalFaculty;
-    info.updatedBy = req.user._id;
+    if (yearLevels !== undefined) info.yearLevels = yearLevels;
+    if (subjectsCount !== undefined) info.subjectsCount = subjectsCount;
+    
+    if (programCoordinator !== undefined) {
+      if (programCoordinator.name !== undefined) info.programCoordinator.name = programCoordinator.name;
+      if (programCoordinator.email !== undefined) info.programCoordinator.email = programCoordinator.email;
+    }
 
+    info.updatedBy = req.user._id;
     await info.save();
 
     res.json({ success: true, data: info, message: 'Department info updated successfully' });

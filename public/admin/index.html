@@ -408,11 +408,11 @@
           <i class="fa-solid fa-chevron-right ml-auto text-xs opacity-0 group-hover:opacity-100 transition-opacity"></i>
         </a>
         
-        <a href="#" data-section="department-documents" class="sidebar-link flex items-center gap-3 px-4 py-3.5 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 group">
+        <a href="#" data-section="department" class="sidebar-link flex items-center gap-3 px-4 py-3.5 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 group">
           <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
-            <i class="fa-solid fa-file-lines text-lg"></i>
+            <i class="fa-solid fa-building text-lg"></i>
           </div>
-          <span class="font-medium">Department Info</span>
+          <span class="font-medium">Department</span>
           <i class="fa-solid fa-chevron-right ml-auto text-xs opacity-0 group-hover:opacity-100 transition-opacity"></i>
         </a>
         
@@ -622,318 +622,361 @@
         </div>
       </section>
 
-      <!-- Department Info Section -->
-      <section id="section-department-info" class="admin-section hidden animate-fade-in">
-        <!-- Header -->
-        <div class="mb-8">
-          <h1 class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary-700 to-secondary-700 bg-clip-text text-transparent mb-2">
-            Department Information
-          </h1>
-          <p class="text-gray-500">Manage total counts for students and faculty members</p>
-        </div>
-
-        <!-- Stats Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <!-- Total Students Card -->
-          <div class="glass rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 border border-blue-100">
-            <div class="flex items-center justify-between mb-6">
-              <div class="flex items-center gap-4">
-                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/30">
-                  <i class="fa-solid fa-user-graduate text-white text-2xl"></i>
-                </div>
-                <div>
-                  <h3 class="text-lg font-semibold text-gray-700">Total Students</h3>
-                  <p class="text-sm text-gray-500">Current enrollment count</p>
-                </div>
-              </div>
-            </div>
-            
-            <div class="mb-6">
-              <div class="text-5xl font-bold text-blue-600 mb-2" id="displayTotalStudents">0</div>
-              <div class="h-2 bg-blue-100 rounded-full overflow-hidden">
-                <div class="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full" style="width: 100%"></div>
-              </div>
-            </div>
-
-            <button onclick="openEditStudentsModal()" class="w-full px-6 py-3.5 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold rounded-xl shadow-lg shadow-blue-500/30 transition-all duration-300 hover:-translate-y-0.5 flex items-center justify-center gap-2 group">
-              <i class="fa-solid fa-pen-to-square group-hover:scale-110 transition-transform"></i>
-              <span>Update Count</span>
-            </button>
-          </div>
-
-          <!-- Total Faculty Card -->
-          <div class="glass rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 border border-emerald-100">
-            <div class="flex items-center justify-between mb-6">
-              <div class="flex items-center gap-4">
-                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/30">
-                  <i class="fa-solid fa-chalkboard-user text-white text-2xl"></i>
-                </div>
-                <div>
-                  <h3 class="text-lg font-semibold text-gray-700">Total Faculty</h3>
-                  <p class="text-sm text-gray-500">Teachers and staff count</p>
-                </div>
-              </div>
-            </div>
-            
-            <div class="mb-6">
-              <div class="text-5xl font-bold text-emerald-600 mb-2" id="displayTotalFaculty">0</div>
-              <div class="h-2 bg-emerald-100 rounded-full overflow-hidden">
-                <div class="h-full bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-full" style="width: 100%"></div>
-              </div>
-            </div>
-
-            <button onclick="openEditFacultyModal()" class="w-full px-6 py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold rounded-xl shadow-lg shadow-emerald-500/30 transition-all duration-300 hover:-translate-y-0.5 flex items-center justify-center gap-2 group">
-              <i class="fa-solid fa-pen-to-square group-hover:scale-110 transition-transform"></i>
-              <span>Update Count</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Additional Department Statistics -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <!-- Student-Faculty Ratio -->
-          <div class="glass rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all border border-purple-100">
-            <div class="flex items-center gap-3 mb-4">
-              <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-lg shadow-purple-500/30">
-                <i class="fa-solid fa-chart-pie text-white text-xl"></i>
-              </div>
-              <div>
-                <h4 class="text-sm font-semibold text-gray-700">Student-Faculty Ratio</h4>
-                <p class="text-xs text-gray-500">Average class size</p>
-              </div>
-            </div>
-            <div class="text-3xl font-bold text-purple-600" id="ratioDisplay">—</div>
-            <p class="text-xs text-gray-500 mt-2">Students per faculty member</p>
-          </div>
-
-          <!-- Total Members -->
-          <div class="glass rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all border border-indigo-100">
-            <div class="flex items-center gap-3 mb-4">
-              <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/30">
-                <i class="fa-solid fa-users text-white text-xl"></i>
-              </div>
-              <div>
-                <h4 class="text-sm font-semibold text-gray-700">Total Members</h4>
-                <p class="text-xs text-gray-500">Combined count</p>
-              </div>
-            </div>
-            <div class="text-3xl font-bold text-indigo-600" id="totalMembersDisplay">0</div>
-            <p class="text-xs text-gray-500 mt-2">Students + Faculty</p>
-          </div>
-
-          <!-- Department Capacity -->
-          <div class="glass rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all border border-amber-100">
-            <div class="flex items-center gap-3 mb-4">
-              <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/30">
-                <i class="fa-solid fa-gauge-high text-white text-xl"></i>
-              </div>
-              <div>
-                <h4 class="text-sm font-semibold text-gray-700">Capacity Status</h4>
-                <p class="text-xs text-gray-500">Enrollment level</p>
-              </div>
-            </div>
-            <div class="text-3xl font-bold text-amber-600" id="capacityDisplay">—</div>
-            <div class="mt-3 w-full bg-gray-200 rounded-full h-2">
-              <div id="capacityBar" class="bg-gradient-to-r from-amber-500 to-amber-600 h-2 rounded-full transition-all" style="width: 0%"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Charts Section -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <!-- Distribution Chart -->
-          <div class="glass rounded-2xl p-6 shadow-xl">
-            <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-              <i class="fa-solid fa-chart-pie text-primary-600"></i>
-              Department Distribution
-            </h3>
-            <div class="relative h-64">
-              <canvas id="departmentPieChart"></canvas>
-            </div>
-          </div>
-
-          <!-- Trend Chart -->
-          <div class="glass rounded-2xl p-6 shadow-xl">
-            <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-              <i class="fa-solid fa-chart-line text-emerald-600"></i>
-              Growth Overview
-            </h3>
-            <div class="relative h-64">
-              <canvas id="departmentBarChart"></canvas>
-            </div>
-          </div>
-        </div>
-
-        <!-- Last Updated Info -->
-        <div class="glass rounded-2xl p-4 flex items-center justify-between">
-          <div class="flex items-center gap-3 text-sm text-gray-600">
-            <i class="fa-solid fa-clock text-gray-400"></i>
-            <span>Last updated: <span id="lastUpdatedInfo" class="font-medium">Never</span></span>
-          </div>
-          <button onclick="loadDepartmentInfo()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition-all flex items-center gap-2">
-            <i class="fa-solid fa-rotate"></i>
-            <span>Refresh</span>
-          </button>
-        </div>
-      </section>
-
-      <!-- Edit Students Modal -->
-      <div id="editStudentsModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="glass rounded-3xl max-w-md w-full p-8 shadow-2xl animate-scale-in">
-          <div class="flex items-center justify-between mb-6">
-            <div class="flex items-center gap-3">
-              <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/30">
-                <i class="fa-solid fa-user-graduate text-white text-xl"></i>
-              </div>
-              <h2 class="text-2xl font-bold text-gray-800">Update Students Count</h2>
-            </div>
-            <button onclick="closeEditStudentsModal()" class="w-10 h-10 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-600 flex items-center justify-center transition-all">
-              <i class="fa-solid fa-xmark text-xl"></i>
-            </button>
-          </div>
-
-          <form onsubmit="updateStudentsCount(event)">
-            <div class="mb-6">
-              <label class="block text-sm font-semibold text-gray-700 mb-2">
-                <i class="fa-solid fa-hashtag text-blue-600 mr-1"></i>
-                Total Number of Students
-              </label>
-              <input 
-                type="number" 
-                id="inputTotalStudents" 
-                min="0" 
-                required
-                class="w-full px-4 py-3.5 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring focus:ring-blue-200 transition-all outline-none text-lg font-semibold text-gray-800"
-                placeholder="Enter total students"
-              >
-              <p class="mt-2 text-xs text-gray-500">
-                <i class="fa-solid fa-info-circle mr-1"></i>
-                Enter the total count of enrolled students
-              </p>
-            </div>
-
-            <div class="flex gap-3">
-              <button type="button" onclick="closeEditStudentsModal()" class="flex-1 px-6 py-3.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl transition-all">
-                Cancel
-              </button>
-              <button type="submit" class="flex-1 px-6 py-3.5 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold rounded-xl shadow-lg shadow-blue-500/30 transition-all hover:-translate-y-0.5">
-                Save Changes
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-
-      <!-- Edit Faculty Modal -->
-      <div id="editFacultyModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="glass rounded-3xl max-w-md w-full p-8 shadow-2xl animate-scale-in">
-          <div class="flex items-center justify-between mb-6">
-            <div class="flex items-center gap-3">
-              <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/30">
-                <i class="fa-solid fa-chalkboard-user text-white text-xl"></i>
-              </div>
-              <h2 class="text-2xl font-bold text-gray-800">Update Faculty Count</h2>
-            </div>
-            <button onclick="closeEditFacultyModal()" class="w-10 h-10 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-600 flex items-center justify-center transition-all">
-              <i class="fa-solid fa-xmark text-xl"></i>
-            </button>
-          </div>
-
-          <form onsubmit="updateFacultyCount(event)">
-            <div class="mb-6">
-              <label class="block text-sm font-semibold text-gray-700 mb-2">
-                <i class="fa-solid fa-hashtag text-emerald-600 mr-1"></i>
-                Total Number of Faculty
-              </label>
-              <input 
-                type="number" 
-                id="inputTotalFaculty" 
-                min="0" 
-                required
-                class="w-full px-4 py-3.5 rounded-xl border-2 border-gray-200 focus:border-emerald-500 focus:ring focus:ring-emerald-200 transition-all outline-none text-lg font-semibold text-gray-800"
-                placeholder="Enter total faculty"
-              >
-              <p class="mt-2 text-xs text-gray-500">
-                <i class="fa-solid fa-info-circle mr-1"></i>
-                Enter the total count of teachers and staff
-              </p>
-            </div>
-
-            <div class="flex gap-3">
-              <button type="button" onclick="closeEditFacultyModal()" class="flex-1 px-6 py-3.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl transition-all">
-                Cancel
-              </button>
-              <button type="submit" class="flex-1 px-6 py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold rounded-xl shadow-lg shadow-emerald-500/30 transition-all hover:-translate-y-0.5">
-                Save Changes
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-
-      <!-- Department Documents Section -->
-      <section id="section-department-documents" class="admin-section hidden animate-fade-in">
+      <!-- Department Section (Combined) -->
+      <section id="section-department" class="admin-section hidden animate-fade-in">
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-8">
           <div>
             <h1 class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary-700 to-secondary-700 bg-clip-text text-transparent mb-2">
-              Department Documents
+              Department Management
             </h1>
-            <p class="text-gray-500">Upload and manage letters, memos, and official documents</p>
+            <p class="text-gray-500">Manage department totals and official documents</p>
           </div>
-          <button type="button" class="btn-shimmer px-6 py-3.5 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold rounded-2xl shadow-xl shadow-blue-500/30 transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-2 group" onclick="openUploadDocumentModal()">
-            <i class="fa-solid fa-cloud-arrow-up group-hover:-translate-y-1 transition-transform"></i>
-            <span>Upload Document</span>
-          </button>
         </div>
 
-        <!-- Documents Table -->
-        <div class="glass rounded-3xl shadow-xl overflow-hidden">
-          <div class="p-6 border-b border-gray-100">
-            <div class="flex flex-col sm:flex-row gap-4 justify-between">
-              <div class="relative max-w-md flex-1">
-                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                <input type="text" id="documentsSearch" placeholder="Search documents..." class="w-full pl-12 pr-4 py-3.5 bg-gray-50 border-2 border-gray-100 rounded-2xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all">
+        <!-- Tab Buttons -->
+        <div class="mb-6 flex flex-col lg:flex-row lg:items-center gap-4">
+          <div class="glass rounded-2xl p-2 inline-flex gap-2 border border-white/50 shadow-lg">
+            <button id="deptTotalsTab" class="dept-tab px-6 py-3 rounded-xl text-sm font-bold transition-all duration-300 bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-md" onclick="switchDeptTab('totals')">
+              <i class="fa-solid fa-calculator mr-2"></i>Department Totals
+            </button>
+            <button id="deptDocsTab" class="dept-tab px-6 py-3 rounded-xl text-sm font-bold transition-all duration-300 bg-white text-gray-600 hover:bg-gray-50" onclick="switchDeptTab('documents')">
+              <i class="fa-solid fa-folder-open mr-2"></i>Department Documents
+            </button>
+          </div>
+        </div>
+
+        <!-- Department Totals Tab Content -->
+        <div id="deptTotalsSection">
+          <!-- Header with Edit Button -->
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h2 class="text-2xl font-bold text-gray-800">Department Statistics</h2>
+              <p class="text-gray-600">View and manage department information</p>
+            </div>
+            <button onclick="openEditDepartmentModal()" class="px-4 py-2 bg-gradient-to-r from-primary to-secondary text-white font-semibold rounded-xl hover:shadow-lg transition-all flex items-center gap-2">
+              <i class="fa-solid fa-pen-to-square"></i>
+              <span>Edit Info</span>
+            </button>
+          </div>
+
+          <!-- Stats Cards -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <!-- Total Students Card -->
+            <div class="glass rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 border border-blue-100">
+              <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-4">
+                  <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/30">
+                    <i class="fa-solid fa-user-graduate text-white text-2xl"></i>
+                  </div>
+                  <div>
+                    <h3 class="text-lg font-semibold text-gray-700">Total Students</h3>
+                    <p class="text-sm text-gray-500">Current enrollment count</p>
+                  </div>
+                </div>
               </div>
-              <div class="flex gap-2">
-                <select id="categoryFilter" class="px-4 py-2 rounded-xl bg-gray-100 text-gray-600 focus:outline-none">
-                  <option value="">All Categories</option>
-                  <option value="Letter">Letter</option>
-                  <option value="Memo">Memo</option>
-                  <option value="Policy">Policy</option>
-                  <option value="Notice">Notice</option>
-                  <option value="Form">Form</option>
-                  <option value="Announcement">Announcement</option>
-                </select>
+              
+              <div class="mb-6">
+                <div class="text-5xl font-bold text-blue-600 mb-2" id="displayTotalStudents">0</div>
+                <div class="h-2 bg-blue-100 rounded-full overflow-hidden">
+                  <div class="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full" style="width: 100%"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Total Faculty Card -->
+            <div class="glass rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 border border-emerald-100">
+              <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-4">
+                  <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/30">
+                    <i class="fa-solid fa-chalkboard-user text-white text-2xl"></i>
+                  </div>
+                  <div>
+                    <h3 class="text-lg font-semibold text-gray-700">Total Faculty</h3>
+                    <p class="text-sm text-gray-500">Teachers and staff count</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="mb-6">
+                <div class="text-5xl font-bold text-emerald-600 mb-2" id="displayTotalFaculty">0</div>
+                <div class="h-2 bg-emerald-100 rounded-full overflow-hidden">
+                  <div class="h-full bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-full" style="width: 100%"></div>
+                </div>
               </div>
             </div>
           </div>
 
-          <div class="overflow-x-auto">
-            <table class="w-full">
-              <thead class="bg-gray-50 border-b border-gray-200">
-                <tr>
-                  <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Title</th>
-                  <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Category</th>
-                  <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Type</th>
-                  <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Date</th>
-                  <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Published</th>
-                  <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Active</th>
-                  <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Stats</th>
-                  <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
-                </tr>
-              </thead>
-              <tbody id="documentsTableBody" class="divide-y divide-gray-200">
-                <tr>
-                  <td colspan="8" class="px-6 py-12 text-center text-gray-500">
-                    <i class="fa-solid fa-spinner fa-spin text-3xl mb-3 text-primary-500"></i>
-                    <p>Loading documents...</p>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+          <!-- Additional Stats Cards -->
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <!-- Year Levels -->
+            <div class="glass rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all border border-purple-100">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-lg shadow-purple-500/30">
+                  <i class="fa-solid fa-layer-group text-white text-xl"></i>
+                </div>
+                <div>
+                  <h4 class="text-sm font-semibold text-gray-700">Year Levels</h4>
+                  <p class="text-xs text-gray-500">Program duration</p>
+                </div>
+              </div>
+              <div class="text-3xl font-bold text-purple-600" id="displayYearLevels">4</div>
+            </div>
+
+            <!-- Subjects Count -->
+            <div class="glass rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all border border-amber-100">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/30">
+                  <i class="fa-solid fa-book-open text-white text-xl"></i>
+                </div>
+                <div>
+                  <h4 class="text-sm font-semibold text-gray-700">Subjects</h4>
+                  <p class="text-xs text-gray-500">Total subjects</p>
+                </div>
+              </div>
+              <div class="text-3xl font-bold text-amber-600" id="displaySubjectsCount">20+</div>
+            </div>
+
+            <!-- Student-Faculty Ratio -->
+            <div class="glass rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all border border-rose-100">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-rose-500 to-rose-600 flex items-center justify-center shadow-lg shadow-rose-500/30">
+                  <i class="fa-solid fa-chart-pie text-white text-xl"></i>
+                </div>
+                <div>
+                  <h4 class="text-sm font-semibold text-gray-700">Student-Faculty Ratio</h4>
+                  <p class="text-xs text-gray-500">Average per class</p>
+                </div>
+              </div>
+              <div class="text-3xl font-bold text-rose-600" id="displayRatio">—</div>
+            </div>
+
+            <!-- Total Members -->
+            <div class="glass rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all border border-indigo-100">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/30">
+                  <i class="fa-solid fa-users text-white text-xl"></i>
+                </div>
+                <div>
+                  <h4 class="text-sm font-semibold text-gray-700">Total Members</h4>
+                  <p class="text-xs text-gray-500">Combined count</p>
+                </div>
+              </div>
+              <div class="text-3xl font-bold text-indigo-600" id="displayTotalMembers">0</div>
+            </div>
+          </div>
+
+          <!-- Program Coordinator Card -->
+          <div class="glass rounded-2xl p-6 shadow-lg mb-8">
+            <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+              <i class="fa-solid fa-user-tie text-primary"></i>
+              Program Coordinator
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="p-4 bg-gray-50 rounded-xl">
+                <p class="text-xs text-gray-500 mb-1">Name</p>
+                <p class="font-semibold text-gray-800" id="displayCoordinatorName">--</p>
+              </div>
+              <div class="p-4 bg-gray-50 rounded-xl">
+                <p class="text-xs text-gray-500 mb-1">Email</p>
+                <p class="font-semibold text-gray-800" id="displayCoordinatorEmail">--</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Last Updated Info -->
+          <div class="glass rounded-2xl p-4 flex items-center justify-between">
+            <div class="flex items-center gap-3 text-sm text-gray-600">
+              <i class="fa-solid fa-clock text-gray-400"></i>
+              <span>Last updated: <span id="lastUpdatedInfo" class="font-medium">Never</span></span>
+            </div>
+            <button onclick="loadDepartmentInfo()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition-all flex items-center gap-2">
+              <i class="fa-solid fa-rotate"></i>
+              <span>Refresh</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Department Documents Tab Content -->
+        <div id="deptDocsSection" class="hidden">
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-8">
+            <div>
+              <h2 class="text-2xl font-bold text-gray-800">Department Documents</h2>
+              <p class="text-gray-600">Upload and manage letters, memos, and official documents</p>
+            </div>
+            <button type="button" class="btn-shimmer px-6 py-3.5 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold rounded-2xl shadow-xl shadow-blue-500/30 transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-2 group" onclick="openUploadDocumentModal()">
+              <i class="fa-solid fa-cloud-arrow-up group-hover:-translate-y-1 transition-transform"></i>
+              <span>Upload Document</span>
+            </button>
+          </div>
+
+          <!-- Documents Table -->
+          <div class="glass rounded-3xl shadow-xl overflow-hidden">
+            <div class="p-6 border-b border-gray-100">
+              <div class="flex flex-col sm:flex-row gap-4 justify-between">
+                <div class="relative max-w-md flex-1">
+                  <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                  <input type="text" id="documentsSearch" placeholder="Search documents..." class="w-full pl-12 pr-4 py-3.5 bg-gray-50 border-2 border-gray-100 rounded-2xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all">
+                </div>
+                <div class="flex gap-2">
+                  <select id="categoryFilter" class="px-4 py-2 rounded-xl bg-gray-100 text-gray-600 focus:outline-none">
+                    <option value="">All Categories</option>
+                    <option value="Letter">Letter</option>
+                    <option value="Memo">Memo</option>
+                    <option value="Policy">Policy</option>
+                    <option value="Notice">Notice</option>
+                    <option value="Form">Form</option>
+                    <option value="Announcement">Announcement</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full">
+                <thead class="bg-gray-50 border-b border-gray-200">
+                  <tr>
+                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Title</th>
+                    <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Category</th>
+                    <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Type</th>
+                    <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Date</th>
+                    <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Published</th>
+                    <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Stats</th>
+                    <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="documentsTableBody" class="divide-y divide-gray-200">
+                  <tr>
+                    <td colspan="7" class="px-6 py-12 text-center text-gray-500">
+                      <i class="fa-solid fa-spinner fa-spin text-3xl mb-3 text-primary-500"></i>
+                      <p>Loading documents...</p>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </section>
+
+      <!-- Edit Department Info Modal -->
+      <div id="editDepartmentModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="glass rounded-3xl max-w-2xl w-full p-8 shadow-2xl animate-scale-in max-h-[90vh] overflow-y-auto">
+          <div class="flex items-center justify-between mb-6">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg">
+                <i class="fa-solid fa-building text-white text-xl"></i>
+              </div>
+              <h2 class="text-2xl font-bold text-gray-800">Edit Department Info</h2>
+            </div>
+            <button onclick="closeEditDepartmentModal()" class="w-10 h-10 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-600 flex items-center justify-center transition-all">
+              <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+          </div>
+
+          <form onsubmit="updateDepartmentInfo(event)">
+            <!-- Basic Stats -->
+            <div class="grid grid-cols-2 gap-4 mb-6">
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                  <i class="fa-solid fa-users text-blue-600 mr-1"></i>
+                  Total Students
+                </label>
+                <input 
+                  type="number" 
+                  id="editTotalStudents" 
+                  min="0" 
+                  class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:outline-none transition-all"
+                  placeholder="0"
+                >
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                  <i class="fa-solid fa-chalkboard-teacher text-emerald-600 mr-1"></i>
+                  Total Faculty
+                </label>
+                <input 
+                  type="number" 
+                  id="editTotalFaculty" 
+                  min="0" 
+                  class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-emerald-500 focus:outline-none transition-all"
+                  placeholder="0"
+                >
+              </div>
+            </div>
+
+            <!-- Additional Stats -->
+            <div class="grid grid-cols-2 gap-4 mb-6">
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                  <i class="fa-solid fa-layer-group text-purple-600 mr-1"></i>
+                  Year Levels
+                </label>
+                <input 
+                  type="number" 
+                  id="editYearLevels" 
+                  min="1" 
+                  class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:outline-none transition-all"
+                  placeholder="4"
+                >
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                  <i class="fa-solid fa-book text-amber-600 mr-1"></i>
+                  Subjects Count
+                </label>
+                <input 
+                  type="number" 
+                  id="editSubjectsCount" 
+                  min="0" 
+                  class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-amber-500 focus:outline-none transition-all"
+                  placeholder="20"
+                >
+              </div>
+            </div>
+
+            <!-- Program Coordinator -->
+            <div class="mb-6">
+              <h3 class="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
+                <i class="fa-solid fa-user-tie text-primary"></i>
+                Program Coordinator
+              </h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-semibold text-gray-700 mb-2">Name</label>
+                  <input 
+                    type="text" 
+                    id="editCoordinatorName" 
+                    class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-primary focus:outline-none transition-all"
+                    placeholder="BSN 2C - AQUINO (2025-2026)"
+                  >
+                </div>
+                <div>
+                  <label class="block text-sm font-semibold text-gray-700 mb-2">Email</label>
+                  <input 
+                    type="email" 
+                    id="editCoordinatorEmail" 
+                    class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-primary focus:outline-none transition-all"
+                    placeholder="nursing@msu.edu.ph"
+                  >
+                </div>
+              </div>
+            </div>
+
+            <!-- Message -->
+            <div id="editDepartmentMessage" class="hidden mb-4"></div>
+
+            <!-- Actions -->
+            <div class="flex gap-3 pt-4 border-t border-gray-200">
+              <button type="button" onclick="closeEditDepartmentModal()" class="flex-1 px-6 py-3.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl transition-all">
+                Cancel
+              </button>
+              <button type="submit" class="flex-1 px-6 py-3.5 bg-gradient-to-r from-primary to-secondary text-white font-semibold rounded-xl shadow-lg transition-all hover:-translate-y-0.5">
+                <i class="fa-solid fa-save mr-2"></i>Save Changes
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
 
       <!-- Events Section -->
       <section id="section-events" class="admin-section hidden animate-fade-in">

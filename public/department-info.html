@@ -87,12 +87,6 @@
       border: 1px solid rgba(255, 255, 255, 0.5);
     }
 
-    .glass-strong {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-    }
-
     .gradient-text {
       background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
       -webkit-background-clip: text;
@@ -170,7 +164,6 @@
   <nav class="bg-white/95 backdrop-blur-md border-b border-gray-200/80 sticky top-0 z-50 transition-all duration-300" id="navbar">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16 lg:h-18">
-
         <!-- Logo & Title Section -->
         <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
           <a href="/" class="relative group flex items-center justify-center">
@@ -182,7 +175,6 @@
             </div>
             <div class="absolute -inset-1 bg-primary/20 rounded-xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           </a>
-
           <div class="flex flex-col min-w-0">
             <a href="/" class="group">
               <h1 class="text-sm sm:text-base lg:text-lg font-bold text-gray-900 tracking-tight leading-tight truncate max-w-[140px] sm:max-w-[200px] lg:max-w-none transition-colors duration-300 group-hover:text-primary">
@@ -205,10 +197,10 @@
             <span class="flex items-center gap-1.5"><i class="fa-solid fa-calendar-days text-sm"></i>Events</span>
           </a>
           <a href="/daily-subjects.html" class="nav-link px-3 py-2 text-sm font-medium text-gray-700 hover:text-primary transition-colors duration-200 rounded-lg hover:bg-gray-50/80" data-page="subjects">
-            <span class="flex items-center gap-1.5"><i class="fa-solid fa-book-open text-sm"></i>Courses & Subjects</span>
+            <span class="flex items-center gap-1.5"><i class="fa-solid fa-book-open text-sm"></i>Subjects</span>
           </a>
-          <a href="/department-info.html" class="nav-link px-3 py-2 text-sm font-medium text-gray-700 hover:text-primary transition-colors duration-200 rounded-lg hover:bg-gray-50/80" data-page="department-info">
-            <span class="flex items-center gap-1.5"><i class="fa-solid fa-file-lines text-sm"></i>Department Info</span>
+          <a href="/department-info.html" class="nav-link px-3 py-2 text-sm font-medium text-primary transition-colors duration-200 rounded-lg bg-primary/10" data-page="department-info">
+            <span class="flex items-center gap-1.5"><i class="fa-solid fa-building text-sm"></i>Department</span>
           </a>
           <a href="/announcements.html" class="nav-link px-3 py-2 text-sm font-medium text-gray-700 hover:text-primary transition-colors duration-200 rounded-lg hover:bg-gray-50/80" data-page="announcements">
             <span class="flex items-center gap-1.5"><i class="fa-solid fa-bullhorn text-sm"></i>Announcements</span>
@@ -242,11 +234,11 @@
         </a>
         <a href="/daily-subjects.html" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:text-primary hover:bg-primary/5 rounded-xl transition-all duration-200" data-page="subjects">
           <div class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center"><i class="fa-solid fa-book-open text-primary"></i></div>
-          <span>Courses & Subjects</span>
+          <span>Subjects</span>
         </a>
-        <a href="/department-info.html" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:text-primary hover:bg-primary/5 rounded-xl transition-all duration-200" data-page="department-info">
-          <div class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center"><i class="fa-solid fa-file-lines text-primary"></i></div>
-          <span>Department Info</span>
+        <a href="/department-info.html" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-primary bg-primary/10 rounded-xl transition-all duration-200" data-page="department-info">
+          <div class="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center"><i class="fa-solid fa-building text-primary"></i></div>
+          <span>Department</span>
         </a>
         <a href="/announcements.html" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:text-primary hover:bg-primary/5 rounded-xl transition-all duration-200" data-page="announcements">
           <div class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center"><i class="fa-solid fa-bullhorn text-primary"></i></div>
@@ -271,127 +263,171 @@
         </div>
         <h1 class="text-3xl md:text-4xl font-bold">Department Information</h1>
       </div>
-      <p class="text-lg opacity-90 ml-15">View department statistics and information.</p>
+      <p class="text-lg opacity-90 ml-15">View department statistics and official documents.</p>
     </div>
   </section>
 
   <!-- Main Content -->
   <main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <!-- Department Stats Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-      <div class="glass rounded-2xl p-6 card-hover animate-fade-in-up" style="animation-delay: 0.1s;">
-        <div class="flex items-center gap-3 mb-3">
-          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center">
-            <i class="fa-solid fa-users text-white text-xl"></i>
-          </div>
-          <div class="text-3xl font-bold gradient-text" id="totalStudents">--</div>
-        </div>
-        <p class="text-sm text-gray-600 font-medium">Total Students</p>
-      </div>
-
-      <div class="glass rounded-2xl p-6 card-hover animate-fade-in-up" style="animation-delay: 0.2s;">
-        <div class="flex items-center gap-3 mb-3">
-          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
-            <i class="fa-solid fa-chalkboard-teacher text-white text-xl"></i>
-          </div>
-          <div class="text-3xl font-bold gradient-text" id="totalFaculty">--</div>
-        </div>
-        <p class="text-sm text-gray-600 font-medium">Total Faculty</p>
-      </div>
-
-      <div class="glass rounded-2xl p-6 card-hover animate-fade-in-up" style="animation-delay: 0.3s;">
-        <div class="flex items-center gap-3 mb-3">
-          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center">
-            <i class="fa-solid fa-graduation-cap text-white text-xl"></i>
-          </div>
-          <div class="text-3xl font-bold gradient-text">4</div>
-        </div>
-        <p class="text-sm text-gray-600 font-medium">Year Levels</p>
-      </div>
-
-      <div class="glass rounded-2xl p-6 card-hover animate-fade-in-up" style="animation-delay: 0.4s;">
-        <div class="flex items-center gap-3 mb-3">
-          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center">
-            <i class="fa-solid fa-book text-white text-xl"></i>
-          </div>
-          <div class="text-3xl font-bold gradient-text">20+</div>
-        </div>
-        <p class="text-sm text-gray-600 font-medium">Subjects</p>
+    <!-- Tab Buttons -->
+    <div class="mb-6 flex flex-col lg:flex-row lg:items-center gap-4">
+      <div class="glass rounded-2xl p-2 inline-flex gap-2 border border-white/50 shadow-lg">
+        <button id="studentDeptTab" class="dept-tab px-6 py-3 rounded-xl text-sm font-bold transition-all duration-300 bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-md" onclick="switchStudentDeptTab('totals')">
+          <i class="fa-solid fa-calculator mr-2"></i>Department Totals
+        </button>
+        <button id="studentDocsTab" class="dept-tab px-6 py-3 rounded-xl text-sm font-bold transition-all duration-300 bg-white text-gray-600 hover:bg-gray-50" onclick="switchStudentDeptTab('documents')">
+          <i class="fa-solid fa-folder-open mr-2"></i>Department Documents
+        </button>
       </div>
     </div>
 
-    <!-- Additional Info Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <!-- Mission Card -->
-      <div class="glass rounded-2xl p-6 card-hover">
-        <div class="flex items-center gap-3 mb-4">
-          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
-            <i class="fa-solid fa-bullseye text-white text-xl"></i>
+    <!-- Department Totals Section -->
+    <div id="deptTotalsSection">
+      <!-- Stats Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div class="glass rounded-2xl p-6 card-hover animate-fade-in-up" style="animation-delay: 0.1s;">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+              <i class="fa-solid fa-users text-white text-xl"></i>
+            </div>
+            <div class="text-3xl font-bold gradient-text" id="totalStudents">--</div>
           </div>
-          <h2 class="text-xl font-bold text-gray-800">Mission</h2>
+          <p class="text-sm text-gray-600 font-medium">Total Students</p>
         </div>
-        <p class="text-gray-600 text-sm leading-relaxed">
-          To produce competent, compassionate, and ethical nursing professionals equipped with the knowledge, skills, and values to meet the healthcare needs of the community and the global society.
-        </p>
+
+        <div class="glass rounded-2xl p-6 card-hover animate-fade-in-up" style="animation-delay: 0.2s;">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center">
+              <i class="fa-solid fa-chalkboard-teacher text-white text-xl"></i>
+            </div>
+            <div class="text-3xl font-bold gradient-text" id="totalFaculty">--</div>
+          </div>
+          <p class="text-sm text-gray-600 font-medium">Total Faculty</p>
+        </div>
+
+        <div class="glass rounded-2xl p-6 card-hover animate-fade-in-up" style="animation-delay: 0.3s;">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center">
+              <i class="fa-solid fa-layer-group text-white text-xl"></i>
+            </div>
+            <div class="text-3xl font-bold gradient-text" id="yearLevels">--</div>
+          </div>
+          <p class="text-sm text-gray-600 font-medium">Year Levels</p>
+        </div>
+
+        <div class="glass rounded-2xl p-6 card-hover animate-fade-in-up" style="animation-delay: 0.4s;">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center">
+              <i class="fa-solid fa-book-open text-white text-xl"></i>
+            </div>
+            <div class="text-3xl font-bold gradient-text" id="subjectsOffered">--</div>
+          </div>
+          <p class="text-sm text-gray-600 font-medium">Subjects Offered</p>
+        </div>
       </div>
 
-      <!-- Vision Card -->
-      <div class="glass rounded-2xl p-6 card-hover">
-        <div class="flex items-center gap-3 mb-4">
-          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-secondary to-primary flex items-center justify-center">
-            <i class="fa-solid fa-eye text-white text-xl"></i>
+      <!-- Additional Info Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <!-- Student-Faculty Ratio -->
+        <div class="glass rounded-2xl p-6 card-hover">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-rose-500 to-rose-600 flex items-center justify-center">
+              <i class="fa-solid fa-chart-pie text-white text-xl"></i>
+            </div>
+            <h3 class="text-lg font-bold text-gray-800">Ratio</h3>
           </div>
-          <h2 class="text-xl font-bold text-gray-800">Vision</h2>
+          <p class="text-2xl font-bold text-rose-600 mb-1" id="studentRatio">—</p>
+          <p class="text-xs text-gray-500">Student-Faculty Ratio</p>
         </div>
-        <p class="text-gray-600 text-sm leading-relaxed">
-          A Center of Excellence in Nursing Education that molds students to become leaders in the healthcare industry, committed to service, innovation, and lifelong learning.
-        </p>
-      </div>
 
-      <!-- Goals Card -->
-      <div class="glass rounded-2xl p-6 card-hover">
-        <div class="flex items-center gap-3 mb-4">
-          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center">
-            <i class="fa-solid fa-flag text-white text-xl"></i>
+        <!-- Total Members -->
+        <div class="glass rounded-2xl p-6 card-hover">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-600 flex items-center justify-center">
+              <i class="fa-solid fa-users text-white text-xl"></i>
+            </div>
+            <h3 class="text-lg font-bold text-gray-800">Members</h3>
           </div>
-          <h2 class="text-xl font-bold text-gray-800">Goals</h2>
+          <p class="text-2xl font-bold text-indigo-600 mb-1" id="totalMembers">—</p>
+          <p class="text-xs text-gray-500">Students + Faculty</p>
         </div>
-        <p class="text-gray-600 text-sm leading-relaxed">
-          To continually improve the nursing curriculum, enhance clinical training facilities, and foster partnerships with healthcare institutions for the holistic development of nursing students.
-        </p>
+
+        <!-- Program Coordinator -->
+        <div class="glass rounded-2xl p-6 card-hover">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+              <i class="fa-solid fa-user-tie text-white text-xl"></i>
+            </div>
+            <h3 class="text-lg font-bold text-gray-800">Coordinator</h3>
+          </div>
+          <p class="text-sm font-bold text-primary mb-1 truncate" id="coordinatorName">--</p>
+          <p class="text-xs text-gray-500" id="coordinatorEmail">--</p>
+        </div>
+
+        <!-- Contact -->
+        <div class="glass rounded-2xl p-6 card-hover">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center">
+              <i class="fa-solid fa-envelope text-white text-xl"></i>
+            </div>
+            <h3 class="text-lg font-bold text-gray-800">Contact</h3>
+          </div>
+          <p class="text-sm font-bold text-green-600 mb-1">Email Us</p>
+          <p class="text-xs text-gray-500">For inquiries</p>
+        </div>
       </div>
     </div>
 
-    <!-- Program Coordinator Info -->
-    <div class="mt-8 glass rounded-2xl p-6 card-hover">
-      <div class="flex items-center gap-3 mb-4">
-        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-600 flex items-center justify-center">
-          <i class="fa-solid fa-user-tie text-white text-xl"></i>
+    <!-- Department Documents Section -->
+    <div id="deptDocsSection" class="hidden">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h2 class="text-2xl font-bold text-gray-800">Department Documents</h2>
+          <p class="text-gray-600">Official documents, memos, and announcements</p>
         </div>
-        <h2 class="text-xl font-bold text-gray-800">Program Coordinator</h2>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
-          <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-            <i class="fa-solid fa-user text-primary"></i>
+
+      <!-- Search and Filters -->
+      <div class="glass rounded-2xl p-4 mb-6">
+        <div class="flex flex-col md:flex-row gap-4">
+          <div class="relative flex-1">
+            <i class="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+            <input type="text" id="searchInput" placeholder="Search documents..." class="w-full pl-12 pr-4 py-3 bg-white border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:outline-none transition-all">
           </div>
-          <div>
-            <p class="text-sm text-gray-500">Coordinator</p>
-            <p class="font-semibold text-gray-800">BSN 2C - AQUINO (2025-2026)</p>
+          <div class="flex gap-3">
+            <select id="categoryFilter" class="px-4 py-3 bg-white border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:outline-none transition-all">
+              <option value="">All Categories</option>
+              <option value="Letter">Letter</option>
+              <option value="Memo">Memo</option>
+              <option value="Policy">Policy</option>
+              <option value="Notice">Notice</option>
+              <option value="Form">Form</option>
+              <option value="Announcement">Announcement</option>
+              <option value="Other">Other</option>
+            </select>
+            <select id="sortFilter" class="px-4 py-3 bg-white border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:outline-none transition-all">
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+              <option value="title">Title A-Z</option>
+            </select>
           </div>
         </div>
-        <div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
-          <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-            <i class="fa-solid fa-envelope text-primary"></i>
-          </div>
-          <div>
-            <p class="text-sm text-gray-500">Email</p>
-            <p class="font-semibold text-gray-800">nursing@msu.edu.ph</p>
-          </div>
+      </div>
+
+      <!-- Documents Grid -->
+      <div id="documentsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="col-span-full flex flex-col items-center justify-center py-20">
+          <i class="fa-solid fa-spinner fa-spin text-4xl text-primary-500 mb-4"></i>
+          <p class="text-gray-600">Loading documents...</p>
         </div>
       </div>
     </div>
   </main>
+
+  <!-- Document Viewer Modal -->
+  <div id="documentViewerModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <!-- Modal content will be injected here by JavaScript -->
+  </div>
 
   <!-- Footer -->
   <footer class="bg-gradient-to-t from-gray-200 via-gray-100 to-white border-t-2 border-gray-200 py-8 mt-auto">
@@ -405,6 +441,9 @@
 
   <!-- Persistent Music Player -->
   <script src="/js/persistent-music-player.js"></script>
+
+  <!-- Department Info JavaScript -->
+  <script src="/js/department-info.js"></script>
 
   <script>
     (function() {
@@ -442,26 +481,34 @@
         });
       }
 
-      // Active page highlighting
-      const currentPage = window.location.pathname;
-      const allLinks = document.querySelectorAll('[data-page]');
-      allLinks.forEach(function(link) {
-        const page = link.getAttribute('data-page');
-        let isActive = false;
-        if (page === 'home' && (currentPage === '/' || currentPage === '/index.html')) isActive = true;
-        else if (page === 'events' && currentPage.includes('events')) isActive = true;
-        else if (page === 'subjects' && currentPage.includes('daily-subjects')) isActive = true;
-        else if (page === 'department-info' && currentPage.includes('department-info')) isActive = true;
-        else if (page === 'announcements' && currentPage.includes('announcements')) isActive = true;
-        else if (page === 'about' && currentPage.includes('about')) isActive = true;
+      // ==========================================
+      // DEPARTMENT TABS SWITCHING
+      // ==========================================
 
-        if (isActive) {
-          link.classList.add('active', 'text-primary');
-          if (link.classList.contains('nav-link')) {
-            link.classList.add('bg-primary/10');
-          }
+      // Switch between totals and documents tabs
+      window.switchStudentDeptTab = function(tab) {
+        const totalsSection = document.getElementById('deptTotalsSection');
+        const docsSection = document.getElementById('deptDocsSection');
+        const totalsTab = document.getElementById('studentDeptTab');
+        const docsTab = document.getElementById('studentDocsTab');
+
+        if (tab === 'totals') {
+          totalsSection.classList.remove('hidden');
+          docsSection.classList.add('hidden');
+          totalsTab.classList.add('bg-gradient-to-r', 'from-primary-600', 'to-primary-700', 'text-white', 'shadow-md');
+          totalsTab.classList.remove('bg-white', 'text-gray-600');
+          docsTab.classList.remove('bg-gradient-to-r', 'from-primary-600', 'to-primary-700', 'text-white', 'shadow-md');
+          docsTab.classList.add('bg-white', 'text-gray-600');
+          loadDepartmentInfo();
+        } else {
+          totalsSection.classList.add('hidden');
+          docsSection.classList.remove('hidden');
+          docsTab.classList.add('bg-gradient-to-r', 'from-primary-600', 'to-primary-700', 'text-white', 'shadow-md');
+          docsTab.classList.remove('bg-white', 'text-gray-600');
+          totalsTab.classList.remove('bg-gradient-to-r', 'from-primary-600', 'to-primary-700', 'text-white', 'shadow-md');
+          totalsTab.classList.add('bg-white', 'text-gray-600');
         }
-      });
+      };
 
       // Load department info from API
       async function loadDepartmentInfo() {
@@ -471,15 +518,36 @@
 
           if (data.success && data.data) {
             const info = data.data;
-            if (info.totalStudents !== undefined) {
-              document.getElementById('totalStudents').textContent = info.totalStudents;
-            }
-            if (info.totalFaculty !== undefined) {
-              document.getElementById('totalFaculty').textContent = info.totalFaculty;
+            
+            // Update counts from database
+            const students = info.totalStudents || 0;
+            const faculty = info.totalFaculty || 0;
+            const yearLevels = info.yearLevels || 0;
+            const subjectsOffered = info.subjectsCount || 0;
+            
+            document.getElementById('totalStudents').textContent = students;
+            document.getElementById('totalFaculty').textContent = faculty;
+            document.getElementById('yearLevels').textContent = yearLevels;
+            document.getElementById('subjectsOffered').textContent = subjectsOffered;
+            
+            // Calculate ratio and total members
+            const ratio = faculty > 0 ? (students / faculty).toFixed(1) + ':1' : '—';
+            const totalMembers = students + faculty;
+            
+            document.getElementById('studentRatio').textContent = ratio;
+            document.getElementById('totalMembers').textContent = totalMembers;
+            
+            // Update coordinator info
+            if (info.programCoordinator) {
+              document.getElementById('coordinatorName').textContent = info.programCoordinator.name || '--';
+              document.getElementById('coordinatorEmail').textContent = info.programCoordinator.email || '--';
             }
           }
         } catch (error) {
           console.error('Error loading department info:', error);
+          // Set defaults on error
+          document.getElementById('yearLevels').textContent = '--';
+          document.getElementById('subjectsOffered').textContent = '--';
         }
       }
 
