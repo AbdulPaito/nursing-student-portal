@@ -202,19 +202,22 @@
         <!-- Desktop Navigation Links -->
         <div class="hidden md:flex items-center gap-1">
           <a href="/" class="nav-link px-3 py-2 text-sm font-medium text-gray-700 hover:text-primary transition-colors duration-200 rounded-lg hover:bg-gray-50/80" data-page="home">
-            <span class="flex items-center gap-1.5"><i class="bi bi-house-door text-sm"></i>Home</span>
+            <span class="flex items-center gap-1.5"><i class="fa-solid fa-house text-sm"></i>Home</span>
           </a>
           <a href="/events" class="nav-link px-3 py-2 text-sm font-medium text-gray-700 hover:text-primary transition-colors duration-200 rounded-lg hover:bg-gray-50/80" data-page="events">
-            <span class="flex items-center gap-1.5"><i class="bi bi-calendar-event text-sm"></i>Events</span>
+            <span class="flex items-center gap-1.5"><i class="fa-solid fa-calendar-days text-sm"></i>Events</span>
           </a>
           <a href="/daily-subjects.html" class="nav-link px-3 py-2 text-sm font-medium text-gray-700 hover:text-primary transition-colors duration-200 rounded-lg hover:bg-gray-50/80" data-page="subjects">
-            <span class="flex items-center gap-1.5"><i class="bi bi-journal-bookmark text-sm"></i>Courses & Subjects</span>
+            <span class="flex items-center gap-1.5"><i class="fa-solid fa-book-open text-sm"></i>Courses & Subjects</span>
+          </a>
+          <a href="/department-info.html" class="nav-link px-3 py-2 text-sm font-medium text-gray-700 hover:text-primary transition-colors duration-200 rounded-lg hover:bg-gray-50/80" data-page="department-info">
+            <span class="flex items-center gap-1.5"><i class="fa-solid fa-file-lines text-sm"></i>Department Info</span>
           </a>
           <a href="/announcements.html" class="nav-link px-3 py-2 text-sm font-medium text-gray-700 hover:text-primary transition-colors duration-200 rounded-lg hover:bg-gray-50/80" data-page="announcements">
-            <span class="flex items-center gap-1.5"><i class="bi bi-megaphone text-sm"></i>Announcements</span>
+            <span class="flex items-center gap-1.5"><i class="fa-solid fa-bullhorn text-sm"></i>Announcements</span>
           </a>
           <a href="/#about" class="nav-link px-3 py-2 text-sm font-medium text-gray-700 hover:text-primary transition-colors duration-200 rounded-lg hover:bg-gray-50/80" data-page="about">
-            <span class="flex items-center gap-1.5"><i class="bi bi-info-circle text-sm"></i>Contact</span>
+            <span class="flex items-center gap-1.5"><i class="fa-solid fa-circle-info text-sm"></i>Contact</span>
           </a>
         </div>
 
@@ -233,24 +236,28 @@
     <div class="md:hidden hidden bg-white border-t border-gray-100 shadow-lg shadow-gray-200/50" id="mobileMenu">
       <div class="px-4 py-3 space-y-1">
         <a href="/" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:text-primary hover:bg-primary/5 rounded-xl transition-all duration-200" data-page="home">
-          <div class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center"><i class="bi bi-house-door text-primary"></i></div>
+          <div class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center"><i class="fa-solid fa-house text-primary"></i></div>
           <span>Home</span>
         </a>
         <a href="/events" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:text-primary hover:bg-primary/5 rounded-xl transition-all duration-200" data-page="events">
-          <div class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center"><i class="bi bi-calendar-event text-primary"></i></div>
+          <div class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center"><i class="fa-solid fa-calendar-days text-primary"></i></div>
           <span>Events</span>
         </a>
         <a href="/daily-subjects.html" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:text-primary hover:bg-primary/5 rounded-xl transition-all duration-200" data-page="subjects">
-          <div class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center"><i class="bi bi-journal-bookmark text-primary"></i></div>
+          <div class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center"><i class="fa-solid fa-book-open text-primary"></i></div>
           <span>Courses & Subjects</span>
         </a>
+        <a href="/department-info.html" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:text-primary hover:bg-primary/5 rounded-xl transition-all duration-200" data-page="department-info">
+          <div class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center"><i class="fa-solid fa-file-lines text-primary"></i></div>
+          <span>Department Info</span>
+        </a>
         <a href="/announcements.html" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:text-primary hover:bg-primary/5 rounded-xl transition-all duration-200" data-page="announcements">
-          <div class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center"><i class="bi bi-megaphone text-primary"></i></div>
+          <div class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center"><i class="fa-solid fa-bullhorn text-primary"></i></div>
           <span>Announcements</span>
         </a>
         <div class="border-t border-gray-100 my-2"></div>
         <a href="/#about" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:text-primary hover:bg-primary/5 rounded-xl transition-all duration-200" data-page="about">
-          <div class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center"><i class="bi bi-info-circle text-primary"></i></div>
+          <div class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center"><i class="fa-solid fa-circle-info text-primary"></i></div>
           <span>Contact Us</span>
         </a>
       </div>

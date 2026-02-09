@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Announcements - Nursing Student Portal</title>
+  <title>Department Info - Nursing Student Portal</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -40,79 +40,70 @@
           fontFamily: {
             sans: ['Plus Jakarta Sans', 'sans-serif'],
           },
+          animation: {
+            'fade-in': 'fadeIn 0.5s ease-out',
+            'fade-in-up': 'fadeInUp 0.6s ease-out',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' }
+            },
+            fadeInUp: {
+              '0%': { opacity: '0', transform: 'translateY(20px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' }
+            },
+          }
         }
       }
     }
   </script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
   <style>
-    body { 
+    body {
       font-family: 'Plus Jakarta Sans', sans-serif;
       background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 50%, #e0e7ff 100%);
       min-height: 100vh;
     }
-    
-    /* Glassmorphism */
-    .glass {
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.5);
-    }
-    
-    .glass-strong {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-    }
-    
-    /* Animated Background */
+
     .bg-pattern {
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      background-image: 
+      background-image:
         radial-gradient(circle at 20% 80%, rgba(124, 58, 237, 0.08) 0%, transparent 50%),
         radial-gradient(circle at 80% 20%, rgba(79, 70, 229, 0.08) 0%, transparent 50%);
       pointer-events: none;
       z-index: -1;
     }
-    
-    /* Gradient Text */
+
+    .glass {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+
+    .glass-strong {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
     .gradient-text {
       background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
-    
-    /* Announcement Card */
-    .announcement-card {
-      transition: all 0.3s ease;
-    }
-    .announcement-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 24px rgba(124, 58, 237, 0.15);
-    }
-    .announcement-message {
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-    .announcement-card.expanded .announcement-message {
-      -webkit-line-clamp: unset;
-      line-clamp: unset;
-    }
-    
-    /* Nav Link Animation */
+
     .nav-link {
       position: relative;
     }
-    
+
     .nav-link::after {
       content: '';
       position: absolute;
@@ -123,56 +114,52 @@
       background: linear-gradient(90deg, #7c3aed, #4f46e5);
       transition: width 0.3s ease;
     }
-    
+
     .nav-link:hover::after,
-    .nav-link.active::after { width: 100%; }
-    
-    /* Logo Glow */
-    .logo-glow {
-      animation: logoGlow 3s ease-in-out infinite;
+    .nav-link.active::after {
+      width: 100%;
     }
-    
-    @keyframes logoGlow {
-      0%, 100% { box-shadow: 0 0 30px rgba(124, 58, 237, 0.3); }
-      50% { box-shadow: 0 0 50px rgba(124, 58, 237, 0.6), 0 0 70px rgba(79, 70, 229, 0.3); }
+
+    .hamburger-line {
+      transition: all 0.3s ease-in-out;
     }
-    
-    /* Hamburger Animation */
-    .hamburger-line { transition: all 0.3s ease-in-out; }
+
     .hamburger-active .hamburger-line:first-child {
       transform: rotate(45deg) translate(6px, 6px);
     }
-    .hamburger-active .hamburger-line:nth-child(2) { opacity: 0; }
+
+    .hamburger-active .hamburger-line:nth-child(2) {
+      opacity: 0;
+    }
+
     .hamburger-active .hamburger-line:last-child {
       transform: rotate(-45deg) translate(6px, -6px);
     }
-    
-    /* Card Hover */
+
     .card-hover {
       transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    
+
     .card-hover:hover {
       transform: translateY(-6px);
       box-shadow: 0 25px 50px -12px rgba(124, 58, 237, 0.25);
     }
-    
-    /* Scrollbar */
+
     ::-webkit-scrollbar {
       width: 8px;
       height: 8px;
     }
-    
+
     ::-webkit-scrollbar-track {
       background: rgba(124, 58, 237, 0.1);
       border-radius: 4px;
     }
-    
+
     ::-webkit-scrollbar-thumb {
       background: rgba(124, 58, 237, 0.3);
       border-radius: 4px;
     }
-    
+
     ::-webkit-scrollbar-thumb:hover {
       background: rgba(124, 58, 237, 0.5);
     }
@@ -183,8 +170,8 @@
   <nav class="bg-white/95 backdrop-blur-md border-b border-gray-200/80 sticky top-0 z-50 transition-all duration-300" id="navbar">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16 lg:h-18">
-        
-        <!-- Logo & Title Section - ALWAYS VISIBLE -->
+
+        <!-- Logo & Title Section -->
         <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
           <a href="/" class="relative group flex items-center justify-center">
             <div class="relative h-10 w-10 sm:h-11 sm:w-11 rounded-xl overflow-hidden bg-gradient-to-br from-primary to-primary-dark shadow-md group-hover:shadow-lg group-hover:shadow-primary/20 transition-all duration-300 group-hover:scale-105">
@@ -195,7 +182,7 @@
             </div>
             <div class="absolute -inset-1 bg-primary/20 rounded-xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           </a>
-          
+
           <div class="flex flex-col min-w-0">
             <a href="/" class="group">
               <h1 class="text-sm sm:text-base lg:text-lg font-bold text-gray-900 tracking-tight leading-tight truncate max-w-[140px] sm:max-w-[200px] lg:max-w-none transition-colors duration-300 group-hover:text-primary">
@@ -226,7 +213,7 @@
           <a href="/announcements.html" class="nav-link px-3 py-2 text-sm font-medium text-gray-700 hover:text-primary transition-colors duration-200 rounded-lg hover:bg-gray-50/80" data-page="announcements">
             <span class="flex items-center gap-1.5"><i class="fa-solid fa-bullhorn text-sm"></i>Announcements</span>
           </a>
-          <a href="/#about" class="nav-link px-3 py-2 text-sm font-medium text-gray-700 hover:text-primary transition-colors duration-200 rounded-lg hover:bg-gray-50/80" data-page="about">
+          <a href="#about" class="nav-link px-3 py-2 text-sm font-medium text-gray-700 hover:text-primary transition-colors duration-200 rounded-lg hover:bg-gray-50/80" data-page="about">
             <span class="flex items-center gap-1.5"><i class="fa-solid fa-circle-info text-sm"></i>Contact</span>
           </a>
         </div>
@@ -266,7 +253,7 @@
           <span>Announcements</span>
         </a>
         <div class="border-t border-gray-100 my-2"></div>
-        <a href="/#about" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:text-primary hover:bg-primary/5 rounded-xl transition-all duration-200" data-page="about">
+        <a href="#about" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:text-primary hover:bg-primary/5 rounded-xl transition-all duration-200" data-page="about">
           <div class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center"><i class="fa-solid fa-circle-info text-primary"></i></div>
           <span>Contact Us</span>
         </a>
@@ -275,70 +262,153 @@
   </nav>
 
   <!-- Hero Section -->
-  <section class="relative bg-gradient-to-br from-yellow-500 via-yellow-400 to-orange-400 text-white py-12 md:py-16">
-    <div class="absolute inset-0 bg-gradient-to-t from-yellow-600/20 to-transparent"></div>
+  <section class="relative bg-gradient-to-br from-primary via-primary to-primary-light text-white py-12 md:py-16">
+    <div class="absolute inset-0 bg-gradient-to-t from-primary-dark/20 to-transparent"></div>
     <div class="container mx-auto px-4 relative z-10">
       <div class="flex items-center gap-3 mb-2">
         <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-lg">
           <img src="images/nursing-logo.png" alt="Nursing Logo" class="w-10 h-10 object-contain">
         </div>
-        <h1 class="text-3xl md:text-4xl font-bold">Announcements</h1>
+        <h1 class="text-3xl md:text-4xl font-bold">Department Information</h1>
       </div>
-      <p class="text-lg opacity-90">Official updates and important notices from the college.</p>
+      <p class="text-lg opacity-90 ml-15">View department statistics and information.</p>
     </div>
   </section>
 
   <!-- Main Content -->
   <main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <!-- Filters -->
-    <div class="mb-6 flex flex-wrap gap-4 items-center justify-between">
-      <div class="flex items-center gap-2">
-        <span class="text-sm text-gray-500">Filter by:</span>
-        <div class="flex gap-2">
-          <button class="px-4 py-2 rounded-full text-sm font-medium bg-primary text-white shadow-md transition-all hover:shadow-lg" id="filterAll">All</button>
-          <button class="px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition-all" id="filterNew">New</button>
-          <button class="px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition-all" id="filterImportant">Important</button>
+    <!-- Department Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div class="glass rounded-2xl p-6 card-hover animate-fade-in-up" style="animation-delay: 0.1s;">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center">
+            <i class="fa-solid fa-users text-white text-xl"></i>
+          </div>
+          <div class="text-3xl font-bold gradient-text" id="totalStudents">--</div>
+        </div>
+        <p class="text-sm text-gray-600 font-medium">Total Students</p>
+      </div>
+
+      <div class="glass rounded-2xl p-6 card-hover animate-fade-in-up" style="animation-delay: 0.2s;">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+            <i class="fa-solid fa-chalkboard-teacher text-white text-xl"></i>
+          </div>
+          <div class="text-3xl font-bold gradient-text" id="totalFaculty">--</div>
+        </div>
+        <p class="text-sm text-gray-600 font-medium">Total Faculty</p>
+      </div>
+
+      <div class="glass rounded-2xl p-6 card-hover animate-fade-in-up" style="animation-delay: 0.3s;">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center">
+            <i class="fa-solid fa-graduation-cap text-white text-xl"></i>
+          </div>
+          <div class="text-3xl font-bold gradient-text">4</div>
+        </div>
+        <p class="text-sm text-gray-600 font-medium">Year Levels</p>
+      </div>
+
+      <div class="glass rounded-2xl p-6 card-hover animate-fade-in-up" style="animation-delay: 0.4s;">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center">
+            <i class="fa-solid fa-book text-white text-xl"></i>
+          </div>
+          <div class="text-3xl font-bold gradient-text">20+</div>
+        </div>
+        <p class="text-sm text-gray-600 font-medium">Subjects</p>
+      </div>
+    </div>
+
+    <!-- Additional Info Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Mission Card -->
+      <div class="glass rounded-2xl p-6 card-hover">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+            <i class="fa-solid fa-bullseye text-white text-xl"></i>
+          </div>
+          <h2 class="text-xl font-bold text-gray-800">Mission</h2>
+        </div>
+        <p class="text-gray-600 text-sm leading-relaxed">
+          To produce competent, compassionate, and ethical nursing professionals equipped with the knowledge, skills, and values to meet the healthcare needs of the community and the global society.
+        </p>
+      </div>
+
+      <!-- Vision Card -->
+      <div class="glass rounded-2xl p-6 card-hover">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-secondary to-primary flex items-center justify-center">
+            <i class="fa-solid fa-eye text-white text-xl"></i>
+          </div>
+          <h2 class="text-xl font-bold text-gray-800">Vision</h2>
+        </div>
+        <p class="text-gray-600 text-sm leading-relaxed">
+          A Center of Excellence in Nursing Education that molds students to become leaders in the healthcare industry, committed to service, innovation, and lifelong learning.
+        </p>
+      </div>
+
+      <!-- Goals Card -->
+      <div class="glass rounded-2xl p-6 card-hover">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center">
+            <i class="fa-solid fa-flag text-white text-xl"></i>
+          </div>
+          <h2 class="text-xl font-bold text-gray-800">Goals</h2>
+        </div>
+        <p class="text-gray-600 text-sm leading-relaxed">
+          To continually improve the nursing curriculum, enhance clinical training facilities, and foster partnerships with healthcare institutions for the holistic development of nursing students.
+        </p>
+      </div>
+    </div>
+
+    <!-- Program Coordinator Info -->
+    <div class="mt-8 glass rounded-2xl p-6 card-hover">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-600 flex items-center justify-center">
+          <i class="fa-solid fa-user-tie text-white text-xl"></i>
+        </div>
+        <h2 class="text-xl font-bold text-gray-800">Program Coordinator</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
+          <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+            <i class="fa-solid fa-user text-primary"></i>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Coordinator</p>
+            <p class="font-semibold text-gray-800">BSN 2C - AQUINO (2025-2026)</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
+          <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+            <i class="fa-solid fa-envelope text-primary"></i>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Email</p>
+            <p class="font-semibold text-gray-800">nursing@msu.edu.ph</p>
+          </div>
         </div>
       </div>
-      <div class="relative">
-        <i class="bi bi-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-        <input type="text" id="searchAnnouncements" placeholder="Search announcements..." class="pl-10 pr-4 py-2 border border-gray-200 rounded-full text-sm focus:ring-2 focus:ring-primary focus:border-transparent transition-all w-64">
-      </div>
-    </div>
-
-    <!-- Announcements Grid -->
-    <div class="grid grid-cols-1 gap-6" id="announcementsGrid">
-      <div class="flex justify-center py-12">
-        <div class="spinner"></div>
-      </div>
-    </div>
-
-    <!-- No Results -->
-    <div id="noResults" class="hidden text-center py-12">
-      <i class="bi bi-search text-4xl text-gray-300 mb-3"></i>
-      <p class="text-gray-500">No announcements found matching your search.</p>
     </div>
   </main>
 
   <!-- Footer -->
-  <footer class="bg-gradient-to-t from-gray-200 via-gray-100 to-white border-t-2 border-gray-200 py-8 mt-auto" id="about">
+  <footer class="bg-gradient-to-t from-gray-200 via-gray-100 to-white border-t-2 border-gray-200 py-8 mt-auto">
     <div class="container mx-auto px-4 text-center">
-      <p class="mb-2 text-gray-600">
+      <p class="mb-1 text-gray-600">
         <strong>Program Coordinator</strong>: BSN 2C- AQUINO (2025-2026)
       </p>
-      <p class="text-sm text-gray-500">Nursing Student Program</p>
+      <p class="mb-0 text-sm text-gray-500">Nursing Student Program</p>
     </div>
   </footer>
 
-  <!-- Enhanced Card Renderer -->
-  <script src="js/enhanced-card-renderer.js"></script>
-  
   <!-- Persistent Music Player -->
-  <script src="js/persistent-music-player.js"></script>
+  <script src="/js/persistent-music-player.js"></script>
 
   <script>
     (function() {
-      // Mobile Menu Toggle with Hamburger Animation
+      // Mobile Menu Toggle
       const mobileMenuBtn = document.getElementById('mobileMenuBtn');
       const mobileMenu = document.getElementById('mobileMenu');
       const hamburger = document.getElementById('hamburger');
@@ -381,9 +451,10 @@
         if (page === 'home' && (currentPage === '/' || currentPage === '/index.html')) isActive = true;
         else if (page === 'events' && currentPage.includes('events')) isActive = true;
         else if (page === 'subjects' && currentPage.includes('daily-subjects')) isActive = true;
+        else if (page === 'department-info' && currentPage.includes('department-info')) isActive = true;
         else if (page === 'announcements' && currentPage.includes('announcements')) isActive = true;
         else if (page === 'about' && currentPage.includes('about')) isActive = true;
-        
+
         if (isActive) {
           link.classList.add('active', 'text-primary');
           if (link.classList.contains('nav-link')) {
@@ -392,178 +463,29 @@
         }
       });
 
-      function escapeHtml(s) {
-        if (!s) return '';
-        const d = document.createElement('div');
-        d.textContent = s;
-        return d.innerHTML;
-      }
-
-      function formatDateTime(dateStr, timeStr) {
-        if (!dateStr) return '';
+      // Load department info from API
+      async function loadDepartmentInfo() {
         try {
-          const d = new Date(dateStr + (timeStr ? 'T' + timeStr : ''));
-          const datePart = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-          const timePart = timeStr ? d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }) : '';
-          return timePart ? datePart + ' – ' + timePart : datePart;
-        } catch (e) { return dateStr + (timeStr ? ' ' + timeStr : ''); }
-      }
+          const response = await fetch('/api/department-info');
+          const data = await response.json();
 
-      let allAnnouncements = [];
-      let currentFilter = 'all';
-      let searchQuery = '';
-
-      function getPriority(a) {
-        const today = new Date().toISOString().split('T')[0];
-        const isNew = a.date >= today;
-        const isImportant = (a.priority && String(a.priority).toLowerCase() === 'important') || 
-                            a.important === true || 
-                            ((a.title || '').toLowerCase().indexOf('urgent') !== -1) || 
-                            ((a.title || '').toLowerCase().indexOf('important') !== -1);
-        
-        if (isImportant) return { type: 'Important', color: 'bg-red-500', border: 'border-red-500', bg: 'bg-red-50' };
-        if (isNew) return { type: 'New', color: 'bg-blue-500', border: 'border-blue-500', bg: 'bg-blue-50' };
-        return { type: 'General', color: 'bg-gray-500', border: 'border-gray-400', bg: 'bg-gray-50' };
-      }
-
-      function renderAnnouncementCard(a) {
-        const priority = getPriority(a);
-        const dateTime = formatDateTime(a.date, a.time);
-        const priorityKey = `${a._id || a.date}-${a.title}`;
-
-        return `
-          <div class="announcement-card bg-white rounded-xl shadow-md border-l-4 ${priority.border} overflow-hidden animate-fade-in" id="announcement-${priorityKey}">
-            <div class="p-6">
-              <div class="flex items-start gap-4">
-                <div class="flex-shrink-0 w-14 h-14 rounded-full ${priority.bg} flex items-center justify-center">
-                  <i class="bi bi-megaphone-fill ${priority.border.replace('border-', 'text-').replace('400', '500')} text-2xl"></i>
-                </div>
-                <div class="flex-grow">
-                  <div class="flex items-start justify-between gap-3 mb-2">
-                    <h3 class="font-bold text-gray-800 text-lg">${escapeHtml(a.title)}</h3>
-                    <span class="px-3 py-1 ${priority.color} text-white text-xs font-semibold rounded-full whitespace-nowrap">${priority.type}</span>
-                  </div>
-                  
-                  <p class="text-sm text-gray-500 mb-3 flex items-center gap-2">
-                    <i class="bi bi-calendar3 text-primary"></i>
-                    ${escapeHtml(dateTime || a.date || '')}
-                  </p>
-                  
-                  <p class="text-gray-600 announcement-message leading-relaxed">${escapeHtml(a.message)}</p>
-                  
-                  <button class="mt-3 text-sm font-medium text-primary hover:text-primary-dark transition-colors flex items-center gap-1 announcement-toggle" data-id="${priorityKey}">
-                    <span>Read more</span>
-                    <i class="bi bi-chevron-down transition-transform"></i>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        `;
-      }
-
-      function renderAnnouncements() {
-        const grid = document.getElementById('announcementsGrid');
-        const noResults = document.getElementById('noResults');
-        
-        let filtered = allAnnouncements;
-        
-        if (currentFilter !== 'all') {
-          filtered = filtered.filter(a => {
-            const priority = getPriority(a);
-            return priority.type.toLowerCase() === currentFilter;
-          });
-        }
-        
-        if (searchQuery) {
-          const q = searchQuery.toLowerCase();
-          filtered = filtered.filter(a => (a.title || '').toLowerCase().includes(q) || (a.message || '').toLowerCase().includes(q));
-        }
-        
-        if (filtered.length === 0) {
-          grid.innerHTML = '';
-          noResults.classList.remove('hidden');
-          return;
-        }
-        
-        noResults.classList.add('hidden');
-        grid.innerHTML = filtered.map(renderAnnouncementCard).join('');
-
-        // Add toggle functionality
-        document.querySelectorAll('.announcement-toggle').forEach(btn => {
-          btn.addEventListener('click', function() {
-            const card = document.getElementById(`announcement-${this.dataset.id}`);
-            const isExpanded = card.classList.contains('expanded');
-            const span = this.querySelector('span');
-            const icon = this.querySelector('i');
-            
-            if (isExpanded) {
-              card.classList.remove('expanded');
-              span.textContent = 'Read more';
-              icon.style.transform = 'rotate(0deg)';
-            } else {
-              card.classList.add('expanded');
-              span.textContent = 'Show less';
-              icon.style.transform = 'rotate(180deg)';
+          if (data.success && data.data) {
+            const info = data.data;
+            if (info.totalStudents !== undefined) {
+              document.getElementById('totalStudents').textContent = info.totalStudents;
             }
-          });
-        });
-      }
-
-      // Filter buttons
-      document.getElementById('filterAll').addEventListener('click', function() {
-        currentFilter = 'all';
-        updateFilterButtons();
-        renderAnnouncements();
-      });
-
-      document.getElementById('filterNew').addEventListener('click', function() {
-        currentFilter = 'new';
-        updateFilterButtons();
-        renderAnnouncements();
-      });
-
-      document.getElementById('filterImportant').addEventListener('click', function() {
-        currentFilter = 'important';
-        updateFilterButtons();
-        renderAnnouncements();
-      });
-
-      function updateFilterButtons() {
-        const buttons = {
-          all: document.getElementById('filterAll'),
-          new: document.getElementById('filterNew'),
-          important: document.getElementById('filterImportant')
-        };
-        
-        Object.keys(buttons).forEach(key => {
-          const btn = buttons[key];
-          if (key === currentFilter) {
-            btn.className = 'px-4 py-2 rounded-full text-sm font-medium bg-primary text-white shadow-md transition-all hover:shadow-lg';
-          } else {
-            btn.className = 'px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition-all';
+            if (info.totalFaculty !== undefined) {
+              document.getElementById('totalFaculty').textContent = info.totalFaculty;
+            }
           }
-        });
+        } catch (error) {
+          console.error('Error loading department info:', error);
+        }
       }
 
-      // Search
-      document.getElementById('searchAnnouncements').addEventListener('input', function() {
-        searchQuery = this.value;
-        renderAnnouncements();
-      });
-
-      // Load announcements
-      const today = new Date().toISOString().split('T')[0];
-      fetch('/api/announcements').then(function(r) { return r.json(); }).then(function(list) {
-        allAnnouncements = list;
-        renderAnnouncements();
-      }).catch(function() {
-        document.getElementById('announcementsGrid').innerHTML = `
-          <div class="text-center py-12 text-gray-500">
-            <i class="bi bi-exclamation-circle text-4xl mb-3 block"></i>
-            Could not load announcements.
-          </div>
-        `;
+      // Initialize
+      document.addEventListener('DOMContentLoaded', function() {
+        loadDepartmentInfo();
       });
     })();
   </script>

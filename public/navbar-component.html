@@ -130,7 +130,7 @@
             data-page="home"
           >
             <span class="flex items-center gap-1.5">
-              <i class="bi bi-house-door text-sm"></i>
+              <i class="fa-solid fa-house text-sm"></i>
               Home
             </span>
           </a>
@@ -140,7 +140,7 @@
             data-page="events"
           >
             <span class="flex items-center gap-1.5">
-              <i class="bi bi-calendar-event text-sm"></i>
+              <i class="fa-solid fa-calendar-days text-sm"></i>
               Events
             </span>
           </a>
@@ -150,8 +150,18 @@
             data-page="subjects"
           >
             <span class="flex items-center gap-1.5">
-              <i class="bi bi-journal-bookmark text-sm"></i>
+              <i class="fa-solid fa-book-open text-sm"></i>
               Courses & Subjects
+            </span>
+          </a>
+          <a 
+            href="/department-info.html" 
+            class="nav-link px-3 py-2 text-sm font-medium text-gray-700 hover:text-primary transition-colors duration-200 rounded-lg hover:bg-gray-50/80"
+            data-page="department-info"
+          >
+            <span class="flex items-center gap-1.5">
+              <i class="fa-solid fa-file-lines text-sm"></i>
+              Department Info
             </span>
           </a>
           <a 
@@ -160,7 +170,7 @@
             data-page="announcements"
           >
             <span class="flex items-center gap-1.5">
-              <i class="bi bi-megaphone text-sm"></i>
+              <i class="fa-solid fa-bullhorn text-sm"></i>
               Announcements
             </span>
           </a>
@@ -170,7 +180,7 @@
             data-page="about"
           >
             <span class="flex items-center gap-1.5">
-              <i class="bi bi-info-circle text-sm"></i>
+              <i class="fa-solid fa-circle-info text-sm"></i>
               Contact
             </span>
           </a>
@@ -205,7 +215,7 @@
           data-page="home"
         >
           <div class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center">
-            <i class="bi bi-house-door text-primary"></i>
+            <i class="fa-solid fa-house text-primary"></i>
           </div>
           <span>Home</span>
         </a>
@@ -215,7 +225,7 @@
           data-page="events"
         >
           <div class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center">
-            <i class="bi bi-calendar-event text-primary"></i>
+            <i class="fa-solid fa-calendar-days text-primary"></i>
           </div>
           <span>Events</span>
         </a>
@@ -225,9 +235,19 @@
           data-page="subjects"
         >
           <div class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center">
-            <i class="bi bi-journal-bookmark text-primary"></i>
+            <i class="fa-solid fa-book-open text-primary"></i>
           </div>
           <span>Courses & Subjects</span>
+        </a>
+        <a 
+          href="/department-info.html" 
+          class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:text-primary hover:bg-primary/5 rounded-xl transition-all duration-200"
+          data-page="department-info"
+        >
+          <div class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center">
+            <i class="fa-solid fa-file-lines text-primary"></i>
+          </div>
+          <span>Department Info</span>
         </a>
         <a 
           href="/announcements.html" 
@@ -235,7 +255,7 @@
           data-page="announcements"
         >
           <div class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center">
-            <i class="bi bi-megaphone text-primary"></i>
+            <i class="fa-solid fa-bullhorn text-primary"></i>
           </div>
           <span>Announcements</span>
         </a>
@@ -246,7 +266,7 @@
           data-page="about"
         >
           <div class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center">
-            <i class="bi bi-info-circle text-primary"></i>
+            <i class="fa-solid fa-circle-info text-primary"></i>
           </div>
           <span>Contact Us</span>
         </a>
@@ -313,6 +333,8 @@
         } else if (page === 'events' && currentPage.includes('events')) {
           isActive = true;
         } else if (page === 'subjects' && currentPage.includes('daily-subjects')) {
+          isActive = true;
+        } else if (page === 'department-info' && currentPage.includes('department-info')) {
           isActive = true;
         } else if (page === 'announcements' && currentPage.includes('announcements')) {
           isActive = true;

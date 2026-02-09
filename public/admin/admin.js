@@ -100,9 +100,9 @@
         console.log('🎵 Music section loaded, fetching files...');
         loadMusicFiles();
       }
-      if (sectionName === 'department-info') {
-        console.log('📊 Department Info section loaded, fetching data...');
-        loadDepartmentInfo();
+      if (sectionName === 'department-documents') {
+        console.log('📄 Department Info section loaded, fetching documents...');
+        loadDepartmentDocuments();
       }
     } else {
       console.error('❌ Section not found:', 'section-' + sectionName);
@@ -1310,6 +1310,23 @@
     }
   });
 
+  // Load department documents when section is shown
+  document.addEventListener('DOMContentLoaded', function() {
+    const documentsSection = document.getElementById('section-department-documents');
+    if (documentsSection) {
+      const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          if (mutation.attributeName === 'class') {
+            if (!documentsSection.classList.contains('hidden')) {
+              loadDepartmentDocuments();
+            }
+          }
+        });
+      });
+      observer.observe(documentsSection, { attributes: true });
+    }
+  });
+
   // Heartbeat to keep session alive and update online status
   let heartbeatInterval;
   function startHeartbeat() {
@@ -2054,6 +2071,384 @@
         <div class="${strengthColor} h-2 rounded-full transition-all duration-300" style="width: ${strengthWidth}"></div>
       </div>
     `;
+  }
+
+  // ==========================================
+  // DEPARTMENT DOCUMENTS MANAGEMENT
+  // ==========================================
+
+  // Load all documents
+  window.loadDepartmentDocuments = async function() {
+    const tbody = document.getElementById('documentsTableBody');
+    const categoryFilter = document.getElementById('categoryFilter');
+    
+    if (!tbody) return;
+    
+    const category = categoryFilter ? categoryFilter.value : '';
+    
+    tbody.innerHTML = '<tr><td colspan="8" class="px-6 py-12 text-center text-gray-500"><i class="fa-solid fa-spinner fa-spin text-3xl mb-3 text-primary-500"></i><p>Loading documents...</p></td></tr>';
+
+    try {
+      const token = localStorage.getItem('adminToken');
+      const url = category 
+        ? `/api/department-documents?category=${category}`
+        : '/api/department-documents';
+        
+      const response = await fetch(url, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        if (data.documents.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="8" class="px-6 py-8 text-center text-gray-500">No documents found</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = data.documents.map(doc => {
+          const date = new Date(doc.dateIssued).toLocaleDateString();
+          const publishedBadge = doc.isPublished
+            ? '<span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-semibold">Yes</span>'
+            : '<span class="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-semibold">No</span>';
+          
+          const activeBadge = doc.isActive !== false
+            ? '<span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold">Active</span>'
+            : '<span class="px-3 py-1 rounded-full bg-red-100 text-red-700 text-xs font-semibold">Inactive</span>';
+          
+          const pinnedBadge = doc.isPinned
+            ? '<i class="fa-solid fa-thumbtack text-primary-500 mr-2"></i>'
+            : '';
+
+          let typeIcon = '<i class="fa-solid fa-file-lines text-xl"></i>';
+          if (doc.contentType === 'file') {
+            if (doc.fileType === 'pdf') typeIcon = '<i class="fa-solid fa-file-pdf text-red-500 text-xl"></i>';
+            else if (doc.fileType === 'doc' || doc.fileType === 'docx') typeIcon = '<i class="fa-solid fa-file-word text-blue-500 text-xl"></i>';
+            else if (doc.fileType === 'jpg' || doc.fileType === 'jpeg' || doc.fileType === 'png') typeIcon = '<i class="fa-solid fa-file-image text-green-500 text-xl"></i>';
+          }
+
+          return `
+            <tr class="hover:bg-gray-50 transition-colors">
+              <td class="px-6 py-4">
+                <div class="flex items-center gap-3">
+                  ${pinnedBadge}
+                  <div>
+                    <div class="font-semibold text-gray-800">${doc.title}</div>
+                    <div class="text-sm text-gray-500">${doc.description || 'No description'}</div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-6 py-4 text-center">
+                <span class="px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold">${doc.category}</span>
+              </td>
+              <td class="px-6 py-4 text-center">${typeIcon}</td>
+              <td class="px-6 py-4 text-center text-gray-600 text-sm">${date}</td>
+              <td class="px-6 py-4 text-center">${publishedBadge}</td>
+              <td class="px-6 py-4 text-center">${activeBadge}</td>
+              <td class="px-6 py-4 text-center">
+                <div class="text-sm text-gray-600">
+                  <div><i class="fa-solid fa-eye text-primary-500 mr-1"></i> ${doc.viewCount || 0}</div>
+                  <div><i class="fa-solid fa-download text-green-500 mr-1"></i> ${doc.downloadCount || 0}</div>
+                  <div><i class="fa-solid fa-comments text-blue-500 mr-1"></i> ${doc.comments?.length || 0}</div>
+                </div>
+              </td>
+              <td class="px-6 py-4">
+                <div class="flex items-center justify-center gap-2 flex-wrap">
+                  <button onclick="togglePublishDocument('${doc._id}')" class="px-3 py-2 ${doc.isPublished ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'} rounded-lg hover:opacity-80 transition-opacity text-sm font-medium" title="${doc.isPublished ? 'Unpublish' : 'Publish'}">
+                    <i class="fa-solid fa-${doc.isPublished ? 'eye-slash' : 'eye'}"></i>
+                  </button>
+                  <button onclick="toggleActiveDocument('${doc._id}')" class="px-3 py-2 ${doc.isActive !== false ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'} rounded-lg hover:opacity-80 transition-opacity text-sm font-medium" title="${doc.isActive !== false ? 'Deactivate' : 'Activate'}">
+                    <i class="fa-solid fa-${doc.isActive !== false ? 'toggle-on' : 'toggle-off'}"></i>
+                  </button>
+                  <button onclick="editDocument('${doc._id}')" class="px-3 py-2 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition-colors text-sm font-medium" title="Edit">
+                    <i class="fa-solid fa-edit"></i>
+                  </button>
+                  <button onclick="viewDocument('${doc._id}')" class="px-3 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors text-sm font-medium" title="View">
+                    <i class="fa-solid fa-eye"></i>
+                  </button>
+                  <button onclick="deleteDocument('${doc._id}', '${doc.title.replace(/'/g, "\\\'")}')" class="px-3 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors text-sm font-medium" title="Delete">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      }
+    } catch (err) {
+      console.error('Load documents error:', err);
+      tbody.innerHTML = '<tr><td colspan="8" class="px-6 py-8 text-center text-red-500">Error loading documents</td></tr>';
+    }
+  };
+
+  // Open upload modal
+  window.openUploadDocumentModal = function() {
+    document.getElementById('uploadDocumentModal').classList.remove('hidden');
+    document.getElementById('uploadDocumentForm').reset();
+    document.getElementById('uploadDocumentMessage').classList.add('hidden');
+    switchContentType('file');
+  };
+
+  // Close upload modal
+  window.closeUploadDocumentModal = function() {
+    document.getElementById('uploadDocumentModal').classList.add('hidden');
+  };
+
+  // Switch content type
+  window.switchContentType = function(type) {
+    document.getElementById('contentType').value = type;
+    
+    const fileSection = document.getElementById('fileUploadSection');
+    const textSection = document.getElementById('textContentSection');
+    const fileBtn = document.getElementById('fileTypeBtn');
+    const textBtn = document.getElementById('textTypeBtn');
+
+    if (type === 'file') {
+      fileSection.classList.remove('hidden');
+      textSection.classList.add('hidden');
+      fileBtn.classList.add('bg-white', 'text-primary-600', 'shadow-sm');
+      fileBtn.classList.remove('text-gray-600');
+      textBtn.classList.remove('bg-white', 'text-primary-600', 'shadow-sm');
+      textBtn.classList.add('text-gray-600');
+      document.getElementById('documentFile').required = true;
+      document.getElementById('docTextContent').required = false;
+    } else {
+      fileSection.classList.add('hidden');
+      textSection.classList.remove('hidden');
+      textBtn.classList.add('bg-white', 'text-primary-600', 'shadow-sm');
+      textBtn.classList.remove('text-gray-600');
+      fileBtn.classList.remove('bg-white', 'text-primary-600', 'shadow-sm');
+      fileBtn.classList.add('text-gray-600');
+      document.getElementById('documentFile').required = false;
+      document.getElementById('docTextContent').required = true;
+    }
+  };
+
+  // Handle file select
+  window.handleFileSelect = function(input) {
+    const file = input.files[0];
+    if (file) {
+      const preview = document.getElementById('filePreview');
+      const fileName = document.getElementById('fileName');
+      const fileSize = document.getElementById('fileSize');
+      
+      fileName.textContent = file.name;
+      fileSize.textContent = (file.size / 1024 / 1024).toFixed(2) + ' MB';
+      preview.classList.remove('hidden');
+    }
+  };
+
+  // Clear file
+  window.clearFile = function() {
+    document.getElementById('documentFile').value = '';
+    document.getElementById('filePreview').classList.add('hidden');
+  };
+
+  // Toggle custom category input
+  window.toggleCustomCategory = function() {
+    const categorySelect = document.getElementById('docCategory');
+    const customSection = document.getElementById('customCategorySection');
+    const customInput = document.getElementById('customCategory');
+    
+    if (categorySelect.value === 'Other') {
+      customSection.classList.remove('hidden');
+      customInput.required = true;
+    } else {
+      customSection.classList.add('hidden');
+      customInput.required = false;
+      customInput.value = '';
+    }
+  };
+
+  // Toggle publish status
+  window.togglePublishDocument = async function(docId) {
+    try {
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch(`/api/department-documents/${docId}/publish`, {
+        method: 'PATCH',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        loadDepartmentDocuments();
+      } else {
+        alert(data.error || 'Failed to update status');
+      }
+    } catch (error) {
+      console.error('Toggle publish error:', error);
+      alert('Error updating status');
+    }
+  };
+
+  // Toggle active status
+  window.toggleActiveDocument = async function(docId) {
+    try {
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch(`/api/department-documents/${docId}/active`, {
+        method: 'PATCH',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        loadDepartmentDocuments();
+      } else {
+        alert(data.error || 'Failed to update active status');
+      }
+    } catch (error) {
+      console.error('Toggle active error:', error);
+      alert('Error updating active status');
+    }
+  };
+
+  // Edit document (placeholder for now)
+  window.editDocument = function(docId) {
+    alert('Edit functionality will be implemented soon. Document ID: ' + docId);
+    // TODO: Open edit modal with document data
+  };
+
+  // Delete document
+  window.deleteDocument = async function(docId, title) {
+    if (!confirm(`Are you sure you want to delete "${title}"?\n\nThis action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch(`/api/department-documents/${docId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        loadDepartmentDocuments();
+      } else {
+        alert(data.error || 'Failed to delete document');
+      }
+    } catch (error) {
+      console.error('Delete document error:', error);
+      alert('Error deleting document');
+    }
+  };
+
+  // View document (placeholder)
+  window.viewDocument = function(docId) {
+    alert('View document functionality will be available in student portal');
+  };
+
+  // Upload document form handler
+  const uploadForm = document.getElementById('uploadDocumentForm');
+  if (uploadForm) {
+    uploadForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const messageDiv = document.getElementById('uploadDocumentMessage');
+      const submitBtn = this.querySelector('button[type="submit"]');
+      
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Uploading...';
+
+      try {
+        const token = localStorage.getItem('adminToken');
+        const formData = new FormData();
+        
+        // Get category - use custom if "Other" is selected
+        const categorySelect = document.getElementById('docCategory');
+        const category = categorySelect.value === 'Other' 
+          ? document.getElementById('customCategory').value 
+          : categorySelect.value;
+        
+        formData.append('title', document.getElementById('docTitle').value);
+        formData.append('category', category);
+        formData.append('description', document.getElementById('docDescription').value);
+        formData.append('contentType', document.getElementById('contentType').value);
+        formData.append('dateIssued', document.getElementById('docDate').value || new Date().toISOString());
+        formData.append('isPublished', document.getElementById('isPublished').checked);
+        formData.append('isPinned', document.getElementById('isPinned').checked);
+
+        if (document.getElementById('contentType').value === 'file') {
+          const fileInput = document.getElementById('documentFile');
+          if (fileInput.files[0]) {
+            formData.append('file', fileInput.files[0]);
+          }
+        } else {
+          formData.append('textContent', document.getElementById('docTextContent').value);
+        }
+
+        const response = await fetch('/api/department-documents', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+          body: formData
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          messageDiv.className = 'p-4 bg-emerald-50 border-l-4 border-emerald-500 rounded-r-xl';
+          messageDiv.innerHTML = `
+            <div class="flex items-center gap-3 text-emerald-800">
+              <i class="fa-solid fa-check-circle text-lg"></i>
+              <span class="text-sm font-medium">Document uploaded successfully!</span>
+            </div>
+          `;
+          messageDiv.classList.remove('hidden');
+
+          setTimeout(() => {
+            closeUploadDocumentModal();
+            loadDepartmentDocuments();
+          }, 1500);
+        } else {
+          messageDiv.className = 'p-4 bg-red-50 border-l-4 border-red-500 rounded-r-xl';
+          messageDiv.innerHTML = `
+            <div class="flex items-center gap-3 text-red-800">
+              <i class="fa-solid fa-exclamation-circle text-lg"></i>
+              <span class="text-sm font-medium">${data.error || 'Upload failed'}</span>
+            </div>
+          `;
+          messageDiv.classList.remove('hidden');
+        }
+      } catch (error) {
+        console.error('Upload error:', error);
+        messageDiv.className = 'p-4 bg-red-50 border-l-4 border-red-500 rounded-r-xl';
+        messageDiv.innerHTML = `
+          <div class="flex items-center gap-3 text-red-800">
+            <i class="fa-solid fa-exclamation-circle text-lg"></i>
+            <span class="text-sm font-medium">Network error. Please try again.</span>
+          </div>
+        `;
+        messageDiv.classList.remove('hidden');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up mr-2"></i>Upload Document';
+      }
+    });
+  }
+
+  // Category filter
+  const categoryFilter = document.getElementById('categoryFilter');
+  if (categoryFilter) {
+    categoryFilter.addEventListener('change', loadDepartmentDocuments);
+  }
+
+  // Search functionality
+  const documentsSearch = document.getElementById('documentsSearch');
+  if (documentsSearch) {
+    documentsSearch.addEventListener('input', function(e) {
+      const searchTerm = e.target.value.toLowerCase();
+      const rows = document.querySelectorAll('#documentsTableBody tr');
+      
+      rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(searchTerm) ? '' : 'none';
+      });
+    });
   }
 
 })();

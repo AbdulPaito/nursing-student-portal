@@ -11,6 +11,7 @@ const announcementsRoutes = require('./routes/announcements');
 const musicRoutes = require('./routes/music');
 const statsRoutes = require('./routes/stats');
 const departmentInfoRoutes = require('./routes/departmentInfo');
+const departmentDocumentsRoutes = require('./routes/departmentDocuments');
 const coursesRoutes = require('./routes/courses');
 const usersRoutes = require('./routes/users');
 
@@ -135,6 +136,7 @@ app.use('/api/announcements', requireDb, announcementsRoutes);
 app.use('/api/music', requireDb, musicRoutes);
 app.use('/api/stats', requireDb, statsRoutes);
 app.use('/api/department-info', requireDb, departmentInfoRoutes);
+app.use('/api/department-documents', requireDb, departmentDocumentsRoutes);
 app.use('/api/courses', requireDb, coursesRoutes);
 
 // Serve HTML pages for specific routes

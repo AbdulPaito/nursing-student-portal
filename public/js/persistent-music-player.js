@@ -23,6 +23,28 @@
   let updateInterval = null;
   let pageType = 'portal'; // Can be 'portal' or 'login'
 
+  /**
+   * Wait for navbar to be available (for dynamically loaded navbars)
+   */
+  async function waitForNavbar(maxWait = 5000) {
+    const startTime = Date.now();
+    while (!document.querySelector('nav') && Date.now() - startTime < maxWait) {
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+    // Additional wait for content to settle
+    await new Promise(resolve => setTimeout(resolve, 200));
+  }
+
+  /**
+   * Wait for mobile menu button to be available
+   */
+  async function waitForMobileMenuBtn(maxWait = 3000) {
+    const startTime = Date.now();
+    while (!document.getElementById('mobileMenuBtn') && Date.now() - startTime < maxWait) {
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+  }
+
   // Detect page type
   if (window.location.pathname.includes('login.html')) {
     pageType = 'login';
@@ -66,7 +88,10 @@
   /**
    * Create minimalist music control UI integrated into navbar
    */
-  function createMusicUI() {
+  async function createMusicUI() {
+    // Wait for navbar to be loaded if using dynamic loading
+    await waitForNavbar();
+
     // Find navbar to inject music control
     const navbar = document.querySelector('nav');
     if (!navbar) {
@@ -110,12 +135,16 @@
     `;
 
     // Insert before mobile menu button (on mobile it appears left of hamburger)
+    await waitForMobileMenuBtn();
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    if (mobileMenuBtn) {
+    if (mobileMenuBtn && mobileMenuBtn.parentNode) {
       mobileMenuBtn.parentNode.insertBefore(musicControl, mobileMenuBtn);
     } else {
-      // Fallback: append to nav container
-      navContainer.appendChild(musicControl);
+      // Fallback: append to nav container or find any container
+      const existingControl = document.getElementById('persistentMusicControl');
+      if (!existingControl) {
+        navContainer.appendChild(musicControl);
+      }
     }
 
     // Add styles
