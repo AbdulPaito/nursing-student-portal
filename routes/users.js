@@ -17,9 +17,11 @@ router.get('/', auth, async (req, res) => {
       .populate('createdBy', 'name email')
       .sort({ createdAt: -1 });
     
+    // Add current user ID to response so frontend can identify logged-in user
     res.json({
       success: true,
-      users
+      users,
+      currentUserId: req.user._id
     });
   } catch (err) {
     console.error('Get users error:', err);

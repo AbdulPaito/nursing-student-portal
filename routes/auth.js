@@ -143,6 +143,11 @@ router.post('/login', async (req, res) => {
       });
     }
 
+    // Set user as online
+    user.isOnline = true;
+    user.lastActive = new Date();
+    await user.save();
+
     // Generate JWT token
     const token = jwt.sign(
       { id: user._id },
@@ -200,19 +205,76 @@ router.get('/me', auth, async (req, res) => {
 });
 
 /**
+ * @route   POST /api/auth/heartbeat
+ * @desc    Update user's last active timestamp (keep session alive)
+ * @access  Private
+ */
+router.post('/heartbeat', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (user) {
+      user.lastActive = new Date();
+      user.isOnline = true;
+      await user.save();
+    }
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Heartbeat error:', err);
+    res.status(500).json({ success: false, error: 'Server error' });
+  }
+});
+
+/**
+ * @route   POST /api/auth/logout
+ * @desc    Logout user and set status to offline
+ * @access  Private
+ */
+router.post('/logout', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (user) {
+      user.isOnline = false;
+      user.lastActive = new Date();
+      await user.save();
+    }
+    res.json({
+      success: true,
+      message: 'Logged out successfully'
+    });
+  } catch (err) {
+    console.error('Logout error:', err);
+    res.status(500).json({
+      success: false,
+      error: 'Server error'
+    });
+  }
+});
+
+/**
  * @route   POST /api/auth/change-password
  * @desc    Change admin password
  * @access  Private
  */
 router.post('/change-password', auth, async (req, res) => {
   try {
-    const { currentPassword, newPassword } = req.body;
+    const { email, currentPassword, newPassword } = req.body;
 
     // Validate required fields
-    if (!currentPassword || !newPassword) {
+    if (!email || !currentPassword || !newPassword) {
       return res.status(400).json({
         success: false,
-        error: 'Please provide current password and new password'
+        error: 'Please provide email, current password and new password'
+      });
+    }
+
+    // Get user and verify email matches
+    const user = await User.findById(req.user._id);
+    const emailTrimmed = String(email).trim().toLowerCase();
+    
+    if (user.email.toLowerCase() !== emailTrimmed) {
+      return res.status(403).json({
+        success: false,
+        error: 'Email does not match your account. Please verify your email address.'
       });
     }
 
@@ -238,7 +300,6 @@ router.post('/change-password', auth, async (req, res) => {
     }
 
     // Check if new password is same as current
-    const user = await User.findById(req.user._id);
     const isSameAsOld = await user.comparePassword(String(newPassword));
     if (isSameAsOld) {
       return res.status(400).json({

@@ -15,7 +15,10 @@ const userSchema = new mongoose.Schema({
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   // Password reset PIN
   resetPasswordPIN: { type: String },
-  resetPasswordPINExpires: { type: Date }
+  resetPasswordPINExpires: { type: Date },
+  // Online status tracking
+  isOnline: { type: Boolean, default: false },
+  lastActive: { type: Date, default: Date.now }
 }, { timestamps: true });
 
 userSchema.pre('save', async function (next) {

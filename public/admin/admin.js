@@ -128,8 +128,26 @@
       }
     });
   });
-  document.getElementById('logoutLink').addEventListener('click', function(e) {
+  document.getElementById('logoutLink').addEventListener('click', async function(e) {
     e.preventDefault();
+    
+    // Call logout endpoint to set user offline
+    try {
+      const token = localStorage.getItem('adminToken');
+      if (token) {
+        await fetch('/api/auth/logout', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+      }
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+    
+    // Stop heartbeat
+    stopHeartbeat();
+    
+    // Clear local storage and redirect
     localStorage.removeItem('adminToken');
     localStorage.removeItem('adminUser');
     window.location.href = '/admin/login';
@@ -1292,6 +1310,55 @@
     }
   });
 
+  // Heartbeat to keep session alive and update online status
+  let heartbeatInterval;
+  function startHeartbeat() {
+    // Send heartbeat every 30 seconds
+    heartbeatInterval = setInterval(async () => {
+      try {
+        const token = localStorage.getItem('adminToken');
+        if (token) {
+          await fetch('/api/auth/heartbeat', {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+        }
+      } catch (error) {
+        console.error('Heartbeat error:', error);
+      }
+    }, 30000); // 30 seconds
+  }
+
+  function stopHeartbeat() {
+    if (heartbeatInterval) {
+      clearInterval(heartbeatInterval);
+    }
+  }
+
+  // Start heartbeat on page load
+  document.addEventListener('DOMContentLoaded', function() {
+    const token = localStorage.getItem('adminToken');
+    if (token) {
+      startHeartbeat();
+    }
+  });
+
+  // Auto-refresh user list every 30 seconds when on user management tab
+  let userRefreshInterval;
+  function startUserAutoRefresh() {
+    userRefreshInterval = setInterval(() => {
+      const usersSection = document.getElementById('section-users');
+      if (usersSection && !usersSection.classList.contains('hidden')) {
+        loadUsers();
+      }
+    }, 30000); // 30 seconds
+  }
+
+  // Start auto-refresh on page load
+  document.addEventListener('DOMContentLoaded', function() {
+    startUserAutoRefresh();
+  });
+
   // Load all users
   window.loadUsers = async function() {
     const tbody = document.getElementById('usersTableBody');
@@ -1299,6 +1366,15 @@
 
     try {
       const token = localStorage.getItem('adminToken');
+      
+      // Get current user info to check role
+      const userInfoResponse = await fetch('/api/auth/me', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const userInfo = await userInfoResponse.json();
+      const currentUserRole = userInfo.admin ? userInfo.admin.role : 'admin';
+      const isSuperAdmin = currentUserRole === 'superadmin';
+      
       const response = await fetch('/api/users', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -1317,19 +1393,60 @@
             ? '<span class="px-2 py-1 rounded-full bg-amber-100 text-amber-700 text-xs font-semibold">Must Change Password</span>'
             : '<span class="px-2 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-semibold">Active</span>';
           
-          const currentUserId = JSON.parse(atob(token.split('.')[1])).id;
+          const currentUserId = data.currentUserId || JSON.parse(atob(token.split('.')[1])).id;
           const isSelf = user._id === currentUserId;
 
+          // Check online status
+          let onlineStatus = '';
+          let lastSeenText = '';
+          if (user.isOnline) {
+            onlineStatus = '<span class="flex items-center gap-1.5"><span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span><span class="text-green-700 text-xs font-semibold">Online</span></span>';
+            lastSeenText = '<span class="text-xs text-gray-500">Active now</span>';
+          } else if (user.lastActive) {
+            const lastActive = new Date(user.lastActive);
+            const now = new Date();
+            const diffMs = now - lastActive;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+            
+            if (diffMins < 5) {
+              onlineStatus = '<span class="flex items-center gap-1.5"><span class="w-2 h-2 bg-yellow-500 rounded-full"></span><span class="text-yellow-700 text-xs font-semibold">Away</span></span>';
+              lastSeenText = '<span class="text-xs text-gray-500">Last seen ' + diffMins + ' min ago</span>';
+            } else if (diffHours < 1) {
+              onlineStatus = '<span class="flex items-center gap-1.5"><span class="w-2 h-2 bg-gray-400 rounded-full"></span><span class="text-gray-600 text-xs font-semibold">Offline</span></span>';
+              lastSeenText = '<span class="text-xs text-gray-500">Last seen ' + diffMins + ' min ago</span>';
+            } else if (diffDays < 1) {
+              onlineStatus = '<span class="flex items-center gap-1.5"><span class="w-2 h-2 bg-gray-400 rounded-full"></span><span class="text-gray-600 text-xs font-semibold">Offline</span></span>';
+              lastSeenText = '<span class="text-xs text-gray-500">Last seen ' + diffHours + 'h ago</span>';
+            } else {
+              onlineStatus = '<span class="flex items-center gap-1.5"><span class="w-2 h-2 bg-gray-400 rounded-full"></span><span class="text-gray-600 text-xs font-semibold">Offline</span></span>';
+              lastSeenText = '<span class="text-xs text-gray-500">Last seen ' + diffDays + 'd ago</span>';
+            }
+          } else {
+            onlineStatus = '<span class="flex items-center gap-1.5"><span class="w-2 h-2 bg-gray-400 rounded-full"></span><span class="text-gray-600 text-xs font-semibold">Offline</span></span>';
+            lastSeenText = '<span class="text-xs text-gray-500">Never logged in</span>';
+          }
+
           return `
-            <tr class="hover:bg-gray-50 transition-colors">
+            <tr class="hover:bg-gray-50 transition-colors ${isSelf ? 'bg-blue-50' : ''}">
               <td class="px-6 py-4">
                 <div class="flex items-center gap-3">
-                  <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center text-white font-semibold">
-                    ${user.name.charAt(0).toUpperCase()}
+                  <div class="relative">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center text-white font-semibold">
+                      ${user.name.charAt(0).toUpperCase()}
+                    </div>
+                    ${user.isOnline ? '<span class="absolute -top-1 -right-1 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>' : ''}
                   </div>
                   <div>
-                    <div class="font-semibold text-gray-800">${user.name}</div>
-                    ${isSelf ? '<span class="text-xs text-gray-500">(You)</span>' : ''}
+                    <div class="flex items-center gap-2">
+                      <span class="font-semibold text-gray-800">${user.name}</span>
+                      ${isSelf ? '<span class="px-2 py-0.5 rounded-full bg-blue-500 text-white text-xs font-semibold">You</span>' : ''}
+                    </div>
+                    <div class="flex items-center gap-2 mt-1">
+                      ${onlineStatus}
+                      ${lastSeenText}
+                    </div>
                   </div>
                 </div>
               </td>
@@ -1344,8 +1461,12 @@
                   <button onclick="openResetPasswordModal('${user._id}', '${user.name}')" class="px-3 py-2 bg-amber-100 text-amber-700 rounded-lg hover:bg-amber-200 transition-colors text-sm font-medium" title="Reset Password">
                     <i class="fa-solid fa-key"></i>
                   </button>
-                  ${!isSelf ? `
+                  ${!isSelf && isSuperAdmin ? `
                     <button onclick="deleteUser('${user._id}', '${user.name}')" class="px-3 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors text-sm font-medium" title="Delete User">
+                      <i class="fa-solid fa-trash"></i>
+                    </button>
+                  ` : !isSelf && !isSuperAdmin ? `
+                    <button onclick="showAccessDenied()" class="px-3 py-2 bg-gray-100 text-gray-400 rounded-lg cursor-not-allowed text-sm font-medium" title="Only Super Admin can delete users">
                       <i class="fa-solid fa-trash"></i>
                     </button>
                   ` : ''}
@@ -1364,6 +1485,89 @@
   };
 
   // Add User Modal Functions
+  // Show access denied message
+  window.showAccessDenied = function() {
+    // Create toast notification
+    const toastHtml = `
+      <div class="fixed top-4 right-4 z-50 bg-red-50 border-l-4 border-red-500 rounded-lg shadow-lg p-4 max-w-md animate-slide-down" id="accessDeniedToast">
+        <div class="flex items-start gap-3">
+          <div class="flex-shrink-0">
+            <i class="fa-solid fa-shield-halved text-red-500 text-xl"></i>
+          </div>
+          <div class="flex-1">
+            <h3 class="text-sm font-semibold text-red-800 mb-1">Access Denied</h3>
+            <p class="text-sm text-red-700">Only Super Admin can delete user accounts.</p>
+            <p class="text-xs text-red-600 mt-1">Please contact your Super Admin if you need to remove a user.</p>
+          </div>
+          <button onclick="this.parentElement.parentElement.remove()" class="flex-shrink-0 text-red-400 hover:text-red-600">
+            <i class="fa-solid fa-times"></i>
+          </button>
+        </div>
+      </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', toastHtml);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+      const toast = document.getElementById('accessDeniedToast');
+      if (toast) toast.remove();
+    }, 5000);
+  };
+
+  // Delete user function
+  window.deleteUser = async function(userId, userName) {
+    // Confirm deletion
+    const confirmed = confirm(`Are you sure you want to delete ${userName}?\n\nThis action cannot be undone.`);
+    if (!confirmed) return;
+
+    try {
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch(`/api/users/${userId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Show success message
+        const toastHtml = `
+          <div class="fixed top-4 right-4 z-50 bg-emerald-50 border-l-4 border-emerald-500 rounded-lg shadow-lg p-4 max-w-md animate-slide-down" id="deleteSuccessToast">
+            <div class="flex items-start gap-3">
+              <div class="flex-shrink-0">
+                <i class="fa-solid fa-check-circle text-emerald-500 text-xl"></i>
+              </div>
+              <div class="flex-1">
+                <h3 class="text-sm font-semibold text-emerald-800 mb-1">User Deleted</h3>
+                <p class="text-sm text-emerald-700">${userName} has been successfully removed.</p>
+              </div>
+              <button onclick="this.parentElement.parentElement.remove()" class="flex-shrink-0 text-emerald-400 hover:text-emerald-600">
+                <i class="fa-solid fa-times"></i>
+              </button>
+            </div>
+          </div>
+        `;
+        
+        document.body.insertAdjacentHTML('beforeend', toastHtml);
+        
+        setTimeout(() => {
+          const toast = document.getElementById('deleteSuccessToast');
+          if (toast) toast.remove();
+        }, 5000);
+
+        // Reload users list
+        loadUsers();
+      } else {
+        // Show error message
+        alert(data.error || 'Failed to delete user');
+      }
+    } catch (error) {
+      console.error('Delete user error:', error);
+      alert('Error deleting user. Please try again.');
+    }
+  };
+
   window.openAddUserModal = function() {
     document.getElementById('addUserModal').classList.remove('hidden');
     document.getElementById('addUserForm').reset();
@@ -1446,11 +1650,21 @@
               closeAddUserModal();
             }, 5000);
           } else {
+            // Check if it's a duplicate email error
+            const errorMessage = data.error || 'Failed to create user';
+            const isDuplicateEmail = errorMessage.toLowerCase().includes('email') && 
+                                    (errorMessage.toLowerCase().includes('exists') || 
+                                     errorMessage.toLowerCase().includes('already'));
+            
             messageDiv.className = 'p-4 bg-red-50 border-l-4 border-red-500 rounded-r-xl';
             messageDiv.innerHTML = `
-              <div class="flex items-center gap-3 text-red-800">
-                <i class="fa-solid fa-exclamation-circle text-lg"></i>
-                <span class="text-sm font-medium">${data.error || 'Failed to create user'}</span>
+              <div class="flex items-start gap-3 text-red-800">
+                <i class="fa-solid fa-exclamation-circle text-lg mt-0.5"></i>
+                <div class="text-sm">
+                  <p class="font-semibold mb-1">${isDuplicateEmail ? 'Email Already in Use' : 'Error'}</p>
+                  <p>${errorMessage}</p>
+                  ${isDuplicateEmail ? '<p class="text-xs mt-1">Please use a different email address or check if the user already exists.</p>' : ''}
+                </div>
               </div>
             `;
             messageDiv.classList.remove('hidden');
@@ -1668,6 +1882,7 @@
       form.addEventListener('submit', async function(e) {
         e.preventDefault();
         
+        const email = document.getElementById('changePasswordEmail').value;
         const currentPassword = document.getElementById('currentPassword').value;
         const newPassword = document.getElementById('newPassword').value;
         const confirmPassword = document.getElementById('confirmPassword').value;
@@ -1675,6 +1890,11 @@
         const submitBtn = form.querySelector('button[type="submit"]');
 
         // Enhanced Validation
+        if (!email || !email.trim()) {
+          showChangePasswordError(messageDiv, 'Please enter your email address');
+          return;
+        }
+
         if (newPassword !== confirmPassword) {
           showChangePasswordError(messageDiv, 'New passwords do not match');
           return;
@@ -1712,7 +1932,7 @@
               'Authorization': `Bearer ${token}`,
               'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ currentPassword, newPassword })
+            body: JSON.stringify({ email, currentPassword, newPassword })
           });
 
           const data = await response.json();
