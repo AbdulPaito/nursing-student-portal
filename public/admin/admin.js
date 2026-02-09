@@ -1032,6 +1032,9 @@
           if (data.programCoordinator) {
             document.getElementById('displayCoordinatorName').textContent = data.programCoordinator.name || '--';
             document.getElementById('displayCoordinatorEmail').textContent = data.programCoordinator.email || '--';
+          } else {
+            document.getElementById('displayCoordinatorName').textContent = '--';
+            document.getElementById('displayCoordinatorEmail').textContent = '--';
           }
           
           // Calculate ratio
@@ -1070,6 +1073,9 @@
     if (data.programCoordinator) {
       document.getElementById('editCoordinatorName').value = data.programCoordinator.name || '';
       document.getElementById('editCoordinatorEmail').value = data.programCoordinator.email || '';
+    } else {
+      document.getElementById('editCoordinatorName').value = '';
+      document.getElementById('editCoordinatorEmail').value = '';
     }
     
     document.getElementById('editDepartmentModal').classList.remove('hidden');
