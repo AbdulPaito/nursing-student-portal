@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -36,174 +37,181 @@
               800: '#3730a3',
               900: '#312e81',
             },
+            teal: {
+              50: '#f0fdfa',
+              100: '#ccfbf1',
+              200: '#99f6e4',
+              300: '#5eead4',
+              400: '#2dd4bf',
+              500: '#14b8a6',
+              600: '#0d9488',
+              700: '#0f766e',
+              800: '#115e59',
+              900: '#134e4a',
+            }
           },
           fontFamily: {
             sans: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.5s ease-out',
+            'slide-up': 'slideUp 0.4s ease-out',
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            slideUp: {
+              '0%': { opacity: '0', transform: 'translateY(20px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
           },
         }
       }
     }
   </script>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus Jakarta Sans:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <style>
-    body { 
+    body {
       font-family: 'Plus Jakarta Sans', sans-serif;
-      background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 50%, #e0e7ff 100%);
+      background: linear-gradient(135deg, #f0fdfa 0%, #f5f3ff 50%, #e0e7ff 100%);
       min-height: 100vh;
     }
-    
+
     /* Glassmorphism */
     .glass {
       background: rgba(255, 255, 255, 0.85);
       backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 255, 255, 0.5);
     }
-    
-    .glass-strong {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.3);
+
+    /* Smooth transitions */
+    .transition-smooth {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    
-    /* Animated Background */
-    .bg-pattern {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-image: 
-        radial-gradient(circle at 20% 80%, rgba(124, 58, 237, 0.08) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(79, 70, 229, 0.08) 0%, transparent 50%);
-      pointer-events: none;
-      z-index: -1;
-    }
-    
-    /* Gradient Text */
-    .gradient-text {
-      background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    
-    /* Announcement Card */
+
+    /* Card hover effects */
     .announcement-card {
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
+
     .announcement-card:hover {
       transform: translateY(-4px);
-      box-shadow: 0 12px 24px rgba(124, 58, 237, 0.15);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
     }
-    .announcement-message {
+
+    /* Read more functionality */
+    .announcement-content {
       display: -webkit-box;
       -webkit-line-clamp: 3;
       line-clamp: 3;
       -webkit-box-orient: vertical;
       overflow: hidden;
+      transition: all 0.3s ease;
     }
-    .announcement-card.expanded .announcement-message {
+
+    .announcement-content.expanded {
       -webkit-line-clamp: unset;
       line-clamp: unset;
     }
-    
-    /* Nav Link Animation */
-    .nav-link {
-      position: relative;
+
+    /* Tab styles */
+    .tab-btn {
+      transition: all 0.2s ease;
     }
-    
-    .nav-link::after {
-      content: '';
-      position: absolute;
-      bottom: -2px;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background: linear-gradient(90deg, #7c3aed, #4f46e5);
-      transition: width 0.3s ease;
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+      color: white;
+      box-shadow: 0 4px 12px rgba(20, 184, 166, 0.35);
     }
-    
-    .nav-link:hover::after,
-    .nav-link.active::after { width: 100%; }
-    
-    /* Logo Glow */
-    .logo-glow {
-      animation: logoGlow 3s ease-in-out infinite;
+
+    /* Priority accent borders */
+    .priority-urgent {
+      border-left-color: #ef4444;
     }
-    
-    @keyframes logoGlow {
-      0%, 100% { box-shadow: 0 0 30px rgba(124, 58, 237, 0.3); }
-      50% { box-shadow: 0 0 50px rgba(124, 58, 237, 0.6), 0 0 70px rgba(79, 70, 229, 0.3); }
+
+    .priority-important {
+      border-left-color: #f59e0b;
     }
-    
-    /* Hamburger Animation */
-    .hamburger-line { transition: all 0.3s ease-in-out; }
-    .hamburger-active .hamburger-line:first-child {
-      transform: rotate(45deg) translate(6px, 6px);
+
+    .priority-normal {
+      border-left-color: #14b8a6;
     }
-    .hamburger-active .hamburger-line:nth-child(2) { opacity: 0; }
-    .hamburger-active .hamburger-line:last-child {
-      transform: rotate(-45deg) translate(6px, -6px);
-    }
-    
-    /* Card Hover */
-    .card-hover {
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
-    .card-hover:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 25px 50px -12px rgba(124, 58, 237, 0.25);
-    }
-    
+
     /* Scrollbar */
     ::-webkit-scrollbar {
       width: 8px;
       height: 8px;
     }
-    
+
     ::-webkit-scrollbar-track {
-      background: rgba(124, 58, 237, 0.1);
+      background: rgba(20, 184, 166, 0.1);
       border-radius: 4px;
     }
-    
+
     ::-webkit-scrollbar-thumb {
-      background: rgba(124, 58, 237, 0.3);
+      background: rgba(20, 184, 166, 0.3);
       border-radius: 4px;
     }
-    
+
     ::-webkit-scrollbar-thumb:hover {
-      background: rgba(124, 58, 237, 0.5);
+      background: rgba(20, 184, 166, 0.5);
+    }
+
+    /* Skeleton loading animation */
+    @keyframes shimmer {
+      0% {
+        background-position: -200% 0;
+      }
+
+      100% {
+        background-position: 200% 0;
+      }
+    }
+
+    .skeleton {
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
     }
   </style>
 </head>
-<body class="bg-gradient-to-b from-white via-gray-50 to-gray-100 min-h-screen flex flex-col">
+
+<body class="bg-gradient-to-b from-white via-teal-50/30 to-gray-50 min-h-screen flex flex-col">
   <!-- Modern Responsive Navbar -->
-  <nav class="bg-white/95 backdrop-blur-md border-b border-gray-200/80 sticky top-0 z-50 transition-all duration-300" id="navbar">
+  <nav class="bg-white/95 backdrop-blur-md border-b border-gray-200/80 sticky top-0 z-50 transition-all duration-300"
+    id="navbar">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16 lg:h-18">
-        
-        <!-- Logo & Title Section - ALWAYS VISIBLE -->
+
+        <!-- Logo & Title Section -->
         <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
           <a href="/" class="relative group flex items-center justify-center">
-            <div class="relative h-10 w-10 sm:h-11 sm:w-11 rounded-xl overflow-hidden bg-gradient-to-br from-primary to-primary-dark shadow-md group-hover:shadow-lg group-hover:shadow-primary/20 transition-all duration-300 group-hover:scale-105">
-              <div class="absolute inset-0 flex items-center justify-center">
-                <i class="bi bi-building text-white text-lg sm:text-xl"></i>
-              </div>
-              <img src="images/msu-logo.png" alt="MArSU Logo" class="h-full w-full object-contain relative z-10" onerror="this.style.display='none'">
+            <div
+              class="relative h-10 w-10 sm:h-11 sm:w-11 rounded-xl overflow-hidden bg-gradient-to-br from-teal-500 to-teal-600 shadow-md group-hover:shadow-lg group-hover:shadow-teal-200 transition-all duration-300 group-hover:scale-105">
+              <img src="images/msu-logo.png" alt="MarSU Logo" class="h-full w-full object-contain relative z-10"
+                onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\\'fa-solid fa-building-columns text-white text-lg sm:text-xl flex items-center justify-center h-full\\'></i>';">
             </div>
-            <div class="absolute -inset-1 bg-primary/20 rounded-xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div
+              class="absolute -inset-1 bg-teal-500/20 rounded-xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            </div>
           </a>
-          
+
           <div class="flex flex-col min-w-0">
             <a href="/" class="group">
-              <h1 class="text-sm sm:text-base lg:text-lg font-bold text-gray-900 tracking-tight leading-tight truncate max-w-[140px] sm:max-w-[200px] lg:max-w-none transition-colors duration-300 group-hover:text-primary">
+              <h1
+                class="text-sm sm:text-base lg:text-lg font-bold text-gray-900 tracking-tight leading-tight truncate max-w-[140px] sm:max-w-[200px] lg:max-w-none transition-colors duration-300 group-hover:text-teal-600">
                 <span class="hidden sm:inline">Nursing Portal</span>
                 <span class="sm:hidden">Nursing</span>
               </h1>
             </a>
-            <span class="hidden sm:block text-[10px] sm:text-xs text-gray-500 font-medium tracking-wide uppercase truncate max-w-[180px] lg:max-w-none">
+            <span
+              class="hidden sm:block text-[10px] sm:text-xs text-gray-500 font-medium tracking-wide uppercase truncate max-w-[180px] lg:max-w-none">
               Marinduque State University
             </span>
           </div>
@@ -211,32 +219,43 @@
 
         <!-- Desktop Navigation Links -->
         <div class="hidden md:flex items-center gap-1">
-          <a href="/" class="nav-link px-3 py-2 text-sm font-medium text-gray-700 hover:text-primary transition-colors duration-200 rounded-lg hover:bg-gray-50/80" data-page="home">
+          <a href="/"
+            class="nav-link px-3 py-2 text-sm font-medium text-gray-700 hover:text-teal-600 transition-colors duration-200 rounded-lg hover:bg-gray-50/80"
+            data-page="home">
             <span class="flex items-center gap-1.5"><i class="fa-solid fa-house text-sm"></i>Home</span>
           </a>
-          <a href="/events" class="nav-link px-3 py-2 text-sm font-medium text-gray-700 hover:text-primary transition-colors duration-200 rounded-lg hover:bg-gray-50/80" data-page="events">
+          <a href="/events"
+            class="nav-link px-3 py-2 text-sm font-medium text-gray-700 hover:text-teal-600 transition-colors duration-200 rounded-lg hover:bg-gray-50/80"
+            data-page="events">
             <span class="flex items-center gap-1.5"><i class="fa-solid fa-calendar-days text-sm"></i>Events</span>
           </a>
-          <a href="/daily-subjects.html" class="nav-link px-3 py-2 text-sm font-medium text-gray-700 hover:text-primary transition-colors duration-200 rounded-lg hover:bg-gray-50/80" data-page="subjects">
-            <span class="flex items-center gap-1.5"><i class="fa-solid fa-book-open text-sm"></i>Courses & Subjects</span>
+          <a href="/daily-subjects.html"
+            class="nav-link px-3 py-2 text-sm font-medium text-gray-700 hover:text-teal-600 transition-colors duration-200 rounded-lg hover:bg-gray-50/80"
+            data-page="subjects">
+            <span class="flex items-center gap-1.5"><i class="fa-solid fa-book-open text-sm"></i>Courses</span>
           </a>
-          <a href="/department-info.html" class="nav-link px-3 py-2 text-sm font-medium text-gray-700 hover:text-primary transition-colors duration-200 rounded-lg hover:bg-gray-50/80" data-page="department-info">
-            <span class="flex items-center gap-1.5"><i class="fa-solid fa-file-lines text-sm"></i>Department Info</span>
+          <a href="/department-info.html"
+            class="nav-link px-3 py-2 text-sm font-medium text-gray-700 hover:text-teal-600 transition-colors duration-200 rounded-lg hover:bg-gray-50/80"
+            data-page="department-info">
+            <span class="flex items-center gap-1.5"><i class="fa-solid fa-file-lines text-sm"></i>Documents</span>
           </a>
-          <a href="/announcements.html" class="nav-link px-3 py-2 text-sm font-medium text-gray-700 hover:text-primary transition-colors duration-200 rounded-lg hover:bg-gray-50/80" data-page="announcements">
+          <a href="/announcements.html"
+            class="nav-link px-3 py-2 text-sm font-medium text-teal-600 bg-teal-50/80 transition-colors duration-200 rounded-lg"
+            data-page="announcements">
             <span class="flex items-center gap-1.5"><i class="fa-solid fa-bullhorn text-sm"></i>Announcements</span>
-          </a>
-          <a href="/#about" class="nav-link px-3 py-2 text-sm font-medium text-gray-700 hover:text-primary transition-colors duration-200 rounded-lg hover:bg-gray-50/80" data-page="about">
-            <span class="flex items-center gap-1.5"><i class="fa-solid fa-circle-info text-sm"></i>Contact</span>
           </a>
         </div>
 
         <!-- Mobile Menu Button -->
-        <button type="button" class="md:hidden relative p-2 rounded-xl text-gray-600 hover:text-primary hover:bg-gray-100/80 active:scale-95 transition-all duration-200" id="mobileMenuBtn" aria-label="Toggle menu" aria-expanded="false">
+        <button type="button"
+          class="md:hidden relative p-2 rounded-xl text-gray-600 hover:text-teal-600 hover:bg-gray-100/80 active:scale-95 transition-all duration-200"
+          id="mobileMenuBtn" aria-label="Toggle menu" aria-expanded="false">
           <div class="w-6 h-5 flex flex-col justify-between" id="hamburger">
-            <span class="hamburger-line w-full h-0.5 bg-current rounded-full origin-center transition-all duration-300"></span>
+            <span
+              class="hamburger-line w-full h-0.5 bg-current rounded-full origin-center transition-all duration-300"></span>
             <span class="hamburger-line w-full h-0.5 bg-current rounded-full transition-all duration-300"></span>
-            <span class="hamburger-line w-full h-0.5 bg-current rounded-full origin-center transition-all duration-300"></span>
+            <span
+              class="hamburger-line w-full h-0.5 bg-current rounded-full origin-center transition-all duration-300"></span>
           </div>
         </button>
       </div>
@@ -245,327 +264,593 @@
     <!-- Mobile Navigation Menu -->
     <div class="md:hidden hidden bg-white border-t border-gray-100 shadow-lg shadow-gray-200/50" id="mobileMenu">
       <div class="px-4 py-3 space-y-1">
-        <a href="/" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:text-primary hover:bg-primary/5 rounded-xl transition-all duration-200" data-page="home">
-          <div class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center"><i class="fa-solid fa-house text-primary"></i></div>
+        <a href="/"
+          class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-xl transition-all duration-200"
+          data-page="home">
+          <div class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center"><i
+              class="fa-solid fa-house text-teal-600"></i></div>
           <span>Home</span>
         </a>
-        <a href="/events" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:text-primary hover:bg-primary/5 rounded-xl transition-all duration-200" data-page="events">
-          <div class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center"><i class="fa-solid fa-calendar-days text-primary"></i></div>
+        <a href="/events"
+          class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-xl transition-all duration-200"
+          data-page="events">
+          <div class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center"><i
+              class="fa-solid fa-calendar-days text-teal-600"></i></div>
           <span>Events</span>
         </a>
-        <a href="/daily-subjects.html" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:text-primary hover:bg-primary/5 rounded-xl transition-all duration-200" data-page="subjects">
-          <div class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center"><i class="fa-solid fa-book-open text-primary"></i></div>
-          <span>Courses & Subjects</span>
+        <a href="/daily-subjects.html"
+          class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-xl transition-all duration-200"
+          data-page="subjects">
+          <div class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center"><i
+              class="fa-solid fa-book-open text-teal-600"></i></div>
+          <span>Courses</span>
         </a>
-        <a href="/department-info.html" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:text-primary hover:bg-primary/5 rounded-xl transition-all duration-200" data-page="department-info">
-          <div class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center"><i class="fa-solid fa-file-lines text-primary"></i></div>
-          <span>Department Info</span>
+        <a href="/department-info.html"
+          class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-xl transition-all duration-200"
+          data-page="department-info">
+          <div class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center"><i
+              class="fa-solid fa-file-lines text-teal-600"></i></div>
+          <span>Documents</span>
         </a>
-        <a href="/announcements.html" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:text-primary hover:bg-primary/5 rounded-xl transition-all duration-200" data-page="announcements">
-          <div class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center"><i class="fa-solid fa-bullhorn text-primary"></i></div>
+        <a href="/announcements.html"
+          class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-teal-600 bg-teal-50 rounded-xl transition-all duration-200"
+          data-page="announcements">
+          <div class="w-8 h-8 rounded-lg bg-teal-100 flex items-center justify-center"><i
+              class="fa-solid fa-bullhorn text-teal-600"></i></div>
           <span>Announcements</span>
-        </a>
-        <div class="border-t border-gray-100 my-2"></div>
-        <a href="/#about" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:text-primary hover:bg-primary/5 rounded-xl transition-all duration-200" data-page="about">
-          <div class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center"><i class="fa-solid fa-circle-info text-primary"></i></div>
-          <span>Contact Us</span>
         </a>
       </div>
     </div>
   </nav>
 
-  <!-- Hero Section -->
-  <section class="relative bg-gradient-to-br from-yellow-500 via-yellow-400 to-orange-400 text-white py-12 md:py-16">
-    <div class="absolute inset-0 bg-gradient-to-t from-yellow-600/20 to-transparent"></div>
+  <!-- Hero Section with Breadcrumb -->
+  <section class="relative bg-gradient-to-br from-teal-600 via-teal-500 to-cyan-500 text-white py-10 md:py-12">
+    <div class="absolute inset-0 bg-gradient-to-t from-teal-700/30 to-transparent"></div>
+    <!-- Decorative circles -->
+    <div class="absolute top-10 right-20 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+    <div class="absolute bottom-0 left-10 w-24 h-24 bg-white/10 rounded-full blur-2xl"></div>
+
     <div class="container mx-auto px-4 relative z-10">
-      <div class="flex items-center gap-3 mb-2">
-        <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-lg">
-          <img src="images/nursing-logo.png" alt="Nursing Logo" class="w-10 h-10 object-contain">
+      <!-- Breadcrumb -->
+      <nav class="flex items-center gap-2 text-sm mb-4 opacity-90">
+        <a href="/" class="hover:text-white/80 transition-colors"><i class="fa-solid fa-house"></i> Home</a>
+        <i class="fa-solid fa-chevron-right text-xs"></i>
+        <span class="font-medium">Announcements</span>
+      </nav>
+
+      <div class="flex items-center gap-4">
+        <div class="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center shadow-lg">
+          <i class="fa-solid fa-bullhorn text-2xl"></i>
         </div>
-        <h1 class="text-3xl md:text-4xl font-bold">Announcements</h1>
+        <div>
+          <h1 class="text-2xl md:text-3xl font-bold">Announcements</h1>
+          <p class="text-teal-100 text-sm md:text-base mt-1">Official updates, notices, and important announcements for
+            nursing students</p>
+        </div>
       </div>
-      <p class="text-lg opacity-90">Official updates and important notices from the college.</p>
     </div>
   </section>
 
   <!-- Main Content -->
   <main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <!-- Filters -->
-    <div class="mb-6 flex flex-wrap gap-4 items-center justify-between">
-      <div class="flex items-center gap-2">
-        <span class="text-sm text-gray-500">Filter by:</span>
-        <div class="flex gap-2">
-          <button class="px-4 py-2 rounded-full text-sm font-medium bg-primary text-white shadow-md transition-all hover:shadow-lg" id="filterAll">All</button>
-          <button class="px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition-all" id="filterNew">New</button>
-          <button class="px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition-all" id="filterImportant">Important</button>
+
+    <!-- Filter & Search Section -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 mb-6">
+      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+
+        <!-- Filter Tabs -->
+        <div class="flex flex-wrap gap-2" id="filterTabs">
+          <button
+            class="tab-btn px-4 py-2 rounded-xl text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-all active"
+            data-filter="all">
+            <i class="fa-solid fa-layer-group mr-1.5"></i>All
+          </button>
+          <button
+            class="tab-btn px-4 py-2 rounded-xl text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-all"
+            data-filter="new">
+            <i class="fa-solid fa-sparkles mr-1.5"></i>New
+          </button>
+          <button
+            class="tab-btn px-4 py-2 rounded-xl text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-all"
+            data-filter="important">
+            <i class="fa-solid fa-star mr-1.5"></i>Important
+          </button>
+          <button
+            class="tab-btn px-4 py-2 rounded-xl text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-all"
+            data-filter="urgent">
+            <i class="fa-solid fa-triangle-exclamation mr-1.5"></i>Urgent
+          </button>
+          <button
+            class="tab-btn px-4 py-2 rounded-xl text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-all"
+            data-filter="academic">
+            <i class="fa-solid fa-graduation-cap mr-1.5"></i>Academic
+          </button>
+          <button
+            class="tab-btn px-4 py-2 rounded-xl text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-all"
+            data-filter="clinical">
+            <i class="fa-solid fa-user-nurse mr-1.5"></i>Clinical
+          </button>
+          <button
+            class="tab-btn px-4 py-2 rounded-xl text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-all"
+            data-filter="events">
+            <i class="fa-solid fa-calendar-star mr-1.5"></i>Events
+          </button>
         </div>
-      </div>
-      <div class="relative">
-        <i class="bi bi-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-        <input type="text" id="searchAnnouncements" placeholder="Search announcements..." class="pl-10 pr-4 py-2 border border-gray-200 rounded-full text-sm focus:ring-2 focus:ring-primary focus:border-transparent transition-all w-64">
+
+        <!-- Search & Sort -->
+        <div class="flex items-center gap-3">
+          <div class="relative">
+            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+            <input type="text" id="searchAnnouncements" placeholder="Search announcements..."
+              class="pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all w-64">
+          </div>
+          <div class="relative">
+            <select id="sortAnnouncements"
+              class="pl-4 pr-10 py-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all appearance-none bg-white cursor-pointer">
+              <option value="latest"><i class="fa-solid fa-clock"></i> Latest</option>
+              <option value="oldest"><i class="fa-solid fa-clock-rotate-left"></i> Oldest</option>
+              <option value="views"><i class="fa-solid fa-eye"></i> Most Viewed</option>
+            </select>
+            <i
+              class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- Announcements Grid -->
-    <div class="grid grid-cols-1 gap-6" id="announcementsGrid">
-      <div class="flex justify-center py-12">
-        <div class="spinner"></div>
+    <!-- Announcements List -->
+    <div class="space-y-4" id="announcementsContainer">
+      <!-- Skeleton Loading State -->
+      <div class="skeleton-loading" id="skeletonLoading">
+        <div class="grid gap-4">
+          <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 skeleton">
+            <div class="flex gap-4">
+              <div class="w-14 h-14 rounded-xl skeleton"></div>
+              <div class="flex-1 space-y-3">
+                <div class="h-6 w-3/4 skeleton rounded"></div>
+                <div class="h-4 w-1/2 skeleton rounded"></div>
+                <div class="h-4 w-full skeleton rounded"></div>
+              </div>
+            </div>
+          </div>
+          <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 skeleton">
+            <div class="flex gap-4">
+              <div class="w-14 h-14 rounded-xl skeleton"></div>
+              <div class="flex-1 space-y-3">
+                <div class="h-6 w-2/3 skeleton rounded"></div>
+                <div class="h-4 w-1/2 skeleton rounded"></div>
+                <div class="h-4 w-full skeleton rounded"></div>
+              </div>
+            </div>
+          </div>
+          <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 skeleton">
+            <div class="flex gap-4">
+              <div class="w-14 h-14 rounded-xl skeleton"></div>
+              <div class="flex-1 space-y-3">
+                <div class="h-6 w-1/2 skeleton rounded"></div>
+                <div class="h-4 w-1/3 skeleton rounded"></div>
+                <div class="h-4 w-full skeleton rounded"></div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+    </div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="hidden text-center py-16">
+      <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-gray-100 flex items-center justify-center">
+        <i class="fa-regular fa-bell-slash text-4xl text-gray-400"></i>
+      </div>
+      <h3 class="text-xl font-semibold text-gray-800 mb-2">No Announcements Available</h3>
+      <p class="text-gray-500 max-w-md mx-auto">There are no announcements matching your current filters. Check back
+        later for updates from the nursing department.</p>
     </div>
 
     <!-- No Results -->
-    <div id="noResults" class="hidden text-center py-12">
-      <i class="bi bi-search text-4xl text-gray-300 mb-3"></i>
-      <p class="text-gray-500">No announcements found matching your search.</p>
+    <div id="noResults" class="hidden text-center py-16">
+      <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-teal-50 flex items-center justify-center">
+        <i class="fa-solid fa-magnifying-glass text-4xl text-teal-400"></i>
+      </div>
+      <h3 class="text-xl font-semibold text-gray-800 mb-2">No Results Found</h3>
+      <p class="text-gray-500">Try adjusting your search or filter criteria.</p>
     </div>
+
   </main>
 
   <!-- Footer -->
-  <footer class="bg-gradient-to-t from-gray-200 via-gray-100 to-white border-t-2 border-gray-200 py-8 mt-auto" id="about">
-    <div class="container mx-auto px-4 text-center">
-      <p class="mb-2 text-gray-600">
-        <strong>Program Coordinator</strong>: BSN 2C- AQUINO (2025-2026)
-      </p>
-      <p class="text-sm text-gray-500">Nursing Student Program</p>
+  <footer class="bg-gradient-to-t from-gray-100 via-white to-white border-t border-gray-200 py-8 mt-auto">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <div
+            class="w-10 h-10 rounded-lg bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center">
+            <i class="fa-solid fa-graduation-cap text-white"></i>
+          </div>
+          <div class="text-left">
+            <p class="text-sm font-semibold text-gray-800">Nursing Student Portal</p>
+            <p class="text-xs text-gray-500">Marinduque State University</p>
+          </div>
+        </div>
+        <div class="text-center md:text-right">
+          <p class="text-sm text-gray-600">
+            <strong class="font-medium">Program Coordinator:</strong> BSN 2C - AQUINO (2025-2026)
+          </p>
+          <p class="text-xs text-gray-400 mt-1">
+            <i class="fa-regular fa-copyright mr-1"></i> All rights reserved
+          </p>
+        </div>
+      </div>
     </div>
   </footer>
 
   <!-- Enhanced Card Renderer -->
   <script src="js/enhanced-card-renderer.js"></script>
-  
+
   <!-- Persistent Music Player -->
   <script src="js/persistent-music-player.js"></script>
 
   <script>
-    (function() {
-      // Mobile Menu Toggle with Hamburger Animation
-      const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-      const mobileMenu = document.getElementById('mobileMenu');
-      const hamburger = document.getElementById('hamburger');
-      let isMenuOpen = false;
+      (function () {
+        'use strict';
 
-      function toggleMobileMenu() {
-        isMenuOpen = !isMenuOpen;
-        if (isMenuOpen) {
-          mobileMenu.classList.remove('hidden');
-          hamburger.classList.add('hamburger-active');
-          mobileMenuBtn.setAttribute('aria-expanded', 'true');
-        } else {
-          mobileMenu.classList.add('hidden');
-          hamburger.classList.remove('hamburger-active');
-          mobileMenuBtn.setAttribute('aria-expanded', 'false');
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const hamburger = document.getElementById('hamburger');
+        let isMenuOpen = false;
+
+        function toggleMobileMenu() {
+          isMenuOpen = !isMenuOpen;
+          if (isMenuOpen) {
+            mobileMenu.classList.remove('hidden');
+            hamburger.classList.add('hamburger-active');
+            mobileMenuBtn.setAttribute('aria-expanded', 'true');
+          } else {
+            mobileMenu.classList.add('hidden');
+            hamburger.classList.remove('hamburger-active');
+            mobileMenuBtn.setAttribute('aria-expanded', 'false');
+          }
         }
-      }
 
-      if (mobileMenuBtn && mobileMenu) {
-        mobileMenuBtn.addEventListener('click', toggleMobileMenu);
-        const mobileLinks = mobileMenu.querySelectorAll('a');
-        mobileLinks.forEach(function(link) {
-          link.addEventListener('click', function() {
-            if (isMenuOpen) toggleMobileMenu();
+        if (mobileMenuBtn && mobileMenu) {
+          mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+          const mobileLinks = mobileMenu.querySelectorAll('a');
+          mobileLinks.forEach(function (link) {
+            link.addEventListener('click', function () {
+              if (isMenuOpen) toggleMobileMenu();
+            });
           });
-        });
-        document.addEventListener('click', function(e) {
-          if (isMenuOpen && !mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
-            toggleMobileMenu();
-          }
-        });
-      }
-
-      // Active page highlighting
-      const currentPage = window.location.pathname;
-      const allLinks = document.querySelectorAll('[data-page]');
-      allLinks.forEach(function(link) {
-        const page = link.getAttribute('data-page');
-        let isActive = false;
-        if (page === 'home' && (currentPage === '/' || currentPage === '/index.html')) isActive = true;
-        else if (page === 'events' && currentPage.includes('events')) isActive = true;
-        else if (page === 'subjects' && currentPage.includes('daily-subjects')) isActive = true;
-        else if (page === 'announcements' && currentPage.includes('announcements')) isActive = true;
-        else if (page === 'about' && currentPage.includes('about')) isActive = true;
-        
-        if (isActive) {
-          link.classList.add('active', 'text-primary');
-          if (link.classList.contains('nav-link')) {
-            link.classList.add('bg-primary/10');
-          }
         }
-      });
 
-      function escapeHtml(s) {
-        if (!s) return '';
-        const d = document.createElement('div');
-        d.textContent = s;
-        return d.innerHTML;
-      }
+        // Data
+        let allAnnouncements = [];
+        let currentFilter = 'all';
+        let searchQuery = '';
+        let sortBy = 'latest';
 
-      function formatDateTime(dateStr, timeStr) {
-        if (!dateStr) return '';
-        try {
-          const d = new Date(dateStr + (timeStr ? 'T' + timeStr : ''));
-          const datePart = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-          const timePart = timeStr ? d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }) : '';
-          return timePart ? datePart + ' – ' + timePart : datePart;
-        } catch (e) { return dateStr + (timeStr ? ' ' + timeStr : ''); }
-      }
+        // Category colors
+        const categoryConfig = {
+          'Academic': { icon: 'fa-graduation-cap', color: 'blue', bg: 'bg-blue-50', text: 'text-blue-600', border: 'border-blue-400' },
+          'Clinical': { icon: 'fa-user-nurse', color: 'teal', bg: 'bg-teal-50', text: 'text-teal-600', border: 'border-teal-400' },
+          'Event': { icon: 'fa-calendar-star', color: 'purple', bg: 'bg-purple-50', text: 'text-purple-600', border: 'border-purple-400' },
+          'Urgent': { icon: 'fa-triangle-exclamation', color: 'red', bg: 'bg-red-50', text: 'text-red-600', border: 'border-red-400' },
+          'Important': { icon: 'fa-star', color: 'amber', bg: 'bg-amber-50', text: 'text-amber-600', border: 'border-amber-400' },
+          'General': { icon: 'fa-bullhorn', color: 'gray', bg: 'bg-gray-50', text: 'text-gray-600', border: 'border-gray-400' }
+        };
 
-      let allAnnouncements = [];
-      let currentFilter = 'all';
-      let searchQuery = '';
+        function escapeHtml(s) {
+          if (!s) return '';
+          const d = document.createElement('div');
+          d.textContent = s;
+          return d.innerHTML;
+        }
 
-      function getPriority(a) {
-        const today = new Date().toISOString().split('T')[0];
-        const isNew = a.date >= today;
-        const isImportant = (a.priority && String(a.priority).toLowerCase() === 'important') || 
-                            a.important === true || 
-                            ((a.title || '').toLowerCase().indexOf('urgent') !== -1) || 
-                            ((a.title || '').toLowerCase().indexOf('important') !== -1);
-        
-        if (isImportant) return { type: 'Important', color: 'bg-red-500', border: 'border-red-500', bg: 'bg-red-50' };
-        if (isNew) return { type: 'New', color: 'bg-blue-500', border: 'border-blue-500', bg: 'bg-blue-50' };
-        return { type: 'General', color: 'bg-gray-500', border: 'border-gray-400', bg: 'bg-gray-50' };
-      }
+        function formatDateTime(dateStr, timeStr) {
+          if (!dateStr) return '';
+          try {
+            const d = new Date(dateStr + (timeStr ? 'T' + timeStr : ''));
+            const datePart = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            const timePart = timeStr ? d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }) : '';
+            return timePart ? datePart + ' • ' + timePart : datePart;
+          } catch (e) { return dateStr + (timeStr ? ' ' + timeStr : ''); }
+        }
 
-      function renderAnnouncementCard(a) {
-        const priority = getPriority(a);
-        const dateTime = formatDateTime(a.date, a.time);
-        const priorityKey = `${a._id || a.date}-${a.title}`;
+        function getTimeAgo(dateStr) {
+          if (!dateStr) return '';
+          try {
+            const d = new Date(dateStr);
+            const now = new Date();
+            const diffMs = now - d;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
 
-        return `
-          <div class="announcement-card bg-white rounded-xl shadow-md border-l-4 ${priority.border} overflow-hidden animate-fade-in" id="announcement-${priorityKey}">
-            <div class="p-6">
-              <div class="flex items-start gap-4">
-                <div class="flex-shrink-0 w-14 h-14 rounded-full ${priority.bg} flex items-center justify-center">
-                  <i class="bi bi-megaphone-fill ${priority.border.replace('border-', 'text-').replace('400', '500')} text-2xl"></i>
+            if (diffMins < 1) return 'Just now';
+            if (diffMins < 60) return diffMins + ' min ago';
+            if (diffHours < 24) return diffHours + ' hour' + (diffHours > 1 ? 's' : '') + ' ago';
+            if (diffDays < 7) return diffDays + ' day' + (diffDays > 1 ? 's' : '') + ' ago';
+
+            return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+          } catch (e) { return ''; }
+        }
+
+        function getPriority(announcement) {
+          const title = (announcement.title || '').toLowerCase();
+          const isUrgent = announcement.priority === 'urgent' || title.includes('urgent') || title.includes('emergency');
+          const isImportant = announcement.priority === 'important' || title.includes('important');
+
+          if (isUrgent) return { type: 'urgent', class: 'priority-urgent', badge: 'bg-red-500', badgeText: 'text-white', icon: 'fa-triangle-exclamation', iconBg: 'bg-red-100', iconText: 'text-red-600' };
+          if (isImportant) return { type: 'important', class: 'priority-important', badge: 'bg-amber-500', badgeText: 'text-white', icon: 'fa-star', iconBg: 'bg-amber-100', iconText: 'text-amber-600' };
+          return { type: 'normal', class: 'priority-normal', badge: 'bg-teal-500', badgeText: 'text-white', icon: 'fa-bullhorn', iconBg: 'bg-teal-100', iconText: 'text-teal-600' };
+        }
+
+        function getCategory(announcement) {
+          const title = (announcement.title || '').toLowerCase();
+          const message = (announcement.message || '').toLowerCase();
+
+          if (title.includes('clinical') || message.includes('clinical') || title.includes('hospital') || message.includes('hospital')) {
+            return 'Clinical';
+          }
+          if (title.includes('exam') || title.includes('test') || title.includes('quiz') || title.includes('grades') || title.includes('academic')) {
+            return 'Academic';
+          }
+          if (title.includes('event') || title.includes('conference') || title.includes('workshop') || message.includes('event')) {
+            return 'Event';
+          }
+          return 'General';
+        }
+
+        function isNew(announcement) {
+          const dateStr = announcement.date;
+          if (!dateStr) return false;
+          const today = new Date().toISOString().split('T')[0];
+          const announcementDate = new Date(dateStr).toISOString().split('T')[0];
+          return announcementDate === today;
+        }
+
+        function isPinned(announcement) {
+          return announcement.pinned === true;
+        }
+
+        function renderAnnouncementCard(announcement, index) {
+          const priority = getPriority(announcement);
+          const category = getCategory(announcement);
+          const categoryStyle = categoryConfig[category] || categoryConfig['General'];
+          const isAnnouncementNew = isNew(announcement);
+          const isPinnedAnnouncement = isPinned(announcement);
+          const dateTime = formatDateTime(announcement.date, announcement.time);
+          const timeAgo = getTimeAgo(announcement.date);
+          const viewCount = announcement.views || 0;
+          const cardId = `announcement-${announcement._id || announcement.date}-${index}`;
+
+          return `
+          <div class="announcement-card bg-white rounded-2xl shadow-sm border border-gray-100 ${priority.class} overflow-hidden animate-fade-in hover:shadow-md transition-all" 
+               style="animation-delay: ${index * 0.1}s" 
+               id="${cardId}">
+            <div class="p-5 md:p-6">
+              <div class="flex gap-4">
+                <!-- Icon -->
+                <div class="flex-shrink-0">
+                  <div class="w-12 h-12 md:w-14 md:h-14 rounded-xl ${categoryStyle.iconBg} flex items-center justify-center shadow-sm">
+                    <i class="fa-solid ${categoryStyle.icon} ${categoryStyle.iconText} text-xl md:text-2xl"></i>
+                  </div>
                 </div>
-                <div class="flex-grow">
-                  <div class="flex items-start justify-between gap-3 mb-2">
-                    <h3 class="font-bold text-gray-800 text-lg">${escapeHtml(a.title)}</h3>
-                    <span class="px-3 py-1 ${priority.color} text-white text-xs font-semibold rounded-full whitespace-nowrap">${priority.type}</span>
+                
+                <!-- Content -->
+                <div class="flex-1 min-w-0">
+                  <!-- Header -->
+                  <div class="flex flex-wrap items-center gap-2 mb-2">
+                    ${isPinnedAnnouncement ? `
+                      <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-yellow-100 text-yellow-700 text-xs font-semibold rounded-full">
+                        <i class="fa-solid fa-thumbtack"></i> Pinned
+                      </span>
+                    ` : ''}
+                    ${isAnnouncementNew ? `
+                      <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-teal-100 text-teal-700 text-xs font-semibold rounded-full">
+                        <i class="fa-solid fa-sparkles"></i> New
+                      </span>
+                    ` : ''}
+                    <span class="inline-flex items-center px-2.5 py-0.5 ${categoryStyle.badge} ${categoryStyle.badgeText} text-xs font-medium rounded-full">
+                      ${category}
+                    </span>
+                    ${priority.type !== 'normal' ? `
+                      <span class="inline-flex items-center px-2.5 py-0.5 ${priority.badge} ${priority.badgeText} text-xs font-medium rounded-full">
+                        <i class="fa-solid ${priority.icon} mr-1"></i>${priority.type.charAt(0).toUpperCase() + priority.type.slice(1)}
+                      </span>
+                    ` : ''}
                   </div>
                   
-                  <p class="text-sm text-gray-500 mb-3 flex items-center gap-2">
-                    <i class="bi bi-calendar3 text-primary"></i>
-                    ${escapeHtml(dateTime || a.date || '')}
-                  </p>
+                  <!-- Title -->
+                  <h3 class="font-bold text-gray-800 text-lg md:text-xl mb-2 leading-tight">
+                    ${escapeHtml(announcement.title)}
+                  </h3>
                   
-                  <p class="text-gray-600 announcement-message leading-relaxed">${escapeHtml(a.message)}</p>
+                  <!-- Meta info -->
+                  <div class="flex flex-wrap items-center gap-3 text-sm text-gray-500 mb-3">
+                    <span class="flex items-center gap-1.5">
+                      <i class="fa-regular fa-calendar-check ${isAnnouncementNew ? 'text-teal-500' : ''}"></i>
+                      ${dateTime}
+                    </span>
+                    <span class="flex items-center gap-1.5">
+                      <i class="fa-solid fa-eye text-gray-400"></i>
+                      ${viewCount} views
+                    </span>
+                    ${announcement.author ? `
+                      <span class="flex items-center gap-1.5">
+                        <i class="fa-solid fa-user-graduate text-gray-400"></i>
+                        ${escapeHtml(announcement.author)}
+                      </span>
+                    ` : ''}
+                  </div>
                   
-                  <button class="mt-3 text-sm font-medium text-primary hover:text-primary-dark transition-colors flex items-center gap-1 announcement-toggle" data-id="${priorityKey}">
-                    <span>Read more</span>
-                    <i class="bi bi-chevron-down transition-transform"></i>
-                  </button>
+                  <!-- Message Preview -->
+                  <div class="relative">
+                    <p class="announcement-content text-gray-600 leading-relaxed text-sm md:text-base">
+                      ${escapeHtml(announcement.message)}
+                    </p>
+                    <button class="read-more-btn mt-2 text-sm font-medium text-teal-600 hover:text-teal-700 flex items-center gap-1 transition-colors" data-card="${cardId}">
+                      <span>Read more</span>
+                      <i class="fa-solid fa-chevron-down text-xs transition-transform"></i>
+                    </button>
+                  </div>
                 </div>
+              </div>
+            </div>
+            
+            <!-- Card footer -->
+            <div class="px-5 md:px-6 py-3 bg-gray-50/50 border-t border-gray-100 flex items-center justify-between">
+              <span class="text-xs text-gray-400 flex items-center gap-1">
+                <i class="fa-regular fa-clock"></i>
+                ${timeAgo}
+              </span>
+              <div class="flex items-center gap-3">
+                <button class="text-gray-400 hover:text-teal-600 transition-colors text-sm flex items-center gap-1.5" title="Share">
+                  <i class="fa-solid fa-share-nodes"></i>
+                </button>
+                <button class="text-gray-400 hover:text-red-500 transition-colors text-sm flex items-center gap-1.5" title="Save">
+                  <i class="fa-regular fa-bookmark"></i>
+                </button>
               </div>
             </div>
           </div>
         `;
-      }
-
-      function renderAnnouncements() {
-        const grid = document.getElementById('announcementsGrid');
-        const noResults = document.getElementById('noResults');
-        
-        let filtered = allAnnouncements;
-        
-        if (currentFilter !== 'all') {
-          filtered = filtered.filter(a => {
-            const priority = getPriority(a);
-            return priority.type.toLowerCase() === currentFilter;
-          });
         }
-        
-        if (searchQuery) {
-          const q = searchQuery.toLowerCase();
-          filtered = filtered.filter(a => (a.title || '').toLowerCase().includes(q) || (a.message || '').toLowerCase().includes(q));
-        }
-        
-        if (filtered.length === 0) {
-          grid.innerHTML = '';
-          noResults.classList.remove('hidden');
-          return;
-        }
-        
-        noResults.classList.add('hidden');
-        grid.innerHTML = filtered.map(renderAnnouncementCard).join('');
 
-        // Add toggle functionality
-        document.querySelectorAll('.announcement-toggle').forEach(btn => {
-          btn.addEventListener('click', function() {
-            const card = document.getElementById(`announcement-${this.dataset.id}`);
-            const isExpanded = card.classList.contains('expanded');
-            const span = this.querySelector('span');
-            const icon = this.querySelector('i');
-            
-            if (isExpanded) {
-              card.classList.remove('expanded');
-              span.textContent = 'Read more';
-              icon.style.transform = 'rotate(0deg)';
-            } else {
-              card.classList.add('expanded');
-              span.textContent = 'Show less';
-              icon.style.transform = 'rotate(180deg)';
-            }
-          });
-        });
-      }
+        function toggleReadMore(cardId) {
+          const card = document.getElementById(cardId);
+          if (!card) return;
 
-      // Filter buttons
-      document.getElementById('filterAll').addEventListener('click', function() {
-        currentFilter = 'all';
-        updateFilterButtons();
-        renderAnnouncements();
-      });
+          const content = card.querySelector('.announcement-content');
+          const btn = card.querySelector('.read-more-btn');
 
-      document.getElementById('filterNew').addEventListener('click', function() {
-        currentFilter = 'new';
-        updateFilterButtons();
-        renderAnnouncements();
-      });
-
-      document.getElementById('filterImportant').addEventListener('click', function() {
-        currentFilter = 'important';
-        updateFilterButtons();
-        renderAnnouncements();
-      });
-
-      function updateFilterButtons() {
-        const buttons = {
-          all: document.getElementById('filterAll'),
-          new: document.getElementById('filterNew'),
-          important: document.getElementById('filterImportant')
-        };
-        
-        Object.keys(buttons).forEach(key => {
-          const btn = buttons[key];
-          if (key === currentFilter) {
-            btn.className = 'px-4 py-2 rounded-full text-sm font-medium bg-primary text-white shadow-md transition-all hover:shadow-lg';
+          if (content.classList.contains('expanded')) {
+            content.classList.remove('expanded');
+            btn.innerHTML = '<span>Read more</span> <i class="fa-solid fa-chevron-down text-xs transition-transform"></i>';
           } else {
-            btn.className = 'px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition-all';
+            content.classList.add('expanded');
+            btn.innerHTML = '<span>Show less</span> <i class="fa-solid fa-chevron-up text-xs transition-transform"></i>';
           }
+        }
+
+        function filterAndRender() {
+          const container = document.getElementById('announcementsContainer');
+          const emptyState = document.getElementById('emptyState');
+          const noResults = document.getElementById('noResults');
+          const skeletonLoading = document.getElementById('skeletonLoading');
+
+          let filtered = [...allAnnouncements];
+
+          // Apply filter
+          if (currentFilter !== 'all') {
+            filtered = filtered.filter(a => {
+              if (currentFilter === 'new') return isNew(a);
+              if (currentFilter === 'urgent') return getPriority(a).type === 'urgent';
+              if (currentFilter === 'important') return getPriority(a).type === 'important';
+              if (currentFilter === 'academic') return getCategory(a) === 'Academic';
+              if (currentFilter === 'clinical') return getCategory(a) === 'Clinical';
+              if (currentFilter === 'events') return getCategory(a) === 'Event';
+              return true;
+            });
+          }
+
+          // Apply search
+          if (searchQuery) {
+            const q = searchQuery.toLowerCase();
+            filtered = filtered.filter(a =>
+              (a.title || '').toLowerCase().includes(q) ||
+              (a.message || '').toLowerCase().includes(q) ||
+              (a.author || '').toLowerCase().includes(q)
+            );
+          }
+
+          // Apply sort
+          filtered.sort((a, b) => {
+            // Pinned first
+            if (isPinned(a) && !isPinned(b)) return -1;
+            if (!isPinned(a) && isPinned(b)) return 1;
+
+            if (sortBy === 'oldest') {
+              return new Date(a.date) - new Date(b.date);
+            } else if (sortBy === 'views') {
+              return (b.views || 0) - (a.views || 0);
+            }
+            // Default: latest
+            return new Date(b.date) - new Date(a.date);
+          });
+
+          // Hide skeleton, show results
+          skeletonLoading.classList.add('hidden');
+
+          if (filtered.length === 0) {
+            emptyState.classList.remove('hidden');
+            noResults.classList.add('hidden');
+            container.innerHTML = '';
+            return;
+          }
+
+          emptyState.classList.add('hidden');
+
+          if (searchQuery && filtered.length === 0) {
+            noResults.classList.remove('hidden');
+          } else {
+            noResults.classList.add('hidden');
+          }
+
+          container.innerHTML = filtered.map((a, i) => renderAnnouncementCard(a, i)).join('');
+
+          // Add click handlers for read more
+          document.querySelectorAll('.read-more-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+              toggleReadMore(this.dataset.card);
+            });
+          });
+        }
+
+        // Event Listeners
+        document.getElementById('filterTabs').addEventListener('click', function (e) {
+          const btn = e.target.closest('.tab-btn');
+          if (!btn) return;
+
+          document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+
+          currentFilter = btn.dataset.filter;
+          filterAndRender();
         });
-      }
 
-      // Search
-      document.getElementById('searchAnnouncements').addEventListener('input', function() {
-        searchQuery = this.value;
-        renderAnnouncements();
-      });
+        document.getElementById('searchAnnouncements').addEventListener('input', function (e) {
+          searchQuery = e.target.value;
+          filterAndRender();
+        });
 
-      // Load announcements
-      const today = new Date().toISOString().split('T')[0];
-      fetch('/api/announcements').then(function(r) { return r.json(); }).then(function(list) {
-        allAnnouncements = list;
-        renderAnnouncements();
-      }).catch(function() {
-        document.getElementById('announcementsGrid').innerHTML = `
-          <div class="text-center py-12 text-gray-500">
-            <i class="bi bi-exclamation-circle text-4xl mb-3 block"></i>
-            Could not load announcements.
-          </div>
-        `;
-      });
-    })();
+        document.getElementById('sortAnnouncements').addEventListener('change', function (e) {
+          sortBy = e.target.value;
+          filterAndRender();
+        });
+
+        // Load announcements
+        async function loadAnnouncements() {
+          try {
+            const response = await fetch('/api/announcements');
+            const data = await response.json();
+
+            if (data.success && data.announcements) {
+              allAnnouncements = data.announcements;
+            }
+          } catch (error) {
+            console.error('Failed to load announcements:', error);
+          }
+
+          filterAndRender();
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function () {
+          loadAnnouncements();
+        });
+      })();
   </script>
 </body>
+
 </html>
