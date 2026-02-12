@@ -129,10 +129,10 @@
             </div>
           </div>
 
-          <!-- View Button -->
+          <!-- Download Button -->
           <div class="mt-4">
-            <button class="w-full px-4 py-2.5 bg-gradient-to-r from-primary-500 to-primary-600 text-white font-semibold rounded-xl hover:from-primary-600 hover:to-primary-700 transition-all shadow-lg shadow-primary-500/30 group-hover:shadow-xl flex items-center justify-center gap-2">
-              <i class="fa-solid fa-eye"></i>View Document
+            <button onclick="downloadDocument('${doc._id}')" class="w-full px-4 py-2.5 bg-gradient-to-r from-primary-500 to-primary-600 text-white font-semibold rounded-xl hover:from-primary-600 hover:to-primary-700 transition-all shadow-lg shadow-primary-500/30 group-hover:shadow-xl flex items-center justify-center gap-2">
+              <i class="fa-solid fa-download"></i>Download PDF
             </button>
           </div>
 
@@ -240,7 +240,7 @@
             
             <div class="flex flex-col sm:flex-row gap-3">
               <button onclick="downloadDocument('${doc._id}')" class="flex-1 px-6 py-3.5 bg-gradient-to-r from-teal-500 to-teal-600 text-white font-semibold rounded-xl hover:from-teal-600 hover:to-teal-700 transition-all shadow-lg shadow-teal-500/25 flex items-center justify-center gap-2">
-                <i class="fa-solid fa-download"></i>Download Document
+                <i class="fa-solid fa-download"></i>Download PDF
               </button>
             </div>
             
@@ -424,10 +424,7 @@
     }
   };
 
-  // Preview document (opens in new tab)
-  window.previewDocument = function (docId) {
-    window.open(`/api/department-documents/${docId}/file/view`, '_blank');
-  };
+
 
   // Load comments for a document
   window.loadComments = async function (docId) {

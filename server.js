@@ -20,7 +20,7 @@ const path = require('path');
 
 // CORS Configuration
 // Parse CORS_ORIGINS from env or use defaults
-const corsOrigins = process.env.CORS_ORIGINS 
+const corsOrigins = process.env.CORS_ORIGINS
   ? process.env.CORS_ORIGINS.split(',').map(origin => origin.trim())
   : ['http://localhost:3000', 'http://localhost:5500', 'http://127.0.0.1:5500'];
 
@@ -36,7 +36,7 @@ const corsOptions = {
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
-    
+
     // Check if origin is allowed
     const isAllowed = allowedOrigins.some(allowed => {
       if (allowed instanceof RegExp) {
@@ -44,7 +44,7 @@ const corsOptions = {
       }
       return allowed === origin;
     });
-    
+
     if (isAllowed) {
       callback(null, true);
     } else {
@@ -82,16 +82,16 @@ app.use((req, res, next) => {
 
 // Health / smoke tests
 app.get('/', (req, res) => {
-  res.json({ 
-    message: 'Nursing Student Portal API', 
+  res.json({
+    message: 'Nursing Student Portal API',
     status: 'running',
     timestamp: new Date().toISOString()
   });
 });
 
 app.get('/api/test', (req, res) => {
-  res.json({ 
-    success: true, 
+  res.json({
+    success: true,
     dbReadyState: mongoose.connection.readyState,
     timestamp: new Date().toISOString()
   });
@@ -105,7 +105,7 @@ app.get('/api/health', (req, res) => {
     2: 'connecting',
     3: 'disconnecting'
   };
-  
+
   res.json({
     success: true,
     status: dbState === 1 ? 'healthy' : 'unhealthy',
@@ -116,15 +116,49 @@ app.get('/api/health', (req, res) => {
 
 // Database middleware
 function requireDb(req, res, next) {
-  if (mongoose.connection.readyState !== 1) {
-    console.error('MongoDB not connected');
-    return res.status(503).json({ 
+  const dbState = mongoose.connection.readyState;
+  const states = { 0: 'disconnected', 1: 'connected', 2: 'connecting', 3: 'disconnecting' };
+
+  if (dbState !== 1) {
+    console.error('❌ Database middleware blocked request:', req.path, '- DB state:', states[dbState] || 'unknown');
+    return res.status(503).json({
       success: false,
-      error: 'Database not connected. Please try again shortly.' 
+      error: 'Database not connected. Please try again shortly.',
+      dbState: states[dbState] || 'unknown'
     });
   }
   next();
 }
+
+// Debug endpoint to check database contents
+app.get('/api/debug/announcements', requireDb, async (req, res) => {
+  try {
+    const Announcement = require('./models/Announcement');
+    const all = await Announcement.find({});
+    const active = await Announcement.find({ active: { $ne: false } });
+    res.json({
+      total: all.length,
+      active: active.length,
+      allAnnouncements: all,
+      activeAnnouncements: active
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/api/debug/events', requireDb, async (req, res) => {
+  try {
+    const Event = require('./models/Event');
+    const all = await Event.find({});
+    res.json({
+      total: all.length,
+      events: all
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 // API routes
 app.use('/api/auth', requireDb, authRoutes);
@@ -155,7 +189,7 @@ app.get('/api/department-documents/:id/file', async (req, res) => {
 
     // Get file extension
     const fileType = document.fileType ? document.fileType.toLowerCase() : '';
-    
+
     // Set appropriate content-type header
     const contentTypes = {
       'pdf': 'application/pdf',
@@ -199,7 +233,7 @@ app.get('/announcements', (req, res) => {
 
 // 404 handler for API routes only
 app.use('/api/*', (req, res) => {
-  res.status(404).json({ 
+  res.status(404).json({
     success: false,
     error: 'API endpoint not found',
     path: req.path,
@@ -220,7 +254,7 @@ app.use((req, res) => {
 // Global error handler
 app.use((err, req, res, next) => {
   console.error('Error:', err);
-  
+
   // Handle CORS errors
   if (err.message === 'Not allowed by CORS') {
     return res.status(403).json({
@@ -228,8 +262,8 @@ app.use((err, req, res, next) => {
       error: 'CORS error: Origin not allowed'
     });
   }
-  
-  res.status(err.status || 500).json({ 
+
+  res.status(err.status || 500).json({
     success: false,
     error: err.message || 'Internal server error'
   });
@@ -252,8 +286,15 @@ mongoose.connection.on('disconnected', () => {
 });
 
 // Try connecting, but don't crash the process on transient failures
-connectDB().catch((err) => {
-  console.error('MongoDB initial connection failed:', err && err.message ? err.message : err);
+connectDB().then(() => {
+  console.log('✅ MongoDB connected successfully');
+}).catch((err) => {
+  console.error('❌ MongoDB initial connection failed:', err && err.message ? err.message : err);
+  console.error('⚠️  Server running but database features will not work!');
+  console.error('⚠️  Please check your MongoDB Atlas settings:');
+  console.error('   1. Verify cluster is running (Atlas Dashboard)');
+  console.error('   2. Check IP whitelist (Network Access)');
+  console.error('   3. Verify credentials in .env file');
 });
 
 // Start server

@@ -42,31 +42,58 @@
     }
   };
 
-  // Confirm delete
+  // Confirm delete (using custom modal, not Bootstrap)
   var confirmDeleteResolve;
   var confirmModal = document.getElementById('confirmDeleteModal');
   var confirmMessage = document.getElementById('confirmDeleteMessage');
   var confirmBtn = document.getElementById('confirmDeleteBtn');
+  var confirmCancelBtn = document.getElementById('confirmDeleteCancelBtn');
+
+  function showConfirmModal(msg) {
+    if (!confirmModal) return Promise.resolve(confirm(msg || 'Delete this item?'));
+    if (confirmMessage) confirmMessage.textContent = msg || 'Are you sure you want to delete this item?';
+    confirmModal.classList.remove('hidden');
+    return new Promise(function (resolve) {
+      confirmDeleteResolve = resolve;
+    });
+  }
+
+  function hideConfirmModal() {
+    if (confirmModal) confirmModal.classList.add('hidden');
+    confirmDeleteResolve = null;
+  }
+
   if (confirmBtn) {
     confirmBtn.addEventListener('click', function () {
       var resolve = confirmDeleteResolve;
       confirmDeleteResolve = null;
       if (resolve) resolve(true);
-      bootstrap.Modal.getInstance(confirmModal).hide();
+      hideConfirmModal();
     });
   }
-  function confirmDelete(msg) {
-    if (!confirmModal) return Promise.resolve(confirm(msg || 'Delete this item?'));
-    confirmMessage.textContent = msg || 'Are you sure you want to delete this item?';
-    return new Promise(function (resolve) {
-      confirmDeleteResolve = resolve;
-      var m = new bootstrap.Modal(confirmModal);
-      m.show();
-      confirmModal.addEventListener('hidden.bs.modal', function once() {
-        confirmModal.removeEventListener('hidden.bs.modal', once);
-        if (confirmDeleteResolve) { confirmDeleteResolve(false); confirmDeleteResolve = null; }
-      });
+
+  if (confirmCancelBtn) {
+    confirmCancelBtn.addEventListener('click', function () {
+      var resolve = confirmDeleteResolve;
+      confirmDeleteResolve = null;
+      if (resolve) resolve(false);
+      hideConfirmModal();
     });
+  }
+
+  if (confirmModal) {
+    confirmModal.addEventListener('click', function (e) {
+      if (e.target === confirmModal) {
+        var resolve = confirmDeleteResolve;
+        confirmDeleteResolve = null;
+        if (resolve) resolve(false);
+        hideConfirmModal();
+      }
+    });
+  }
+
+  function confirmDelete(msg) {
+    return showConfirmModal(msg);
   }
 
   // Sidebar toggle (mobile)
@@ -286,8 +313,8 @@
   var eventsTableWrap = document.getElementById('eventsTableWrap');
   var eventsLoading = document.getElementById('eventsLoading');
   function setEventsLoading(on) {
-    if (eventsLoading) eventsLoading.classList.toggle('d-none', !on);
-    if (eventsTableWrap) eventsTableWrap.classList.toggle('d-none', on);
+    if (eventsLoading) eventsLoading.classList.toggle('hidden', !on);
+    if (eventsTableWrap) eventsTableWrap.classList.toggle('hidden', on);
   }
   async function loadEvents() {
     setEventsLoading(true);
@@ -666,8 +693,8 @@
   var announcementsTableWrap = document.getElementById('announcementsTableWrap');
   var announcementsLoading = document.getElementById('announcementsLoading');
   function setAnnouncementsLoading(on) {
-    if (announcementsLoading) announcementsLoading.classList.toggle('d-none', !on);
-    if (announcementsTableWrap) announcementsTableWrap.classList.toggle('d-none', on);
+    if (announcementsLoading) announcementsLoading.classList.toggle('hidden', !on);
+    if (announcementsTableWrap) announcementsTableWrap.classList.toggle('hidden', on);
   }
   async function loadAnnouncements() {
     setAnnouncementsLoading(true);

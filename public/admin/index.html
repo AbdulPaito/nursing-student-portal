@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -101,34 +102,35 @@
       }
     }
   </script>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <style>
-    body { 
+    body {
       font-family: 'Plus Jakarta Sans', sans-serif;
       background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 50%, #e0e7ff 100%);
       min-height: 100vh;
     }
-    
+
     /* Glassmorphism Utilities */
     .glass {
       background: rgba(255, 255, 255, 0.7);
       backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 255, 255, 0.3);
     }
-    
+
     .glass-dark {
       background: rgba(17, 24, 39, 0.8);
       backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 255, 255, 0.1);
     }
-    
+
     .glass-sidebar {
       background: linear-gradient(180deg, rgba(124, 58, 237, 0.95) 0%, rgba(79, 70, 229, 0.95) 100%);
       backdrop-filter: blur(20px);
       border-right: 1px solid rgba(255, 255, 255, 0.1);
     }
-    
+
     /* Animated Background Pattern */
     .bg-pattern {
       position: fixed;
@@ -136,61 +138,61 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background-image: 
+      background-image:
         radial-gradient(circle at 20% 80%, rgba(124, 58, 237, 0.1) 0%, transparent 50%),
         radial-gradient(circle at 80% 20%, rgba(79, 70, 229, 0.1) 0%, transparent 50%),
         radial-gradient(circle at 40% 40%, rgba(16, 185, 129, 0.05) 0%, transparent 40%);
       pointer-events: none;
       z-index: -1;
     }
-    
+
     /* Card Hover Effects */
     .card-hover {
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    
+
     .card-hover:hover {
       transform: translateY(-4px);
       box-shadow: 0 20px 40px -12px rgba(124, 58, 237, 0.25);
     }
-    
+
     /* Stat Card Gradients */
     .stat-gradient-1 {
       background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
     }
-    
+
     .stat-gradient-2 {
       background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     }
-    
+
     .stat-gradient-3 {
       background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
     }
-    
+
     .stat-gradient-4 {
       background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
     }
-    
+
     /* Progress Bar Animation */
     .progress-bar {
       transition: width 1s ease-out;
     }
-    
+
     /* Circular Progress */
     .circular-progress {
       transform: rotate(-90deg);
     }
-    
+
     .circular-progress circle {
       transition: stroke-dashoffset 1s ease-out;
     }
-    
+
     /* Button Shimmer */
     .btn-shimmer {
       position: relative;
       overflow: hidden;
     }
-    
+
     .btn-shimmer::after {
       content: '';
       position: absolute;
@@ -198,32 +200,37 @@
       left: -100%;
       width: 100%;
       height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
       transition: left 0.6s;
     }
-    
+
     .btn-shimmer:hover::after {
       left: 100%;
     }
-    
+
     /* Loading Skeleton */
     .skeleton {
       background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
       background-size: 200% 100%;
       animation: shimmer 1.5s infinite;
     }
-    
+
     @keyframes shimmer {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
+      0% {
+        background-position: 200% 0;
+      }
+
+      100% {
+        background-position: -200% 0;
+      }
     }
-    
+
     /* Sidebar Link Animation */
     .sidebar-link {
       position: relative;
       overflow: hidden;
     }
-    
+
     .sidebar-link::before {
       content: '';
       position: absolute;
@@ -235,59 +242,73 @@
       transform: scaleY(0);
       transition: transform 0.3s;
     }
-    
+
     .sidebar-link:hover::before,
     .sidebar-link.active::before {
       transform: scaleY(1);
     }
-    
+
     /* Modal Animation */
     .modal-backdrop {
       backdrop-filter: blur(8px);
     }
-    
+
     /* Input Focus Animation */
     .input-glow:focus {
       box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
     }
-    
+
     /* Floating Action Button */
     .fab {
       box-shadow: 0 10px 30px -5px rgba(124, 58, 237, 0.4);
     }
-    
+
     /* Stagger Animation Delays */
-    .stagger-1 { animation-delay: 0.1s; }
-    .stagger-2 { animation-delay: 0.2s; }
-    .stagger-3 { animation-delay: 0.3s; }
-    .stagger-4 { animation-delay: 0.4s; }
-    .stagger-5 { animation-delay: 0.5s; }
-    
+    .stagger-1 {
+      animation-delay: 0.1s;
+    }
+
+    .stagger-2 {
+      animation-delay: 0.2s;
+    }
+
+    .stagger-3 {
+      animation-delay: 0.3s;
+    }
+
+    .stagger-4 {
+      animation-delay: 0.4s;
+    }
+
+    .stagger-5 {
+      animation-delay: 0.5s;
+    }
+
     /* Scrollbar Styling */
     ::-webkit-scrollbar {
       width: 8px;
       height: 8px;
     }
-    
+
     ::-webkit-scrollbar-track {
       background: rgba(124, 58, 237, 0.1);
       border-radius: 4px;
     }
-    
+
     ::-webkit-scrollbar-thumb {
       background: rgba(124, 58, 237, 0.3);
       border-radius: 4px;
     }
-    
+
     ::-webkit-scrollbar-thumb:hover {
       background: rgba(124, 58, 237, 0.5);
     }
-    
+
     /* Pulse Ring Animation */
     .pulse-ring {
       position: relative;
     }
-    
+
     .pulse-ring::before {
       content: '';
       position: absolute;
@@ -297,10 +318,17 @@
       opacity: 0;
       animation: pulseRing 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
     }
-    
+
     @keyframes pulseRing {
-      0% { transform: scale(1); opacity: 0.5; }
-      100% { transform: scale(1.2); opacity: 0; }
+      0% {
+        transform: scale(1);
+        opacity: 0.5;
+      }
+
+      100% {
+        transform: scale(1.2);
+        opacity: 0;
+      }
     }
 
     /* Modal Styles */
@@ -365,30 +393,39 @@
     }
   </style>
 </head>
+
 <body class="text-gray-800 antialiased">
   <!-- Animated Background -->
   <div class="bg-pattern"></div>
-  
+
   <!-- Mobile Sidebar Toggle -->
-  <button type="button" id="sidebarToggle" class="lg:hidden fixed top-4 left-4 z-50 w-12 h-12 rounded-2xl bg-gradient-to-r from-primary-600 to-secondary-600 text-white shadow-xl flex items-center justify-center hover:shadow-2xl hover:scale-110 transition-all duration-300 pulse-ring">
+  <button type="button" id="sidebarToggle"
+    class="lg:hidden fixed top-4 left-4 z-50 w-12 h-12 rounded-2xl bg-gradient-to-r from-primary-600 to-secondary-600 text-white shadow-xl flex items-center justify-center hover:shadow-2xl hover:scale-110 transition-all duration-300 pulse-ring">
     <i class="fa-solid fa-bars text-xl"></i>
   </button>
 
   <!-- Sidebar Backdrop -->
-  <div id="sidebarBackdrop" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden lg:hidden transition-opacity duration-300 opacity-0"></div>
+  <div id="sidebarBackdrop"
+    class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden lg:hidden transition-opacity duration-300 opacity-0">
+  </div>
 
   <div class="flex min-h-screen">
     <!-- Sidebar -->
-    <aside id="sidebar" class="fixed lg:sticky top-0 left-0 h-screen w-72 glass-sidebar z-50 transform -translate-x-full lg:translate-x-0 transition-transform duration-500 shadow-2xl">
+    <aside id="sidebar"
+      class="fixed lg:sticky top-0 left-0 h-screen w-72 glass-sidebar z-50 transform -translate-x-full lg:translate-x-0 transition-transform duration-500 shadow-2xl">
       <!-- Logo Section -->
       <div class="p-6 border-b border-white/10">
         <div class="flex items-center gap-4">
           <div class="relative">
-            <div class="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center pulse-ring animate-float p-1">
-              <img src="../images/msu-logo.png" alt="Marinduque State University" class="w-14 h-14 object-contain" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\\'fa-solid fa-building-columns text-white text-2xl\\'></i>';">
+            <div
+              class="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center pulse-ring animate-float p-1">
+              <img src="../images/msu-logo.png" alt="Marinduque State University" class="w-14 h-14 object-contain"
+                onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\\'fa-solid fa-building-columns text-white text-2xl\\'></i>';">
             </div>
             <!-- Status Indicator -->
-            <div class="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-emerald-400 border-2 border-primary-600 animate-pulse"></div>
+            <div
+              class="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-emerald-400 border-2 border-primary-600 animate-pulse">
+            </div>
           </div>
           <div>
             <h2 class="font-bold text-white text-base tracking-tight leading-tight">MARINDUQUE STATE UNIVERSITY</h2>
@@ -400,48 +437,60 @@
 
       <!-- Navigation -->
       <nav class="p-4 space-y-2">
-        <a href="#" data-section="dashboard" class="sidebar-link active flex items-center gap-3 px-4 py-3.5 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 group">
-          <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
+        <a href="#" data-section="dashboard"
+          class="sidebar-link active flex items-center gap-3 px-4 py-3.5 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 group">
+          <div
+            class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
             <i class="fa-solid fa-grid-2 text-lg"></i>
           </div>
           <span class="font-medium">Dashboard</span>
           <i class="fa-solid fa-chevron-right ml-auto text-xs opacity-0 group-hover:opacity-100 transition-opacity"></i>
         </a>
-        
-        <a href="#" data-section="department" class="sidebar-link flex items-center gap-3 px-4 py-3.5 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 group">
-          <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
+
+        <a href="#" data-section="department"
+          class="sidebar-link flex items-center gap-3 px-4 py-3.5 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 group">
+          <div
+            class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
             <i class="fa-solid fa-building text-lg"></i>
           </div>
           <span class="font-medium">Department</span>
           <i class="fa-solid fa-chevron-right ml-auto text-xs opacity-0 group-hover:opacity-100 transition-opacity"></i>
         </a>
-        
-        <a href="#" data-section="events" class="sidebar-link flex items-center gap-3 px-4 py-3.5 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 group">
-          <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
+
+        <a href="#" data-section="events"
+          class="sidebar-link flex items-center gap-3 px-4 py-3.5 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 group">
+          <div
+            class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
             <i class="fa-solid fa-calendar-days text-lg"></i>
           </div>
           <span class="font-medium">Events</span>
           <i class="fa-solid fa-chevron-right ml-auto text-xs opacity-0 group-hover:opacity-100 transition-opacity"></i>
         </a>
-        
-        <a href="#" data-section="courses-subjects" class="sidebar-link flex items-center gap-3 px-4 py-3.5 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 group">
-          <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
+
+        <a href="#" data-section="courses-subjects"
+          class="sidebar-link flex items-center gap-3 px-4 py-3.5 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 group">
+          <div
+            class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
             <i class="fa-solid fa-book-open text-lg"></i>
           </div>
           <span class="font-medium">Courses & Subjects</span>
           <i class="fa-solid fa-chevron-right ml-auto text-xs opacity-0 group-hover:opacity-100 transition-opacity"></i>
         </a>
-        
-        <a href="#" data-section="announcements" class="sidebar-link flex items-center gap-3 px-4 py-3.5 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 group">
-          <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
+
+        <a href="#" data-section="announcements"
+          class="sidebar-link flex items-center gap-3 px-4 py-3.5 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 group">
+          <div
+            class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
             <i class="fa-solid fa-bullhorn text-lg"></i>
           </div>
           <span class="font-medium">Announcements</span>
           <i class="fa-solid fa-chevron-right ml-auto text-xs opacity-0 group-hover:opacity-100 transition-opacity"></i>
         </a>
-        
-        <a href="#" data-section="music" class="sidebar-link flex items-center gap-3 px-4 py-3.5 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 group">
-          <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
+
+        <a href="#" data-section="music"
+          class="sidebar-link flex items-center gap-3 px-4 py-3.5 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 group">
+          <div
+            class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
             <i class="fa-solid fa-music text-lg"></i>
           </div>
           <span class="font-medium">Background Music</span>
@@ -451,16 +500,20 @@
         <div class="border-t border-white/10 my-4"></div>
 
         <!-- User Management Section -->
-        <a href="#" data-section="users" class="sidebar-link flex items-center gap-3 px-4 py-3.5 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 group">
-          <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
+        <a href="#" data-section="users"
+          class="sidebar-link flex items-center gap-3 px-4 py-3.5 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 group">
+          <div
+            class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
             <i class="fa-solid fa-users-gear text-lg"></i>
           </div>
           <span class="font-medium">User Management</span>
           <i class="fa-solid fa-chevron-right ml-auto text-xs opacity-0 group-hover:opacity-100 transition-opacity"></i>
         </a>
 
-        <a href="#" data-section="change-password" class="sidebar-link flex items-center gap-3 px-4 py-3.5 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 group">
-          <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
+        <a href="#" data-section="change-password"
+          class="sidebar-link flex items-center gap-3 px-4 py-3.5 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 group">
+          <div
+            class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
             <i class="fa-solid fa-key text-lg"></i>
           </div>
           <span class="font-medium">Change Password</span>
@@ -468,16 +521,20 @@
         </a>
 
         <div class="border-t border-white/10 my-4"></div>
-        
-        <a href="/" target="_blank" class="flex items-center gap-3 px-4 py-3.5 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 group">
-          <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
+
+        <a href="/" target="_blank"
+          class="flex items-center gap-3 px-4 py-3.5 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 group">
+          <div
+            class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
             <i class="fa-solid fa-arrow-up-right-from-square text-lg"></i>
           </div>
           <span class="font-medium">View Portal</span>
         </a>
-        
-        <a href="#" id="logoutLink" class="flex items-center gap-3 px-4 py-3.5 rounded-xl text-rose-300 hover:text-rose-100 hover:bg-rose-500/20 transition-all duration-300 group">
-          <div class="w-10 h-10 rounded-xl bg-rose-500/20 flex items-center justify-center group-hover:bg-rose-500/30 transition-colors">
+
+        <a href="#" id="logoutLink"
+          class="flex items-center gap-3 px-4 py-3.5 rounded-xl text-rose-300 hover:text-rose-100 hover:bg-rose-500/20 transition-all duration-300 group">
+          <div
+            class="w-10 h-10 rounded-xl bg-rose-500/20 flex items-center justify-center group-hover:bg-rose-500/30 transition-colors">
             <i class="fa-solid fa-right-from-bracket text-lg"></i>
           </div>
           <span class="font-medium">Logout</span>
@@ -485,7 +542,8 @@
       </nav>
 
       <!-- Close button for mobile -->
-      <button type="button" id="sidebarClose" class="lg:hidden absolute top-4 right-4 w-10 h-10 rounded-xl bg-white/10 text-white/80 hover:text-white hover:bg-white/20 flex items-center justify-center transition-all">
+      <button type="button" id="sidebarClose"
+        class="lg:hidden absolute top-4 right-4 w-10 h-10 rounded-xl bg-white/10 text-white/80 hover:text-white hover:bg-white/20 flex items-center justify-center transition-all">
         <i class="fa-solid fa-xmark text-xl"></i>
       </button>
     </aside>
@@ -497,7 +555,8 @@
         <!-- Header -->
         <div class="mb-8 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div>
-            <h1 class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary-700 to-secondary-700 bg-clip-text text-transparent mb-2">
+            <h1
+              class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary-700 to-secondary-700 bg-clip-text text-transparent mb-2">
               Dashboard Overview
             </h1>
             <p class="text-gray-500">Welcome back! Here's what's happening in your portal.</p>
@@ -513,7 +572,8 @@
         <!-- Stats Grid -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <!-- Total Events -->
-          <div class="card-hover stat-gradient-1 rounded-3xl p-6 text-white shadow-xl shadow-primary-500/20 stagger-1 animate-fade-in-up">
+          <div
+            class="card-hover stat-gradient-1 rounded-3xl p-6 text-white shadow-xl shadow-primary-500/20 stagger-1 animate-fade-in-up">
             <div class="flex items-start justify-between mb-4">
               <div class="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center">
                 <i class="fa-solid fa-calendar-check text-2xl"></i>
@@ -528,7 +588,8 @@
           </div>
 
           <!-- Active Subjects -->
-          <div class="card-hover stat-gradient-2 rounded-3xl p-6 text-white shadow-xl shadow-emerald-500/20 stagger-2 animate-fade-in-up">
+          <div
+            class="card-hover stat-gradient-2 rounded-3xl p-6 text-white shadow-xl shadow-emerald-500/20 stagger-2 animate-fade-in-up">
             <div class="flex items-start justify-between mb-4">
               <div class="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center">
                 <i class="fa-solid fa-book-open-reader text-2xl"></i>
@@ -543,7 +604,8 @@
           </div>
 
           <!-- Announcements -->
-          <div class="card-hover stat-gradient-3 rounded-3xl p-6 text-white shadow-xl shadow-amber-500/20 stagger-3 animate-fade-in-up">
+          <div
+            class="card-hover stat-gradient-3 rounded-3xl p-6 text-white shadow-xl shadow-amber-500/20 stagger-3 animate-fade-in-up">
             <div class="flex items-start justify-between mb-4">
               <div class="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center">
                 <i class="fa-solid fa-bullhorn text-2xl"></i>
@@ -558,7 +620,8 @@
           </div>
 
           <!-- Next Event -->
-          <div class="card-hover stat-gradient-4 rounded-3xl p-6 text-white shadow-xl shadow-rose-500/20 stagger-4 animate-fade-in-up">
+          <div
+            class="card-hover stat-gradient-4 rounded-3xl p-6 text-white shadow-xl shadow-rose-500/20 stagger-4 animate-fade-in-up">
             <div class="flex items-start justify-between mb-4">
               <div class="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center">
                 <i class="fa-solid fa-clock text-2xl"></i>
@@ -584,8 +647,10 @@
                 Analytics Overview
               </h3>
               <div class="flex gap-2">
-                <button class="px-3 py-1.5 rounded-lg bg-primary-100 text-primary-700 text-sm font-medium hover:bg-primary-200 transition-colors">Monthly</button>
-                <button class="px-3 py-1.5 rounded-lg text-gray-500 text-sm font-medium hover:bg-gray-100 transition-colors">Weekly</button>
+                <button
+                  class="px-3 py-1.5 rounded-lg bg-primary-100 text-primary-700 text-sm font-medium hover:bg-primary-200 transition-colors">Monthly</button>
+                <button
+                  class="px-3 py-1.5 rounded-lg text-gray-500 text-sm font-medium hover:bg-gray-100 transition-colors">Weekly</button>
               </div>
             </div>
             <div class="relative h-72">
@@ -626,7 +691,8 @@
       <section id="section-department" class="admin-section hidden animate-fade-in">
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-8">
           <div>
-            <h1 class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary-700 to-secondary-700 bg-clip-text text-transparent mb-2">
+            <h1
+              class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary-700 to-secondary-700 bg-clip-text text-transparent mb-2">
               Department Management
             </h1>
             <p class="text-gray-500">Manage department totals and official documents</p>
@@ -636,10 +702,14 @@
         <!-- Tab Buttons -->
         <div class="mb-6 flex flex-col lg:flex-row lg:items-center gap-4">
           <div class="glass rounded-2xl p-2 inline-flex gap-2 border border-white/50 shadow-lg">
-            <button id="deptTotalsTab" class="dept-tab px-6 py-3 rounded-xl text-sm font-bold transition-all duration-300 bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-md" onclick="switchDeptTab('totals')">
+            <button id="deptTotalsTab"
+              class="dept-tab px-6 py-3 rounded-xl text-sm font-bold transition-all duration-300 bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-md"
+              onclick="switchDeptTab('totals')">
               <i class="fa-solid fa-calculator mr-2"></i>Department Totals
             </button>
-            <button id="deptDocsTab" class="dept-tab px-6 py-3 rounded-xl text-sm font-bold transition-all duration-300 bg-white text-gray-600 hover:bg-gray-50" onclick="switchDeptTab('documents')">
+            <button id="deptDocsTab"
+              class="dept-tab px-6 py-3 rounded-xl text-sm font-bold transition-all duration-300 bg-white text-gray-600 hover:bg-gray-50"
+              onclick="switchDeptTab('documents')">
               <i class="fa-solid fa-folder-open mr-2"></i>Department Documents
             </button>
           </div>
@@ -653,7 +723,8 @@
               <h2 class="text-2xl font-bold text-gray-800">Department Statistics</h2>
               <p class="text-gray-600">View and manage department information</p>
             </div>
-            <button onclick="openEditDepartmentModal()" class="px-4 py-2 bg-gradient-to-r from-primary to-secondary text-white font-semibold rounded-xl hover:shadow-lg transition-all flex items-center gap-2">
+            <button onclick="openEditDepartmentModal()"
+              class="px-4 py-2 bg-gradient-to-r from-primary to-secondary text-white font-semibold rounded-xl hover:shadow-lg transition-all flex items-center gap-2">
               <i class="fa-solid fa-pen-to-square"></i>
               <span>Edit Info</span>
             </button>
@@ -662,10 +733,12 @@
           <!-- Stats Cards -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <!-- Total Students Card -->
-            <div class="glass rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 border border-blue-100">
+            <div
+              class="glass rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 border border-blue-100">
               <div class="flex items-center justify-between mb-6">
                 <div class="flex items-center gap-4">
-                  <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/30">
+                  <div
+                    class="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/30">
                     <i class="fa-solid fa-user-graduate text-white text-2xl"></i>
                   </div>
                   <div>
@@ -674,7 +747,7 @@
                   </div>
                 </div>
               </div>
-              
+
               <div class="mb-6">
                 <div class="text-5xl font-bold text-blue-600 mb-2" id="displayTotalStudents">0</div>
                 <div class="h-2 bg-blue-100 rounded-full overflow-hidden">
@@ -684,10 +757,12 @@
             </div>
 
             <!-- Total Faculty Card -->
-            <div class="glass rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 border border-emerald-100">
+            <div
+              class="glass rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 border border-emerald-100">
               <div class="flex items-center justify-between mb-6">
                 <div class="flex items-center gap-4">
-                  <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/30">
+                  <div
+                    class="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/30">
                     <i class="fa-solid fa-chalkboard-user text-white text-2xl"></i>
                   </div>
                   <div>
@@ -696,11 +771,12 @@
                   </div>
                 </div>
               </div>
-              
+
               <div class="mb-6">
                 <div class="text-5xl font-bold text-emerald-600 mb-2" id="displayTotalFaculty">0</div>
                 <div class="h-2 bg-emerald-100 rounded-full overflow-hidden">
-                  <div class="h-full bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-full" style="width: 100%"></div>
+                  <div class="h-full bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-full" style="width: 100%">
+                  </div>
                 </div>
               </div>
             </div>
@@ -711,7 +787,8 @@
             <!-- Year Levels -->
             <div class="glass rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all border border-purple-100">
               <div class="flex items-center gap-3 mb-4">
-                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-lg shadow-purple-500/30">
+                <div
+                  class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-lg shadow-purple-500/30">
                   <i class="fa-solid fa-layer-group text-white text-xl"></i>
                 </div>
                 <div>
@@ -725,7 +802,8 @@
             <!-- Subjects Count -->
             <div class="glass rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all border border-amber-100">
               <div class="flex items-center gap-3 mb-4">
-                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/30">
+                <div
+                  class="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/30">
                   <i class="fa-solid fa-book-open text-white text-xl"></i>
                 </div>
                 <div>
@@ -739,7 +817,8 @@
             <!-- Student-Faculty Ratio -->
             <div class="glass rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all border border-rose-100">
               <div class="flex items-center gap-3 mb-4">
-                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-rose-500 to-rose-600 flex items-center justify-center shadow-lg shadow-rose-500/30">
+                <div
+                  class="w-12 h-12 rounded-xl bg-gradient-to-br from-rose-500 to-rose-600 flex items-center justify-center shadow-lg shadow-rose-500/30">
                   <i class="fa-solid fa-chart-pie text-white text-xl"></i>
                 </div>
                 <div>
@@ -753,7 +832,8 @@
             <!-- Total Members -->
             <div class="glass rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all border border-indigo-100">
               <div class="flex items-center gap-3 mb-4">
-                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/30">
+                <div
+                  class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/30">
                   <i class="fa-solid fa-users text-white text-xl"></i>
                 </div>
                 <div>
@@ -789,7 +869,8 @@
               <i class="fa-solid fa-clock text-gray-400"></i>
               <span>Last updated: <span id="lastUpdatedInfo" class="font-medium">Never</span></span>
             </div>
-            <button onclick="loadDepartmentInfo()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition-all flex items-center gap-2">
+            <button onclick="loadDepartmentInfo()"
+              class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition-all flex items-center gap-2">
               <i class="fa-solid fa-rotate"></i>
               <span>Refresh</span>
             </button>
@@ -803,7 +884,9 @@
               <h2 class="text-2xl font-bold text-gray-800">Department Documents</h2>
               <p class="text-gray-600">Upload and manage letters, memos, and official documents</p>
             </div>
-            <button type="button" class="btn-shimmer px-6 py-3.5 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold rounded-2xl shadow-xl shadow-blue-500/30 transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-2 group" onclick="openUploadDocumentModal()">
+            <button type="button"
+              class="btn-shimmer px-6 py-3.5 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold rounded-2xl shadow-xl shadow-blue-500/30 transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-2 group"
+              onclick="openUploadDocumentModal()">
               <i class="fa-solid fa-cloud-arrow-up group-hover:-translate-y-1 transition-transform"></i>
               <span>Upload Document</span>
             </button>
@@ -815,7 +898,8 @@
               <div class="flex flex-col sm:flex-row gap-4 justify-between">
                 <div class="relative max-w-md flex-1">
                   <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                  <input type="text" id="documentsSearch" placeholder="Search documents..." class="w-full pl-12 pr-4 py-3.5 bg-gray-50 border-2 border-gray-100 rounded-2xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all">
+                  <input type="text" id="documentsSearch" placeholder="Search documents..."
+                    class="w-full pl-12 pr-4 py-3.5 bg-gray-50 border-2 border-gray-100 rounded-2xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all">
                 </div>
                 <div class="flex gap-2">
                   <select id="categoryFilter" class="px-4 py-2 rounded-xl bg-gray-100 text-gray-600 focus:outline-none">
@@ -835,13 +919,20 @@
               <table class="w-full">
                 <thead class="bg-gray-50 border-b border-gray-200">
                   <tr>
-                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Title</th>
-                    <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Category</th>
-                    <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Type</th>
-                    <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Date</th>
-                    <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Published</th>
-                    <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Stats</th>
-                    <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
+                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Title
+                    </th>
+                    <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      Category</th>
+                    <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Type
+                    </th>
+                    <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Date
+                    </th>
+                    <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      Published</th>
+                    <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Stats
+                    </th>
+                    <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      Actions</th>
                   </tr>
                 </thead>
                 <tbody id="documentsTableBody" class="divide-y divide-gray-200">
@@ -859,16 +950,19 @@
       </section>
 
       <!-- Edit Department Info Modal -->
-      <div id="editDepartmentModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+      <div id="editDepartmentModal"
+        class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="glass rounded-3xl max-w-2xl w-full p-8 shadow-2xl animate-scale-in max-h-[90vh] overflow-y-auto">
           <div class="flex items-center justify-between mb-6">
             <div class="flex items-center gap-3">
-              <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg">
+              <div
+                class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg">
                 <i class="fa-solid fa-building text-white text-xl"></i>
               </div>
               <h2 class="text-2xl font-bold text-gray-800">Edit Department Info</h2>
             </div>
-            <button onclick="closeEditDepartmentModal()" class="w-10 h-10 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-600 flex items-center justify-center transition-all">
+            <button onclick="closeEditDepartmentModal()"
+              class="w-10 h-10 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-600 flex items-center justify-center transition-all">
               <i class="fa-solid fa-xmark text-xl"></i>
             </button>
           </div>
@@ -881,26 +975,18 @@
                   <i class="fa-solid fa-users text-blue-600 mr-1"></i>
                   Total Students
                 </label>
-                <input 
-                  type="number" 
-                  id="editTotalStudents" 
-                  min="0" 
+                <input type="number" id="editTotalStudents" min="0"
                   class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:outline-none transition-all"
-                  placeholder="0"
-                >
+                  placeholder="0">
               </div>
               <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2">
                   <i class="fa-solid fa-chalkboard-teacher text-emerald-600 mr-1"></i>
                   Total Faculty
                 </label>
-                <input 
-                  type="number" 
-                  id="editTotalFaculty" 
-                  min="0" 
+                <input type="number" id="editTotalFaculty" min="0"
                   class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-emerald-500 focus:outline-none transition-all"
-                  placeholder="0"
-                >
+                  placeholder="0">
               </div>
             </div>
 
@@ -911,26 +997,18 @@
                   <i class="fa-solid fa-layer-group text-purple-600 mr-1"></i>
                   Year Levels
                 </label>
-                <input 
-                  type="number" 
-                  id="editYearLevels" 
-                  min="1" 
+                <input type="number" id="editYearLevels" min="1"
                   class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:outline-none transition-all"
-                  placeholder="4"
-                >
+                  placeholder="4">
               </div>
               <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2">
                   <i class="fa-solid fa-book text-amber-600 mr-1"></i>
                   Subjects Count
                 </label>
-                <input 
-                  type="number" 
-                  id="editSubjectsCount" 
-                  min="0" 
+                <input type="number" id="editSubjectsCount" min="0"
                   class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-amber-500 focus:outline-none transition-all"
-                  placeholder="20"
-                >
+                  placeholder="20">
               </div>
             </div>
 
@@ -943,21 +1021,15 @@
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label class="block text-sm font-semibold text-gray-700 mb-2">Name</label>
-                  <input 
-                    type="text" 
-                    id="editCoordinatorName" 
+                  <input type="text" id="editCoordinatorName"
                     class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-primary focus:outline-none transition-all"
-                    placeholder="BSN 2C - AQUINO (2025-2026)"
-                  >
+                    placeholder="BSN 2C - AQUINO (2025-2026)">
                 </div>
                 <div>
                   <label class="block text-sm font-semibold text-gray-700 mb-2">Email</label>
-                  <input 
-                    type="email" 
-                    id="editCoordinatorEmail" 
+                  <input type="email" id="editCoordinatorEmail"
                     class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-primary focus:outline-none transition-all"
-                    placeholder="nursing@msu.edu.ph"
-                  >
+                    placeholder="nursing@msu.edu.ph">
                 </div>
               </div>
             </div>
@@ -967,10 +1039,12 @@
 
             <!-- Actions -->
             <div class="flex gap-3 pt-4 border-t border-gray-200">
-              <button type="button" onclick="closeEditDepartmentModal()" class="flex-1 px-6 py-3.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl transition-all">
+              <button type="button" onclick="closeEditDepartmentModal()"
+                class="flex-1 px-6 py-3.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl transition-all">
                 Cancel
               </button>
-              <button type="submit" class="flex-1 px-6 py-3.5 bg-gradient-to-r from-primary to-secondary text-white font-semibold rounded-xl shadow-lg transition-all hover:-translate-y-0.5">
+              <button type="submit"
+                class="flex-1 px-6 py-3.5 bg-gradient-to-r from-primary to-secondary text-white font-semibold rounded-xl shadow-lg transition-all hover:-translate-y-0.5">
                 <i class="fa-solid fa-save mr-2"></i>Save Changes
               </button>
             </div>
@@ -982,12 +1056,15 @@
       <section id="section-events" class="admin-section hidden animate-fade-in">
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-8">
           <div>
-            <h1 class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary-700 to-secondary-700 bg-clip-text text-transparent mb-2">
+            <h1
+              class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary-700 to-secondary-700 bg-clip-text text-transparent mb-2">
               Events Management
             </h1>
             <p class="text-gray-500">Create and manage college events and activities</p>
           </div>
-          <button type="button" class="btn-shimmer px-6 py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold rounded-2xl shadow-xl shadow-emerald-500/30 transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-2 group" onclick="openEventForm()">
+          <button type="button"
+            class="btn-shimmer px-6 py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold rounded-2xl shadow-xl shadow-emerald-500/30 transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-2 group"
+            onclick="openEventForm()">
             <i class="fa-solid fa-plus group-hover:rotate-90 transition-transform"></i>
             <span>Add Event</span>
           </button>
@@ -998,14 +1075,17 @@
             <div class="flex flex-col sm:flex-row gap-4 justify-between">
               <div class="relative max-w-md flex-1">
                 <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                <input type="text" id="eventsSearch" placeholder="Search events by title..." class="w-full pl-12 pr-4 py-3.5 bg-gray-50 border-2 border-gray-100 rounded-2xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
+                <input type="text" id="eventsSearch" placeholder="Search events by title..."
+                  class="w-full pl-12 pr-4 py-3.5 bg-gray-50 border-2 border-gray-100 rounded-2xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
               </div>
               <div class="flex gap-2">
-                <button class="px-4 py-2 rounded-xl bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors flex items-center gap-2">
+                <button
+                  class="px-4 py-2 rounded-xl bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors flex items-center gap-2">
                   <i class="fa-solid fa-filter"></i>
                   <span>Filter</span>
                 </button>
-                <button class="px-4 py-2 rounded-xl bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors flex items-center gap-2">
+                <button
+                  class="px-4 py-2 rounded-xl bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors flex items-center gap-2">
                   <i class="fa-solid fa-arrow-down-short-wide"></i>
                   <span>Sort</span>
                 </button>
@@ -1051,18 +1131,23 @@
       <section id="section-courses-subjects" class="admin-section hidden animate-fade-in">
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-8">
           <div>
-            <h1 class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary-700 to-secondary-700 bg-clip-text text-transparent mb-2">
+            <h1
+              class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary-700 to-secondary-700 bg-clip-text text-transparent mb-2">
               Courses & Subjects
             </h1>
             <p class="text-gray-500">Manage course catalog and weekly schedule</p>
           </div>
           <!-- Add Course Button - Only shows in catalog tab -->
-          <button type="button" id="addCourseBtn" class="btn-shimmer px-6 py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold rounded-2xl shadow-xl shadow-emerald-500/30 transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-2 group" onclick="openCourseModal()">
+          <button type="button" id="addCourseBtn"
+            class="btn-shimmer px-6 py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold rounded-2xl shadow-xl shadow-emerald-500/30 transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-2 group"
+            onclick="openCourseModal()">
             <i class="fa-solid fa-plus group-hover:rotate-90 transition-transform"></i>
             <span>Add Course or Subject</span>
           </button>
           <!-- Add Daily Subject Button - Only shows in schedule tab -->
-          <button type="button" id="addDailySubjectBtn" class="hidden btn-shimmer px-6 py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold rounded-2xl shadow-xl shadow-emerald-500/30 transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-2 group" onclick="openDailySubjectModal()">
+          <button type="button" id="addDailySubjectBtn"
+            class="hidden btn-shimmer px-6 py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold rounded-2xl shadow-xl shadow-emerald-500/30 transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-2 group"
+            onclick="openDailySubjectModal()">
             <i class="fa-solid fa-plus group-hover:rotate-90 transition-transform"></i>
             <span>Add Daily Subject</span>
           </button>
@@ -1071,26 +1156,37 @@
         <!-- Tab Buttons -->
         <div class="mb-6 flex flex-col lg:flex-row lg:items-center gap-4">
           <div class="glass rounded-2xl p-2 inline-flex gap-2 border border-white/50 shadow-lg">
-            <button id="adminCatalogTab" class="admin-main-tab px-6 py-3 rounded-xl text-sm font-bold transition-all duration-300 bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-md" onclick="switchAdminTab('catalog')">
+            <button id="adminCatalogTab"
+              class="admin-main-tab px-6 py-3 rounded-xl text-sm font-bold transition-all duration-300 bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-md"
+              onclick="switchAdminTab('catalog')">
               <i class="fa-solid fa-book-open mr-2"></i>Course Catalog
             </button>
-            <button id="adminScheduleTab" class="admin-main-tab px-6 py-3 rounded-xl text-sm font-bold transition-all duration-300 bg-white text-gray-600 hover:bg-gray-50" onclick="switchAdminTab('schedule')">
+            <button id="adminScheduleTab"
+              class="admin-main-tab px-6 py-3 rounded-xl text-sm font-bold transition-all duration-300 bg-white text-gray-600 hover:bg-gray-50"
+              onclick="switchAdminTab('schedule')">
               <i class="fa-solid fa-calendar-week mr-2"></i>Weekly Schedule
             </button>
           </div>
-          
+
           <!-- Day Tabs - Only visible in Weekly Schedule -->
           <div id="adminDayTabsContainer" class="hidden overflow-x-auto">
             <div class="flex gap-2 min-w-max" id="adminDayTabs">
-              <button class="admin-day-tab px-5 py-3 rounded-xl text-sm font-semibold transition-all duration-300" data-day="All" onclick="switchAdminDay('All')">
+              <button class="admin-day-tab px-5 py-3 rounded-xl text-sm font-semibold transition-all duration-300"
+                data-day="All" onclick="switchAdminDay('All')">
                 <i class="fa-solid fa-calendar-days mr-1"></i>All
               </button>
-              <button class="admin-day-tab px-5 py-3 rounded-xl text-sm font-semibold transition-all duration-300" data-day="Monday" onclick="switchAdminDay('Monday')">Monday</button>
-              <button class="admin-day-tab px-5 py-3 rounded-xl text-sm font-semibold transition-all duration-300" data-day="Tuesday" onclick="switchAdminDay('Tuesday')">Tuesday</button>
-              <button class="admin-day-tab px-5 py-3 rounded-xl text-sm font-semibold transition-all duration-300" data-day="Wednesday" onclick="switchAdminDay('Wednesday')">Wednesday</button>
-              <button class="admin-day-tab px-5 py-3 rounded-xl text-sm font-semibold transition-all duration-300" data-day="Thursday" onclick="switchAdminDay('Thursday')">Thursday</button>
-              <button class="admin-day-tab px-5 py-3 rounded-xl text-sm font-semibold transition-all duration-300" data-day="Friday" onclick="switchAdminDay('Friday')">Friday</button>
-              <button class="admin-day-tab px-5 py-3 rounded-xl text-sm font-semibold transition-all duration-300" data-day="Saturday" onclick="switchAdminDay('Saturday')">Saturday</button>
+              <button class="admin-day-tab px-5 py-3 rounded-xl text-sm font-semibold transition-all duration-300"
+                data-day="Monday" onclick="switchAdminDay('Monday')">Monday</button>
+              <button class="admin-day-tab px-5 py-3 rounded-xl text-sm font-semibold transition-all duration-300"
+                data-day="Tuesday" onclick="switchAdminDay('Tuesday')">Tuesday</button>
+              <button class="admin-day-tab px-5 py-3 rounded-xl text-sm font-semibold transition-all duration-300"
+                data-day="Wednesday" onclick="switchAdminDay('Wednesday')">Wednesday</button>
+              <button class="admin-day-tab px-5 py-3 rounded-xl text-sm font-semibold transition-all duration-300"
+                data-day="Thursday" onclick="switchAdminDay('Thursday')">Thursday</button>
+              <button class="admin-day-tab px-5 py-3 rounded-xl text-sm font-semibold transition-all duration-300"
+                data-day="Friday" onclick="switchAdminDay('Friday')">Friday</button>
+              <button class="admin-day-tab px-5 py-3 rounded-xl text-sm font-semibold transition-all duration-300"
+                data-day="Saturday" onclick="switchAdminDay('Saturday')">Saturday</button>
             </div>
           </div>
         </div>
@@ -1174,12 +1270,15 @@
       <section id="section-announcements" class="admin-section hidden animate-fade-in">
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-8">
           <div>
-            <h1 class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary-700 to-secondary-700 bg-clip-text text-transparent mb-2">
+            <h1
+              class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary-700 to-secondary-700 bg-clip-text text-transparent mb-2">
               Announcements
             </h1>
             <p class="text-gray-500">Manage student announcements and notifications</p>
           </div>
-          <button type="button" class="btn-shimmer px-6 py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold rounded-2xl shadow-xl shadow-emerald-500/30 transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-2 group" onclick="openAnnouncementForm()">
+          <button type="button"
+            class="btn-shimmer px-6 py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold rounded-2xl shadow-xl shadow-emerald-500/30 transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-2 group"
+            onclick="openAnnouncementForm()">
             <i class="fa-solid fa-plus group-hover:rotate-90 transition-transform"></i>
             <span>Add Announcement</span>
           </button>
@@ -1223,12 +1322,15 @@
       <section id="section-music" class="admin-section hidden animate-fade-in">
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-8">
           <div>
-            <h1 class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary-700 to-secondary-700 bg-clip-text text-transparent mb-2">
+            <h1
+              class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary-700 to-secondary-700 bg-clip-text text-transparent mb-2">
               Background Music
             </h1>
             <p class="text-gray-500">Manage background music for login and portal pages</p>
           </div>
-          <button type="button" class="btn-shimmer px-6 py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold rounded-2xl shadow-xl shadow-emerald-500/30 transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-2 group" onclick="openMusicUploadModal()">
+          <button type="button"
+            class="btn-shimmer px-6 py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold rounded-2xl shadow-xl shadow-emerald-500/30 transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-2 group"
+            onclick="openMusicUploadModal()">
             <i class="fa-solid fa-upload group-hover:rotate-12 transition-transform"></i>
             <span>Upload Music</span>
           </button>
@@ -1246,7 +1348,8 @@
         <div id="musicEmpty" class="hidden glass rounded-3xl shadow-xl p-12 text-center">
           <i class="fa-solid fa-music text-6xl text-gray-300 mb-4"></i>
           <p class="text-gray-600 font-medium mb-4">No music files uploaded yet</p>
-          <button type="button" onclick="openMusicUploadModal()" class="px-6 py-3 bg-gradient-to-br from-primary-600 to-secondary-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all">
+          <button type="button" onclick="openMusicUploadModal()"
+            class="px-6 py-3 bg-gradient-to-br from-primary-600 to-secondary-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all">
             Upload Your First Music
           </button>
         </div>
@@ -1259,12 +1362,14 @@
       <section id="section-users" class="admin-section hidden animate-fade-in">
         <div class="mb-8 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div>
-            <h1 class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary-700 to-secondary-700 bg-clip-text text-transparent mb-2">
+            <h1
+              class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary-700 to-secondary-700 bg-clip-text text-transparent mb-2">
               User Management
             </h1>
             <p class="text-gray-500">Manage admin users and reset passwords</p>
           </div>
-          <button type="button" onclick="openAddUserModal()" class="btn-shimmer px-6 py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold rounded-2xl shadow-xl shadow-emerald-500/30 transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-2 group">
+          <button type="button" onclick="openAddUserModal()"
+            class="btn-shimmer px-6 py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold rounded-2xl shadow-xl shadow-emerald-500/30 transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-2 group">
             <i class="fa-solid fa-user-plus group-hover:scale-110 transition-transform"></i>
             <span>Add New User</span>
           </button>
@@ -1300,7 +1405,8 @@
       <!-- Change Password Section -->
       <section id="section-change-password" class="admin-section hidden animate-fade-in">
         <div class="mb-8">
-          <h1 class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary-700 to-secondary-700 bg-clip-text text-transparent mb-2">
+          <h1
+            class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary-700 to-secondary-700 bg-clip-text text-transparent mb-2">
             Change Password
           </h1>
           <p class="text-gray-500">Update your account password for security</p>
@@ -1332,13 +1438,9 @@
                   <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <i class="fa-solid fa-envelope text-gray-400"></i>
                   </div>
-                  <input 
-                    type="email" 
-                    id="changePasswordEmail" 
-                    required 
+                  <input type="email" id="changePasswordEmail" required
                     class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all"
-                    placeholder="Enter your email address"
-                  >
+                    placeholder="Enter your email address">
                 </div>
                 <p class="text-xs text-gray-500 mt-1">Enter your email to verify account ownership</p>
               </div>
@@ -1352,14 +1454,11 @@
                   <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <i class="fa-solid fa-lock text-gray-400"></i>
                   </div>
-                  <input 
-                    type="password" 
-                    id="currentPassword" 
-                    required 
+                  <input type="password" id="currentPassword" required
                     class="w-full pl-11 pr-12 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all"
-                    placeholder="Enter current password"
-                  >
-                  <button type="button" onclick="togglePasswordVisibility('currentPassword')" class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-primary-500 transition-colors">
+                    placeholder="Enter current password">
+                  <button type="button" onclick="togglePasswordVisibility('currentPassword')"
+                    class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-primary-500 transition-colors">
                     <i class="fa-regular fa-eye"></i>
                   </button>
                 </div>
@@ -1374,14 +1473,11 @@
                   <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <i class="fa-solid fa-key text-gray-400"></i>
                   </div>
-                  <input 
-                    type="password" 
-                    id="newPassword" 
-                    required 
+                  <input type="password" id="newPassword" required
                     class="w-full pl-11 pr-12 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all"
-                    placeholder="Enter new password"
-                  >
-                  <button type="button" onclick="togglePasswordVisibility('newPassword')" class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-primary-500 transition-colors">
+                    placeholder="Enter new password">
+                  <button type="button" onclick="togglePasswordVisibility('newPassword')"
+                    class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-primary-500 transition-colors">
                     <i class="fa-regular fa-eye"></i>
                   </button>
                 </div>
@@ -1396,14 +1492,11 @@
                   <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <i class="fa-solid fa-key text-gray-400"></i>
                   </div>
-                  <input 
-                    type="password" 
-                    id="confirmPassword" 
-                    required 
+                  <input type="password" id="confirmPassword" required
                     class="w-full pl-11 pr-12 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all"
-                    placeholder="Confirm new password"
-                  >
-                  <button type="button" onclick="togglePasswordVisibility('confirmPassword')" class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-primary-500 transition-colors">
+                    placeholder="Confirm new password">
+                  <button type="button" onclick="togglePasswordVisibility('confirmPassword')"
+                    class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-primary-500 transition-colors">
                     <i class="fa-regular fa-eye"></i>
                   </button>
                 </div>
@@ -1413,10 +1506,8 @@
               <div id="changePasswordMessage" class="hidden"></div>
 
               <!-- Submit Button -->
-              <button 
-                type="submit" 
-                class="w-full px-6 py-4 bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 text-white font-semibold rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-0.5 flex items-center justify-center gap-2 group"
-              >
+              <button type="submit"
+                class="w-full px-6 py-4 bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 text-white font-semibold rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-0.5 flex items-center justify-center gap-2 group">
                 <i class="fa-solid fa-check group-hover:scale-110 transition-transform"></i>
                 <span>Change Password</span>
               </button>
@@ -1430,48 +1521,61 @@
 
   <!-- Music Upload Modal -->
   <div id="musicUploadModal" class="fixed inset-0 z-50 hidden">
-    <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity" onclick="closeMusicUploadModal()"></div>
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity" onclick="closeMusicUploadModal()">
+    </div>
     <div class="flex items-center justify-center min-h-screen p-4">
       <div class="glass rounded-3xl shadow-2xl max-w-md w-full p-8 relative animate-scale-in">
-        <button type="button" class="absolute top-6 right-6 w-10 h-10 rounded-full bg-gray-100 text-gray-500 hover:text-gray-700 hover:bg-gray-200 flex items-center justify-center transition-all" onclick="closeMusicUploadModal()">
+        <button type="button"
+          class="absolute top-6 right-6 w-10 h-10 rounded-full bg-gray-100 text-gray-500 hover:text-gray-700 hover:bg-gray-200 flex items-center justify-center transition-all"
+          onclick="closeMusicUploadModal()">
           <i class="fa-solid fa-xmark text-xl"></i>
         </button>
-        
+
         <div class="flex items-center gap-3 mb-6">
-          <div class="w-12 h-12 rounded-2xl bg-gradient-to-r from-primary-500 to-secondary-500 flex items-center justify-center">
+          <div
+            class="w-12 h-12 rounded-2xl bg-gradient-to-r from-primary-500 to-secondary-500 flex items-center justify-center">
             <i class="fa-solid fa-upload text-white text-xl"></i>
           </div>
           <h3 class="text-2xl font-bold text-gray-800">Upload Music</h3>
         </div>
-        
+
         <form id="musicUploadForm" class="space-y-4">
           <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Music Title <span class="text-rose-500">*</span></label>
-            <input type="text" id="musicTitle" required class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-primary-500 focus:bg-white outline-none transition-all input-glow" placeholder="Enter music title">
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Music Title <span
+                class="text-rose-500">*</span></label>
+            <input type="text" id="musicTitle" required
+              class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-primary-500 focus:bg-white outline-none transition-all input-glow"
+              placeholder="Enter music title">
           </div>
-          
+
           <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Location <span class="text-rose-500">*</span></label>
-            <select id="musicLocation" required class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-primary-500 focus:bg-white outline-none transition-all input-glow">
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Location <span
+                class="text-rose-500">*</span></label>
+            <select id="musicLocation" required
+              class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-primary-500 focus:bg-white outline-none transition-all input-glow">
               <option value="login">Login Page Only</option>
               <option value="portal">Student Portal Only</option>
               <option value="both">Both Pages</option>
             </select>
           </div>
-          
+
           <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Music File <span class="text-rose-500">*</span></label>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Music File <span
+                class="text-rose-500">*</span></label>
             <input type="file" id="musicFile" accept="audio/*" required class="hidden" onchange="updateMusicFileName()">
-            <button type="button" onclick="document.getElementById('musicFile').click()" class="w-full px-4 py-3 border-2 border-dashed border-gray-300 hover:border-primary-500 rounded-xl text-gray-600 hover:text-primary-600 transition-all flex items-center justify-center gap-2">
+            <button type="button" onclick="document.getElementById('musicFile').click()"
+              class="w-full px-4 py-3 border-2 border-dashed border-gray-300 hover:border-primary-500 rounded-xl text-gray-600 hover:text-primary-600 transition-all flex items-center justify-center gap-2">
               <i class="fa-solid fa-file-audio"></i>
               <span id="musicFileNameDisplay">Choose audio file (MP3, WAV, OGG, M4A)</span>
             </button>
             <p class="text-xs text-gray-500 mt-2">Maximum file size: 10MB</p>
           </div>
-          
+
           <div class="flex gap-3 pt-4">
-            <button type="button" onclick="closeMusicUploadModal()" class="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-all">Cancel</button>
-            <button type="submit" id="musicUploadBtn" class="flex-1 px-6 py-3 bg-gradient-to-br from-primary-600 to-secondary-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all">Upload</button>
+            <button type="button" onclick="closeMusicUploadModal()"
+              class="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-all">Cancel</button>
+            <button type="submit" id="musicUploadBtn"
+              class="flex-1 px-6 py-3 bg-gradient-to-br from-primary-600 to-secondary-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all">Upload</button>
           </div>
         </form>
       </div>
@@ -1483,37 +1587,47 @@
     <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity" onclick="closeMusicEditModal()"></div>
     <div class="flex items-center justify-center min-h-screen p-4">
       <div class="glass rounded-3xl shadow-2xl max-w-md w-full p-8 relative animate-scale-in">
-        <button type="button" class="absolute top-6 right-6 w-10 h-10 rounded-full bg-gray-100 text-gray-500 hover:text-gray-700 hover:bg-gray-200 flex items-center justify-center transition-all" onclick="closeMusicEditModal()">
+        <button type="button"
+          class="absolute top-6 right-6 w-10 h-10 rounded-full bg-gray-100 text-gray-500 hover:text-gray-700 hover:bg-gray-200 flex items-center justify-center transition-all"
+          onclick="closeMusicEditModal()">
           <i class="fa-solid fa-xmark text-xl"></i>
         </button>
-        
+
         <div class="flex items-center gap-3 mb-6">
-          <div class="w-12 h-12 rounded-2xl bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center">
+          <div
+            class="w-12 h-12 rounded-2xl bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center">
             <i class="fa-solid fa-edit text-white text-xl"></i>
           </div>
           <h3 class="text-2xl font-bold text-gray-800">Edit Music</h3>
         </div>
-        
+
         <form id="musicEditForm" class="space-y-4">
           <input type="hidden" id="editMusicId">
-          
+
           <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Music Title <span class="text-rose-500">*</span></label>
-            <input type="text" id="editMusicTitle" required class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-primary-500 focus:bg-white outline-none transition-all input-glow">
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Music Title <span
+                class="text-rose-500">*</span></label>
+            <input type="text" id="editMusicTitle" required
+              class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-primary-500 focus:bg-white outline-none transition-all input-glow">
           </div>
-          
+
           <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Location <span class="text-rose-500">*</span></label>
-            <select id="editMusicLocation" required class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-primary-500 focus:bg-white outline-none transition-all input-glow">
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Location <span
+                class="text-rose-500">*</span></label>
+            <select id="editMusicLocation" required
+              class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-primary-500 focus:bg-white outline-none transition-all input-glow">
               <option value="login">Login Page Only</option>
               <option value="portal">Student Portal Only</option>
               <option value="both">Both Pages</option>
             </select>
           </div>
-          
+
           <div class="flex gap-3 pt-4">
-            <button type="button" onclick="closeMusicEditModal()" class="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-all">Cancel</button>
-            <button type="submit" class="flex-1 px-6 py-3 bg-gradient-to-br from-blue-600 to-cyan-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all">Save Changes</button>
+            <button type="button" onclick="closeMusicEditModal()"
+              class="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-all">Cancel</button>
+            <button type="submit"
+              class="flex-1 px-6 py-3 bg-gradient-to-br from-blue-600 to-cyan-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all">Save
+              Changes</button>
           </div>
         </form>
       </div>
@@ -1522,36 +1636,47 @@
 
   <!-- Event Modal -->
   <div id="eventModal" class="fixed inset-0 z-50 hidden">
-    <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity" onclick="closeModal('eventModal')"></div>
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity" onclick="closeModal('eventModal')">
+    </div>
     <div class="flex items-center justify-center min-h-screen p-4 overflow-y-auto">
       <div class="glass rounded-3xl shadow-2xl max-w-2xl w-full p-8 relative animate-scale-in my-8">
-        <button type="button" class="absolute top-6 right-6 w-10 h-10 rounded-full bg-gray-100 text-gray-500 hover:text-gray-700 hover:bg-gray-200 flex items-center justify-center transition-all" onclick="closeModal('eventModal')">
+        <button type="button"
+          class="absolute top-6 right-6 w-10 h-10 rounded-full bg-gray-100 text-gray-500 hover:text-gray-700 hover:bg-gray-200 flex items-center justify-center transition-all"
+          onclick="closeModal('eventModal')">
           <i class="fa-solid fa-xmark text-xl"></i>
         </button>
-        
+
         <div class="flex items-center gap-3 mb-6">
-          <div class="w-12 h-12 rounded-2xl bg-gradient-to-r from-primary-500 to-secondary-500 flex items-center justify-center">
+          <div
+            class="w-12 h-12 rounded-2xl bg-gradient-to-r from-primary-500 to-secondary-500 flex items-center justify-center">
             <i class="fa-solid fa-calendar-plus text-white text-xl"></i>
           </div>
           <h3 class="text-2xl font-bold text-gray-800" id="eventModalTitle">Add Event</h3>
         </div>
-        
+
         <input type="hidden" id="eventId">
-        
+
         <div class="space-y-5">
           <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Title <span class="text-rose-500">*</span></label>
-            <input type="text" id="eventTitle" required class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow" placeholder="Enter event title">
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Title <span
+                class="text-rose-500">*</span></label>
+            <input type="text" id="eventTitle" required
+              class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow"
+              placeholder="Enter event title">
           </div>
-          
+
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-2">Description</label>
-            <textarea id="eventDescription" rows="2" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow resize-none" placeholder="Enter event description"></textarea>
+            <textarea id="eventDescription" rows="2"
+              class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow resize-none"
+              placeholder="Enter event description"></textarea>
           </div>
-          
+
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-2">Category</label>
-            <select id="eventCategory" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow" onchange="toggleCustomCategory()">
+            <select id="eventCategory"
+              class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow"
+              onchange="toggleCustomCategory()">
               <option value="">Select category</option>
               <option value="Orientation">Orientation</option>
               <option value="Training">Training</option>
@@ -1561,39 +1686,51 @@
               <option value="Social Events">Social Events</option>
               <option value="Other">Other</option>
             </select>
-            <input type="text" id="eventCategoryCustom" placeholder="Enter custom category" class="hidden w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow mt-3">
+            <input type="text" id="eventCategoryCustom" placeholder="Enter custom category"
+              class="hidden w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow mt-3">
           </div>
-          
+
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2">Start Date <span class="text-rose-500">*</span></label>
-              <input type="date" id="eventStartDate" required class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Start Date <span
+                  class="text-rose-500">*</span></label>
+              <input type="date" id="eventStartDate" required
+                class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
             </div>
             <div>
               <label class="block text-sm font-semibold text-gray-700 mb-2">End Date</label>
-              <input type="date" id="eventEndDate" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
+              <input type="date" id="eventEndDate"
+                class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
             </div>
           </div>
-          
+
           <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Start Time <span class="text-rose-500">*</span></label>
-            <input type="time" id="eventTime" required class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Start Time <span
+                class="text-rose-500">*</span></label>
+            <input type="time" id="eventTime" required
+              class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
           </div>
-          
+
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-2">Location</label>
-            <input type="text" id="eventLocation" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow" placeholder="Enter location">
+            <input type="text" id="eventLocation"
+              class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow"
+              placeholder="Enter location">
           </div>
-          
+
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-2">Items Required (one per line)</label>
-            <textarea id="eventItems" rows="3" placeholder="Item 1&#10;Item 2&#10;Item 3" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow resize-none"></textarea>
+            <textarea id="eventItems" rows="3" placeholder="Item 1&#10;Item 2&#10;Item 3"
+              class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow resize-none"></textarea>
           </div>
         </div>
-        
+
         <div class="flex justify-end gap-3 mt-8">
-          <button type="button" class="px-6 py-3 text-gray-600 hover:text-gray-800 font-semibold transition-colors" onclick="closeModal('eventModal')">Cancel</button>
-          <button type="button" id="eventSaveBtn" class="btn-shimmer px-8 py-3 bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 text-white font-semibold rounded-xl transition-all duration-300 shadow-xl shadow-primary-500/30">Save Event</button>
+          <button type="button" class="px-6 py-3 text-gray-600 hover:text-gray-800 font-semibold transition-colors"
+            onclick="closeModal('eventModal')">Cancel</button>
+          <button type="button" id="eventSaveBtn"
+            class="btn-shimmer px-8 py-3 bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 text-white font-semibold rounded-xl transition-all duration-300 shadow-xl shadow-primary-500/30">Save
+            Event</button>
         </div>
       </div>
     </div>
@@ -1604,19 +1741,22 @@
     <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity" onclick="closeCourseModal()"></div>
     <div class="fixed inset-0 flex items-center justify-center p-4 z-10 overflow-y-auto">
       <div class="glass rounded-3xl shadow-2xl w-full max-w-2xl p-8 animate-scale-in my-8">
-        <button type="button" class="absolute top-6 right-6 w-10 h-10 rounded-full bg-gray-100 text-gray-500 hover:text-gray-700 hover:bg-gray-200 flex items-center justify-center transition-all" onclick="closeCourseModal()">
+        <button type="button"
+          class="absolute top-6 right-6 w-10 h-10 rounded-full bg-gray-100 text-gray-500 hover:text-gray-700 hover:bg-gray-200 flex items-center justify-center transition-all"
+          onclick="closeCourseModal()">
           <i class="fa-solid fa-xmark text-xl"></i>
         </button>
-        
+
         <div class="flex items-center gap-3 mb-6">
-          <div class="w-12 h-12 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 flex items-center justify-center">
+          <div
+            class="w-12 h-12 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 flex items-center justify-center">
             <i class="fa-solid fa-book-medical text-white text-xl"></i>
           </div>
           <h3 class="text-2xl font-bold text-gray-800" id="courseModalTitle">Add Course or Subject</h3>
         </div>
-        
+
         <input type="hidden" id="courseId">
-        
+
         <form id="courseForm" class="space-y-5">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
@@ -1624,48 +1764,55 @@
                 <i class="fa-solid fa-hashtag text-primary-600 mr-1"></i>
                 Course Code
               </label>
-              <input type="text" id="courseCode" required placeholder="e.g., NSG101" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow uppercase">
+              <input type="text" id="courseCode" required placeholder="e.g., NSG101"
+                class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow uppercase">
             </div>
-            
+
             <div>
               <label class="block text-sm font-semibold text-gray-700 mb-2">
                 <i class="fa-solid fa-calculator text-primary-600 mr-1"></i>
                 Unit
               </label>
-              <input type="number" id="courseUnit" required min="0" step="0.5" placeholder="e.g., 3" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
+              <input type="number" id="courseUnit" required min="0" step="0.5" placeholder="e.g., 3"
+                class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
             </div>
           </div>
-          
+
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-2">
               <i class="fa-solid fa-book text-primary-600 mr-1"></i>
               Course or Subject Name
             </label>
-            <input type="text" id="courseName" required placeholder="e.g., Fundamentals of Nursing" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
+            <input type="text" id="courseName" required placeholder="e.g., Fundamentals of Nursing"
+              class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
           </div>
-          
+
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-2">
               <i class="fa-solid fa-flask text-primary-600 mr-1"></i>
               Subject Type
             </label>
-            <select id="courseSubjectType" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow" onchange="toggleCustomSubjectType()">
+            <select id="courseSubjectType"
+              class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow"
+              onchange="toggleCustomSubjectType()">
               <option value="">Select type (optional)</option>
               <option value="Lab">Lab</option>
               <option value="Lecture">Lecture</option>
               <option value="Seminar">Seminar</option>
               <option value="Other">Other</option>
             </select>
-            <input type="text" id="courseSubjectTypeCustom" placeholder="Enter custom subject type" class="hidden w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow mt-3">
+            <input type="text" id="courseSubjectTypeCustom" placeholder="Enter custom subject type"
+              class="hidden w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow mt-3">
           </div>
-          
+
           <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
               <label class="block text-sm font-semibold text-gray-700 mb-2">
                 <i class="fa-solid fa-user-graduate text-primary-600 mr-1"></i>
                 Year Level
               </label>
-              <select id="courseYearLevel" required class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
+              <select id="courseYearLevel" required
+                class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
                 <option value="">Select year level</option>
                 <option value="1st Year">1st Year</option>
                 <option value="2nd Year">2nd Year</option>
@@ -1673,13 +1820,14 @@
                 <option value="4th Year">4th Year</option>
               </select>
             </div>
-            
+
             <div>
               <label class="block text-sm font-semibold text-gray-700 mb-2">
                 <i class="fa-solid fa-calendar-days text-primary-600 mr-1"></i>
                 Semester
               </label>
-              <select id="courseSemester" required class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
+              <select id="courseSemester" required
+                class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
                 <option value="">Select semester</option>
                 <option value="1st Semester">1st Semester</option>
                 <option value="2nd Semester">2nd Semester</option>
@@ -1688,22 +1836,26 @@
               </select>
             </div>
           </div>
-          
+
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-2">
               <i class="fa-solid fa-toggle-on text-primary-600 mr-1"></i>
               Status
             </label>
-            <select id="courseStatus" required class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
+            <select id="courseStatus" required
+              class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
               <option value="Active">Active</option>
               <option value="Inactive">Inactive</option>
             </select>
           </div>
         </form>
-        
+
         <div class="flex justify-end gap-3 mt-8">
-          <button type="button" class="px-6 py-3 text-gray-600 hover:text-gray-800 font-semibold transition-colors" onclick="closeCourseModal()">Cancel</button>
-          <button type="button" id="courseSaveBtn" onclick="saveCourse()" class="btn-shimmer px-8 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold rounded-xl transition-all duration-300 shadow-xl shadow-emerald-500/30">Save Course</button>
+          <button type="button" class="px-6 py-3 text-gray-600 hover:text-gray-800 font-semibold transition-colors"
+            onclick="closeCourseModal()">Cancel</button>
+          <button type="button" id="courseSaveBtn" onclick="saveCourse()"
+            class="btn-shimmer px-8 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold rounded-xl transition-all duration-300 shadow-xl shadow-emerald-500/30">Save
+            Course</button>
         </div>
       </div>
     </div>
@@ -1711,53 +1863,71 @@
 
   <!-- Announcement Modal -->
   <div id="announcementModal" class="fixed inset-0 z-50 hidden">
-    <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity" onclick="closeModal('announcementModal')"></div>
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity"
+      onclick="closeModal('announcementModal')"></div>
     <div class="flex items-center justify-center min-h-screen p-4">
       <div class="glass rounded-3xl shadow-2xl max-w-lg w-full p-8 relative animate-scale-in">
-        <button type="button" class="absolute top-6 right-6 w-10 h-10 rounded-full bg-gray-100 text-gray-500 hover:text-gray-700 hover:bg-gray-200 flex items-center justify-center transition-all" onclick="closeModal('announcementModal')">
+        <button type="button"
+          class="absolute top-6 right-6 w-10 h-10 rounded-full bg-gray-100 text-gray-500 hover:text-gray-700 hover:bg-gray-200 flex items-center justify-center transition-all"
+          onclick="closeModal('announcementModal')">
           <i class="fa-solid fa-xmark text-xl"></i>
         </button>
-        
+
         <div class="flex items-center gap-3 mb-6">
-          <div class="w-12 h-12 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 flex items-center justify-center">
+          <div
+            class="w-12 h-12 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 flex items-center justify-center">
             <i class="fa-solid fa-bullhorn text-white text-xl"></i>
           </div>
           <h3 class="text-2xl font-bold text-gray-800" id="announcementModalTitle">Add Announcement</h3>
         </div>
-        
+
         <input type="hidden" id="announcementId">
-        
+
         <div class="space-y-5">
           <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Title <span class="text-rose-500">*</span></label>
-            <input type="text" id="announcementTitle" required class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow" placeholder="Enter announcement title">
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Title <span
+                class="text-rose-500">*</span></label>
+            <input type="text" id="announcementTitle" required
+              class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow"
+              placeholder="Enter announcement title">
           </div>
-          
+
           <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Message <span class="text-rose-500">*</span></label>
-            <textarea id="announcementMessage" rows="3" required class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow resize-none" placeholder="Enter your message"></textarea>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Message <span
+                class="text-rose-500">*</span></label>
+            <textarea id="announcementMessage" rows="3" required
+              class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow resize-none"
+              placeholder="Enter your message"></textarea>
           </div>
-          
+
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2">Date <span class="text-rose-500">*</span></label>
-              <input type="date" id="announcementDate" required class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Date <span
+                  class="text-rose-500">*</span></label>
+              <input type="date" id="announcementDate" required
+                class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
             </div>
             <div>
               <label class="block text-sm font-semibold text-gray-700 mb-2">Time</label>
-              <input type="time" id="announcementTime" value="09:00" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
+              <input type="time" id="announcementTime" value="09:00"
+                class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
             </div>
           </div>
-          
+
           <div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
-            <input type="checkbox" id="announcementActive" checked class="w-5 h-5 text-primary-600 rounded-lg border-2 border-gray-300 focus:ring-primary-500 focus:ring-2 cursor-pointer">
-            <label for="announcementActive" class="text-sm font-medium text-gray-700 cursor-pointer select-none">Active (show in carousel)</label>
+            <input type="checkbox" id="announcementActive" checked
+              class="w-5 h-5 text-primary-600 rounded-lg border-2 border-gray-300 focus:ring-primary-500 focus:ring-2 cursor-pointer">
+            <label for="announcementActive" class="text-sm font-medium text-gray-700 cursor-pointer select-none">Active
+              (show in carousel)</label>
           </div>
         </div>
-        
+
         <div class="flex justify-end gap-3 mt-8">
-          <button type="button" class="px-6 py-3 text-gray-600 hover:text-gray-800 font-semibold transition-colors" onclick="closeModal('announcementModal')">Cancel</button>
-          <button type="button" id="announcementSaveBtn" class="btn-shimmer px-8 py-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold rounded-xl transition-all duration-300 shadow-xl shadow-amber-500/30">Save Announcement</button>
+          <button type="button" class="px-6 py-3 text-gray-600 hover:text-gray-800 font-semibold transition-colors"
+            onclick="closeModal('announcementModal')">Cancel</button>
+          <button type="button" id="announcementSaveBtn"
+            class="btn-shimmer px-8 py-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold rounded-xl transition-all duration-300 shadow-xl shadow-amber-500/30">Save
+            Announcement</button>
         </div>
       </div>
     </div>
@@ -1765,96 +1935,117 @@
 
   <!-- Confirm Delete Modal -->
   <div id="confirmDeleteModal" class="fixed inset-0 z-50 hidden">
-    <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity" onclick="closeModal('confirmDeleteModal')"></div>
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity"
+      onclick="closeModal('confirmDeleteModal')"></div>
     <div class="flex items-center justify-center min-h-screen p-4">
       <div class="glass rounded-3xl shadow-2xl max-w-md w-full p-8 relative animate-scale-in text-center">
         <div class="w-20 h-20 mx-auto mb-6 rounded-2xl bg-rose-100 flex items-center justify-center animate-pulse">
           <i class="fa-solid fa-triangle-exclamation text-rose-500 text-3xl"></i>
         </div>
         <h3 class="text-2xl font-bold text-gray-800 mb-2">Confirm Delete</h3>
-        <p class="text-gray-600 mb-8" id="confirmDeleteMessage">Are you sure you want to delete this item? This action cannot be undone.</p>
+        <p class="text-gray-600 mb-8" id="confirmDeleteMessage">Are you sure you want to delete this item? This action
+          cannot be undone.</p>
         <div class="flex justify-center gap-4">
-          <button type="button" class="px-8 py-3.5 text-gray-600 hover:text-gray-800 font-semibold transition-colors rounded-xl hover:bg-gray-100" onclick="closeModal('confirmDeleteModal')">Cancel</button>
-          <button type="button" id="confirmDeleteBtn" class="btn-shimmer px-8 py-3.5 bg-gradient-to-r from-rose-500 to-rose-600 hover:from-rose-600 hover:to-rose-700 text-white font-semibold rounded-xl transition-all duration-300 shadow-xl shadow-rose-500/30">Delete</button>
+          <button type="button" id="confirmDeleteCancelBtn"
+            class="px-8 py-3.5 text-gray-600 hover:text-gray-800 font-semibold transition-colors rounded-xl hover:bg-gray-100"
+            onclick="closeModal('confirmDeleteModal')">Cancel</button>
+          <button type="button" id="confirmDeleteBtn"
+            class="btn-shimmer px-8 py-3.5 bg-gradient-to-r from-rose-500 to-rose-600 hover:from-rose-600 hover:to-rose-700 text-white font-semibold rounded-xl transition-all duration-300 shadow-xl shadow-rose-500/30">Delete</button>
         </div>
       </div>
     </div>
 
-  <!-- Subject Modal -->
-  <div id="subjectModal" class="fixed inset-0 z-50 hidden">
-    <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity" onclick="closeModal('subjectModal')"></div>
-    <div class="flex items-center justify-center min-h-screen p-4">
-      <div class="glass rounded-3xl shadow-2xl max-w-2xl w-full p-8 relative animate-scale-in">
-        <button type="button" class="absolute top-6 right-6 w-10 h-10 rounded-full bg-gray-100 text-gray-500 hover:text-gray-700 hover:bg-gray-200 flex items-center justify-center transition-all" onclick="closeModal('subjectModal')">
-          <i class="fa-solid fa-xmark text-xl"></i>
-        </button>
-        
-        <div class="flex items-center gap-3 mb-6">
-          <div class="w-12 h-12 rounded-2xl bg-gradient-to-r from-primary-500 to-secondary-500 flex items-center justify-center">
-            <i class="fa-solid fa-book-open text-white text-xl"></i>
-          </div>
-          <h3 class="text-2xl font-bold text-gray-800" id="subjectModalTitle">Add Subject</h3>
-        </div>
-        
-        <input type="hidden" id="subjectDocId">
-        <input type="hidden" id="subjectIndex">
-        
-        <div class="space-y-5">
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Day of Week <span class="text-rose-500">*</span></label>
-            <select id="subjectDay" required class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
-              <option value="Monday">Monday</option>
-              <option value="Tuesday">Tuesday</option>
-              <option value="Wednesday">Wednesday</option>
-              <option value="Thursday">Thursday</option>
-              <option value="Friday">Friday</option>
-              <option value="Saturday">Saturday</option>
-              <option value="Sunday">Sunday</option>
-            </select>
+    <!-- Subject Modal -->
+    <div id="subjectModal" class="fixed inset-0 z-50 hidden">
+      <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity"
+        onclick="closeModal('subjectModal')"></div>
+      <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="glass rounded-3xl shadow-2xl max-w-2xl w-full p-8 relative animate-scale-in">
+          <button type="button"
+            class="absolute top-6 right-6 w-10 h-10 rounded-full bg-gray-100 text-gray-500 hover:text-gray-700 hover:bg-gray-200 flex items-center justify-center transition-all"
+            onclick="closeModal('subjectModal')">
+            <i class="fa-solid fa-xmark text-xl"></i>
+          </button>
+
+          <div class="flex items-center gap-3 mb-6">
+            <div
+              class="w-12 h-12 rounded-2xl bg-gradient-to-r from-primary-500 to-secondary-500 flex items-center justify-center">
+              <i class="fa-solid fa-book-open text-white text-xl"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800" id="subjectModalTitle">Add Subject</h3>
           </div>
 
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Subject Name <span class="text-rose-500">*</span></label>
-            <select id="subjectNameSelect" required class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
-              <option value="">Select a subject</option>
-              <option value="Mathematics">Mathematics</option>
-              <option value="Science">Science</option>
-              <option value="English">English</option>
-              <option value="History">History</option>
-              <option value="Physical Education">Physical Education</option>
-              <option value="Computer Science">Computer Science</option>
-              <option value="Other">Other (Specify below)</option>
-            </select>
+          <input type="hidden" id="subjectDocId">
+          <input type="hidden" id="subjectIndex">
+
+          <div class="space-y-5">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Day of Week <span
+                  class="text-rose-500">*</span></label>
+              <select id="subjectDay" required
+                class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
+                <option value="Monday">Monday</option>
+                <option value="Tuesday">Tuesday</option>
+                <option value="Wednesday">Wednesday</option>
+                <option value="Thursday">Thursday</option>
+                <option value="Friday">Friday</option>
+                <option value="Saturday">Saturday</option>
+                <option value="Sunday">Sunday</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Subject Name <span
+                  class="text-rose-500">*</span></label>
+              <select id="subjectNameSelect" required
+                class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
+                <option value="">Select a subject</option>
+                <option value="Mathematics">Mathematics</option>
+                <option value="Science">Science</option>
+                <option value="English">English</option>
+                <option value="History">History</option>
+                <option value="Physical Education">Physical Education</option>
+                <option value="Computer Science">Computer Science</option>
+                <option value="Other">Other (Specify below)</option>
+              </select>
+            </div>
+
+            <div id="subjectNameOtherWrap" class="hidden">
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Specify Subject Name <span
+                  class="text-rose-500">*</span></label>
+              <input type="text" id="subjectNameOther"
+                class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow"
+                placeholder="Enter custom subject name">
+            </div>
+
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Type</label>
+              <select id="subjectType"
+                class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
+                <option value="Theory">Theory</option>
+                <option value="Laboratory">Laboratory</option>
+                <option value="Lecture">Lecture</option>
+                <option value="Practical">Practical</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Items Needed (one per line)</label>
+              <textarea id="subjectItems" rows="3" placeholder="Item 1&#10;Item 2&#10;Item 3"
+                class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow resize-none"></textarea>
+            </div>
           </div>
 
-          <div id="subjectNameOtherWrap" class="hidden">
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Specify Subject Name <span class="text-rose-500">*</span></label>
-            <input type="text" id="subjectNameOther" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow" placeholder="Enter custom subject name">
+          <div class="flex justify-end gap-3 mt-8">
+            <button type="button" class="px-6 py-3 text-gray-600 hover:text-gray-800 font-semibold transition-colors"
+              onclick="closeModal('subjectModal')">Cancel</button>
+            <button type="button" id="subjectSaveBtn"
+              class="px-6 py-3.5 bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 text-white font-semibold rounded-xl shadow-xl shadow-primary-500/30 transition-all hover:-translate-y-0.5">Save
+              Subject</button>
           </div>
-          
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Type</label>
-            <select id="subjectType" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
-              <option value="Theory">Theory</option>
-              <option value="Laboratory">Laboratory</option>
-              <option value="Lecture">Lecture</option>
-              <option value="Practical">Practical</option>
-            </select>
-          </div>
-
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Items Needed (one per line)</label>
-            <textarea id="subjectItems" rows="3" placeholder="Item 1&#10;Item 2&#10;Item 3" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow resize-none"></textarea>
-          </div>
-        </div>
-        
-        <div class="flex justify-end gap-3 mt-8">
-          <button type="button" class="px-6 py-3 text-gray-600 hover:text-gray-800 font-semibold transition-colors" onclick="closeModal('subjectModal')">Cancel</button>
-          <button type="button" id="subjectSaveBtn" class="px-6 py-3.5 bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 text-white font-semibold rounded-xl shadow-xl shadow-primary-500/30 transition-all hover:-translate-y-0.5">Save Subject</button>
         </div>
       </div>
     </div>
-  </div>
 
 
   </div>
@@ -1863,52 +2054,67 @@
   <div id="toastContainer" class="fixed top-6 right-6 z-[9999] space-y-3"></div>
 
   <!-- Teacher Modal -->
-  <div id="teacherModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in" style="display: none;">
+  <div id="teacherModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in"
+    style="display: none;">
     <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal('teacherModal')"></div>
-    <div class="glass rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto relative animate-scale-in p-8">
+    <div
+      class="glass rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto relative animate-scale-in p-8">
       <div class="flex items-center justify-between mb-6">
         <div>
           <h3 class="text-2xl font-bold text-gray-800" id="teacherModalTitle">Add Teacher</h3>
           <p class="text-gray-500 text-sm mt-1">Fill in the teacher information</p>
         </div>
-        <button onclick="closeModal('teacherModal')" class="w-10 h-10 rounded-xl bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors">
+        <button onclick="closeModal('teacherModal')"
+          class="w-10 h-10 rounded-xl bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors">
           <i class="fa-solid fa-xmark text-gray-600"></i>
         </button>
       </div>
 
       <form id="teacherForm" class="space-y-4">
         <input type="hidden" id="teacherId">
-        
+
         <div>
           <label class="block text-sm font-semibold text-gray-700 mb-2">Full Name *</label>
-          <input type="text" id="teacherName" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all" placeholder="Enter teacher's full name">
+          <input type="text" id="teacherName" required
+            class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all"
+            placeholder="Enter teacher's full name">
         </div>
 
         <div>
           <label class="block text-sm font-semibold text-gray-700 mb-2">Position *</label>
-          <input type="text" id="teacherPosition" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all" placeholder="e.g., Professor, Instructor, Dean">
+          <input type="text" id="teacherPosition" required
+            class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all"
+            placeholder="e.g., Professor, Instructor, Dean">
         </div>
 
         <div>
           <label class="block text-sm font-semibold text-gray-700 mb-2">Department *</label>
-          <input type="text" id="teacherDepartment" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all" placeholder="e.g., Nursing, Medical Technology">
+          <input type="text" id="teacherDepartment" required
+            class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all"
+            placeholder="e.g., Nursing, Medical Technology">
         </div>
 
         <div>
           <label class="block text-sm font-semibold text-gray-700 mb-2">Contact Number</label>
-          <input type="text" id="teacherContact" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all" placeholder="e.g., 09xx-xxx-xxxx">
+          <input type="text" id="teacherContact"
+            class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all"
+            placeholder="e.g., 09xx-xxx-xxxx">
         </div>
 
         <div>
           <label class="block text-sm font-semibold text-gray-700 mb-2">Email</label>
-          <input type="email" id="teacherEmail" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all" placeholder="teacher@example.com">
+          <input type="email" id="teacherEmail"
+            class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all"
+            placeholder="teacher@example.com">
         </div>
 
         <div class="flex gap-3 pt-4">
-          <button type="button" onclick="closeModal('teacherModal')" class="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-all">
+          <button type="button" onclick="closeModal('teacherModal')"
+            class="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-all">
             Cancel
           </button>
-          <button type="button" id="teacherSaveBtn" class="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-xl font-semibold hover:from-emerald-600 hover:to-emerald-700 transition-all flex items-center justify-center gap-2">
+          <button type="button" id="teacherSaveBtn"
+            class="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-xl font-semibold hover:from-emerald-600 hover:to-emerald-700 transition-all flex items-center justify-center gap-2">
             <i class="fa-solid fa-save"></i>
             Save Teacher
           </button>
@@ -1918,31 +2124,37 @@
   </div>
 
   <!-- Student Modal -->
-  <div id="studentModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in" style="display: none;">
+  <div id="studentModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in"
+    style="display: none;">
     <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal('studentModal')"></div>
-    <div class="glass rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto relative animate-scale-in p-8">
+    <div
+      class="glass rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto relative animate-scale-in p-8">
       <div class="flex items-center justify-between mb-6">
         <div>
           <h3 class="text-2xl font-bold text-gray-800" id="studentModalTitle">Add Student</h3>
           <p class="text-gray-500 text-sm mt-1">Fill in the student information</p>
         </div>
-        <button onclick="closeModal('studentModal')" class="w-10 h-10 rounded-xl bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors">
+        <button onclick="closeModal('studentModal')"
+          class="w-10 h-10 rounded-xl bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors">
           <i class="fa-solid fa-xmark text-gray-600"></i>
         </button>
       </div>
 
       <form id="studentForm" class="space-y-4">
         <input type="hidden" id="studentId">
-        
+
         <div>
           <label class="block text-sm font-semibold text-gray-700 mb-2">Full Name *</label>
-          <input type="text" id="studentName" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all" placeholder="Enter student's full name">
+          <input type="text" id="studentName" required
+            class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all"
+            placeholder="Enter student's full name">
         </div>
 
         <div class="grid grid-cols-2 gap-4">
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-2">Year Level *</label>
-            <select id="studentYearLevel" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all">
+            <select id="studentYearLevel" required
+              class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all">
               <option value="">Select Year Level</option>
               <option value="1st Year">1st Year</option>
               <option value="2nd Year">2nd Year</option>
@@ -1953,25 +2165,33 @@
 
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-2">Section</label>
-            <input type="text" id="studentSection" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all" placeholder="e.g., A, B, C">
+            <input type="text" id="studentSection"
+              class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all"
+              placeholder="e.g., A, B, C">
           </div>
         </div>
 
         <div>
           <label class="block text-sm font-semibold text-gray-700 mb-2">Contact Number</label>
-          <input type="text" id="studentContact" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all" placeholder="e.g., 09xx-xxx-xxxx">
+          <input type="text" id="studentContact"
+            class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all"
+            placeholder="e.g., 09xx-xxx-xxxx">
         </div>
 
         <div>
           <label class="block text-sm font-semibold text-gray-700 mb-2">Email</label>
-          <input type="email" id="studentEmail" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all" placeholder="student@example.com">
+          <input type="email" id="studentEmail"
+            class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all"
+            placeholder="student@example.com">
         </div>
 
         <div class="flex gap-3 pt-4">
-          <button type="button" onclick="closeModal('studentModal')" class="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-all">
+          <button type="button" onclick="closeModal('studentModal')"
+            class="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-all">
             Cancel
           </button>
-          <button type="button" id="studentSaveBtn" class="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-blue-700 transition-all flex items-center justify-center gap-2">
+          <button type="button" id="studentSaveBtn"
+            class="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-blue-700 transition-all flex items-center justify-center gap-2">
             <i class="fa-solid fa-save"></i>
             Save Student
           </button>
@@ -1983,87 +2203,114 @@
   <!-- JavaScript -->
   <!-- Daily Subject Modal -->
   <div id="dailySubjectModal" class="fixed inset-0 z-50 hidden" style="display: none;">
-    <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity" onclick="closeDailySubjectModal()"></div>
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity" onclick="closeDailySubjectModal()">
+    </div>
     <div class="fixed inset-0 flex items-center justify-center p-4 z-10 overflow-y-auto">
       <div class="glass rounded-3xl shadow-2xl w-full max-w-2xl p-8 animate-scale-in my-8">
-        <button type="button" class="absolute top-6 right-6 w-10 h-10 rounded-full bg-gray-100 text-gray-500 hover:text-gray-700 hover:bg-gray-200 flex items-center justify-center transition-all" onclick="closeDailySubjectModal()">
+        <button type="button"
+          class="absolute top-6 right-6 w-10 h-10 rounded-full bg-gray-100 text-gray-500 hover:text-gray-700 hover:bg-gray-200 flex items-center justify-center transition-all"
+          onclick="closeDailySubjectModal()">
           <i class="fa-solid fa-xmark text-xl"></i>
         </button>
-        
+
         <div class="flex items-center gap-3 mb-6">
-          <div class="w-12 h-12 rounded-2xl bg-gradient-to-r from-primary-500 to-secondary-500 flex items-center justify-center">
+          <div
+            class="w-12 h-12 rounded-2xl bg-gradient-to-r from-primary-500 to-secondary-500 flex items-center justify-center">
             <i class="fa-solid fa-calendar-plus text-white text-xl"></i>
           </div>
           <h3 class="text-2xl font-bold text-gray-800" id="dailySubjectModalTitle">Add Daily Subject</h3>
         </div>
-        
+
         <input type="hidden" id="dailySubjectId">
         <input type="hidden" id="dailySubjectDay">
-        
+
         <div class="space-y-5">
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2">Subject Code <span class="text-rose-500">*</span></label>
-              <input type="text" id="dailySubjectCode" required class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow" placeholder="e.g., NS101">
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Subject Code <span
+                  class="text-rose-500">*</span></label>
+              <input type="text" id="dailySubjectCode" required
+                class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow"
+                placeholder="e.g., NS101">
             </div>
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2">Subject Name <span class="text-rose-500">*</span></label>
-              <input type="text" id="dailySubjectName" required class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow" placeholder="e.g., Fundamentals of Nursing">
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Subject Name <span
+                  class="text-rose-500">*</span></label>
+              <input type="text" id="dailySubjectName" required
+                class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow"
+                placeholder="e.g., Fundamentals of Nursing">
             </div>
           </div>
-          
+
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-2">Section</label>
-            <input type="text" id="dailySubjectSection" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow" placeholder="e.g., BSN 2C, A, B">
+            <input type="text" id="dailySubjectSection"
+              class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow"
+              placeholder="e.g., BSN 2C, A, B">
             <p class="text-xs text-gray-500 mt-1">Class section or group</p>
           </div>
-          
+
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2">Start Time <span class="text-rose-500">*</span></label>
-              <input type="time" id="dailySubjectStartTime" required class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Start Time <span
+                  class="text-rose-500">*</span></label>
+              <input type="time" id="dailySubjectStartTime" required
+                class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
             </div>
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2">End Time <span class="text-rose-500">*</span></label>
-              <input type="time" id="dailySubjectEndTime" required class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
+              <label class="block text-sm font-semibold text-gray-700 mb-2">End Time <span
+                  class="text-rose-500">*</span></label>
+              <input type="time" id="dailySubjectEndTime" required
+                class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
             </div>
           </div>
-          
+
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2">Type <span class="text-rose-500">*</span></label>
-              <select id="dailySubjectType" required class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow" onchange="toggleDailySubjectCustomType()">
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Type <span
+                  class="text-rose-500">*</span></label>
+              <select id="dailySubjectType" required
+                class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow"
+                onchange="toggleDailySubjectCustomType()">
                 <option value="">Select type</option>
                 <option value="Lecture">Lecture</option>
                 <option value="Practical/Lab">Practical/Lab</option>
                 <option value="Seminar">Seminar</option>
                 <option value="Other">Other</option>
               </select>
-              <input type="text" id="dailySubjectTypeCustom" placeholder="Enter custom type" class="hidden w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow mt-3">
+              <input type="text" id="dailySubjectTypeCustom" placeholder="Enter custom type"
+                class="hidden w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow mt-3">
             </div>
             <div>
               <label class="block text-sm font-semibold text-gray-700 mb-2">Date (Optional)</label>
-              <input type="date" id="dailySubjectDate" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
+              <input type="date" id="dailySubjectDate"
+                class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
               <p class="text-xs text-gray-500 mt-1">For specific date</p>
             </div>
           </div>
-          
+
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-2">Room/Location</label>
-            <input type="text" id="dailySubjectRoom" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow" placeholder="e.g., Room 101">
+            <input type="text" id="dailySubjectRoom"
+              class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow"
+              placeholder="e.g., Room 101">
           </div>
-          
+
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-2">Instructor</label>
-            <input type="text" id="dailySubjectInstructor" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow" placeholder="e.g., Prof. Juan Dela Cruz">
+            <input type="text" id="dailySubjectInstructor"
+              class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow"
+              placeholder="e.g., Prof. Juan Dela Cruz">
           </div>
         </div>
-        
+
         <div class="flex gap-3 mt-8">
-          <button type="button" onclick="closeDailySubjectModal()" class="flex-1 px-6 py-3.5 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-all">
+          <button type="button" onclick="closeDailySubjectModal()"
+            class="flex-1 px-6 py-3.5 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-all">
             Cancel
           </button>
-          <button type="button" id="dailySubjectSaveBtn" onclick="saveDailySubject()" class="flex-1 px-6 py-3.5 bg-gradient-to-r from-primary-600 to-secondary-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all">
+          <button type="button" id="dailySubjectSaveBtn" onclick="saveDailySubject()"
+            class="flex-1 px-6 py-3.5 bg-gradient-to-r from-primary-600 to-secondary-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all">
             Save Subject
           </button>
         </div>
@@ -2071,177 +2318,165 @@
     </div>
   </div>
 
-      <!-- User Management Section -->
-      <section id="section-users" class="admin-section hidden animate-fade-in">
-        <div class="mb-8 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          <div>
-            <h1 class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary-700 to-secondary-700 bg-clip-text text-transparent mb-2">
-              User Management
-            </h1>
-            <p class="text-gray-500">Manage admin users and reset passwords</p>
-          </div>
-          <button type="button" onclick="openAddUserModal()" class="btn-shimmer px-6 py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold rounded-2xl shadow-xl shadow-emerald-500/30 transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-2 group">
-            <i class="fa-solid fa-user-plus group-hover:scale-110 transition-transform"></i>
-            <span>Add New User</span>
-          </button>
-        </div>
+  <!-- User Management Section -->
+  <section id="section-users" class="admin-section hidden animate-fade-in">
+    <div class="mb-8 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+      <div>
+        <h1
+          class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary-700 to-secondary-700 bg-clip-text text-transparent mb-2">
+          User Management
+        </h1>
+        <p class="text-gray-500">Manage admin users and reset passwords</p>
+      </div>
+      <button type="button" onclick="openAddUserModal()"
+        class="btn-shimmer px-6 py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold rounded-2xl shadow-xl shadow-emerald-500/30 transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-2 group">
+        <i class="fa-solid fa-user-plus group-hover:scale-110 transition-transform"></i>
+        <span>Add New User</span>
+      </button>
+    </div>
 
-        <!-- Users Table -->
-        <div class="glass rounded-3xl shadow-xl overflow-hidden">
-          <div class="overflow-x-auto">
-            <table class="w-full">
-              <thead class="bg-gradient-to-r from-primary-600 to-secondary-600 text-white">
-                <tr>
-                  <th class="px-6 py-4 text-left text-sm font-semibold">Name</th>
-                  <th class="px-6 py-4 text-left text-sm font-semibold">Email</th>
-                  <th class="px-6 py-4 text-left text-sm font-semibold">Role</th>
-                  <th class="px-6 py-4 text-left text-sm font-semibold">Created</th>
-                  <th class="px-6 py-4 text-left text-sm font-semibold">Status</th>
-                  <th class="px-6 py-4 text-center text-sm font-semibold">Actions</th>
-                </tr>
-              </thead>
-              <tbody id="usersTableBody" class="divide-y divide-gray-200">
-                <tr>
-                  <td colspan="6" class="px-6 py-12 text-center text-gray-500">
-                    <i class="fa-solid fa-spinner fa-spin text-3xl mb-3 text-primary-500"></i>
-                    <p>Loading users...</p>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
+    <!-- Users Table -->
+    <div class="glass rounded-3xl shadow-xl overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead class="bg-gradient-to-r from-primary-600 to-secondary-600 text-white">
+            <tr>
+              <th class="px-6 py-4 text-left text-sm font-semibold">Name</th>
+              <th class="px-6 py-4 text-left text-sm font-semibold">Email</th>
+              <th class="px-6 py-4 text-left text-sm font-semibold">Role</th>
+              <th class="px-6 py-4 text-left text-sm font-semibold">Created</th>
+              <th class="px-6 py-4 text-left text-sm font-semibold">Status</th>
+              <th class="px-6 py-4 text-center text-sm font-semibold">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="usersTableBody" class="divide-y divide-gray-200">
+            <tr>
+              <td colspan="6" class="px-6 py-12 text-center text-gray-500">
+                <i class="fa-solid fa-spinner fa-spin text-3xl mb-3 text-primary-500"></i>
+                <p>Loading users...</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
 
-      <!-- Change Password Section -->
-      <section id="section-change-password" class="admin-section hidden animate-fade-in">
-        <div class="mb-8">
-          <h1 class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary-700 to-secondary-700 bg-clip-text text-transparent mb-2">
-            Change Password
-          </h1>
-          <p class="text-gray-500">Update your account password for security</p>
-        </div>
+  <!-- Change Password Section -->
+  <section id="section-change-password" class="admin-section hidden animate-fade-in">
+    <div class="mb-8">
+      <h1
+        class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary-700 to-secondary-700 bg-clip-text text-transparent mb-2">
+        Change Password
+      </h1>
+      <p class="text-gray-500">Update your account password for security</p>
+    </div>
 
-        <div class="max-w-2xl mx-auto">
-          <div class="glass rounded-3xl shadow-xl p-8">
-            <div class="mb-6 p-4 bg-blue-50 border-l-4 border-blue-500 rounded-r-xl">
-              <div class="flex items-start gap-3">
-                <i class="fa-solid fa-circle-info text-blue-600 text-lg mt-0.5"></i>
-                <div class="text-sm text-blue-800">
-                  <p class="font-semibold mb-1">Password Requirements:</p>
-                  <ul class="list-disc list-inside space-y-1">
-                    <li>At least 6 characters long</li>
-                    <li>Use a strong, unique password</li>
-                    <li>Don't share your password with anyone</li>
-                  </ul>
-                </div>
-              </div>
+    <div class="max-w-2xl mx-auto">
+      <div class="glass rounded-3xl shadow-xl p-8">
+        <div class="mb-6 p-4 bg-blue-50 border-l-4 border-blue-500 rounded-r-xl">
+          <div class="flex items-start gap-3">
+            <i class="fa-solid fa-circle-info text-blue-600 text-lg mt-0.5"></i>
+            <div class="text-sm text-blue-800">
+              <p class="font-semibold mb-1">Password Requirements:</p>
+              <ul class="list-disc list-inside space-y-1">
+                <li>At least 6 characters long</li>
+                <li>Use a strong, unique password</li>
+                <li>Don't share your password with anyone</li>
+              </ul>
             </div>
-
-            <form id="changePasswordForm" class="space-y-6">
-              <!-- Email Address -->
-              <div>
-                <label for="changePasswordEmail" class="block text-sm font-semibold text-gray-700 mb-2">
-                  Email Address <span class="text-red-500">*</span>
-                </label>
-                <div class="relative">
-                  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <i class="fa-solid fa-envelope text-gray-400"></i>
-                  </div>
-                  <input 
-                    type="email" 
-                    id="changePasswordEmail" 
-                    required 
-                    class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all"
-                    placeholder="Enter your email address"
-                  >
-                </div>
-                <p class="text-xs text-gray-500 mt-1">Enter your email to verify account ownership</p>
-              </div>
-
-              <!-- Current Password -->
-              <div>
-                <label for="currentPassword" class="block text-sm font-semibold text-gray-700 mb-2">
-                  Current Password <span class="text-red-500">*</span>
-                </label>
-                <div class="relative">
-                  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <i class="fa-solid fa-lock text-gray-400"></i>
-                  </div>
-                  <input 
-                    type="password" 
-                    id="currentPassword" 
-                    required 
-                    class="w-full pl-11 pr-12 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all"
-                    placeholder="Enter current password"
-                  >
-                  <button type="button" onclick="togglePasswordVisibility('currentPassword')" class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-primary-500 transition-colors">
-                    <i class="fa-regular fa-eye"></i>
-                  </button>
-                </div>
-              </div>
-
-              <!-- New Password -->
-              <div>
-                <label for="newPassword" class="block text-sm font-semibold text-gray-700 mb-2">
-                  New Password <span class="text-red-500">*</span>
-                </label>
-                <div class="relative">
-                  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <i class="fa-solid fa-key text-gray-400"></i>
-                  </div>
-                  <input 
-                    type="password" 
-                    id="newPassword" 
-                    required 
-                    class="w-full pl-11 pr-12 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all"
-                    placeholder="Enter new password"
-                  >
-                  <button type="button" onclick="togglePasswordVisibility('newPassword')" class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-primary-500 transition-colors">
-                    <i class="fa-regular fa-eye"></i>
-                  </button>
-                </div>
-              </div>
-
-              <!-- Confirm New Password -->
-              <div>
-                <label for="confirmPassword" class="block text-sm font-semibold text-gray-700 mb-2">
-                  Confirm New Password <span class="text-red-500">*</span>
-                </label>
-                <div class="relative">
-                  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <i class="fa-solid fa-key text-gray-400"></i>
-                  </div>
-                  <input 
-                    type="password" 
-                    id="confirmPassword" 
-                    required 
-                    class="w-full pl-11 pr-12 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all"
-                    placeholder="Confirm new password"
-                  >
-                  <button type="button" onclick="togglePasswordVisibility('confirmPassword')" class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-primary-500 transition-colors">
-                    <i class="fa-regular fa-eye"></i>
-                  </button>
-                </div>
-              </div>
-
-              <!-- Error/Success Messages -->
-              <div id="changePasswordMessage" class="hidden"></div>
-
-              <!-- Submit Button -->
-              <button 
-                type="submit" 
-                class="w-full px-6 py-4 bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 text-white font-semibold rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-0.5 flex items-center justify-center gap-2 group"
-              >
-                <i class="fa-solid fa-check group-hover:scale-110 transition-transform"></i>
-                <span>Change Password</span>
-              </button>
-            </form>
           </div>
         </div>
-      </section>
 
-    </main>
+        <form id="changePasswordForm" class="space-y-6">
+          <!-- Email Address -->
+          <div>
+            <label for="changePasswordEmail" class="block text-sm font-semibold text-gray-700 mb-2">
+              Email Address <span class="text-red-500">*</span>
+            </label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <i class="fa-solid fa-envelope text-gray-400"></i>
+              </div>
+              <input type="email" id="changePasswordEmail" required
+                class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all"
+                placeholder="Enter your email address">
+            </div>
+            <p class="text-xs text-gray-500 mt-1">Enter your email to verify account ownership</p>
+          </div>
+
+          <!-- Current Password -->
+          <div>
+            <label for="currentPassword" class="block text-sm font-semibold text-gray-700 mb-2">
+              Current Password <span class="text-red-500">*</span>
+            </label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <i class="fa-solid fa-lock text-gray-400"></i>
+              </div>
+              <input type="password" id="currentPassword" required
+                class="w-full pl-11 pr-12 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all"
+                placeholder="Enter current password">
+              <button type="button" onclick="togglePasswordVisibility('currentPassword')"
+                class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-primary-500 transition-colors">
+                <i class="fa-regular fa-eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- New Password -->
+          <div>
+            <label for="newPassword" class="block text-sm font-semibold text-gray-700 mb-2">
+              New Password <span class="text-red-500">*</span>
+            </label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <i class="fa-solid fa-key text-gray-400"></i>
+              </div>
+              <input type="password" id="newPassword" required
+                class="w-full pl-11 pr-12 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all"
+                placeholder="Enter new password">
+              <button type="button" onclick="togglePasswordVisibility('newPassword')"
+                class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-primary-500 transition-colors">
+                <i class="fa-regular fa-eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Confirm New Password -->
+          <div>
+            <label for="confirmPassword" class="block text-sm font-semibold text-gray-700 mb-2">
+              Confirm New Password <span class="text-red-500">*</span>
+            </label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <i class="fa-solid fa-key text-gray-400"></i>
+              </div>
+              <input type="password" id="confirmPassword" required
+                class="w-full pl-11 pr-12 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all"
+                placeholder="Confirm new password">
+              <button type="button" onclick="togglePasswordVisibility('confirmPassword')"
+                class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-primary-500 transition-colors">
+                <i class="fa-regular fa-eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Error/Success Messages -->
+          <div id="changePasswordMessage" class="hidden"></div>
+
+          <!-- Submit Button -->
+          <button type="submit"
+            class="w-full px-6 py-4 bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 text-white font-semibold rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-0.5 flex items-center justify-center gap-2 group">
+            <i class="fa-solid fa-check group-hover:scale-110 transition-transform"></i>
+            <span>Change Password</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  </main>
   </div>
 
   <!-- Add User Modal -->
@@ -2263,14 +2498,18 @@
             <label class="block text-sm font-semibold text-gray-700 mb-2">
               Full Name <span class="text-red-500">*</span>
             </label>
-            <input type="text" id="userName" required class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all" placeholder="e.g., Juan Dela Cruz">
+            <input type="text" id="userName" required
+              class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all"
+              placeholder="e.g., Juan Dela Cruz">
           </div>
 
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-2">
               Email <span class="text-red-500">*</span>
             </label>
-            <input type="email" id="userEmail" required class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all" placeholder="e.g., admin@msu.edu.ph">
+            <input type="email" id="userEmail" required
+              class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all"
+              placeholder="e.g., admin@msu.edu.ph">
           </div>
 
           <div>
@@ -2278,8 +2517,11 @@
               Temporary Password <span class="text-red-500">*</span>
             </label>
             <div class="flex gap-2">
-              <input type="text" id="userPassword" required class="flex-1 px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all" placeholder="Temporary password">
-              <button type="button" onclick="generatePassword()" class="px-4 py-3.5 bg-gradient-to-r from-primary-600 to-secondary-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all whitespace-nowrap">
+              <input type="text" id="userPassword" required
+                class="flex-1 px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all"
+                placeholder="Temporary password">
+              <button type="button" onclick="generatePassword()"
+                class="px-4 py-3.5 bg-gradient-to-r from-primary-600 to-secondary-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all whitespace-nowrap">
                 <i class="fa-solid fa-wand-magic-sparkles"></i> Generate
               </button>
             </div>
@@ -2290,7 +2532,8 @@
             <label class="block text-sm font-semibold text-gray-700 mb-2">
               Role <span class="text-red-500">*</span>
             </label>
-            <select id="userRole" class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all">
+            <select id="userRole"
+              class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all">
               <option value="admin">Admin</option>
             </select>
           </div>
@@ -2298,10 +2541,12 @@
           <div id="addUserMessage" class="hidden"></div>
 
           <div class="flex gap-3 mt-8">
-            <button type="button" onclick="closeAddUserModal()" class="flex-1 px-6 py-3.5 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-all">
+            <button type="button" onclick="closeAddUserModal()"
+              class="flex-1 px-6 py-3.5 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-all">
               Cancel
             </button>
-            <button type="submit" class="flex-1 px-6 py-3.5 bg-gradient-to-r from-primary-600 to-secondary-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all">
+            <button type="submit"
+              class="flex-1 px-6 py-3.5 bg-gradient-to-r from-primary-600 to-secondary-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all">
               Add User
             </button>
           </div>
@@ -2330,14 +2575,17 @@
 
         <form id="resetPasswordForm" class="space-y-5">
           <input type="hidden" id="resetUserId">
-          
+
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-2">
               New Temporary Password <span class="text-red-500">*</span>
             </label>
             <div class="flex gap-2">
-              <input type="text" id="resetNewPassword" required class="flex-1 px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all" placeholder="New temporary password">
-              <button type="button" onclick="generateResetPassword()" class="px-4 py-3.5 bg-gradient-to-r from-primary-600 to-secondary-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all whitespace-nowrap">
+              <input type="text" id="resetNewPassword" required
+                class="flex-1 px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all"
+                placeholder="New temporary password">
+              <button type="button" onclick="generateResetPassword()"
+                class="px-4 py-3.5 bg-gradient-to-r from-primary-600 to-secondary-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all whitespace-nowrap">
                 <i class="fa-solid fa-wand-magic-sparkles"></i> Generate
               </button>
             </div>
@@ -2347,10 +2595,12 @@
           <div id="resetPasswordMessage" class="hidden"></div>
 
           <div class="flex gap-3 mt-8">
-            <button type="button" onclick="closeResetPasswordModal()" class="flex-1 px-6 py-3.5 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-all">
+            <button type="button" onclick="closeResetPasswordModal()"
+              class="flex-1 px-6 py-3.5 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-all">
               Cancel
             </button>
-            <button type="submit" class="flex-1 px-6 py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all">
+            <button type="submit"
+              class="flex-1 px-6 py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all">
               Reset Password
             </button>
           </div>
@@ -2360,14 +2610,17 @@
   </div>
 
   <!-- Upload Document Modal -->
-  <div id="uploadDocumentModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+  <div id="uploadDocumentModal"
+    class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-      <div class="sticky top-0 bg-white border-b border-gray-200 px-8 py-6 rounded-t-3xl flex items-center justify-between z-10">
+      <div
+        class="sticky top-0 bg-white border-b border-gray-200 px-8 py-6 rounded-t-3xl flex items-center justify-between z-10">
         <div>
           <h2 class="text-2xl font-bold text-gray-800">Upload Document</h2>
           <p class="text-sm text-gray-500 mt-1">Upload letters, memos, or official documents</p>
         </div>
-        <button onclick="closeUploadDocumentModal()" class="w-10 h-10 rounded-xl bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors">
+        <button onclick="closeUploadDocumentModal()"
+          class="w-10 h-10 rounded-xl bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors">
           <i class="fa-solid fa-times text-gray-600"></i>
         </button>
       </div>
@@ -2375,10 +2628,12 @@
       <form id="uploadDocumentForm" class="p-8 space-y-6">
         <!-- Content Type Toggle -->
         <div class="flex gap-4 p-2 bg-gray-100 rounded-2xl">
-          <button type="button" id="fileTypeBtn" onclick="switchContentType('file')" class="flex-1 px-6 py-3 rounded-xl font-semibold bg-white text-primary-600 shadow-sm transition-all">
+          <button type="button" id="fileTypeBtn" onclick="switchContentType('file')"
+            class="flex-1 px-6 py-3 rounded-xl font-semibold bg-white text-primary-600 shadow-sm transition-all">
             <i class="fa-solid fa-file-arrow-up mr-2"></i>Upload File
           </button>
-          <button type="button" id="textTypeBtn" onclick="switchContentType('text')" class="flex-1 px-6 py-3 rounded-xl font-semibold text-gray-600 transition-all">
+          <button type="button" id="textTypeBtn" onclick="switchContentType('text')"
+            class="flex-1 px-6 py-3 rounded-xl font-semibold text-gray-600 transition-all">
             <i class="fa-solid fa-keyboard mr-2"></i>Type Content
           </button>
         </div>
@@ -2390,14 +2645,9 @@
           <label for="docTitle" class="block text-sm font-semibold text-gray-700 mb-2">
             Document Title <span class="text-red-500">*</span>
           </label>
-          <input 
-            type="text" 
-            id="docTitle" 
-            name="title" 
-            required 
+          <input type="text" id="docTitle" name="title" required
             class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all"
-            placeholder="e.g., Memorandum No. 2026-001"
-          >
+            placeholder="e.g., Memorandum No. 2026-001">
         </div>
 
         <!-- Category -->
@@ -2405,13 +2655,8 @@
           <label for="docCategory" class="block text-sm font-semibold text-gray-700 mb-2">
             Category <span class="text-red-500">*</span>
           </label>
-          <select 
-            id="docCategory" 
-            name="category" 
-            required 
-            onchange="toggleCustomCategory()"
-            class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all"
-          >
+          <select id="docCategory" name="category" required onchange="toggleCustomCategory()"
+            class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all">
             <option value="">Select Category</option>
             <option value="Letter">Letter</option>
             <option value="Memo">Memo</option>
@@ -2421,18 +2666,15 @@
             <option value="Announcement">Announcement</option>
             <option value="Other">Other</option>
           </select>
-          
+
           <!-- Custom Category Input (hidden by default) -->
           <div id="customCategorySection" class="hidden mt-3">
             <label for="customCategory" class="block text-sm font-semibold text-gray-700 mb-2">
               Custom Category Name <span class="text-red-500">*</span>
             </label>
-            <input 
-              type="text" 
-              id="customCategory" 
+            <input type="text" id="customCategory"
               class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all"
-              placeholder="Enter custom category name"
-            >
+              placeholder="Enter custom category name">
           </div>
         </div>
 
@@ -2441,13 +2683,9 @@
           <label for="docDescription" class="block text-sm font-semibold text-gray-700 mb-2">
             Description
           </label>
-          <textarea 
-            id="docDescription" 
-            name="description" 
-            rows="3" 
+          <textarea id="docDescription" name="description" rows="3"
             class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all resize-none"
-            placeholder="Brief description of the document..."
-          ></textarea>
+            placeholder="Brief description of the document..."></textarea>
         </div>
 
         <!-- File Upload Section -->
@@ -2455,18 +2693,14 @@
           <label class="block text-sm font-semibold text-gray-700 mb-2">
             Upload File <span class="text-red-500">*</span>
           </label>
-          <div class="border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center hover:border-primary-400 transition-colors cursor-pointer" onclick="document.getElementById('documentFile').click()">
+          <div
+            class="border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center hover:border-primary-400 transition-colors cursor-pointer"
+            onclick="document.getElementById('documentFile').click()">
             <i class="fa-solid fa-cloud-arrow-up text-5xl text-gray-400 mb-4"></i>
             <p class="text-gray-600 font-medium mb-1">Click to upload or drag and drop</p>
             <p class="text-sm text-gray-500">PDF, Word, Images (Max 10MB)</p>
-            <input 
-              type="file" 
-              id="documentFile" 
-              name="file" 
-              accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.txt" 
-              class="hidden"
-              onchange="handleFileSelect(this)"
-            >
+            <input type="file" id="documentFile" name="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.txt"
+              class="hidden" onchange="handleFileSelect(this)">
           </div>
           <div id="filePreview" class="hidden mt-4 p-4 bg-gray-50 rounded-xl flex items-center gap-3">
             <i class="fa-solid fa-file text-2xl text-primary-500"></i>
@@ -2485,13 +2719,9 @@
           <label for="docTextContent" class="block text-sm font-semibold text-gray-700 mb-2">
             Document Content <span class="text-red-500">*</span>
           </label>
-          <textarea 
-            id="docTextContent" 
-            name="textContent" 
-            rows="10" 
+          <textarea id="docTextContent" name="textContent" rows="10"
             class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all font-mono text-sm"
-            placeholder="Type or paste your document content here..."
-          ></textarea>
+            placeholder="Type or paste your document content here..."></textarea>
           <p class="text-xs text-gray-500 mt-2">Supports plain text. Formatting will be preserved.</p>
         </div>
 
@@ -2500,22 +2730,21 @@
           <label for="docDate" class="block text-sm font-semibold text-gray-700 mb-2">
             Date Issued
           </label>
-          <input 
-            type="date" 
-            id="docDate" 
-            name="dateIssued" 
-            class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all"
-          >
+          <input type="date" id="docDate" name="dateIssued"
+            class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all">
         </div>
 
         <!-- Options -->
         <div class="flex flex-col sm:flex-row gap-4">
           <label class="flex items-center gap-3 cursor-pointer group">
-            <input type="checkbox" id="isPublished" name="isPublished" class="w-5 h-5 rounded border-2 border-gray-300 text-primary-600 focus:ring-2 focus:ring-primary-500">
-            <span class="text-gray-700 font-medium group-hover:text-primary-600 transition-colors">Publish Immediately</span>
+            <input type="checkbox" id="isPublished" name="isPublished"
+              class="w-5 h-5 rounded border-2 border-gray-300 text-primary-600 focus:ring-2 focus:ring-primary-500">
+            <span class="text-gray-700 font-medium group-hover:text-primary-600 transition-colors">Publish
+              Immediately</span>
           </label>
           <label class="flex items-center gap-3 cursor-pointer group">
-            <input type="checkbox" id="isPinned" name="isPinned" class="w-5 h-5 rounded border-2 border-gray-300 text-primary-600 focus:ring-2 focus:ring-primary-500">
+            <input type="checkbox" id="isPinned" name="isPinned"
+              class="w-5 h-5 rounded border-2 border-gray-300 text-primary-600 focus:ring-2 focus:ring-primary-500">
             <span class="text-gray-700 font-medium group-hover:text-primary-600 transition-colors">
               <i class="fa-solid fa-thumbtack mr-1"></i>Pin to Top
             </span>
@@ -2527,10 +2756,12 @@
 
         <!-- Actions -->
         <div class="flex gap-3 pt-4 border-t border-gray-200">
-          <button type="button" onclick="closeUploadDocumentModal()" class="flex-1 px-6 py-3.5 bg-gray-100 text-gray-700 font-semibold rounded-2xl hover:bg-gray-200 transition-colors">
+          <button type="button" onclick="closeUploadDocumentModal()"
+            class="flex-1 px-6 py-3.5 bg-gray-100 text-gray-700 font-semibold rounded-2xl hover:bg-gray-200 transition-colors">
             Cancel
           </button>
-          <button type="submit" class="flex-1 px-6 py-3.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-2xl hover:from-blue-600 hover:to-blue-700 transition-all shadow-lg shadow-blue-500/30">
+          <button type="submit"
+            class="flex-1 px-6 py-3.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-2xl hover:from-blue-600 hover:to-blue-700 transition-all shadow-lg shadow-blue-500/30">
             <i class="fa-solid fa-cloud-arrow-up mr-2"></i>Upload Document
           </button>
         </div>
@@ -2550,5 +2781,5 @@
   <script src="admin-tailwind.js"></script>
   <script src="admin.js"></script>
 </body>
-</html>
 
+</html>
