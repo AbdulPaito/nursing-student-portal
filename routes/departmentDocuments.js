@@ -4,6 +4,8 @@ const DepartmentDocument = require('../models/DepartmentDocument');
 const auth = require('../middleware/auth');
 const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
+const https = require('https');
+const http = require('http');
 
 // Configure Cloudinary
 cloudinary.config({
@@ -22,7 +24,7 @@ const upload = multer({
   fileFilter: (req, file, cb) => {
     const allowedExtensions = ['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png', 'txt'];
     const fileExt = file.originalname.split('.').pop().toLowerCase();
-    
+
     if (allowedExtensions.includes(fileExt)) {
       return cb(null, true);
     } else {
@@ -81,7 +83,7 @@ router.post('/', auth, upload.single('file'), async (req, res) => {
       let resourceType = 'raw';
       const imageExts = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
       const videoExts = ['mp4', 'mov', 'avi', 'webm'];
-      
+
       if (imageExts.includes(fileExt)) {
         resourceType = 'image';
       } else if (videoExts.includes(fileExt)) {
@@ -158,14 +160,14 @@ router.post('/', auth, upload.single('file'), async (req, res) => {
 router.get('/', async (req, res) => {
   try {
     const { category, published } = req.query;
-    
+
     let query = {};
-    
+
     // Non-admins can only see published documents
     if (published === 'true' || !req.headers.authorization) {
       query.isPublished = true;
     }
-    
+
     if (category && category !== 'All') {
       query.category = category;
     }
@@ -561,6 +563,125 @@ router.delete('/:id/comments/:commentId', async (req, res) => {
 });
 
 /**
+ * @route   POST /api/department-documents/:id/comments/:commentId/like
+ * @desc    Like or unlike a comment
+ * @access  Public
+ */
+router.post('/:id/comments/:commentId/like', async (req, res) => {
+  try {
+    const { userEmail } = req.body;
+
+    const document = await DepartmentDocument.findById(req.params.id);
+
+    if (!document) {
+      return res.status(404).json({
+        success: false,
+        error: 'Document not found'
+      });
+    }
+
+    const comment = document.comments.find(
+      c => c._id.toString() === req.params.commentId
+    );
+
+    if (!comment) {
+      return res.status(404).json({
+        success: false,
+        error: 'Comment not found'
+      });
+    }
+
+    // Check if user already liked this comment
+    const alreadyLikedIndex = comment.likedBy.findIndex(
+      l => l.email === userEmail
+    );
+
+    if (alreadyLikedIndex !== -1) {
+      // Unlike
+      comment.likedBy.splice(alreadyLikedIndex, 1);
+      comment.likes = Math.max(0, (comment.likes || 1) - 1);
+    } else {
+      // Like
+      comment.likedBy.push({ email: userEmail });
+      comment.likes = (comment.likes || 0) + 1;
+    }
+
+    await document.save();
+
+    res.json({
+      success: true,
+      likes: comment.likes,
+      liked: alreadyLikedIndex === -1
+    });
+  } catch (err) {
+    console.error('Like comment error:', err);
+    res.status(500).json({
+      success: false,
+      error: 'Server error'
+    });
+  }
+});
+
+/**
+ * @route   POST /api/department-documents/:id/comments/:commentId/reply
+ * @desc    Reply to a comment
+ * @access  Public
+ */
+router.post('/:id/comments/:commentId/reply', async (req, res) => {
+  try {
+    const { userName, userEmail, userRole, reply } = req.body;
+
+    if (!userName || !userEmail || !reply) {
+      return res.status(400).json({
+        success: false,
+        error: 'Please provide name, email, and reply'
+      });
+    }
+
+    const document = await DepartmentDocument.findById(req.params.id);
+
+    if (!document) {
+      return res.status(404).json({
+        success: false,
+        error: 'Document not found'
+      });
+    }
+
+    const comment = document.comments.find(
+      c => c._id.toString() === req.params.commentId
+    );
+
+    if (!comment) {
+      return res.status(404).json({
+        success: false,
+        error: 'Comment not found'
+      });
+    }
+
+    comment.replies.push({
+      userName,
+      userEmail,
+      userRole: userRole || 'student',
+      comment: reply
+    });
+
+    await document.save();
+
+    res.status(201).json({
+      success: true,
+      message: 'Reply added successfully',
+      reply: comment.replies[comment.replies.length - 1]
+    });
+  } catch (err) {
+    console.error('Reply comment error:', err);
+    res.status(500).json({
+      success: false,
+      error: 'Server error'
+    });
+  }
+});
+
+/**
  * @route   POST /api/department-documents/:id/view
  * @desc    Track document view
  * @access  Public
@@ -585,6 +706,131 @@ router.post('/:id/view', async (req, res) => {
     });
   } catch (err) {
     console.error('Track view error:', err);
+    res.status(500).json({
+      success: false,
+      error: 'Server error'
+    });
+  }
+});
+
+/**
+ * @route   GET /api/department-documents/:id/file/view
+ * @desc    View file inline (for opening in new tab)
+ * @access  Public
+ */
+router.get('/:id/file/view', async (req, res) => {
+  try {
+    const document = await DepartmentDocument.findById(req.params.id);
+
+    if (!document) {
+      return res.status(404).json({
+        success: false,
+        error: 'Document not found'
+      });
+    }
+
+    if (document.contentType !== 'file') {
+      return res.status(400).json({
+        success: false,
+        error: 'This document has no file to view'
+      });
+    }
+
+    // Determine content type based on file extension
+    const contentTypes = {
+      'pdf': 'application/pdf',
+      'doc': 'application/msword',
+      'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'txt': 'text/plain',
+      'jpg': 'image/jpeg',
+      'jpeg': 'image/jpeg',
+      'png': 'image/png'
+    };
+
+    const contentType = contentTypes[document.fileType] || 'application/octet-stream';
+
+    // Set inline disposition for viewing in browser
+    res.setHeader('Content-Disposition', `inline; filename="${document.fileName}"`);
+    res.setHeader('Content-Type', contentType);
+
+    // Redirect to Cloudinary URL for inline viewing
+    res.redirect(document.fileUrl);
+  } catch (err) {
+    console.error('File view error:', err);
+    res.status(500).json({
+      success: false,
+      error: 'Server error'
+    });
+  }
+});
+
+/**
+ * @route   GET /api/department-documents/:id/file
+ * @desc    Download file with proper headers
+ * @access  Public
+ */
+router.get('/:id/file', async (req, res) => {
+  try {
+    const document = await DepartmentDocument.findById(req.params.id);
+
+    if (!document) {
+      return res.status(404).json({
+        success: false,
+        error: 'Document not found'
+      });
+    }
+
+    if (document.contentType !== 'file') {
+      return res.status(400).json({
+        success: false,
+        error: 'This document has no file to download'
+      });
+    }
+
+    // Track download
+    document.downloadCount = (document.downloadCount || 0) + 1;
+    await document.save();
+
+    // Determine content type based on file extension
+    const contentTypes = {
+      'pdf': 'application/pdf',
+      'doc': 'application/msword',
+      'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'txt': 'text/plain',
+      'jpg': 'image/jpeg',
+      'jpeg': 'image/jpeg',
+      'png': 'image/png'
+    };
+
+    const contentType = contentTypes[document.fileType] || 'application/octet-stream';
+
+    // Set proper headers before fetching
+    res.setHeader('Content-Disposition', `attachment; filename="${document.fileName}"`);
+    res.setHeader('Content-Type', contentType);
+
+    // For Cloudinary raw files, use the original URL with fl_attachment
+    let fileUrl = document.fileUrl;
+
+    if (fileUrl.includes('cloudinary.com')) {
+      // Add flags=attachment to force download
+      fileUrl = fileUrl.replace('/upload/', '/upload/fl_attachment/');
+    }
+
+    // Fetch the file and pipe it to response
+    const protocol = fileUrl.startsWith('https') ? https : http;
+
+    protocol.get(fileUrl, (fileRes) => {
+      // Pipe the file response directly to the client
+      fileRes.pipe(res);
+    }).on('error', (err) => {
+      console.error('Error fetching file from Cloudinary:', err);
+      res.status(500).json({
+        success: false,
+        error: 'Error downloading file'
+      });
+    });
+  } catch (err) {
+    console.error('File download error:', err);
     res.status(500).json({
       success: false,
       error: 'Server error'

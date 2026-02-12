@@ -1,12 +1,12 @@
-(function() {
+(function () {
   'use strict';
   // API Configuration - Set your Render backend URL here
   var API = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
     ? '' // Local development - use relative URLs
     : 'https://nursing-student-portal.onrender.com'; // Production - Render backend URL
-  
+
   console.log('🔗 API URL configured:', API || 'Relative URLs (same domain)');
-  
+
   function getToken() { return localStorage.getItem('adminToken'); }
   function headers() { return { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + getToken() }; }
 
@@ -15,7 +15,7 @@
     return true;
   }
   if (!requireAuth()) throw new Error('redirect');
-  window.addEventListener('pageshow', function(e) {
+  window.addEventListener('pageshow', function (e) {
     if (e.persisted && !getToken()) window.location.replace('/admin/login');
   });
 
@@ -28,14 +28,14 @@
     var bg = type === 'success' ? 'bg-success' : type === 'error' ? 'bg-danger' : 'bg-primary';
     container.insertAdjacentHTML('beforeend',
       '<div class="toast align-items-center text-white ' + bg + ' border-0 show" role="alert" id="' + id + '">' +
-        '<div class="d-flex"><div class="toast-body">' + escapeHtml(message) + '</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div>' +
+      '<div class="d-flex"><div class="toast-body">' + escapeHtml(message) + '</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div>' +
       '</div>');
     var el = document.getElementById(id);
-    setTimeout(function() { if (el && el.parentNode) el.remove(); }, 4000);
+    setTimeout(function () { if (el && el.parentNode) el.remove(); }, 4000);
   }
 
   // Close modal function (global utility)
-  window.closeModal = function(modalId) {
+  window.closeModal = function (modalId) {
     var modal = document.getElementById(modalId);
     if (modal) {
       modal.classList.add('hidden');
@@ -48,7 +48,7 @@
   var confirmMessage = document.getElementById('confirmDeleteMessage');
   var confirmBtn = document.getElementById('confirmDeleteBtn');
   if (confirmBtn) {
-    confirmBtn.addEventListener('click', function() {
+    confirmBtn.addEventListener('click', function () {
       var resolve = confirmDeleteResolve;
       confirmDeleteResolve = null;
       if (resolve) resolve(true);
@@ -58,7 +58,7 @@
   function confirmDelete(msg) {
     if (!confirmModal) return Promise.resolve(confirm(msg || 'Delete this item?'));
     confirmMessage.textContent = msg || 'Are you sure you want to delete this item?';
-    return new Promise(function(resolve) {
+    return new Promise(function (resolve) {
       confirmDeleteResolve = resolve;
       var m = new bootstrap.Modal(confirmModal);
       m.show();
@@ -74,66 +74,66 @@
   var sidebarToggle = document.getElementById('sidebarToggle');
   var sidebarBackdrop = document.getElementById('sidebarBackdrop');
   if (sidebarToggle && sidebar) {
-    sidebarToggle.addEventListener('click', function() {
+    sidebarToggle.addEventListener('click', function () {
       sidebar.classList.toggle('show');
       if (sidebarBackdrop) sidebarBackdrop.classList.toggle('show', sidebar.classList.contains('show'));
     });
   }
   if (sidebarBackdrop) {
-    sidebarBackdrop.addEventListener('click', function() {
+    sidebarBackdrop.addEventListener('click', function () {
       sidebar.classList.remove('show');
       sidebarBackdrop.classList.remove('show');
     });
   }
 
-   // Section switching + active highlight
-   function showSection(sectionName) {
-     console.log('📄 Switching to section:', sectionName);
-     document.querySelectorAll('.admin-section').forEach(function(s) { s.classList.add('hidden'); });
-     var target = document.getElementById('section-' + sectionName);
-     if (target) {
-       target.classList.remove('hidden');
-       console.log('✅ Section visible:', sectionName);
-     } else {
-       console.error('❌ Section not found:', 'section-' + sectionName);
-     }
-   }
+  // Section switching + active highlight
+  function showSection(sectionName) {
+    console.log('📄 Switching to section:', sectionName);
+    document.querySelectorAll('.admin-section').forEach(function (s) { s.classList.add('hidden'); });
+    var target = document.getElementById('section-' + sectionName);
+    if (target) {
+      target.classList.remove('hidden');
+      console.log('✅ Section visible:', sectionName);
+    } else {
+      console.error('❌ Section not found:', 'section-' + sectionName);
+    }
+  }
 
-   document.querySelectorAll('.admin-sidebar .nav-link[data-section]').forEach(function(link) {
-     link.addEventListener('click', function(e) {
-       if (this.getAttribute('href') === '#') e.preventDefault();
-       var section = this.getAttribute('data-section');
-       
-       // Show the selected section
-       showSection(section);
-       
-       // Load section-specific data
-       if (section === 'department') {
-         setTimeout(function() { loadDepartmentInfo(); }, 50);
-       }
-       if (section === 'music') {
-         console.log('🎵 Music section loaded, fetching files...');
-         loadMusicFiles();
-       }
-       if (section === 'department-documents') {
-         console.log('📄 Department Info section loaded, fetching documents...');
-         loadDepartmentDocuments();
-       }
-       
-       // Update active link styling
-       document.querySelectorAll('.admin-sidebar .nav-link').forEach(function(n) { n.classList.remove('active'); });
-       this.classList.add('active');
-       
-       // Close mobile sidebar
-       if (sidebar && window.innerWidth < 992) { 
-         sidebar.classList.remove('show'); 
-         if (sidebarBackdrop) sidebarBackdrop.classList.remove('show'); 
-       }
-     });
-   });
-  document.getElementById('logoutLink').addEventListener('click', async function(e) {
+  document.querySelectorAll('.admin-sidebar .nav-link[data-section]').forEach(function (link) {
+    link.addEventListener('click', function (e) {
+      if (this.getAttribute('href') === '#') e.preventDefault();
+      var section = this.getAttribute('data-section');
+
+      // Show the selected section
+      showSection(section);
+
+      // Load section-specific data
+      if (section === 'department') {
+        setTimeout(function () { loadDepartmentInfo(); }, 50);
+      }
+      if (section === 'music') {
+        console.log('🎵 Music section loaded, fetching files...');
+        loadMusicFiles();
+      }
+      if (section === 'department-documents') {
+        console.log('📄 Department Info section loaded, fetching documents...');
+        loadDepartmentDocuments();
+      }
+
+      // Update active link styling
+      document.querySelectorAll('.admin-sidebar .nav-link').forEach(function (n) { n.classList.remove('active'); });
+      this.classList.add('active');
+
+      // Close mobile sidebar
+      if (sidebar && window.innerWidth < 992) {
+        sidebar.classList.remove('show');
+        if (sidebarBackdrop) sidebarBackdrop.classList.remove('show');
+      }
+    });
+  });
+  document.getElementById('logoutLink').addEventListener('click', async function (e) {
     e.preventDefault();
-    
+
     // Call logout endpoint to set user offline
     try {
       const token = localStorage.getItem('adminToken');
@@ -146,10 +146,10 @@
     } catch (error) {
       console.error('Logout error:', error);
     }
-    
+
     // Stop heartbeat
     stopHeartbeat();
-    
+
     // Clear local storage and redirect
     localStorage.removeItem('adminToken');
     localStorage.removeItem('adminUser');
@@ -167,9 +167,9 @@
   function apiFetch(url, options) {
     options = options || {};
     options.headers = options.headers || headers();
-    return fetch(API + url, options).then(function(r) {
+    return fetch(API + url, options).then(function (r) {
       if (r.status === 401) { localStorage.removeItem('adminToken'); localStorage.removeItem('adminUser'); window.location.href = '/admin/login'; return { ok: false, data: null }; }
-      return r.json().then(function(data) { return { ok: r.ok, status: r.status, data: data }; });
+      return r.json().then(function (data) { return { ok: r.ok, status: r.status, data: data }; });
     });
   }
 
@@ -191,21 +191,21 @@
       document.getElementById('statAnnouncements').textContent = announcements.length;
 
       var today = new Date().toISOString().split('T')[0];
-      var upcoming = events.filter(function(e) { return e.date >= today; }).sort(function(a, b) { return a.date.localeCompare(b.date) || (a.time || '').localeCompare(b.time || ''); });
+      var upcoming = events.filter(function (e) { return e.date >= today; }).sort(function (a, b) { return a.date.localeCompare(b.date) || (a.time || '').localeCompare(b.time || ''); });
       var nextEl = document.getElementById('statNextEventName');
       var dateEl = document.getElementById('statNextEventDate');
       if (nextEl) nextEl.textContent = upcoming.length ? upcoming[0].title : '—';
       if (dateEl) dateEl.textContent = upcoming.length ? upcoming[0].date : 'Next Event';
 
       var activity = [];
-      events.slice(0, 5).forEach(function(e) { activity.push({ type: 'event', text: e.title, date: e.date }); });
-      dailySubjects.forEach(function(d) {
-        (d.subjects || []).slice(0, 2).forEach(function(s) { activity.push({ type: 'subject', text: d.dayOfWeek + ': ' + s.name, date: d.dayOfWeek }); });
+      events.slice(0, 5).forEach(function (e) { activity.push({ type: 'event', text: e.title, date: e.date }); });
+      dailySubjects.forEach(function (d) {
+        (d.subjects || []).slice(0, 2).forEach(function (s) { activity.push({ type: 'subject', text: d.dayOfWeek + ': ' + s.name, date: d.dayOfWeek }); });
       });
       activity = activity.slice(0, 10);
       if (recentActivityList) {
         recentActivityList.innerHTML = activity.length
-          ? activity.map(function(a) { return '<li class="list-group-item border-0 py-2"><span class="badge bg-secondary me-2">' + a.type + '</span>' + escapeHtml(a.text) + '</li>'; }).join('')
+          ? activity.map(function (a) { return '<li class="list-group-item border-0 py-2"><span class="badge bg-secondary me-2">' + a.type + '</span>' + escapeHtml(a.text) + '</li>'; }).join('')
           : '<li class="list-group-item border-0 text-muted">No recent activity. Add events or subjects.</li>';
       }
       renderAnalyticsChart(events, dailySubjects, announcements);
@@ -215,11 +215,11 @@
   function renderAnalyticsChart(events, dailySubjects, announcements) {
     var canvas = document.getElementById('analyticsChart');
     if (!canvas || typeof Chart === 'undefined') return;
-    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
     function buildMonthlyCounts(list) {
       var counts = new Array(12).fill(0);
-      (list || []).forEach(function(item) {
+      (list || []).forEach(function (item) {
         if (!item.date) return;
         var m = parseInt(item.date.substring(5, 7), 10) - 1;
         if (m >= 0 && m < 12) counts[m]++;
@@ -269,7 +269,7 @@
           },
           tooltip: {
             callbacks: {
-              label: function(ctx) {
+              label: function (ctx) {
                 var v = ctx.parsed.y || 0;
                 return ctx.dataset.label + ': ' + v + ' item' + (v === 1 ? '' : 's');
               }
@@ -304,15 +304,15 @@
   }
   function renderEvents(list) {
     var q = (document.getElementById('eventsSearch') && document.getElementById('eventsSearch').value || '').toLowerCase();
-    var filtered = q ? list.filter(function(e) { return (e.title || '').toLowerCase().includes(q); }) : list;
+    var filtered = q ? list.filter(function (e) { return (e.title || '').toLowerCase().includes(q); }) : list;
     if (!eventsTableBody) return;
-    
+
     if (!filtered.length) {
       eventsTableBody.innerHTML = '<tr><td colspan="6" class="px-6 py-12 text-center"><div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gray-100 mb-4"><i class="fa-solid fa-calendar-days text-2xl text-gray-400"></i></div><p class="text-gray-500 font-medium">No events found</p></td></tr>';
       return;
     }
-    
-    eventsTableBody.innerHTML = filtered.map(function(e) {
+
+    eventsTableBody.innerHTML = filtered.map(function (e) {
       var itemsList = e.items && e.items.length ? e.items.map(escapeHtml).join(', ') : '<span class="text-gray-400">—</span>';
       return '<tr class="hover:bg-gray-50 transition-colors">' +
         '<td class="px-6 py-4"><span class="font-semibold text-gray-800">' + escapeHtml(e.title) + '</span></td>' +
@@ -327,9 +327,9 @@
         '</tr>';
     }).join('');
   }
-  if (document.getElementById('eventsSearch')) document.getElementById('eventsSearch').addEventListener('input', function() { renderEvents(eventsList); });
+  if (document.getElementById('eventsSearch')) document.getElementById('eventsSearch').addEventListener('input', function () { renderEvents(eventsList); });
 
-  window.openEventForm = function() {
+  window.openEventForm = function () {
     document.getElementById('eventModalTitle').textContent = 'Add Event';
     document.getElementById('eventId').value = '';
     document.getElementById('eventTitle').value = '';
@@ -344,8 +344,8 @@
     var modal = document.getElementById('eventModal');
     if (modal) modal.classList.remove('hidden');
   };
-  window.editEvent = function(id) {
-    var e = eventsList.find(function(x) { return x._id === id; });
+  window.editEvent = function (id) {
+    var e = eventsList.find(function (x) { return x._id === id; });
     if (!e) return;
     document.getElementById('eventModalTitle').textContent = 'Edit Event';
     document.getElementById('eventId').value = e._id;
@@ -365,49 +365,49 @@
   var eventSaveBtn = document.getElementById('eventSaveBtn');
   if (eventSaveBtn) {
     console.log('✅ Event save button found, attaching listener');
-    eventSaveBtn.addEventListener('click', async function() {
-    console.log('🎯 Event save button clicked!');
-    var id = document.getElementById('eventId').value;
-    var startDate = document.getElementById('eventStartDate').value;
-    var endDate = document.getElementById('eventEndDate').value;
-    var body = {
-      title: document.getElementById('eventTitle').value.trim(),
-      description: document.getElementById('eventDescription').value.trim(),
-      category: (document.getElementById('eventCategory') && document.getElementById('eventCategory').value) || '',
-      date: startDate, // Use startDate as the primary date for backward compatibility
-      startDate: startDate,
-      endDate: endDate,
-      time: document.getElementById('eventTime').value,
-      location: document.getElementById('eventLocation').value.trim(),
-      items: (document.getElementById('eventItems').value || '').split('\n').map(function(s) { return s.trim(); }).filter(Boolean)
-    };
-    console.log('📋 Event data to save:', body);
-    eventSaveBtn.disabled = true;
-    eventSaveBtn.textContent = 'Saving...';
-    try {
-      console.log('📡 Sending request to:', '/api/events' + (id ? '/' + id : ''));
-      var res = await apiFetch('/api/events' + (id ? '/' + id : ''), { method: id ? 'PUT' : 'POST', headers: headers(), body: JSON.stringify(body) });
-      console.log('📥 Response:', res);
-      if (!res.ok) throw new Error(res.data.error || 'Save failed');
-      // Hide modal
-      var modal = document.getElementById('eventModal');
-      if (modal) modal.classList.add('hidden');
-      toast(res.data.message || 'Saved.');
-      console.log('✅ Event saved successfully!');
-      loadEvents();
-      loadDashboard();
-    } catch (err) {
-      console.error('❌ Save error:', err);
-      toast(err.message || 'Failed to save.', 'error');
-    }
-    eventSaveBtn.disabled = false;
-    eventSaveBtn.textContent = 'Save Event';
+    eventSaveBtn.addEventListener('click', async function () {
+      console.log('🎯 Event save button clicked!');
+      var id = document.getElementById('eventId').value;
+      var startDate = document.getElementById('eventStartDate').value;
+      var endDate = document.getElementById('eventEndDate').value;
+      var body = {
+        title: document.getElementById('eventTitle').value.trim(),
+        description: document.getElementById('eventDescription').value.trim(),
+        category: (document.getElementById('eventCategory') && document.getElementById('eventCategory').value) || '',
+        date: startDate, // Use startDate as the primary date for backward compatibility
+        startDate: startDate,
+        endDate: endDate,
+        time: document.getElementById('eventTime').value,
+        location: document.getElementById('eventLocation').value.trim(),
+        items: (document.getElementById('eventItems').value || '').split('\n').map(function (s) { return s.trim(); }).filter(Boolean)
+      };
+      console.log('📋 Event data to save:', body);
+      eventSaveBtn.disabled = true;
+      eventSaveBtn.textContent = 'Saving...';
+      try {
+        console.log('📡 Sending request to:', '/api/events' + (id ? '/' + id : ''));
+        var res = await apiFetch('/api/events' + (id ? '/' + id : ''), { method: id ? 'PUT' : 'POST', headers: headers(), body: JSON.stringify(body) });
+        console.log('📥 Response:', res);
+        if (!res.ok) throw new Error(res.data.error || 'Save failed');
+        // Hide modal
+        var modal = document.getElementById('eventModal');
+        if (modal) modal.classList.add('hidden');
+        toast(res.data.message || 'Saved.');
+        console.log('✅ Event saved successfully!');
+        loadEvents();
+        loadDashboard();
+      } catch (err) {
+        console.error('❌ Save error:', err);
+        toast(err.message || 'Failed to save.', 'error');
+      }
+      eventSaveBtn.disabled = false;
+      eventSaveBtn.textContent = 'Save Event';
     });
   } else {
     console.error('❌ eventSaveBtn not found - check if element ID exists in HTML');
   }
 
-  window.deleteEvent = async function(id) {
+  window.deleteEvent = async function (id) {
     var ok = await confirmDelete('Delete this event?');
     if (!ok) return;
     try {
@@ -427,16 +427,16 @@
   // ========================================
   // COURSES/SUBJECTS MANAGEMENT
   // ========================================
-  
+
   var coursesData = [];
-  
+
   function setSubjectsLoading(on) {
     var loadingDiv = document.getElementById('subjectsLoading');
     var tableWrap = document.getElementById('subjectsTableWrap');
     if (loadingDiv) loadingDiv.classList.toggle('hidden', !on);
     if (tableWrap) tableWrap.classList.toggle('hidden', on);
   }
-  
+
   async function loadCourses() {
     setSubjectsLoading(true);
     try {
@@ -455,27 +455,27 @@
     }
     setSubjectsLoading(false);
   }
-  
+
   function renderCourses() {
     var tbody = document.getElementById('dailySubjectsTableBody');
     if (!tbody) return;
-    
+
     if (!coursesData.length) {
       tbody.innerHTML = '<tr><td colspan="8" class="px-6 py-12 text-center"><div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gray-100 mb-4"><i class="fa-solid fa-book-open text-2xl text-gray-400"></i></div><p class="text-gray-500 font-medium">No courses added yet</p></td></tr>';
       return;
     }
-    
-    tbody.innerHTML = coursesData.map(function(course) {
+
+    tbody.innerHTML = coursesData.map(function (course) {
       console.log('Rendering course:', course.code, 'subjectType:', course.subjectType);
-      
-      var statusBadge = course.status === 'Active' 
+
+      var statusBadge = course.status === 'Active'
         ? '<span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-semibold">Active</span>'
         : '<span class="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-semibold">Inactive</span>';
-      
+
       var subjectTypeDisplay = course.subjectType && course.subjectType !== ''
         ? '<span class="px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold">' + escapeHtml(course.subjectType) + '</span>'
         : '<span class="text-gray-400 text-sm">—</span>';
-      
+
       return '<tr class="hover:bg-gray-50 transition-colors">' +
         '<td class="px-6 py-4"><span class="font-mono font-semibold text-primary-600">' + escapeHtml(course.code) + '</span></td>' +
         '<td class="px-6 py-4"><span class="font-medium text-gray-800">' + escapeHtml(course.name) + '</span></td>' +
@@ -493,11 +493,11 @@
   }
 
   // Open course form modal
-  window.openSubjectForm = function() {
+  window.openSubjectForm = function () {
     console.log('Opening course modal...');
     var modal = document.getElementById('courseModal');
     console.log('Modal element:', modal);
-    
+
     document.getElementById('courseModalTitle').textContent = 'Add Course or Subject';
     document.getElementById('courseId').value = '';
     document.getElementById('courseCode').value = '';
@@ -509,20 +509,20 @@
     document.getElementById('courseYearLevel').value = '';
     document.getElementById('courseSemester').value = '';
     document.getElementById('courseStatus').value = 'Active';
-    
+
     modal.classList.remove('hidden');
     modal.style.display = 'block';
     console.log('Modal should be visible now');
   };
-  
+
   // Also add alias for openCourseModal
   window.openCourseModal = window.openSubjectForm;
-  
+
   // Toggle custom subject type input
-  window.toggleCustomSubjectType = function() {
+  window.toggleCustomSubjectType = function () {
     var selectElement = document.getElementById('courseSubjectType');
     var customInput = document.getElementById('courseSubjectTypeCustom');
-    
+
     if (selectElement.value === 'Other') {
       customInput.classList.remove('hidden');
       customInput.focus();
@@ -531,16 +531,16 @@
       customInput.value = '';
     }
   };
-  
+
   // Close course modal
-  window.closeCourseModal = function() {
+  window.closeCourseModal = function () {
     var modal = document.getElementById('courseModal');
     modal.classList.add('hidden');
     modal.style.display = 'none';
   };
-  
+
   // Save course (create or update)
-  window.saveCourse = async function() {
+  window.saveCourse = async function () {
     var courseId = document.getElementById('courseId').value;
     var code = document.getElementById('courseCode').value.trim();
     var name = document.getElementById('courseName').value.trim();
@@ -551,27 +551,27 @@
     var yearLevel = document.getElementById('courseYearLevel').value;
     var semester = document.getElementById('courseSemester').value;
     var status = document.getElementById('courseStatus').value;
-    
+
     // Validate
     if (!code || !name || !unit || !yearLevel || !semester) {
       toast('Please fill in all required fields', 'error');
       return;
     }
-    
+
     // Validate custom type if Other is selected
     if (subjectTypeSelect === 'Other' && !subjectTypeCustom) {
       toast('Please enter a custom subject type', 'error');
       return;
     }
-    
+
     var saveBtn = document.getElementById('courseSaveBtn');
     saveBtn.disabled = true;
     saveBtn.textContent = 'Saving...';
-    
+
     try {
       var url = courseId ? API + '/api/courses/' + courseId : API + '/api/courses';
       var method = courseId ? 'PUT' : 'POST';
-      
+
       var res = await fetch(url, {
         method: method,
         headers: headers(),
@@ -585,7 +585,7 @@
           status: status
         })
       });
-      
+
       var json = await res.json();
       if (json.success) {
         toast(courseId ? 'Course updated successfully!' : 'Course created successfully!', 'success');
@@ -597,27 +597,27 @@
     } catch (err) {
       toast('Error: ' + err.message, 'error');
     }
-    
+
     saveBtn.disabled = false;
     saveBtn.textContent = 'Save Course';
   };
-  
+
   // Edit course
-  window.editCourse = async function(courseId) {
-    var course = coursesData.find(function(c) { return c._id === courseId; });
+  window.editCourse = async function (courseId) {
+    var course = coursesData.find(function (c) { return c._id === courseId; });
     if (!course) return;
-    
+
     document.getElementById('courseModalTitle').textContent = 'Edit Course or Subject';
     document.getElementById('courseId').value = course._id;
     document.getElementById('courseCode').value = course.code;
     document.getElementById('courseName').value = course.name;
     document.getElementById('courseUnit').value = course.unit;
-    
+
     // Handle subject type
     var subjectType = course.subjectType || '';
     var knownTypes = ['Lab', 'Lecture', 'Seminar'];
     var customInput = document.getElementById('courseSubjectTypeCustom');
-    
+
     if (subjectType && knownTypes.indexOf(subjectType) === -1 && subjectType !== '') {
       // Custom type
       document.getElementById('courseSubjectType').value = 'Other';
@@ -629,7 +629,7 @@
       customInput.value = '';
       customInput.classList.add('hidden');
     }
-    
+
     document.getElementById('courseYearLevel').value = course.yearLevel;
     document.getElementById('courseSemester').value = course.semester;
     document.getElementById('courseStatus').value = course.status;
@@ -637,17 +637,17 @@
     modal.classList.remove('hidden');
     modal.style.display = 'block';
   };
-  
+
   // Delete course
-  window.deleteCourse = async function(courseId) {
+  window.deleteCourse = async function (courseId) {
     if (!confirm('Are you sure you want to delete this course?')) return;
-    
+
     try {
       var res = await fetch(API + '/api/courses/' + courseId, {
         method: 'DELETE',
         headers: headers()
       });
-      
+
       var json = await res.json();
       if (json.success) {
         toast('Course deleted successfully!', 'success');
@@ -679,13 +679,13 @@
         if (!announcementsList.length) {
           announcementsTableBody.innerHTML = '<tr><td colspan="5" class="px-6 py-12 text-center"><div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gray-100 mb-4"><i class="fa-solid fa-bullhorn text-2xl text-gray-400"></i></div><p class="text-gray-500 font-medium">No announcements found</p></td></tr>';
         } else {
-          announcementsTableBody.innerHTML = announcementsList.map(function(a) {
+          announcementsTableBody.innerHTML = announcementsList.map(function (a) {
             var msg = (a.message || '').substring(0, 60) + ((a.message || '').length > 60 ? '…' : '');
             var active = a.active !== false;
-            var statusBadge = active 
+            var statusBadge = active
               ? '<span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-semibold">Active</span>'
               : '<span class="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-semibold">Inactive</span>';
-            
+
             return '<tr class="hover:bg-gray-50 transition-colors">' +
               '<td class="px-6 py-4"><span class="font-semibold text-gray-800">' + escapeHtml(a.title) + '</span></td>' +
               '<td class="px-6 py-4"><span class="text-gray-600">' + escapeHtml(msg) + '</span></td>' +
@@ -706,7 +706,7 @@
     setAnnouncementsLoading(false);
   }
 
-  window.openAnnouncementForm = function() {
+  window.openAnnouncementForm = function () {
     document.getElementById('announcementModalTitle').textContent = 'Add Announcement';
     document.getElementById('announcementId').value = '';
     document.getElementById('announcementTitle').value = '';
@@ -719,8 +719,8 @@
     var modal = document.getElementById('announcementModal');
     if (modal) modal.classList.remove('hidden');
   };
-  window.editAnnouncement = function(id) {
-    var a = announcementsList.find(function(x) { return x._id === id; });
+  window.editAnnouncement = function (id) {
+    var a = announcementsList.find(function (x) { return x._id === id; });
     if (!a) return;
     document.getElementById('announcementModalTitle').textContent = 'Edit Announcement';
     document.getElementById('announcementId').value = a._id;
@@ -737,38 +737,38 @@
 
   var announcementSaveBtn = document.getElementById('announcementSaveBtn');
   if (announcementSaveBtn) {
-    announcementSaveBtn.addEventListener('click', async function() {
-    var id = document.getElementById('announcementId').value;
-    var timeEl = document.getElementById('announcementTime');
-    var body = {
-      title: document.getElementById('announcementTitle').value.trim(),
-      message: document.getElementById('announcementMessage').value.trim(),
-      date: document.getElementById('announcementDate').value,
-      time: timeEl ? timeEl.value || '09:00' : '09:00',
-      active: document.getElementById('announcementActive').checked
-    };
-    announcementSaveBtn.disabled = true;
-    announcementSaveBtn.textContent = 'Saving...';
-    try {
-      var res = await apiFetch('/api/announcements' + (id ? '/' + id : ''), { method: id ? 'PUT' : 'POST', headers: headers(), body: JSON.stringify(body) });
-      if (!res.ok) throw new Error(res.data.error || 'Save failed');
-      // Hide modal
-      var modal = document.getElementById('announcementModal');
-      if (modal) modal.classList.add('hidden');
-      toast(res.data.message || 'Saved.');
-      loadAnnouncements();
-      loadDashboard();
-    } catch (err) {
-      toast(err.message || 'Failed to save.', 'error');
-    }
-    announcementSaveBtn.disabled = false;
-    announcementSaveBtn.textContent = 'Save Announcement';
+    announcementSaveBtn.addEventListener('click', async function () {
+      var id = document.getElementById('announcementId').value;
+      var timeEl = document.getElementById('announcementTime');
+      var body = {
+        title: document.getElementById('announcementTitle').value.trim(),
+        message: document.getElementById('announcementMessage').value.trim(),
+        date: document.getElementById('announcementDate').value,
+        time: timeEl ? timeEl.value || '09:00' : '09:00',
+        active: document.getElementById('announcementActive').checked
+      };
+      announcementSaveBtn.disabled = true;
+      announcementSaveBtn.textContent = 'Saving...';
+      try {
+        var res = await apiFetch('/api/announcements' + (id ? '/' + id : ''), { method: id ? 'PUT' : 'POST', headers: headers(), body: JSON.stringify(body) });
+        if (!res.ok) throw new Error(res.data.error || 'Save failed');
+        // Hide modal
+        var modal = document.getElementById('announcementModal');
+        if (modal) modal.classList.add('hidden');
+        toast(res.data.message || 'Saved.');
+        loadAnnouncements();
+        loadDashboard();
+      } catch (err) {
+        toast(err.message || 'Failed to save.', 'error');
+      }
+      announcementSaveBtn.disabled = false;
+      announcementSaveBtn.textContent = 'Save Announcement';
     });
   } else {
     console.error('❌ announcementSaveBtn not found - check if element ID exists in HTML');
   }
 
-  window.deleteAnnouncement = async function(id) {
+  window.deleteAnnouncement = async function (id) {
     var ok = await confirmDelete('Delete this announcement?');
     if (!ok) return;
     try {
@@ -804,9 +804,9 @@
       var raw = res.data;
       musicList = Array.isArray(raw) ? raw : [];
       console.log('📊 Music count:', musicList.length);
-      
+
       if (musicLoading) musicLoading.classList.add('hidden');
-      
+
       if (musicList.length === 0) {
         if (musicEmpty) musicEmpty.classList.remove('hidden');
         console.log('📭 No music files found');
@@ -827,30 +827,30 @@
 
   function displayMusicFiles(files) {
     if (!musicGrid) return;
-    musicGrid.innerHTML = files.map(function(music) {
+    musicGrid.innerHTML = files.map(function (music) {
       var locationLabel = music.location === 'login' ? 'Login Page' : music.location === 'portal' ? 'Student Portal' : 'Both Pages';
       var statusClass = music.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600';
       var statusText = music.isActive ? 'Active' : 'Inactive';
       var fileSize = formatFileSize(music.fileSize);
-      
+
       return '<div class="glass rounded-2xl border-2 border-gray-200 p-5 hover:border-primary-500 hover:shadow-lg transition-all card-hover">' +
         '<div class="flex items-start justify-between mb-4">' +
-          '<div class="flex-1"><h3 class="font-bold text-gray-800 mb-1">' + escapeHtml(music.title) + '</h3>' +
-          '<p class="text-xs text-gray-500">' + fileSize + '</p></div>' +
-          '<span class="px-3 py-1 rounded-full text-xs font-semibold ' + statusClass + '">' + statusText + '</span>' +
+        '<div class="flex-1"><h3 class="font-bold text-gray-800 mb-1">' + escapeHtml(music.title) + '</h3>' +
+        '<p class="text-xs text-gray-500">' + fileSize + '</p></div>' +
+        '<span class="px-3 py-1 rounded-full text-xs font-semibold ' + statusClass + '">' + statusText + '</span>' +
         '</div>' +
         '<div class="mb-4"><span class="inline-flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-medium bg-primary-50 text-primary-700">' +
-          '<i class="fa-solid fa-map-marker-alt"></i> ' + locationLabel +
+        '<i class="fa-solid fa-map-marker-alt"></i> ' + locationLabel +
         '</span></div>' +
         '<audio controls class="w-full mb-4" style="height: 40px;"><source src="' + music.filePath + '" type="audio/mpeg">Your browser does not support audio.</audio>' +
         '<div class="flex gap-2">' +
-          '<button onclick="toggleMusicStatus(\'' + music._id + '\', ' + music.isActive + ')" class="flex-1 px-4 py-2 rounded-lg font-medium transition-all ' + (music.isActive ? 'bg-gray-100 text-gray-700 hover:bg-gray-200' : 'bg-green-100 text-green-700 hover:bg-green-200') + '">' +
-            '<i class="fa-solid fa-' + (music.isActive ? 'pause' : 'play') + '"></i> ' + (music.isActive ? 'Deactivate' : 'Activate') +
-          '</button>' +
-          '<button onclick="openMusicEditModal(\'' + music._id + '\', \'' + escapeHtml(music.title) + '\', \'' + music.location + '\')" class="px-4 py-2 rounded-lg font-medium bg-blue-100 text-blue-700 hover:bg-blue-200 transition-all"><i class="fa-solid fa-edit"></i></button>' +
-          '<button onclick="deleteMusic(\'' + music._id + '\')" class="px-4 py-2 rounded-lg font-medium bg-red-100 text-red-700 hover:bg-red-200 transition-all"><i class="fa-solid fa-trash"></i></button>' +
+        '<button onclick="toggleMusicStatus(\'' + music._id + '\', ' + music.isActive + ')" class="flex-1 px-4 py-2 rounded-lg font-medium transition-all ' + (music.isActive ? 'bg-gray-100 text-gray-700 hover:bg-gray-200' : 'bg-green-100 text-green-700 hover:bg-green-200') + '">' +
+        '<i class="fa-solid fa-' + (music.isActive ? 'pause' : 'play') + '"></i> ' + (music.isActive ? 'Deactivate' : 'Activate') +
+        '</button>' +
+        '<button onclick="openMusicEditModal(\'' + music._id + '\', \'' + escapeHtml(music.title) + '\', \'' + music.location + '\')" class="px-4 py-2 rounded-lg font-medium bg-blue-100 text-blue-700 hover:bg-blue-200 transition-all"><i class="fa-solid fa-edit"></i></button>' +
+        '<button onclick="deleteMusic(\'' + music._id + '\')" class="px-4 py-2 rounded-lg font-medium bg-red-100 text-red-700 hover:bg-red-200 transition-all"><i class="fa-solid fa-trash"></i></button>' +
         '</div>' +
-      '</div>';
+        '</div>';
     }).join('');
   }
 
@@ -860,17 +860,17 @@
     return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
   }
 
-  window.openMusicUploadModal = function() {
+  window.openMusicUploadModal = function () {
     document.getElementById('musicUploadModal').classList.remove('hidden');
   };
 
-  window.closeMusicUploadModal = function() {
+  window.closeMusicUploadModal = function () {
     document.getElementById('musicUploadModal').classList.add('hidden');
     document.getElementById('musicUploadForm').reset();
     document.getElementById('musicFileNameDisplay').textContent = 'Choose audio file (MP3, WAV, OGG, M4A)';
   };
 
-  window.updateMusicFileName = function() {
+  window.updateMusicFileName = function () {
     var fileInput = document.getElementById('musicFile');
     var display = document.getElementById('musicFileNameDisplay');
     if (fileInput.files.length > 0) {
@@ -880,66 +880,66 @@
 
   var musicUploadForm = document.getElementById('musicUploadForm');
   if (musicUploadForm) {
-    musicUploadForm.addEventListener('submit', async function(e) {
-    e.preventDefault();
-    console.log('🎵 Starting music upload...');
-    
-    var title = document.getElementById('musicTitle').value;
-    var location = document.getElementById('musicLocation').value;
-    var file = document.getElementById('musicFile').files[0];
+    musicUploadForm.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      console.log('🎵 Starting music upload...');
 
-    console.log('📋 Upload details:', { title, location, fileName: file?.name, fileSize: file?.size });
+      var title = document.getElementById('musicTitle').value;
+      var location = document.getElementById('musicLocation').value;
+      var file = document.getElementById('musicFile').files[0];
 
-    if (!file) {
-      toast('Please select a music file', 'error');
-      console.error('❌ No file selected');
-      return;
-    }
+      console.log('📋 Upload details:', { title, location, fileName: file?.name, fileSize: file?.size });
 
-    var formData = new FormData();
-    formData.append('title', title);
-    formData.append('location', location);
-    formData.append('music', file);
-
-    var uploadBtn = document.getElementById('musicUploadBtn');
-    uploadBtn.disabled = true;
-    uploadBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading...';
-
-    try {
-      var uploadUrl = API + '/api/music/upload';
-      console.log('📡 Uploading to:', uploadUrl);
-      
-      var response = await fetch(uploadUrl, {
-        method: 'POST',
-        headers: { 'Authorization': 'Bearer ' + getToken() },
-        body: formData
-      });
-
-      console.log('📥 Upload response status:', response.status);
-      var data = await response.json();
-      console.log('📥 Upload response data:', data);
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Upload failed');
+      if (!file) {
+        toast('Please select a music file', 'error');
+        console.error('❌ No file selected');
+        return;
       }
 
-      console.log('✅ Music uploaded successfully!');
-      toast('Music uploaded successfully!');
-      closeMusicUploadModal();
-      loadMusicFiles();
-    } catch (error) {
-      console.error('❌ Upload error:', error);
-      toast('Error: ' + error.message, 'error');
-    } finally {
-      uploadBtn.disabled = false;
-      uploadBtn.innerHTML = 'Upload';
-    }
+      var formData = new FormData();
+      formData.append('title', title);
+      formData.append('location', location);
+      formData.append('music', file);
+
+      var uploadBtn = document.getElementById('musicUploadBtn');
+      uploadBtn.disabled = true;
+      uploadBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading...';
+
+      try {
+        var uploadUrl = API + '/api/music/upload';
+        console.log('📡 Uploading to:', uploadUrl);
+
+        var response = await fetch(uploadUrl, {
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer ' + getToken() },
+          body: formData
+        });
+
+        console.log('📥 Upload response status:', response.status);
+        var data = await response.json();
+        console.log('📥 Upload response data:', data);
+
+        if (!response.ok) {
+          throw new Error(data.message || 'Upload failed');
+        }
+
+        console.log('✅ Music uploaded successfully!');
+        toast('Music uploaded successfully!');
+        closeMusicUploadModal();
+        loadMusicFiles();
+      } catch (error) {
+        console.error('❌ Upload error:', error);
+        toast('Error: ' + error.message, 'error');
+      } finally {
+        uploadBtn.disabled = false;
+        uploadBtn.innerHTML = 'Upload';
+      }
     });
   } else {
     console.error('❌ musicUploadForm not found - check if element ID exists in HTML');
   }
 
-  window.toggleMusicStatus = async function(id, currentStatus) {
+  window.toggleMusicStatus = async function (id, currentStatus) {
     try {
       var res = await apiFetch('/api/music/' + id + '/toggle', { method: 'PUT', headers: headers() });
       if (!res.ok) throw new Error(res.data.message || 'Failed to update status');
@@ -950,7 +950,7 @@
     }
   };
 
-  window.deleteMusic = async function(id) {
+  window.deleteMusic = async function (id) {
     var ok = await confirmDelete('Are you sure you want to delete this music file?');
     if (!ok) return;
 
@@ -964,39 +964,39 @@
     }
   };
 
-  window.openMusicEditModal = function(id, title, location) {
+  window.openMusicEditModal = function (id, title, location) {
     document.getElementById('editMusicId').value = id;
     document.getElementById('editMusicTitle').value = title;
     document.getElementById('editMusicLocation').value = location;
     document.getElementById('musicEditModal').classList.remove('hidden');
   };
 
-  window.closeMusicEditModal = function() {
+  window.closeMusicEditModal = function () {
     document.getElementById('musicEditModal').classList.add('hidden');
   };
 
   var musicEditForm = document.getElementById('musicEditForm');
   if (musicEditForm) {
-    musicEditForm.addEventListener('submit', async function(e) {
-    e.preventDefault();
-    var id = document.getElementById('editMusicId').value;
-    var title = document.getElementById('editMusicTitle').value;
-    var location = document.getElementById('editMusicLocation').value;
+    musicEditForm.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      var id = document.getElementById('editMusicId').value;
+      var title = document.getElementById('editMusicTitle').value;
+      var location = document.getElementById('editMusicLocation').value;
 
-    try {
-      var res = await apiFetch('/api/music/' + id, {
-        method: 'PUT',
-        headers: headers(),
-        body: JSON.stringify({ title: title, location: location })
-      });
+      try {
+        var res = await apiFetch('/api/music/' + id, {
+          method: 'PUT',
+          headers: headers(),
+          body: JSON.stringify({ title: title, location: location })
+        });
 
-      if (!res.ok) throw new Error(res.data.message || 'Update failed');
-      toast('Music updated successfully!');
-      closeMusicEditModal();
-      loadMusicFiles();
-    } catch (error) {
-      toast('Error: ' + error.message, 'error');
-    }
+        if (!res.ok) throw new Error(res.data.message || 'Update failed');
+        toast('Music updated successfully!');
+        closeMusicEditModal();
+        loadMusicFiles();
+      } catch (error) {
+        toast('Error: ' + error.message, 'error');
+      }
     });
   } else {
     console.error('❌ musicEditForm not found - check if element ID exists in HTML');
@@ -1005,86 +1005,86 @@
   // ========================================
   // DEPARTMENT INFO FUNCTIONS
   // ========================================
-  
+
   // Load department info with enhanced statistics
   var departmentPieChart = null;
   var departmentBarChart = null;
-  
-    window.loadDepartmentInfo = function() {
-     fetch(API + '/api/department-info')
-       .then(function(res) { return res.json(); })
-       .then(function(json) {
-         console.log('Department Info API response:', json);
-         if (json.success && json.data) {
-           var data = json.data;
-           var students = data.totalStudents || 0;
-           var faculty = data.totalFaculty || 0;
-           var yearLevels = data.yearLevels || 4;
-           var subjectsCount = data.subjectsCount || 20;
-           
-           // Update main counts - with null checks
-           var displayTotalStudents = document.getElementById('displayTotalStudents');
-           if (displayTotalStudents) displayTotalStudents.textContent = students;
-           
-           var displayTotalFaculty = document.getElementById('displayTotalFaculty');
-           if (displayTotalFaculty) displayTotalFaculty.textContent = faculty;
-           
-           var displayYearLevels = document.getElementById('displayYearLevels');
-           if (displayYearLevels) displayYearLevels.textContent = yearLevels;
-           
-           var displaySubjectsCount = document.getElementById('displaySubjectsCount');
-           if (displaySubjectsCount) displaySubjectsCount.textContent = subjectsCount;
-           
-           // Calculate total members
-           var totalMembers = students + faculty;
-           var displayTotalMembers = document.getElementById('displayTotalMembers');
-           if (displayTotalMembers) displayTotalMembers.textContent = totalMembers;
-           
-           // Update coordinator info - with null checks
-           var coordName = data.programCoordinator && data.programCoordinator.name ? data.programCoordinator.name : '--';
-           var coordEmail = data.programCoordinator && data.programCoordinator.email ? data.programCoordinator.email : '--';
-           
-           var displayCoordinatorName = document.getElementById('displayCoordinatorName');
-           if (displayCoordinatorName) displayCoordinatorName.textContent = coordName;
-           
-           var displayCoordinatorEmail = document.getElementById('displayCoordinatorEmail');
-           if (displayCoordinatorEmail) displayCoordinatorEmail.textContent = coordEmail;
-           
-           // Calculate ratio
-           var ratio = faculty > 0 ? (students / faculty).toFixed(1) + ':1' : '—';
-           var displayRatio = document.getElementById('displayRatio');
-           if (displayRatio) displayRatio.textContent = ratio;
-           
-           // Update timestamp if element exists
-           var lastUpdatedInfo = document.getElementById('lastUpdatedInfo');
-           if (lastUpdatedInfo && data.updatedAt) {
-             var date = new Date(data.updatedAt);
-             lastUpdatedInfo.textContent = date.toLocaleString();
-           }
-           
-           // Store current data for editing
-           window.currentDepartmentInfo = data;
-         }
-       })
-       .catch(function(err) {
-         console.error('Error loading department info:', err);
-       });
-    };
-  
-  // Open edit department modal
-  window.openEditDepartmentModal = function() {
+
+  window.loadDepartmentInfo = function () {
     fetch(API + '/api/department-info')
-      .then(function(res) { return res.json(); })
-      .then(function(json) {
+      .then(function (res) { return res.json(); })
+      .then(function (json) {
+        console.log('Department Info API response:', json);
+        if (json.success && json.data) {
+          var data = json.data;
+          var students = data.totalStudents || 0;
+          var faculty = data.totalFaculty || 0;
+          var yearLevels = data.yearLevels || 4;
+          var subjectsCount = data.subjectsCount || 20;
+
+          // Update main counts - with null checks
+          var displayTotalStudents = document.getElementById('displayTotalStudents');
+          if (displayTotalStudents) displayTotalStudents.textContent = students;
+
+          var displayTotalFaculty = document.getElementById('displayTotalFaculty');
+          if (displayTotalFaculty) displayTotalFaculty.textContent = faculty;
+
+          var displayYearLevels = document.getElementById('displayYearLevels');
+          if (displayYearLevels) displayYearLevels.textContent = yearLevels;
+
+          var displaySubjectsCount = document.getElementById('displaySubjectsCount');
+          if (displaySubjectsCount) displaySubjectsCount.textContent = subjectsCount;
+
+          // Calculate total members
+          var totalMembers = students + faculty;
+          var displayTotalMembers = document.getElementById('displayTotalMembers');
+          if (displayTotalMembers) displayTotalMembers.textContent = totalMembers;
+
+          // Update coordinator info - with null checks
+          var coordName = data.programCoordinator && data.programCoordinator.name ? data.programCoordinator.name : '--';
+          var coordEmail = data.programCoordinator && data.programCoordinator.email ? data.programCoordinator.email : '--';
+
+          var displayCoordinatorName = document.getElementById('displayCoordinatorName');
+          if (displayCoordinatorName) displayCoordinatorName.textContent = coordName;
+
+          var displayCoordinatorEmail = document.getElementById('displayCoordinatorEmail');
+          if (displayCoordinatorEmail) displayCoordinatorEmail.textContent = coordEmail;
+
+          // Calculate ratio
+          var ratio = faculty > 0 ? (students / faculty).toFixed(1) + ':1' : '—';
+          var displayRatio = document.getElementById('displayRatio');
+          if (displayRatio) displayRatio.textContent = ratio;
+
+          // Update timestamp if element exists
+          var lastUpdatedInfo = document.getElementById('lastUpdatedInfo');
+          if (lastUpdatedInfo && data.updatedAt) {
+            var date = new Date(data.updatedAt);
+            lastUpdatedInfo.textContent = date.toLocaleString();
+          }
+
+          // Store current data for editing
+          window.currentDepartmentInfo = data;
+        }
+      })
+      .catch(function (err) {
+        console.error('Error loading department info:', err);
+      });
+  };
+
+  // Open edit department modal
+  window.openEditDepartmentModal = function () {
+    fetch(API + '/api/department-info')
+      .then(function (res) { return res.json(); })
+      .then(function (json) {
         if (json.success && json.data) {
           var data = json.data;
           window.currentDepartmentInfo = data;
-          
+
           document.getElementById('editTotalStudents').value = data.totalStudents || 0;
           document.getElementById('editTotalFaculty').value = data.totalFaculty || 0;
           document.getElementById('editYearLevels').value = data.yearLevels || 4;
           document.getElementById('editSubjectsCount').value = data.subjectsCount || 20;
-          
+
           if (data.programCoordinator) {
             document.getElementById('editCoordinatorName').value = data.programCoordinator.name || '';
             document.getElementById('editCoordinatorEmail').value = data.programCoordinator.email || '';
@@ -1092,29 +1092,29 @@
             document.getElementById('editCoordinatorName').value = '';
             document.getElementById('editCoordinatorEmail').value = '';
           }
-          
+
           document.getElementById('editDepartmentModal').classList.remove('hidden');
         }
       })
-      .catch(function(err) {
+      .catch(function (err) {
         console.error('Error loading department info for edit:', err);
       });
   };
-  
+
   // Close edit department modal
-  window.closeEditDepartmentModal = function() {
+  window.closeEditDepartmentModal = function () {
     document.getElementById('editDepartmentModal').classList.add('hidden');
   };
-  
+
   // Update department info
-  window.updateDepartmentInfo = function(event) {
+  window.updateDepartmentInfo = function (event) {
     event.preventDefault();
-    
+
     var submitBtn = document.querySelector('#editDepartmentModal button[type="submit"]');
-    
+
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Saving...';
-    
+
     var data = {
       totalStudents: parseInt(document.getElementById('editTotalStudents').value) || 0,
       totalFaculty: parseInt(document.getElementById('editTotalFaculty').value) || 0,
@@ -1125,14 +1125,14 @@
         email: document.getElementById('editCoordinatorEmail').value
       }
     };
-    
+
     fetch(API + '/api/department-info', {
       method: 'PUT',
       headers: headers(),
       body: JSON.stringify(data)
     })
-      .then(function(res) { return res.json(); })
-      .then(function(json) {
+      .then(function (res) { return res.json(); })
+      .then(function (json) {
         if (json.success) {
           toast('Department info updated successfully!', 'success');
           closeEditDepartmentModal();
@@ -1141,91 +1141,91 @@
           alert('Error: ' + (json.error || 'Failed to update'));
         }
       })
-      .catch(function(err) {
+      .catch(function (err) {
         console.error('Error updating department info:', err);
         alert('Network error. Please try again.');
       })
-      .finally(function() {
+      .finally(function () {
         submitBtn.disabled = false;
         submitBtn.innerHTML = '<i class="fa-solid fa-save mr-2"></i>Save Changes';
       });
   };
-  
+
   // Close modals when clicking outside
-  document.addEventListener('click', function(e) {
+  document.addEventListener('click', function (e) {
     if (e.target.id === 'editDepartmentModal') {
       closeEditDepartmentModal();
     }
   });
 
-   // Initialize - show dashboard by default
-   document.addEventListener('DOMContentLoaded', function() {
-     console.log('✅ Admin dashboard initialized');
-     // Dashboard section should be visible by default
-     var dashboardSection = document.getElementById('section-dashboard');
-     if (dashboardSection && !dashboardSection.classList.contains('hidden')) {
-       console.log('✅ Dashboard is default section');
-     }
+  // Initialize - show dashboard by default
+  document.addEventListener('DOMContentLoaded', function () {
+    console.log('✅ Admin dashboard initialized');
+    // Dashboard section should be visible by default
+    var dashboardSection = document.getElementById('section-dashboard');
+    if (dashboardSection && !dashboardSection.classList.contains('hidden')) {
+      console.log('✅ Dashboard is default section');
+    }
 
-     // Load department info when department section is shown
-     var departmentSection = document.getElementById('section-department');
-     if (departmentSection) {
-       var observer = new MutationObserver(function(mutations) {
-         mutations.forEach(function(mutation) {
-           if (mutation.attributeName === 'class') {
-             if (!departmentSection.classList.contains('hidden')) {
-               // Load totals when section becomes visible
-               setTimeout(function() {
-                 loadDepartmentInfo();
-               }, 100);
-             }
-           }
-         });
-       });
-       observer.observe(departmentSection, { attributes: true });
-     }
-   });
+    // Load department info when department section is shown
+    var departmentSection = document.getElementById('section-department');
+    if (departmentSection) {
+      var observer = new MutationObserver(function (mutations) {
+        mutations.forEach(function (mutation) {
+          if (mutation.attributeName === 'class') {
+            if (!departmentSection.classList.contains('hidden')) {
+              // Load totals when section becomes visible
+              setTimeout(function () {
+                loadDepartmentInfo();
+              }, 100);
+            }
+          }
+        });
+      });
+      observer.observe(departmentSection, { attributes: true });
+    }
+  });
 
   // ==========================================
   // DEPARTMENT SECTION TABS
   // ==========================================
 
-   // Switch between department totals and documents tabs
-   window.switchDeptTab = function(tab) {
-     const totalsSection = document.getElementById('deptTotalsSection');
-     const docsSection = document.getElementById('deptDocsSection');
-     const totalsTab = document.getElementById('deptTotalsTab');
-     const docsTab = document.getElementById('deptDocsTab');
+  // Switch between department totals and documents tabs
+  window.switchDeptTab = function (tab) {
+    const totalsSection = document.getElementById('deptTotalsSection');
+    const docsSection = document.getElementById('deptDocsSection');
+    const totalsTab = document.getElementById('deptTotalsTab');
+    const docsTab = document.getElementById('deptDocsTab');
 
-     if (tab === 'totals') {
-       totalsSection.classList.remove('hidden');
-       docsSection.classList.add('hidden');
-       totalsTab.classList.add('bg-gradient-to-r', 'from-primary-600', 'to-primary-700', 'text-white', 'shadow-md');
-       totalsTab.classList.remove('bg-white', 'text-gray-600');
-       docsTab.classList.remove('bg-gradient-to-r', 'from-primary-600', 'to-primary-700', 'text-white', 'shadow-md');
-       docsTab.classList.add('bg-white', 'text-gray-600');
-       setTimeout(function() { loadDepartmentInfo(); }, 50);
-     } else {
-       totalsSection.classList.add('hidden');
-       docsSection.classList.remove('hidden');
-       docsTab.classList.add('bg-gradient-to-r', 'from-primary-600', 'to-primary-700', 'text-white', 'shadow-md');
-       docsTab.classList.remove('bg-white', 'text-gray-600');
-       totalsTab.classList.remove('bg-gradient-to-r', 'from-primary-600', 'to-primary-700', 'text-white', 'shadow-md');
-       totalsTab.classList.add('bg-white', 'text-gray-600');
-       loadDepartmentDocuments();
-     }
-   };
+    if (tab === 'totals') {
+      totalsSection.classList.remove('hidden');
+      docsSection.classList.add('hidden');
+      totalsTab.classList.add('bg-gradient-to-r', 'from-primary-600', 'to-primary-700', 'text-white', 'shadow-md');
+      totalsTab.classList.remove('bg-white', 'text-gray-600');
+      docsTab.classList.remove('bg-gradient-to-r', 'from-primary-600', 'to-primary-700', 'text-white', 'shadow-md');
+      docsTab.classList.add('bg-white', 'text-gray-600');
+      setTimeout(function () { loadDepartmentInfo(); }, 50);
+    } else {
+      totalsSection.classList.add('hidden');
+      docsSection.classList.remove('hidden');
+      docsTab.classList.add('bg-gradient-to-r', 'from-primary-600', 'to-primary-700', 'text-white', 'shadow-md');
+      docsTab.classList.remove('bg-white', 'text-gray-600');
+      totalsTab.classList.remove('bg-gradient-to-r', 'from-primary-600', 'to-primary-700', 'text-white', 'shadow-md');
+      totalsTab.classList.add('bg-white', 'text-gray-600');
+      loadDepartmentDocuments();
+    }
+  };
 
   // ==========================================
   // USER MANAGEMENT FUNCTIONS
   // ==========================================
 
   // Load users when section is shown
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     const usersSection = document.getElementById('section-users');
     if (usersSection) {
-      const observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
+      const observer = new MutationObserver(function (mutations) {
+        mutations.forEach(function (mutation) {
           if (mutation.attributeName === 'class') {
             if (!usersSection.classList.contains('hidden')) {
               loadUsers();
@@ -1238,11 +1238,11 @@
   });
 
   // Load department documents when section is shown
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     const departmentSection = document.getElementById('section-department');
     if (departmentSection) {
-      const observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
+      const observer = new MutationObserver(function (mutations) {
+        mutations.forEach(function (mutation) {
           if (mutation.attributeName === 'class') {
             if (!departmentSection.classList.contains('hidden')) {
               // Default to totals tab when section is shown
@@ -1281,7 +1281,7 @@
   }
 
   // Start heartbeat on page load
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     const token = localStorage.getItem('adminToken');
     if (token) {
       startHeartbeat();
@@ -1300,18 +1300,18 @@
   }
 
   // Start auto-refresh on page load
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     startUserAutoRefresh();
   });
 
   // Load all users
-  window.loadUsers = async function() {
+  window.loadUsers = async function () {
     const tbody = document.getElementById('usersTableBody');
     tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-12 text-center text-gray-500"><i class="fa-solid fa-spinner fa-spin text-3xl mb-3 text-primary-500"></i><p>Loading users...</p></td></tr>';
 
     try {
       const token = localStorage.getItem('adminToken');
-      
+
       // Get current user info to check role
       const userInfoResponse = await fetch('/api/auth/me', {
         headers: { 'Authorization': `Bearer ${token}` }
@@ -1319,7 +1319,7 @@
       const userInfo = await userInfoResponse.json();
       const currentUserRole = userInfo.admin ? userInfo.admin.role : 'admin';
       const isSuperAdmin = currentUserRole === 'superadmin';
-      
+
       const response = await fetch('/api/users', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -1334,10 +1334,10 @@
 
         tbody.innerHTML = data.users.map(user => {
           const createdDate = new Date(user.createdAt).toLocaleDateString();
-          const statusBadge = user.mustChangePassword 
+          const statusBadge = user.mustChangePassword
             ? '<span class="px-2 py-1 rounded-full bg-amber-100 text-amber-700 text-xs font-semibold">Must Change Password</span>'
             : '<span class="px-2 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-semibold">Active</span>';
-          
+
           const currentUserId = data.currentUserId || JSON.parse(atob(token.split('.')[1])).id;
           const isSelf = user._id === currentUserId;
 
@@ -1354,7 +1354,7 @@
             const diffMins = Math.floor(diffMs / 60000);
             const diffHours = Math.floor(diffMs / 3600000);
             const diffDays = Math.floor(diffMs / 86400000);
-            
+
             if (diffMins < 5) {
               onlineStatus = '<span class="flex items-center gap-1.5"><span class="w-2 h-2 bg-yellow-500 rounded-full"></span><span class="text-yellow-700 text-xs font-semibold">Away</span></span>';
               lastSeenText = '<span class="text-xs text-gray-500">Last seen ' + diffMins + ' min ago</span>';
@@ -1431,7 +1431,7 @@
 
   // Add User Modal Functions
   // Show access denied message
-  window.showAccessDenied = function() {
+  window.showAccessDenied = function () {
     // Create toast notification
     const toastHtml = `
       <div class="fixed top-4 right-4 z-50 bg-red-50 border-l-4 border-red-500 rounded-lg shadow-lg p-4 max-w-md animate-slide-down" id="accessDeniedToast">
@@ -1450,9 +1450,9 @@
         </div>
       </div>
     `;
-    
+
     document.body.insertAdjacentHTML('beforeend', toastHtml);
-    
+
     // Auto remove after 5 seconds
     setTimeout(() => {
       const toast = document.getElementById('accessDeniedToast');
@@ -1461,7 +1461,7 @@
   };
 
   // Delete user function
-  window.deleteUser = async function(userId, userName) {
+  window.deleteUser = async function (userId, userName) {
     // Confirm deletion
     const confirmed = confirm(`Are you sure you want to delete ${userName}?\n\nThis action cannot be undone.`);
     if (!confirmed) return;
@@ -1493,9 +1493,9 @@
             </div>
           </div>
         `;
-        
+
         document.body.insertAdjacentHTML('beforeend', toastHtml);
-        
+
         setTimeout(() => {
           const toast = document.getElementById('deleteSuccessToast');
           if (toast) toast.remove();
@@ -1513,22 +1513,22 @@
     }
   };
 
-  window.openAddUserModal = function() {
+  window.openAddUserModal = function () {
     document.getElementById('addUserModal').classList.remove('hidden');
     document.getElementById('addUserForm').reset();
     document.getElementById('addUserMessage').classList.add('hidden');
   };
 
-  window.closeAddUserModal = function() {
+  window.closeAddUserModal = function () {
     document.getElementById('addUserModal').classList.add('hidden');
   };
 
-  window.generatePassword = async function() {
+  window.generatePassword = async function () {
     try {
       const token = localStorage.getItem('adminToken');
       const response = await fetch('/api/users/generate-password', {
         method: 'POST',
-        headers: { 
+        headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         }
@@ -1544,12 +1544,12 @@
   };
 
   // Add User Form Submit
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('addUserForm');
     if (form) {
-      form.addEventListener('submit', async function(e) {
+      form.addEventListener('submit', async function (e) {
         e.preventDefault();
-        
+
         const messageDiv = document.getElementById('addUserMessage');
         const submitBtn = form.querySelector('button[type="submit"]');
         submitBtn.disabled = true;
@@ -1590,17 +1590,17 @@
             messageDiv.classList.remove('hidden');
             form.reset();
             loadUsers();
-            
+
             setTimeout(() => {
               closeAddUserModal();
             }, 5000);
           } else {
             // Check if it's a duplicate email error
             const errorMessage = data.error || 'Failed to create user';
-            const isDuplicateEmail = errorMessage.toLowerCase().includes('email') && 
-                                    (errorMessage.toLowerCase().includes('exists') || 
-                                     errorMessage.toLowerCase().includes('already'));
-            
+            const isDuplicateEmail = errorMessage.toLowerCase().includes('email') &&
+              (errorMessage.toLowerCase().includes('exists') ||
+                errorMessage.toLowerCase().includes('already'));
+
             messageDiv.className = 'p-4 bg-red-50 border-l-4 border-red-500 rounded-r-xl';
             messageDiv.innerHTML = `
               <div class="flex items-start gap-3 text-red-800">
@@ -1633,7 +1633,7 @@
   });
 
   // Reset Password Modal Functions
-  window.openResetPasswordModal = function(userId, userName) {
+  window.openResetPasswordModal = function (userId, userName) {
     document.getElementById('resetUserId').value = userId;
     document.getElementById('resetUserName').textContent = userName;
     document.getElementById('resetPasswordModal').classList.remove('hidden');
@@ -1641,16 +1641,16 @@
     document.getElementById('resetPasswordMessage').classList.add('hidden');
   };
 
-  window.closeResetPasswordModal = function() {
+  window.closeResetPasswordModal = function () {
     document.getElementById('resetPasswordModal').classList.add('hidden');
   };
 
-  window.generateResetPassword = async function() {
+  window.generateResetPassword = async function () {
     try {
       const token = localStorage.getItem('adminToken');
       const response = await fetch('/api/users/generate-password', {
         method: 'POST',
-        headers: { 
+        headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         }
@@ -1666,12 +1666,12 @@
   };
 
   // Reset Password Form Submit
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('resetPasswordForm');
     if (form) {
-      form.addEventListener('submit', async function(e) {
+      form.addEventListener('submit', async function (e) {
         e.preventDefault();
-        
+
         const messageDiv = document.getElementById('resetPasswordMessage');
         const submitBtn = form.querySelector('button[type="submit"]');
         submitBtn.disabled = true;
@@ -1732,7 +1732,7 @@
             `;
             messageDiv.classList.remove('hidden');
             loadUsers();
-            
+
             // Don't auto-close so admin can copy the password
             // setTimeout(() => {
             //   closeResetPasswordModal();
@@ -1766,7 +1766,7 @@
   });
 
   // Delete User Function
-  window.deleteUser = async function(userId, userName) {
+  window.deleteUser = async function (userId, userName) {
     if (!confirm(`Are you sure you want to delete user "${userName}"? This action cannot be undone.`)) {
       return;
     }
@@ -1797,10 +1797,10 @@
   // ==========================================
 
   // Toggle Password Visibility
-  window.togglePasswordVisibility = function(inputId) {
+  window.togglePasswordVisibility = function (inputId) {
     const input = document.getElementById(inputId);
     const icon = input.nextElementSibling.querySelector('i');
-    
+
     if (input.type === 'password') {
       input.type = 'text';
       icon.classList.remove('fa-eye');
@@ -1813,20 +1813,20 @@
   };
 
   // Change Password Form Submit with Enhanced Validation
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('changePasswordForm');
     if (form) {
       // Real-time password strength indicator
       const newPasswordInput = document.getElementById('newPassword');
       if (newPasswordInput) {
-        newPasswordInput.addEventListener('input', function() {
+        newPasswordInput.addEventListener('input', function () {
           updatePasswordStrengthIndicator(this.value);
         });
       }
 
-      form.addEventListener('submit', async function(e) {
+      form.addEventListener('submit', async function (e) {
         e.preventDefault();
-        
+
         const email = document.getElementById('changePasswordEmail').value;
         const currentPassword = document.getElementById('currentPassword').value;
         const newPassword = document.getElementById('newPassword').value;
@@ -1895,7 +1895,7 @@
             `;
             messageDiv.classList.remove('hidden');
             form.reset();
-            
+
             // Hide password strength indicator
             const strengthIndicator = document.getElementById('passwordStrengthIndicator');
             if (strengthIndicator) {
@@ -1928,7 +1928,7 @@
   }
 
   // Copy temporary password to clipboard
-  window.copyTempPassword = function(password) {
+  window.copyTempPassword = function (password) {
     navigator.clipboard.writeText(password).then(() => {
       // Show toast notification
       const toast = document.createElement('div');
@@ -1940,7 +1940,7 @@
         </div>
       `;
       document.body.appendChild(toast);
-      
+
       setTimeout(() => {
         toast.remove();
       }, 3000);
@@ -1961,7 +1961,7 @@
     }
 
     strengthIndicator.classList.remove('hidden');
-    
+
     let strength = 0;
     let strengthText = '';
     let strengthColor = '';
@@ -2006,22 +2006,22 @@
   // ==========================================
 
   // Load all documents
-  window.loadDepartmentDocuments = async function() {
+  window.loadDepartmentDocuments = async function () {
     const tbody = document.getElementById('documentsTableBody');
     const categoryFilter = document.getElementById('categoryFilter');
-    
+
     if (!tbody) return;
-    
+
     const category = categoryFilter ? categoryFilter.value : '';
-    
+
     tbody.innerHTML = '<tr><td colspan="8" class="px-6 py-12 text-center text-gray-500"><i class="fa-solid fa-spinner fa-spin text-3xl mb-3 text-primary-500"></i><p>Loading documents...</p></td></tr>';
 
     try {
       const token = localStorage.getItem('adminToken');
-      const url = category 
+      const url = category
         ? `/api/department-documents?category=${category}`
         : '/api/department-documents';
-        
+
       const response = await fetch(url, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -2039,11 +2039,11 @@
           const publishedBadge = doc.isPublished
             ? '<span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-semibold">Yes</span>'
             : '<span class="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-semibold">No</span>';
-          
+
           const activeBadge = doc.isActive !== false
             ? '<span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold">Active</span>'
             : '<span class="px-3 py-1 rounded-full bg-red-100 text-red-700 text-xs font-semibold">Inactive</span>';
-          
+
           const pinnedBadge = doc.isPinned
             ? '<i class="fa-solid fa-thumbtack text-primary-500 mr-2"></i>'
             : '';
@@ -2110,7 +2110,7 @@
   };
 
   // Open upload modal
-  window.openUploadDocumentModal = function() {
+  window.openUploadDocumentModal = function () {
     document.getElementById('uploadDocumentModal').classList.remove('hidden');
     document.getElementById('uploadDocumentForm').reset();
     document.getElementById('uploadDocumentMessage').classList.add('hidden');
@@ -2118,14 +2118,14 @@
   };
 
   // Close upload modal
-  window.closeUploadDocumentModal = function() {
+  window.closeUploadDocumentModal = function () {
     document.getElementById('uploadDocumentModal').classList.add('hidden');
   };
 
   // Switch content type
-  window.switchContentType = function(type) {
+  window.switchContentType = function (type) {
     document.getElementById('contentType').value = type;
-    
+
     const fileSection = document.getElementById('fileUploadSection');
     const textSection = document.getElementById('textContentSection');
     const fileBtn = document.getElementById('fileTypeBtn');
@@ -2153,13 +2153,13 @@
   };
 
   // Handle file select
-  window.handleFileSelect = function(input) {
+  window.handleFileSelect = function (input) {
     const file = input.files[0];
     if (file) {
       const preview = document.getElementById('filePreview');
       const fileName = document.getElementById('fileName');
       const fileSize = document.getElementById('fileSize');
-      
+
       fileName.textContent = file.name;
       fileSize.textContent = (file.size / 1024 / 1024).toFixed(2) + ' MB';
       preview.classList.remove('hidden');
@@ -2167,17 +2167,17 @@
   };
 
   // Clear file
-  window.clearFile = function() {
+  window.clearFile = function () {
     document.getElementById('documentFile').value = '';
     document.getElementById('filePreview').classList.add('hidden');
   };
 
   // Toggle custom category input
-  window.toggleCustomCategory = function() {
+  window.toggleCustomCategory = function () {
     const categorySelect = document.getElementById('docCategory');
     const customSection = document.getElementById('customCategorySection');
     const customInput = document.getElementById('customCategory');
-    
+
     if (categorySelect.value === 'Other') {
       customSection.classList.remove('hidden');
       customInput.required = true;
@@ -2189,7 +2189,7 @@
   };
 
   // Toggle publish status
-  window.togglePublishDocument = async function(docId) {
+  window.togglePublishDocument = async function (docId) {
     try {
       const token = localStorage.getItem('adminToken');
       const response = await fetch(`/api/department-documents/${docId}/publish`, {
@@ -2211,7 +2211,7 @@
   };
 
   // Toggle active status
-  window.toggleActiveDocument = async function(docId) {
+  window.toggleActiveDocument = async function (docId) {
     try {
       const token = localStorage.getItem('adminToken');
       const response = await fetch(`/api/department-documents/${docId}/active`, {
@@ -2233,13 +2233,13 @@
   };
 
   // Edit document (placeholder for now)
-  window.editDocument = function(docId) {
+  window.editDocument = function (docId) {
     alert('Edit functionality will be implemented soon. Document ID: ' + docId);
     // TODO: Open edit modal with document data
   };
 
   // Delete document
-  window.deleteDocument = async function(docId, title) {
+  window.deleteDocument = async function (docId, title) {
     if (!confirm(`Are you sure you want to delete "${title}"?\n\nThis action cannot be undone.`)) {
       return;
     }
@@ -2264,33 +2264,165 @@
     }
   };
 
-  // View document (placeholder)
-  window.viewDocument = function(docId) {
-    alert('View document functionality will be available in student portal');
+  // View document with comments
+  window.viewDocument = async function (docId) {
+    const modal = document.getElementById('documentViewerModal');
+    const token = localStorage.getItem('adminToken');
+
+    try {
+      const response = await fetch(`/api/department-documents/${docId}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        const doc = data.document;
+        const date = new Date(doc.dateIssued).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+
+        // Build comments HTML with delete buttons
+        const commentsHtml = doc.comments && doc.comments.length > 0 ?
+          doc.comments.map((comment, idx) => `
+            <div class="p-4 bg-white rounded-xl border border-gray-200 mb-3" id="admin-comment-${comment._id}">
+              <div class="flex items-start justify-between mb-2">
+                <div>
+                  <p class="font-semibold text-gray-800">${comment.userName}</p>
+                  <p class="text-sm text-gray-500">${new Date(comment.createdAt).toLocaleString()}</p>
+                </div>
+                <button onclick="deleteComment('${docId}', '${comment._id}')" class="px-3 py-1 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors text-sm font-medium" title="Delete Comment">
+                  <i class="fa-solid fa-trash"></i> Delete
+                </button>
+              </div>
+              <p class="text-gray-700">${comment.comment}</p>
+              
+              <!-- Replies -->
+              ${comment.replies && comment.replies.length > 0 ? `
+                <div class="ml-4 mt-3 space-y-2 border-l-2 border-gray-100 pl-4">
+                  ${comment.replies.map((reply, rIdx) => `
+                    <div class="p-3 bg-gray-50 rounded-lg" id="admin-reply-${comment._id}-${rIdx}">
+                      <div class="flex items-center justify-between mb-1">
+                        <p class="font-semibold text-gray-700 text-sm">${reply.userName}</p>
+                        <span class="text-xs text-gray-500">${new Date(reply.createdAt).toLocaleString()}</span>
+                      </div>
+                      <p class="text-gray-600 text-sm">${reply.comment}</p>
+                    </div>
+                  `).join('')}
+                </div>
+              ` : ''}
+            </div>
+          `).join('') :
+          '<p class="text-gray-500 text-center py-8">No comments yet</p>';
+
+        modal.innerHTML = `
+          <div class="bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto animate-fade-in-up">
+            <div class="sticky top-0 bg-gradient-to-r from-primary-600 via-primary-500 to-secondary-500 px-8 py-6 rounded-t-3xl flex items-start justify-between z-10">
+              <div class="text-white">
+                <h2 class="text-2xl font-bold mb-2">${doc.title}</h2>
+                <div class="flex flex-wrap gap-4 text-sm text-white/90">
+                  <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-calendar-alt"></i>
+                    <span>${date}</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-eye"></i>
+                    <span>${doc.viewCount || 0} views</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-download"></i>
+                    <span>${doc.downloadCount || 0} downloads</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-comments"></i>
+                    <span>${doc.comments?.length || 0} comments</span>
+                  </div>
+                </div>
+              </div>
+              <button onclick="closeDocumentModal()" class="w-12 h-12 rounded-xl bg-white/20 hover:bg-white/30 backdrop-blur-sm flex items-center justify-center transition-all ml-4 group">
+                <i class="fa-solid fa-times text-white text-lg group-hover:scale-110 transition-transform"></i>
+              </button>
+            </div>
+            <div class="p-8">
+              ${doc.description ? `
+                <div class="mb-6 p-5 bg-blue-50 rounded-2xl border-l-4 border-blue-500">
+                  <p class="text-gray-700">${doc.description}</p>
+                </div>
+              ` : ''}
+              <div class="mb-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">Comments (${doc.comments?.length || 0})</h3>
+                ${commentsHtml}
+              </div>
+            </div>
+          </div>
+        `;
+
+        modal.classList.remove('hidden');
+      }
+    } catch (error) {
+      console.error('View document error:', error);
+      alert('Failed to load document');
+    }
+  };
+
+  // Close document modal
+  window.closeDocumentModal = function () {
+    document.getElementById('documentViewerModal').classList.add('hidden');
+  };
+
+  // Delete comment
+  window.deleteComment = async function (docId, commentId) {
+    if (!confirm('Are you sure you want to delete this comment?')) return;
+
+    const token = localStorage.getItem('adminToken');
+
+    try {
+      const response = await fetch(`/api/department-documents/${docId}/comments/${commentId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Remove from UI
+        const commentEl = document.getElementById(`admin-comment-${commentId}`);
+        if (commentEl) commentEl.remove();
+
+        // Reload documents table to update comment count
+        loadDocuments();
+      } else {
+        alert('Failed to delete comment: ' + (data.message || 'Unknown error'));
+      }
+    } catch (error) {
+      console.error('Delete comment error:', error);
+      alert('Error deleting comment. Please try again.');
+    }
   };
 
   // Upload document form handler
   const uploadForm = document.getElementById('uploadDocumentForm');
   if (uploadForm) {
-    uploadForm.addEventListener('submit', async function(e) {
+    uploadForm.addEventListener('submit', async function (e) {
       e.preventDefault();
 
       const messageDiv = document.getElementById('uploadDocumentMessage');
       const submitBtn = this.querySelector('button[type="submit"]');
-      
+
       submitBtn.disabled = true;
       submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Uploading...';
 
       try {
         const token = localStorage.getItem('adminToken');
         const formData = new FormData();
-        
+
         // Get category - use custom if "Other" is selected
         const categorySelect = document.getElementById('docCategory');
-        const category = categorySelect.value === 'Other' 
-          ? document.getElementById('customCategory').value 
+        const category = categorySelect.value === 'Other'
+          ? document.getElementById('customCategory').value
           : categorySelect.value;
-        
+
         formData.append('title', document.getElementById('docTitle').value);
         formData.append('category', category);
         formData.append('description', document.getElementById('docDescription').value);
@@ -2368,10 +2500,10 @@
   // Search functionality
   const documentsSearch = document.getElementById('documentsSearch');
   if (documentsSearch) {
-    documentsSearch.addEventListener('input', function(e) {
+    documentsSearch.addEventListener('input', function (e) {
       const searchTerm = e.target.value.toLowerCase();
       const rows = document.querySelectorAll('#documentsTableBody tr');
-      
+
       rows.forEach(row => {
         const text = row.textContent.toLowerCase();
         row.style.display = text.includes(searchTerm) ? '' : 'none';

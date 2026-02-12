@@ -18,6 +18,31 @@ const commentSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  likes: {
+    type: Number,
+    default: 0
+  },
+  likedBy: [{
+    email: String,
+    likedAt: {
+      type: Date,
+      default: Date.now
+    }
+  }],
+  replies: [{
+    userName: String,
+    userEmail: String,
+    userRole: {
+      type: String,
+      enum: ['student', 'teacher', 'admin'],
+      default: 'student'
+    },
+    comment: String,
+    createdAt: {
+      type: Date,
+      default: Date.now
+    }
+  }],
   createdAt: {
     type: Date,
     default: Date.now
@@ -43,7 +68,7 @@ const departmentDocumentSchema = new mongoose.Schema({
     enum: ['file', 'text'],
     required: true
   },
-  
+
   // For uploaded files
   fileUrl: {
     type: String
@@ -61,12 +86,12 @@ const departmentDocumentSchema = new mongoose.Schema({
   cloudinaryPublicId: {
     type: String
   },
-  
+
   // For text content
   textContent: {
     type: String
   },
-  
+
   dateIssued: {
     type: Date,
     default: Date.now
@@ -83,7 +108,7 @@ const departmentDocumentSchema = new mongoose.Schema({
     type: Boolean,
     default: true
   },
-  
+
   // Download tracking
   downloadCount: {
     type: Number,
@@ -97,23 +122,23 @@ const departmentDocumentSchema = new mongoose.Schema({
       default: Date.now
     }
   }],
-  
+
   // View tracking
   viewCount: {
     type: Number,
     default: 0
   },
-  
+
   // Comments
   comments: [commentSchema],
-  
+
   uploadedBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true
   }
-}, { 
-  timestamps: true 
+}, {
+  timestamps: true
 });
 
 // Index for faster queries

@@ -1,4 +1,4 @@
-(function() {
+(function () {
   'use strict';
 
   let allDocuments = [];
@@ -7,7 +7,7 @@
   // Load documents
   async function loadDocuments() {
     const container = document.getElementById('documentsContainer');
-    
+
     try {
       const response = await fetch('/api/department-documents?published=true');
       const data = await response.json();
@@ -16,7 +16,7 @@
         // Filter only published AND active documents
         allDocuments = data.documents.filter(doc => doc.isPublished && doc.isActive !== false);
         filteredDocuments = [...allDocuments];
-        
+
         renderDocuments();
       } else {
         showError('Failed to load documents');
@@ -50,10 +50,10 @@
       });
 
       const isPinned = doc.isPinned;
-      
+
       let fileIcon = 'fa-file-lines';
       let iconColor = 'text-blue-500';
-      
+
       if (doc.contentType === 'file') {
         if (doc.fileType === 'pdf') {
           fileIcon = 'fa-file-pdf';
@@ -79,20 +79,20 @@
             </div>
           ` : ''}
 
-          <!-- File Icon -->
-          <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-            <i class="fa-solid ${fileIcon} text-3xl ${iconColor}"></i>
+          <!-- File Icon/Thumbnail with gradient -->
+          <div class="w-16 h-16 rounded-2xl bg-gradient-to-br ${doc.contentType === 'file' && doc.fileType === 'pdf' ? 'from-red-500 to-red-600' : doc.contentType === 'file' && (doc.fileType === 'jpg' || doc.fileType === 'jpeg' || doc.fileType === 'png') ? 'from-green-500 to-green-600' : doc.contentType === 'file' && (doc.fileType === 'doc' || doc.fileType === 'docx') ? 'from-blue-600 to-blue-700' : 'from-gray-400 to-gray-500'} flex items-center justify-center mb-4 group-hover:scale-110 transition-all shadow-lg">
+            <i class="fa-solid ${fileIcon} text-3xl text-white"></i>
           </div>
 
           <!-- Category Badge -->
           <div class="mb-3">
-            <span class="px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold">
+            <span class="px-3 py-1 rounded-full bg-gradient-to-r from-primary-100 to-primary-200 text-primary-700 text-xs font-semibold">
               ${doc.category}
             </span>
           </div>
 
           <!-- Title -->
-          <h3 class="text-lg font-bold text-gray-800 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
+          <h3 class="text-lg font-bold text-gray-800 mb-2 line-clamp-2 group-hover:text-primary transition-colors">
             ${doc.title}
           </h3>
 
@@ -111,15 +111,15 @@
             </div>
             <div class="flex items-center gap-3">
               <div class="flex items-center gap-1">
-                <i class="fa-solid fa-eye"></i>
+                <i class="fa-solid fa-eye text-blue-500"></i>
                 <span>${doc.viewCount || 0}</span>
               </div>
               <div class="flex items-center gap-1">
-                <i class="fa-solid fa-download"></i>
+                <i class="fa-solid fa-download text-green-500"></i>
                 <span>${doc.downloadCount || 0}</span>
               </div>
               <div class="flex items-center gap-1">
-                <i class="fa-solid fa-comments"></i>
+                <i class="fa-solid fa-comments text-purple-500"></i>
                 <span>${doc.comments?.length || 0}</span>
               </div>
             </div>
@@ -127,8 +127,8 @@
 
           <!-- View Button -->
           <div class="mt-4">
-            <button class="w-full px-4 py-2.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all shadow-lg shadow-blue-500/30 group-hover:shadow-xl">
-              <i class="fa-solid fa-eye mr-2"></i>View Document
+            <button class="w-full px-4 py-2.5 bg-gradient-to-r from-primary-500 to-primary-600 text-white font-semibold rounded-xl hover:from-primary-600 hover:to-primary-700 transition-all shadow-lg shadow-primary-500/30 group-hover:shadow-xl flex items-center justify-center gap-2">
+              <i class="fa-solid fa-eye"></i>View Document
             </button>
           </div>
 
@@ -138,10 +138,10 @@
   }
 
   // View document - Open modal with full details
-  window.viewDocument = async function(docId) {
+  window.viewDocument = async function (docId) {
     const modal = document.getElementById('documentViewerModal');
     const doc = allDocuments.find(d => d._id === docId);
-    
+
     if (!doc) {
       alert('Document not found');
       return;
@@ -160,92 +160,127 @@
       day: 'numeric'
     });
 
+    // Determine icon based on file type
+    let fileIcon = 'fa-file-lines';
+    let iconColor = 'text-blue-500';
+    let iconBgColor = 'from-blue-500 to-blue-600';
+
+    if (doc.contentType === 'file') {
+      if (doc.fileType === 'pdf') {
+        fileIcon = 'fa-file-pdf';
+        iconColor = 'text-red-500';
+        iconBgColor = 'from-red-500 to-red-600';
+      } else if (doc.fileType === 'doc' || doc.fileType === 'docx') {
+        fileIcon = 'fa-file-word';
+        iconColor = 'text-blue-600';
+        iconBgColor = 'from-blue-600 to-blue-700';
+      } else if (doc.fileType === 'jpg' || doc.fileType === 'jpeg' || doc.fileType === 'png') {
+        fileIcon = 'fa-file-image';
+        iconColor = 'text-green-500';
+        iconBgColor = 'from-green-500 to-green-600';
+      }
+    }
+
     let contentHtml = '';
-    
+
     if (doc.contentType === 'file') {
       if (doc.fileType === 'pdf') {
         contentHtml = `
-          <div class="bg-gray-900 rounded-2xl p-4 mb-6">
-            <iframe src="/api/department-documents/${doc._id}/file" class="w-full h-[600px] rounded-xl" frameborder="0"></iframe>
-          </div>
-          <div class="flex gap-3">
-            <a href="/api/department-documents/${doc._id}/file" target="_blank" class="flex-1 px-6 py-3 bg-blue-500 text-white font-semibold rounded-xl hover:bg-blue-600 transition-all text-center">
-              <i class="fa-solid fa-external-link mr-2"></i>Open in New Tab
-            </a>
-            <button onclick="downloadDocument('${doc._id}')" class="flex-1 px-6 py-3 bg-green-500 text-white font-semibold rounded-xl hover:bg-green-600 transition-all">
-              <i class="fa-solid fa-download mr-2"></i>Download PDF
-            </button>
+          <!-- PDF Preview Card -->
+          <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-8 mb-6 border-2 border-gray-200 text-center">
+            <div class="w-24 h-24 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center shadow-lg">
+              <i class="fa-solid fa-file-pdf text-5xl text-white"></i>
+            </div>
+            <h4 class="text-xl font-bold text-gray-800 mb-2">${doc.title}</h4>
+            <p class="text-gray-600 mb-6">Click below to view or download this PDF document</p>
+            <div class="flex flex-col sm:flex-row gap-3 justify-center">
+              <button onclick="downloadDocument('${doc._id}')" class="px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white font-semibold rounded-xl hover:from-green-600 hover:to-green-700 transition-all shadow-lg shadow-green-500/30 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-download"></i>Download
+              </button>
+            </div>
           </div>
         `;
       } else if (doc.fileType === 'jpg' || doc.fileType === 'jpeg' || doc.fileType === 'png') {
         contentHtml = `
-          <div class="mb-6">
-            <img src="/api/department-documents/${doc._id}/file" alt="${doc.title}" class="w-full rounded-2xl shadow-lg">
+          <div class="relative mb-6">
+            <div class="absolute inset-0 bg-gradient-to-r from-primary-400 to-secondary-400 rounded-2xl blur-lg opacity-30"></div>
+            <img src="/api/department-documents/${doc._id}/file" alt="${doc.title}" class="relative w-full rounded-2xl shadow-2xl border-4 border-white">
           </div>
-          <button onclick="downloadDocument('${doc._id}')" class="w-full px-6 py-3 bg-green-500 text-white font-semibold rounded-xl hover:bg-green-600 transition-all">
-            <i class="fa-solid fa-download mr-2"></i>Download Image
+          <button onclick="downloadDocument('${doc._id}')" class="w-full px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white font-semibold rounded-xl hover:from-green-600 hover:to-green-700 transition-all shadow-lg shadow-green-500/30 flex items-center justify-center gap-2">
+            <i class="fa-solid fa-download"></i>Download Image
           </button>
         `;
       } else {
         contentHtml = `
-          <div class="p-8 bg-gray-50 rounded-2xl text-center mb-6">
-            <i class="fa-solid fa-file text-6xl text-gray-300 mb-4"></i>
-            <p class="text-gray-600 mb-4">This file type cannot be previewed</p>
-            <button onclick="downloadDocument('${doc._id}')" class="px-6 py-3 bg-green-500 text-white font-semibold rounded-xl hover:bg-green-600 transition-all">
-              <i class="fa-solid fa-download mr-2"></i>Download File
+          <div class="p-8 bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl text-center mb-6 border-2 border-gray-200">
+            <div class="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br ${iconBgColor} flex items-center justify-center shadow-lg">
+              <i class="fa-solid ${fileIcon} text-4xl text-white"></i>
+            </div>
+            <p class="text-gray-600 mb-4 font-medium">This file type cannot be previewed</p>
+            <button onclick="downloadDocument('${doc._id}')" class="px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white font-semibold rounded-xl hover:from-green-600 hover:to-green-700 transition-all shadow-lg shadow-green-500/30 flex items-center justify-center gap-2 mx-auto">
+              <i class="fa-solid fa-download"></i>Download File
             </button>
           </div>
         `;
       }
     } else {
       contentHtml = `
-        <div class="prose max-w-none mb-6 p-6 bg-white rounded-2xl border-2 border-gray-200">
+        <div class="prose max-w-none mb-6 p-6 bg-gradient-to-br from-white to-gray-50 rounded-2xl border-2 border-gray-200 shadow-lg">
           ${doc.textContent.replace(/\n/g, '<br>')}
         </div>
       `;
     }
 
     modal.innerHTML = `
-      <div class="bg-white rounded-3xl shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-y-auto">
-        <!-- Header -->
-        <div class="sticky top-0 bg-white border-b border-gray-200 px-8 py-6 rounded-t-3xl flex items-start justify-between z-10">
-          <div class="flex-1">
-            <div class="flex items-center gap-2 mb-2">
-              <span class="px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-sm font-semibold">
-                ${doc.category}
-              </span>
-              ${doc.isPinned ? '<i class="fa-solid fa-thumbtack text-red-500"></i>' : ''}
+      <div class="bg-white rounded-3xl shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-y-auto animate-fade-in-up">
+        <!-- Header with gradient background -->
+        <div class="sticky top-0 bg-gradient-to-r from-primary-600 via-primary-500 to-secondary-500 px-8 py-6 rounded-t-3xl flex items-start justify-between z-10">
+          <div class="flex items-start gap-4">
+            <!-- Document Icon/Thumbnail -->
+            <div class="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center shadow-lg flex-shrink-0">
+              <i class="fa-solid ${fileIcon} text-3xl ${iconColor}"></i>
             </div>
-            <h2 class="text-3xl font-bold text-gray-800 mb-2">${doc.title}</h2>
-            <div class="flex flex-wrap gap-4 text-sm text-gray-600">
-              <div class="flex items-center gap-2">
-                <i class="fa-solid fa-calendar"></i>
-                <span>${date}</span>
+            <div class="text-white">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="px-3 py-1 rounded-full bg-white/20 text-white text-xs font-semibold backdrop-blur-sm">
+                  ${doc.category}
+                </span>
+                ${doc.isPinned ? '<i class="fa-solid fa-thumbtack text-yellow-300"></i>' : ''}
               </div>
-              <div class="flex items-center gap-2">
-                <i class="fa-solid fa-eye"></i>
-                <span>${doc.views || 0} views</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <i class="fa-solid fa-download"></i>
-                <span>${doc.downloads || 0} downloads</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <i class="fa-solid fa-comment"></i>
-                <span>${doc.comments?.length || 0} comments</span>
+              <h2 class="text-2xl font-bold mb-2 text-white shadow-sm">${doc.title}</h2>
+              <div class="flex flex-wrap gap-4 text-sm text-white/90">
+                <div class="flex items-center gap-2">
+                  <i class="fa-solid fa-calendar-alt"></i>
+                  <span>${date}</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <i class="fa-solid fa-eye"></i>
+                  <span>${doc.viewCount || 0} views</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <i class="fa-solid fa-download"></i>
+                  <span>${doc.downloadCount || 0} downloads</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <i class="fa-solid fa-comments"></i>
+                  <span>${doc.comments?.length || 0} comments</span>
+                </div>
               </div>
             </div>
           </div>
-          <button onclick="closeDocumentModal()" class="w-10 h-10 rounded-xl bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors ml-4">
-            <i class="fa-solid fa-times text-gray-600"></i>
+          <button onclick="closeDocumentModal()" class="w-12 h-12 rounded-xl bg-white/20 hover:bg-white/30 backdrop-blur-sm flex items-center justify-center transition-all ml-4 group">
+            <i class="fa-solid fa-times text-white text-lg group-hover:scale-110 transition-transform"></i>
           </button>
         </div>
 
         <!-- Content -->
         <div class="p-8">
           ${doc.description ? `
-            <div class="mb-6 p-4 bg-blue-50 rounded-2xl border-l-4 border-blue-500">
-              <p class="text-gray-700">${doc.description}</p>
+            <div class="mb-6 p-5 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border-l-4 border-blue-500 shadow-sm">
+              <div class="flex items-start gap-3">
+                <i class="fa-solid fa-info-circle text-blue-500 mt-1"></i>
+                <p class="text-gray-700 leading-relaxed">${doc.description}</p>
+              </div>
             </div>
           ` : ''}
 
@@ -253,21 +288,33 @@
 
           <!-- Comments Section -->
           <div class="mt-12">
-            <h3 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-3">
-              <i class="fa-solid fa-comments text-blue-500"></i>
-              Comments
-            </h3>
+            <div class="flex items-center gap-3 mb-6">
+              <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center shadow-lg">
+                <i class="fa-solid fa-comments text-white"></i>
+              </div>
+              <h3 class="text-2xl font-bold text-gray-800">Comments</h3>
+              <span class="px-3 py-1 bg-gray-200 rounded-full text-sm font-semibold text-gray-600">${doc.comments?.length || 0}</span>
+            </div>
 
             <!-- Add Comment Form -->
-            <div class="mb-8 p-6 bg-gray-50 rounded-2xl">
+            <div class="mb-8 p-6 bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl border-2 border-gray-200">
               <form id="commentForm" onsubmit="submitComment(event, '${docId}')">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                  <input type="text" id="commentName" required placeholder="Your Name" class="px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none">
-                  <input type="email" id="commentEmail" required placeholder="Your Email" class="px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none">
+                  <div class="relative">
+                    <i class="fa-solid fa-user absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                    <input type="text" id="commentName" required placeholder="Your Name" class="w-full pl-12 pr-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:border-primary-500 focus:outline-none transition-all">
+                  </div>
+                  <div class="relative">
+                    <i class="fa-solid fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                    <input type="email" id="commentEmail" required placeholder="Your Email" class="w-full pl-12 pr-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:border-primary-500 focus:outline-none transition-all">
+                  </div>
                 </div>
-                <textarea id="commentText" required rows="3" placeholder="Write your comment..." class="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none resize-none mb-4"></textarea>
-                <button type="submit" class="px-6 py-3 bg-blue-500 text-white font-semibold rounded-xl hover:bg-blue-600 transition-all">
-                  <i class="fa-solid fa-comment mr-2"></i>Post Comment
+                <div class="relative mb-4">
+                  <i class="fa-solid fa-pen absolute left-4 top-4 text-gray-400"></i>
+                  <textarea id="commentText" required rows="3" placeholder="Write your comment..." class="w-full pl-12 pr-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:border-primary-500 focus:outline-none resize-none transition-all"></textarea>
+                </div>
+                <button type="submit" class="px-6 py-3 bg-gradient-to-r from-primary-500 to-primary-600 text-white font-semibold rounded-xl hover:from-primary-600 hover:to-primary-700 transition-all shadow-lg shadow-primary-500/30 flex items-center gap-2">
+                  <i class="fa-solid fa-paper-plane"></i>Post Comment
                 </button>
               </form>
             </div>
@@ -286,28 +333,21 @@
   };
 
   // Close document modal
-  window.closeDocumentModal = function() {
+  window.closeDocumentModal = function () {
     const modal = document.getElementById('documentViewerModal');
     modal.classList.add('hidden');
   };
 
   // Download document
-  window.downloadDocument = async function(docId) {
+  window.downloadDocument = async function (docId) {
     try {
-      const response = await fetch(`/api/department-documents/${docId}/download`, {
-        method: 'POST'
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        const a = document.createElement('a');
-        a.href = `/api/department-documents/${docId}/file`;
-        a.download = '';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-      }
+      // Use the new /file route which handles download tracking and proper headers
+      const a = document.createElement('a');
+      a.href = `/api/department-documents/${docId}/file`;
+      a.download = '';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
     } catch (error) {
       console.error('Download error:', error);
       alert('Failed to download document');
@@ -315,9 +355,9 @@
   };
 
   // Load comments for a document
-  window.loadComments = async function(docId) {
+  window.loadComments = async function (docId) {
     const commentsList = document.getElementById('commentsList');
-    
+
     if (!commentsList) return;
 
     try {
@@ -333,14 +373,60 @@
           `;
         } else {
           commentsList.innerHTML = comments.map(comment => `
-            <div class="p-4 bg-white rounded-xl border border-gray-200 hover:shadow-md transition-shadow">
+            <div class="p-4 bg-white rounded-xl border border-gray-200 hover:shadow-md transition-shadow" id="comment-${comment._id}">
               <div class="flex items-start justify-between mb-2">
-                <div>
+                <div class="flex items-center gap-2">
                   <p class="font-semibold text-gray-800">${comment.userName}</p>
-                  <p class="text-sm text-gray-500">${new Date(comment.createdAt).toLocaleString()}</p>
+                  ${comment.userRole === 'admin' ? '<span class="px-2 py-0.5 bg-red-100 text-red-600 text-xs rounded-full">Admin</span>' : ''}
                 </div>
+                <span class="text-sm text-gray-500">${new Date(comment.createdAt).toLocaleString()}</span>
               </div>
-              <p class="text-gray-700">${comment.comment}</p>
+              <p class="text-gray-700 mb-3">${comment.comment}</p>
+              
+              <!-- Like and Reply Actions -->
+              <div class="flex items-center gap-4 mb-3">
+                <button onclick="likeComment('${docId}', '${comment._id}')" class="flex items-center gap-1 text-gray-500 hover:text-red-500 transition-colors">
+                  <i class="fa-solid fa-heart ${comment.likedBy && comment.likedBy.some(l => l.email === document.getElementById('commentEmail')?.value) ? 'text-red-500' : ''}"></i>
+                  <span class="text-sm">${comment.likes || 0}</span>
+                </button>
+                <button onclick="toggleReplyForm('${comment._id}')" class="flex items-center gap-1 text-gray-500 hover:text-blue-500 transition-colors">
+                  <i class="fa-solid fa-reply"></i>
+                  <span class="text-sm">Reply</span>
+                </button>
+              </div>
+              
+              <!-- Reply Form (hidden by default) -->
+              <div id="replyForm-${comment._id}" class="hidden mb-3 pl-4 border-l-2 border-gray-200">
+                <form onsubmit="submitReply(event, '${docId}', '${comment._id}')">
+                  <input type="hidden" id="replyName-${comment._id}" value="${document.getElementById('commentName')?.value || ''}">
+                  <input type="hidden" id="replyEmail-${comment._id}" value="${document.getElementById('commentEmail')?.value || ''}">
+                  <div class="relative mb-2">
+                    <i class="fa-solid fa-pen absolute left-3 top-3 text-gray-400"></i>
+                    <textarea id="replyText-${comment._id}" required rows="2" placeholder="Write your reply..." class="w-full pl-10 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:border-primary-500 focus:outline-none resize-none text-sm"></textarea>
+                  </div>
+                  <button type="submit" class="px-4 py-1.5 bg-gradient-to-r from-primary-500 to-primary-600 text-white text-sm font-semibold rounded-lg hover:from-primary-600 hover:to-primary-700 transition-all">
+                    <i class="fa-solid fa-paper-plane mr-1"></i>Reply
+                  </button>
+                </form>
+              </div>
+              
+              <!-- Replies -->
+              ${comment.replies && comment.replies.length > 0 ? `
+                <div class="ml-4 space-y-2 border-l-2 border-gray-100 pl-4">
+                  ${comment.replies.map((reply, idx) => `
+                    <div class="p-3 bg-gray-50 rounded-lg" id="reply-${comment._id}-${idx}">
+                      <div class="flex items-center justify-between mb-1">
+                        <div class="flex items-center gap-2">
+                          <p class="font-semibold text-gray-700 text-sm">${reply.userName}</p>
+                          ${reply.userRole === 'admin' ? '<span class="px-1.5 py-0.5 bg-red-100 text-red-600 text-xs rounded-full">Admin</span>' : ''}
+                        </div>
+                        <span class="text-xs text-gray-500">${new Date(reply.createdAt).toLocaleString()}</span>
+                      </div>
+                      <p class="text-gray-600 text-sm">${reply.comment}</p>
+                    </div>
+                  `).join('')}
+                </div>
+              ` : ''}
             </div>
           `).join('');
         }
@@ -353,14 +439,92 @@
     }
   };
 
-  // Submit comment
-  window.submitComment = async function(event, docId) {
+  // Like comment
+  window.likeComment = async function (docId, commentId) {
+    const userEmail = document.getElementById('commentEmail')?.value;
+
+    if (!userEmail) {
+      alert('Please enter your email to like comments');
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/department-documents/${docId}/comments/${commentId}/like`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userEmail })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Update the like count in UI
+        loadComments(docId);
+      }
+    } catch (error) {
+      console.error('Like comment error:', error);
+    }
+  };
+
+  // Toggle reply form
+  window.toggleReplyForm = function (commentId) {
+    const form = document.getElementById(`replyForm-${commentId}`);
+    form.classList.toggle('hidden');
+  };
+
+  // Submit reply
+  window.submitReply = async function (event, docId, commentId) {
     event.preventDefault();
-    
+
+    const userName = document.getElementById(`replyName-${commentId}`).value;
+    const userEmail = document.getElementById(`replyEmail-${commentId}`).value;
+    const reply = document.getElementById(`replyText-${commentId}`).value;
+
+    if (!userName || !userEmail) {
+      // Get from main comment form
+      const mainName = document.getElementById('commentName').value;
+      const mainEmail = document.getElementById('commentEmail').value;
+      if (!mainName || !mainEmail) {
+        alert('Please fill in your name and email in the comment form first');
+        return;
+      }
+      document.getElementById(`replyName-${commentId}`).value = mainName;
+      document.getElementById(`replyEmail-${commentId}`).value = mainEmail;
+    }
+
+    try {
+      const response = await fetch(`/api/department-documents/${docId}/comments/${commentId}/reply`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userName: userName || document.getElementById('commentName').value,
+          userEmail: userEmail || document.getElementById('commentEmail').value,
+          userRole: 'student',
+          reply: reply
+        })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        loadComments(docId);
+      } else {
+        alert('Failed to post reply: ' + (data.message || 'Unknown error'));
+      }
+    } catch (error) {
+      console.error('Submit reply error:', error);
+      alert('Error posting reply. Please try again.');
+    }
+  };
+
+  // Submit comment
+  window.submitComment = async function (event, docId) {
+    event.preventDefault();
+
     const name = document.getElementById('commentName').value;
     const email = document.getElementById('commentEmail').value;
     const comment = document.getElementById('commentText').value;
-    
+
     try {
       const response = await fetch(`/api/department-documents/${docId}/comments`, {
         method: 'POST',
@@ -371,22 +535,22 @@
           comment: comment
         })
       });
-      
+
       const data = await response.json();
-      
+
       if (data.success) {
         // Reload comments
         loadComments(docId);
         // Clear form
         document.getElementById('commentForm').reset();
-        
+
         // Show success message
         const commentsList = document.getElementById('commentsList');
         const successMsg = document.createElement('div');
         successMsg.className = 'p-4 bg-green-50 border border-green-200 rounded-xl text-green-700 mb-4';
         successMsg.innerHTML = '<i class="fa-solid fa-check-circle mr-2"></i>Comment posted successfully!';
         commentsList.parentNode.insertBefore(successMsg, commentsList);
-        
+
         setTimeout(() => successMsg.remove(), 3000);
       } else {
         alert('Failed to post comment: ' + (data.message || 'Unknown error'));
@@ -398,25 +562,25 @@
   };
 
   // Search functionality
-  document.getElementById('searchInput').addEventListener('input', function(e) {
+  document.getElementById('searchInput').addEventListener('input', function (e) {
     const searchTerm = e.target.value.toLowerCase();
-    
+
     filteredDocuments = allDocuments.filter(doc => {
       return doc.title.toLowerCase().includes(searchTerm) ||
-             (doc.description && doc.description.toLowerCase().includes(searchTerm)) ||
-             doc.category.toLowerCase().includes(searchTerm);
+        (doc.description && doc.description.toLowerCase().includes(searchTerm)) ||
+        doc.category.toLowerCase().includes(searchTerm);
     });
 
     applyFilters();
   });
 
   // Category filter
-  document.getElementById('categoryFilter').addEventListener('change', function(e) {
+  document.getElementById('categoryFilter').addEventListener('change', function (e) {
     applyFilters();
   });
 
   // Sort filter
-  document.getElementById('sortFilter').addEventListener('change', function(e) {
+  document.getElementById('sortFilter').addEventListener('change', function (e) {
     applyFilters();
   });
 
@@ -428,11 +592,11 @@
 
     // Filter
     filteredDocuments = allDocuments.filter(doc => {
-      const matchesSearch = !searchTerm || 
+      const matchesSearch = !searchTerm ||
         doc.title.toLowerCase().includes(searchTerm) ||
         (doc.description && doc.description.toLowerCase().includes(searchTerm)) ||
         doc.category.toLowerCase().includes(searchTerm);
-      
+
       const matchesCategory = !category || doc.category === category;
 
       return matchesSearch && matchesCategory;
@@ -469,7 +633,7 @@
   }
 
   // Initialize on page load
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     loadDocuments();
   });
 
