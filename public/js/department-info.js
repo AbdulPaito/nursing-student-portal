@@ -242,9 +242,6 @@
               <button onclick="downloadDocument('${doc._id}')" class="flex-1 px-6 py-3.5 bg-gradient-to-r from-teal-500 to-teal-600 text-white font-semibold rounded-xl hover:from-teal-600 hover:to-teal-700 transition-all shadow-lg shadow-teal-500/25 flex items-center justify-center gap-2">
                 <i class="fa-solid fa-download"></i>Download Document
               </button>
-              <button onclick="previewDocument('${doc._id}')" class="px-6 py-3.5 bg-white border-2 border-slate-200 text-slate-700 font-semibold rounded-xl hover:bg-slate-50 hover:border-slate-300 transition-all flex items-center justify-center gap-2">
-                <i class="fa-solid fa-eye"></i>Preview
-              </button>
             </div>
             
             <div class="mt-4 p-3 bg-blue-50 rounded-xl flex items-start gap-3">
