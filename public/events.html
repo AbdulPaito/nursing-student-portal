@@ -262,41 +262,96 @@
         <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-lg">
           <img src="images/nursing-logo.png" alt="Nursing Logo" class="w-10 h-10 object-contain">
         </div>
-        <h1 class="text-3xl md:text-4xl font-bold">College Events</h1>
+        <h1 class="text-3xl md:text-4xl font-bold">College Portal</h1>
       </div>
-      <p class="text-lg opacity-90 ml-15">Stay updated with upcoming college activities and trainings.</p>
+      <p class="text-lg opacity-90 ml-15">Stay updated with events and official department documents.</p>
     </div>
   </section>
 
   <!-- Main Content -->
   <main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <!-- Filter Bar -->
-    <div class="mb-6 flex flex-wrap gap-4 items-center justify-between">
-      <div class="flex items-center gap-2">
-        <span class="text-sm text-gray-500">Filter by status:</span>
-        <div class="flex gap-2">
-          <button class="px-4 py-2 rounded-full text-sm font-medium bg-primary text-white shadow-md transition-all hover:shadow-lg" id="filterAll">All</button>
-          <button class="px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition-all" id="filterUpcoming">Upcoming</button>
-          <button class="px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition-all" id="filterPast">Past</button>
+    <!-- Tab Buttons -->
+    <div class="mb-8 flex flex-col lg:flex-row lg:items-center gap-4">
+      <div class="glass rounded-2xl p-2 inline-flex gap-2 border border-white/50 shadow-lg">
+        <button id="eventsTab" class="portal-tab px-6 py-3 rounded-xl text-sm font-bold transition-all duration-300 bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-md" onclick="switchPortalTab('events')">
+          <i class="fa-solid fa-calendar-check mr-2"></i>Events
+        </button>
+        <button id="documentsTab" class="portal-tab px-6 py-3 rounded-xl text-sm font-bold transition-all duration-300 bg-white text-gray-600 hover:bg-gray-50" onclick="switchPortalTab('documents')">
+          <i class="fa-solid fa-folder-open mr-2"></i>Department Documents
+        </button>
+      </div>
+    </div>
+
+    <!-- Events Section -->
+    <div id="eventsSection">
+      <!-- Filter Bar -->
+      <div class="mb-6 flex flex-wrap gap-4 items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="text-sm text-gray-500">Filter by status:</span>
+          <div class="flex gap-2">
+            <button class="px-4 py-2 rounded-full text-sm font-medium bg-primary text-white shadow-md transition-all hover:shadow-lg" id="filterAll">All</button>
+            <button class="px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition-all" id="filterUpcoming">Upcoming</button>
+            <button class="px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition-all" id="filterPast">Past</button>
+          </div>
+        </div>
+        <div class="relative">
+          <i class="bi bi-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+          <input type="text" id="searchEvents" placeholder="Search events..." class="pl-10 pr-4 py-2 border border-gray-200 rounded-full text-sm focus:ring-2 focus:ring-primary focus:border-transparent transition-all w-64">
         </div>
       </div>
-      <div class="relative">
-        <i class="bi bi-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-        <input type="text" id="searchEvents" placeholder="Search events..." class="pl-10 pr-4 py-2 border border-gray-200 rounded-full text-sm focus:ring-2 focus:ring-primary focus:border-transparent transition-all w-64">
+
+      <!-- Events Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="eventsGrid">
+        <div class="col-span-full flex justify-center py-12">
+          <div class="spinner"></div>
+        </div>
+      </div>
+
+      <!-- No Results Message -->
+      <div id="noResults" class="hidden text-center py-12">
+        <i class="bi bi-search text-4xl text-gray-300 mb-3"></i>
+        <p class="text-gray-500">No events found matching your search.</p>
       </div>
     </div>
 
-    <!-- Events Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="eventsGrid">
-      <div class="col-span-full flex justify-center py-12">
-        <div class="spinner"></div>
+    <!-- Department Documents Section -->
+    <div id="documentsSection" class="hidden">
+      <!-- Documents Filter -->
+      <div class="mb-6 flex flex-wrap gap-4 items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="text-sm text-gray-500">Filter by category:</span>
+          <select id="categoryFilter" class="px-4 py-2 rounded-full text-sm font-medium bg-white border border-gray-200 focus:ring-2 focus:ring-primary focus:border-transparent transition-all">
+            <option value="">All Categories</option>
+            <option value="Letter">Letter</option>
+            <option value="Memo">Memo</option>
+            <option value="Policy">Policy</option>
+            <option value="Notice">Notice</option>
+            <option value="Form">Form</option>
+            <option value="Announcement">Announcement</option>
+          </select>
+        </div>
+        <div class="relative">
+          <i class="bi bi-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+          <input type="text" id="searchDocuments" placeholder="Search documents..." class="pl-10 pr-4 py-2 border border-gray-200 rounded-full text-sm focus:ring-2 focus:ring-primary focus:border-transparent transition-all w-64">
+        </div>
       </div>
-    </div>
 
-    <!-- No Results Message -->
-    <div id="noResults" class="hidden text-center py-12">
-      <i class="bi bi-search text-4xl text-gray-300 mb-3"></i>
-      <p class="text-gray-500">No events found matching your search.</p>
+      <!-- Documents List -->
+      <div id="documentsList" class="space-y-4">
+        <div class="text-center py-12">
+          <div class="spinner"></div>
+          <p class="text-gray-500 mt-4">Loading documents...</p>
+        </div>
+      </div>
+
+      <!-- No Documents Message -->
+      <div id="noDocuments" class="hidden text-center py-12">
+        <div class="w-24 h-24 mx-auto mb-4 rounded-2xl bg-gray-100 flex items-center justify-center">
+          <i class="fa-solid fa-folder-open text-5xl text-gray-300"></i>
+        </div>
+        <h3 class="text-xl font-bold text-gray-600 mb-2">No Documents Found</h3>
+        <p class="text-gray-500">No documents match your search criteria.</p>
+      </div>
     </div>
   </main>
 
@@ -499,6 +554,133 @@
       document.getElementById('searchEvents').addEventListener('input', function() {
         searchQuery = this.value;
         renderEvents();
+      });
+
+      // Tab switching
+      function switchPortalTab(tab) {
+        const eventsSection = document.getElementById('eventsSection');
+        const documentsSection = document.getElementById('documentsSection');
+        const eventsTab = document.getElementById('eventsTab');
+        const documentsTab = document.getElementById('documentsTab');
+        
+        if (tab === 'events') {
+          eventsSection.classList.remove('hidden');
+          documentsSection.classList.add('hidden');
+          eventsTab.className = 'portal-tab px-6 py-3 rounded-xl text-sm font-bold transition-all duration-300 bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-md';
+          documentsTab.className = 'portal-tab px-6 py-3 rounded-xl text-sm font-bold transition-all duration-300 bg-white text-gray-600 hover:bg-gray-50';
+        } else {
+          eventsSection.classList.add('hidden');
+          documentsSection.classList.remove('hidden');
+          eventsTab.className = 'portal-tab px-6 py-3 rounded-xl text-sm font-bold transition-all duration-300 bg-white text-gray-600 hover:bg-gray-50';
+          documentsTab.className = 'portal-tab px-6 py-3 rounded-xl text-sm font-bold transition-all duration-300 bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-md';
+          loadDocuments();
+        }
+      }
+
+      // Documents functionality
+      let allDocuments = [];
+      let documentsFilter = '';
+      let documentsSearch = '';
+
+      function renderDocuments() {
+        const list = document.getElementById('documentsList');
+        const noDocs = document.getElementById('noDocuments');
+        
+        let filtered = allDocuments;
+        
+        if (documentsFilter) {
+          filtered = filtered.filter(d => d.category === documentsFilter);
+        }
+        
+        if (documentsSearch) {
+          const q = documentsSearch.toLowerCase();
+          filtered = filtered.filter(d => (d.title || '').toLowerCase().includes(q) || (d.description || '').toLowerCase().includes(q));
+        }
+        
+        if (filtered.length === 0) {
+          list.innerHTML = '';
+          noDocs.classList.remove('hidden');
+          return;
+        }
+        
+        noDocs.classList.add('hidden');
+        list.innerHTML = filtered.map(doc => `
+          <div class="glass rounded-2xl p-6 hover:shadow-xl transition-all duration-300 border border-gray-100">
+            <div class="flex items-start gap-4">
+              <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center flex-shrink-0">
+                <i class="fa-solid fa-file-${getFileIcon(doc.fileType)} text-white text-xl"></i>
+              </div>
+              <div class="flex-grow">
+                <div class="flex items-start justify-between gap-3 mb-2">
+                  <h3 class="font-bold text-gray-800 text-lg">${escapeHtml(doc.title)}</h3>
+                  <span class="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-semibold rounded-full">${doc.category || 'General'}</span>
+                </div>
+                <p class="text-sm text-gray-600 mb-3">${escapeHtml(doc.description || 'No description available.')}</p>
+                <div class="flex items-center justify-between">
+                  <span class="text-xs text-gray-500">
+                    <i class="bi bi-calendar3 mr-1"></i>${formatDate(doc.createdAt)}
+                  </span>
+                  ${doc.fileUrl ? `
+                    <a href="${doc.fileUrl}" target="_blank" download class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary to-primary-dark text-white text-sm font-semibold rounded-xl hover:shadow-lg transition-all duration-300">
+                      <i class="fa-solid fa-download"></i>
+                      <span>Download</span>
+                    </a>
+                  ` : ''}
+                </div>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      function getFileIcon(type) {
+        const icons = {
+          'pdf': 'pdf',
+          'doc': 'word',
+          'docx': 'word',
+          'xls': 'excel',
+          'xlsx': 'excel',
+          'txt': 'lines'
+        };
+        return icons[type?.toLowerCase()] || 'lines';
+      }
+
+      function formatDate(dateStr) {
+        if (!dateStr) return '';
+        try {
+          const d = new Date(dateStr);
+          return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        } catch (e) { return dateStr; }
+      }
+
+      function loadDocuments() {
+        if (allDocuments.length > 0) return; // Already loaded
+        
+        fetch('/api/department-documents?published=true')
+          .then(r => r.json())
+          .then(docs => {
+            allDocuments = Array.isArray(docs) ? docs : [];
+            renderDocuments();
+          })
+          .catch(() => {
+            document.getElementById('documentsList').innerHTML = `
+              <div class="text-center py-12 text-gray-500">
+                <i class="bi bi-exclamation-circle text-4xl mb-3 block"></i>
+                Could not load documents.
+              </div>
+            `;
+          });
+      }
+
+      // Documents filters
+      document.getElementById('categoryFilter').addEventListener('change', function() {
+        documentsFilter = this.value;
+        renderDocuments();
+      });
+
+      document.getElementById('searchDocuments').addEventListener('input', function() {
+        documentsSearch = this.value;
+        renderDocuments();
       });
 
       // Load events
