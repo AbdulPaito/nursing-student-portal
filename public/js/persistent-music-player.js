@@ -134,13 +134,19 @@
       </div>
     `;
 
-    // Insert before mobile menu button (on mobile it appears left of hamburger)
+    // Insert after Contact link (data-page="about") or before mobile menu button as fallback
     await waitForMobileMenuBtn();
+    const contactLink = document.querySelector('a[data-page="about"]');
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    if (mobileMenuBtn && mobileMenuBtn.parentNode) {
+    
+    if (contactLink && contactLink.parentElement) {
+      // Insert after the Contact link in the nav
+      contactLink.parentElement.insertBefore(musicControl, contactLink.nextSibling);
+    } else if (mobileMenuBtn && mobileMenuBtn.parentNode) {
+      // Fallback: insert before mobile menu button
       mobileMenuBtn.parentNode.insertBefore(musicControl, mobileMenuBtn);
     } else {
-      // Fallback: append to nav container or find any container
+      // Final fallback: append to nav container
       const existingControl = document.getElementById('persistentMusicControl');
       if (!existingControl) {
         navContainer.appendChild(musicControl);

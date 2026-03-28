@@ -639,14 +639,8 @@
           <a href="/events" class="nav-link px-4 py-2.5 text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors duration-200 rounded-xl hover:bg-primary-50/50" data-page="events">
             <span class="flex items-center gap-2"><i class="fa-solid fa-calendar-days text-sm"></i>Events</span>
           </a>
-<a href="/daily-subjects.html" class="nav-link px-4 py-2.5 text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors duration-200 rounded-xl hover:bg-primary-50/50" data-page="subjects">
-            <span class="flex items-center gap-2"><i class="fa-solid fa-book-open text-sm"></i>Subjects</span>
-          </a>
-          <a href="/department-info.html" class="nav-link px-4 py-2.5 text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors duration-200 rounded-xl hover:bg-primary-50/50" data-page="department-info">
-            <span class="flex items-center gap-2"><i class="fa-solid fa-file-lines text-sm"></i>Department Info</span>
-          </a>
-          <a href="/announcements.html" class="nav-link px-4 py-2.5 text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors duration-200 rounded-xl hover:bg-primary-50/50" data-page="announcements">
-            <span class="flex items-center gap-2"><i class="fa-solid fa-bullhorn text-sm"></i>Announcements</span>
+          <a href="/department-info.html" class="nav-link px-4 py-2.5 text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors duration-200 rounded-xl hover:bg-primary-50/50" data-page="department-info" id="deptInfoLink">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-folder-open text-sm"></i>Department Docu</span>
           </a>
           <a href="#about" class="nav-link px-4 py-2.5 text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors duration-200 rounded-xl hover:bg-primary-50/50" data-page="about">
             <span class="flex items-center gap-2"><i class="fa-solid fa-circle-info text-sm"></i>Contact</span>
@@ -679,23 +673,11 @@
           </div>
           <span>Events</span>
         </a>
-<a href="/daily-subjects.html" class="flex items-center gap-4 px-4 py-3.5 text-sm font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-xl transition-all duration-200" data-page="subjects">
+        <a href="/department-info.html" class="flex items-center gap-4 px-4 py-3.5 text-sm font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-xl transition-all duration-200" data-page="department-info" id="deptInfoLinkMobile">
           <div class="w-10 h-10 rounded-xl bg-primary-100 flex items-center justify-center">
-            <i class="fa-solid fa-book-open text-primary-600"></i>
+            <i class="fa-solid fa-folder-open text-primary-600"></i>
           </div>
-          <span>Subjects</span>
-        </a>
-        <a href="/department-info.html" class="flex items-center gap-4 px-4 py-3.5 text-sm font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-xl transition-all duration-200" data-page="department-info">
-          <div class="w-10 h-10 rounded-xl bg-primary-100 flex items-center justify-center">
-            <i class="fa-solid fa-file-lines text-primary-600"></i>
-          </div>
-          <span>Department Info</span>
-        </a>
-        <a href="/announcements.html" class="flex items-center gap-4 px-4 py-3.5 text-sm font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-xl transition-all duration-200" data-page="announcements">
-          <div class="w-10 h-10 rounded-xl bg-primary-100 flex items-center justify-center">
-            <i class="fa-solid fa-bullhorn text-primary-600"></i>
-          </div>
-          <span>Announcements</span>
+          <span>Department Docu</span>
         </a>
         <div class="border-t border-gray-100 my-3"></div>
         <a href="#about" class="flex items-center gap-4 px-4 py-3.5 text-sm font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-xl transition-all duration-200" data-page="about">
@@ -747,7 +729,7 @@
       </div>
       
       <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 animate-fade-in-up bg-black/30 px-8 py-4 rounded-2xl backdrop-blur-sm inline-block">
-        Welcome to the <span class="text-primary-200">Nursing</span> Student Portal
+        WELCOME TO <span class="text-primary-200">CAHS</span> EVENTS PORTAL
       </h1>
       
       <!-- About Us Button -->
@@ -823,32 +805,6 @@
       
       <div class="glass rounded-2xl p-4 sm:p-6 card-hover animate-fade-in-up" style="animation-delay: 0.2s;">
         <div class="flex items-center gap-3 mb-3">
-          <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl stat-emerald flex items-center justify-center">
-            <i class="fa-solid fa-book-open-reader text-white text-lg sm:text-xl"></i>
-          </div>
-          <div class="text-2xl sm:text-3xl font-bold gradient-text" id="statSubjects">0</div>
-        </div>
-        <p class="text-sm text-gray-600 font-medium">Subjects Today</p>
-        <div class="mt-3 w-full bg-gray-200 rounded-full h-2">
-          <div class="bg-gradient-to-r from-emerald-500 to-teal-500 h-2 rounded-full transition-all duration-1000" style="width: 60%"></div>
-        </div>
-      </div>
-      
-      <div class="glass rounded-2xl p-4 sm:p-6 card-hover animate-fade-in-up" style="animation-delay: 0.3s;">
-        <div class="flex items-center gap-3 mb-3">
-          <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl stat-amber flex items-center justify-center">
-            <i class="fa-solid fa-bullhorn text-white text-lg sm:text-xl"></i>
-          </div>
-          <div class="text-2xl sm:text-3xl font-bold gradient-text" id="statAnnouncements">0</div>
-        </div>
-        <p class="text-sm text-gray-600 font-medium">Announcements</p>
-        <div class="mt-3 w-full bg-gray-200 rounded-full h-2">
-          <div class="bg-gradient-to-r from-amber-500 to-orange-500 h-2 rounded-full transition-all duration-1000" style="width: 85%"></div>
-        </div>
-      </div>
-      
-      <div class="glass rounded-2xl p-4 sm:p-6 card-hover animate-fade-in-up" style="animation-delay: 0.4s;">
-        <div class="flex items-center gap-3 mb-3">
           <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl stat-rose flex items-center justify-center">
             <i class="fa-solid fa-clock text-white text-lg sm:text-xl"></i>
           </div>
@@ -857,130 +813,6 @@
         <p class="text-xs text-gray-500" id="statNextEventDate">No upcoming events</p>
       </div>
     </div>
-
-    <!-- Announcements Carousel -->
-    <section class="mb-10 sm:mb-12 animate-fade-in-up relative" style="animation-delay: 0.5s;">
-      <div class="flex items-center justify-between mb-8">
-        <div class="flex items-center gap-4">
-          <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-500/30">
-            <i class="fa-solid fa-bullhorn text-white text-2xl"></i>
-          </div>
-          <div>
-            <h2 class="text-3xl sm:text-4xl font-bold gradient-text">Latest Announcements</h2>
-            <p class="text-sm text-gray-500 mt-1">Stay updated with important news</p>
-          </div>
-        </div>
-      </div>
-      
-      <div class="relative">
-        <!-- Announcement Cards Container -->
-        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-purple-50 via-white to-blue-50 p-1">
-          <!-- Inner glow border effect -->
-          <div class="absolute inset-0 rounded-3xl bg-gradient-to-r from-primary-500/20 via-secondary-500/20 to-primary-500/20 blur-xl"></div>
-          
-          <!-- Main content area -->
-          <div class="relative bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl shadow-primary-500/10 overflow-hidden">
-            <!-- Navigation Arrows - Modern Circular Design -->
-            <button type="button" class="announcement-nav-btn announcement-nav-prev" id="announcementsPrev" aria-label="Previous announcement">
-              <div class="relative z-10">
-                <i class="fa-solid fa-chevron-left text-xl"></i>
-              </div>
-              <div class="absolute inset-0 bg-gradient-to-br from-primary-600 to-secondary-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full"></div>
-            </button>
-            
-            <button type="button" class="announcement-nav-btn announcement-nav-next" id="announcementsNext" aria-label="Next announcement">
-              <div class="relative z-10">
-                <i class="fa-solid fa-chevron-right text-xl"></i>
-              </div>
-              <div class="absolute inset-0 bg-gradient-to-br from-primary-600 to-secondary-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full"></div>
-            </button>
-            
-            <!-- Carousel Container - Compact -->
-            <div class="overflow-hidden px-4 sm:px-20 py-6">
-              <div class="flex transition-transform duration-700 ease-in-out" id="announcementsInner">
-                <!-- Placeholder -->
-                <div class="flex-shrink-0 w-full text-center py-16 text-gray-500" id="announcementsPlaceholder">
-                  <div class="w-24 h-24 mx-auto mb-6 rounded-3xl bg-gradient-to-br from-primary-100 to-purple-100 flex items-center justify-center">
-                    <i class="fa-solid fa-bullhorn text-4xl text-primary-400"></i>
-                  </div>
-                  <h3 class="text-xl font-bold text-gray-700 mb-2">No Announcements Yet</h3>
-                  <p class="text-gray-500">Check back later for important updates!</p>
-                </div>
-              </div>
-            </div>
-            
-            <!-- Pagination Dots - Enhanced Design -->
-            <div class="flex justify-center gap-3 pb-6" id="announcementDots"></div>
-          </div>
-        </div>
-      </div>
-    </section>
-    
-    <style>
-      /* Modern Navigation Arrows */
-      .announcement-nav-btn {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 56px;
-        height: 56px;
-        border-radius: 50%;
-        background: white;
-        border: 3px solid #7c3aed;
-        color: #7c3aed;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        z-index: 20;
-        box-shadow: 0 8px 24px rgba(124, 58, 237, 0.2);
-        overflow: hidden;
-        @apply group;
-      }
-      
-      .announcement-nav-prev {
-        left: 8px;
-      }
-      
-      .announcement-nav-next {
-        right: 8px;
-      }
-      
-      @media (min-width: 640px) {
-        .announcement-nav-prev {
-          left: 16px;
-        }
-        .announcement-nav-next {
-          right: 16px;
-        }
-      }
-      
-      .announcement-nav-btn:hover {
-        transform: translateY(-50%) scale(1.1);
-        box-shadow: 0 12px 32px rgba(124, 58, 237, 0.4);
-        border-color: transparent;
-      }
-      
-      .announcement-nav-btn:hover i {
-        color: white;
-      }
-      
-      .announcement-nav-btn:active {
-        transform: translateY(-50%) scale(0.95);
-      }
-      
-      /* Hide arrows on very small screens */
-      @media (max-width: 480px) {
-        .announcement-nav-btn {
-          width: 44px;
-          height: 44px;
-        }
-        .announcement-nav-btn i {
-          font-size: 16px;
-        }
-      }
-    </style>
 
     <!-- Two Column Layout -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8">
@@ -1032,52 +864,6 @@
 
       <!-- Right Column -->
       <div class="lg:col-span-5 space-y-6 sm:space-y-8">
-        <!-- Today's Subjects -->
-        <div class="animate-fade-in-up" style="animation-delay: 0.7s;">
-          <div class="flex items-center gap-3 mb-6">
-            <div class="w-12 h-12 rounded-xl stat-emerald flex items-center justify-center">
-              <i class="fa-solid fa-book-open text-white text-xl"></i>
-            </div>
-            <h2 class="text-2xl sm:text-3xl font-bold gradient-text">Today's Subjects</h2>
-          </div>
-          
-          <!-- Subjects Carousel Container -->
-          <div class="relative">
-            <!-- Navigation Buttons -->
-            <button id="subjectsPrev" class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 w-10 h-10 rounded-full bg-white shadow-lg hover:shadow-xl flex items-center justify-center text-emerald-600 hover:text-emerald-700 transition-all duration-300 hover:scale-110">
-              <i class="fa-solid fa-chevron-left"></i>
-            </button>
-            <button id="subjectsNext" class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 w-10 h-10 rounded-full bg-white shadow-lg hover:shadow-xl flex items-center justify-center text-emerald-600 hover:text-emerald-700 transition-all duration-300 hover:scale-110">
-              <i class="fa-solid fa-chevron-right"></i>
-            </button>
-            
-            <!-- Carousel Track -->
-            <div class="overflow-hidden rounded-2xl">
-              <div id="subjectsCarouselTrack" class="flex transition-transform duration-500 ease-in-out">
-                <!-- Subjects will be loaded here one per slide -->
-                <div class="flex-shrink-0 w-full">
-                  <div id="todaySubjects">
-                    <!-- Loading State -->
-                    <div class="flex justify-center py-12">
-                      <div class="flex flex-col items-center gap-4">
-                        <div class="w-16 h-16 rounded-2xl bg-emerald-100 flex items-center justify-center animate-pulse">
-                          <i class="fa-solid fa-spinner fa-spin text-3xl text-emerald-600"></i>
-                        </div>
-                        <p class="text-gray-500 font-medium">Loading subjects...</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <!-- Carousel Indicators -->
-            <div id="subjectsIndicators" class="flex justify-center gap-2 mt-4">
-              <!-- Indicators will be added dynamically -->
-            </div>
-          </div>
-        </div>
-
         <!-- Mini Calendar -->
         <div class="animate-fade-in-up" style="animation-delay: 0.8s;">
           <div class="flex items-center gap-3 mb-6">
@@ -1136,16 +922,6 @@
         <a href="/events" class="group inline-flex items-center gap-3 px-6 sm:px-8 py-3.5 sm:py-4 bg-gradient-to-r from-primary-600 to-secondary-600 text-white font-semibold rounded-2xl hover:shadow-xl hover:shadow-primary-500/30 hover:-translate-y-1 transition-all duration-300">
           <i class="fa-solid fa-calendar-week text-lg group-hover:animate-pulse"></i>
           <span>View Full Calendar</span>
-          <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
-        </a>
-        <a href="/daily-subjects.html" class="group inline-flex items-center gap-3 px-6 sm:px-8 py-3.5 sm:py-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-semibold rounded-2xl hover:shadow-xl hover:shadow-emerald-500/30 hover:-translate-y-1 transition-all duration-300">
-          <i class="fa-solid fa-book-open-reader text-lg group-hover:animate-pulse"></i>
-          <span>All Subjects</span>
-          <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
-        </a>
-        <a href="/announcements.html" class="group inline-flex items-center gap-3 px-6 sm:px-8 py-3.5 sm:py-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-semibold rounded-2xl hover:shadow-xl hover:shadow-amber-500/30 hover:-translate-y-1 transition-all duration-300">
-          <i class="fa-solid fa-bullhorn text-lg group-hover:animate-pulse"></i>
-          <span>All Announcements</span>
           <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
         </a>
       </div>
