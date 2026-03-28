@@ -164,7 +164,9 @@ router.get('/', async (req, res) => {
     let query = {};
 
     // Non-admins can only see published documents
-    if (published === 'true' || !req.headers.authorization) {
+    // If Authorization header is present, show all docs (admin view)
+    // If no Authorization header or published=true, only show published docs
+    if (!req.headers.authorization) {
       query.isPublished = true;
     }
 

@@ -136,15 +136,17 @@
 
       // Load section-specific data
       if (section === 'department') {
+        console.log('📄 Department section loaded, fetching info and documents...');
         setTimeout(function () { loadDepartmentInfo(); }, 50);
+        // Delay loadDepartmentDocuments to ensure DOM is ready
+        setTimeout(function () { 
+          console.log('⏰ Calling loadDepartmentDocuments after delay...');
+          loadDepartmentDocuments(); 
+        }, 100);
       }
       if (section === 'music') {
         console.log('🎵 Music section loaded, fetching files...');
         loadMusicFiles();
-      }
-      if (section === 'department-documents') {
-        console.log('📄 Department Info section loaded, fetching documents...');
-        loadDepartmentDocuments();
       }
 
       // Update active link styling
@@ -335,22 +337,72 @@
     if (!eventsTableBody) return;
 
     if (!filtered.length) {
-      eventsTableBody.innerHTML = '<tr><td colspan="6" class="px-6 py-12 text-center"><div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gray-100 mb-4"><i class="fa-solid fa-calendar-days text-2xl text-gray-400"></i></div><p class="text-gray-500 font-medium">No events found</p></td></tr>';
+      eventsTableBody.innerHTML = '<tr><td colspan="6" class="px-6 py-12 text-center"><div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-violet-50 mb-4"><i class="fa-solid fa-calendar-xmark text-2xl text-violet-400"></i></div><p class="text-gray-500 font-medium">No events found</p><p class="text-sm text-gray-400 mt-1">Try adjusting your search</p></td></tr>';
       return;
     }
 
     eventsTableBody.innerHTML = filtered.map(function (e) {
-      var itemsList = e.items && e.items.length ? e.items.map(escapeHtml).join(', ') : '<span class="text-gray-400">—</span>';
-      return '<tr class="hover:bg-gray-50 transition-colors">' +
-        '<td class="px-6 py-4"><span class="font-semibold text-gray-800">' + escapeHtml(e.title) + '</span></td>' +
-        '<td class="px-6 py-4"><span class="font-medium text-gray-700">' + escapeHtml(e.time || '—') + '</span></td>' +
-        '<td class="px-6 py-4"><span class="font-medium text-gray-700">' + escapeHtml(e.date) + '</span></td>' +
-        '<td class="px-6 py-4"><span class="text-gray-600">' + escapeHtml(e.location || '—') + '</span></td>' +
-        '<td class="px-6 py-4"><span class="text-sm text-gray-600">' + itemsList + '</span></td>' +
-        '<td class="px-6 py-4"><div class="flex gap-2">' +
-        '<button onclick="window.editEvent(\'' + escapeHtml(e._id) + '\')" class="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-1"><i class="fa-solid fa-pen text-xs"></i> Edit</button>' +
-        '<button onclick="window.deleteEvent(\'' + escapeHtml(e._id) + '\')" class="px-3 py-1.5 bg-rose-500 hover:bg-rose-600 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-1"><i class="fa-solid fa-trash text-xs"></i> Delete</button>' +
-        '</div></td>' +
+      // Format items as badges like Grade Portal
+      var itemsList = e.items && e.items.length 
+        ? e.items.map(function(item) { 
+            return '<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 text-xs font-medium border border-emerald-100"><i class="fa-solid fa-check text-[8px] mr-1"></i>' + escapeHtml(item) + '</span>'; 
+          }).join('') 
+        : '<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-gray-50 text-gray-400 text-xs">-</span>';
+      
+      // Status badge based on date - Grade Portal style
+      var today = new Date().toISOString().split('T')[0];
+      var eventDate = e.date || e.startDate;
+      var isToday = eventDate === today;
+      var isPast = eventDate < today;
+      var isUpcoming = eventDate > today;
+      
+      var statusBadge = isToday 
+        ? '<span class="inline-flex items-center px-2.5 py-1 rounded-full bg-amber-50 text-amber-600 text-xs font-medium border border-amber-100"><span class="w-1.5 h-1.5 rounded-full bg-amber-500 mr-1.5 animate-pulse"></span>Today</span>'
+        : isPast 
+          ? '<span class="inline-flex items-center px-2.5 py-1 rounded-full bg-gray-50 text-gray-500 text-xs font-medium border border-gray-100">Past</span>'
+          : '<span class="inline-flex items-center px-2.5 py-1 rounded-full bg-violet-50 text-violet-600 text-xs font-medium border border-violet-100">Upcoming</span>';
+      
+      // Category icon with colored background like Grade Portal avatars
+      var category = (e.category || '').toLowerCase();
+      var iconBg = 'bg-violet-500';
+      var iconClass = 'fa-calendar';
+      
+      if (category.includes('exam')) { iconBg = 'bg-rose-500'; iconClass = 'fa-file-circle-check'; }
+      else if (category.includes('orient')) { iconBg = 'bg-blue-500'; iconClass = 'fa-compass'; }
+      else if (category.includes('train')) { iconBg = 'bg-amber-500'; iconClass = 'fa-dumbbell'; }
+      else if (category.includes('work')) { iconBg = 'bg-emerald-500'; iconClass = 'fa-briefcase'; }
+      else if (category.includes('seminar')) { iconBg = 'bg-indigo-500'; iconClass = 'fa-chalkboard-user'; }
+      else if (category.includes('social')) { iconBg = 'bg-pink-500'; iconClass = 'fa-champagne-glasses'; }
+      
+      return '<tr class="hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-0">' +
+        '<td class="px-6 py-4">' +
+          '<div class="flex items-center gap-3">' +
+            '<div class="w-10 h-10 rounded-xl ' + iconBg + ' flex items-center justify-center flex-shrink-0">' +
+              '<i class="fa-solid ' + iconClass + ' text-white text-sm"></i>' +
+            '</div>' +
+            '<div class="min-w-0 flex-1">' +
+              '<div class="font-semibold text-gray-800 text-sm truncate">' + escapeHtml(e.title) + '</div>' +
+              '<div class="text-xs text-gray-500">' + (e.description ? escapeHtml(e.description.substring(0, 40)) + (e.description.length > 40 ? '...' : '') : 'No description') + '</div>' +
+              '<div class="mt-1">' + statusBadge + '</div>' +
+            '</div>' +
+          '</div>' +
+        '</td>' +
+        '<td class="px-6 py-4 text-sm text-gray-700">' + escapeHtml(e.time || '—') + '</td>' +
+        '<td class="px-6 py-4 text-sm text-gray-700">' + escapeHtml(eventDate) + '</td>' +
+        '<td class="px-6 py-4 text-sm text-gray-700">' + escapeHtml(e.location || '—') + '</td>' +
+        '<td class="px-6 py-4">' +
+          '<div class="flex flex-wrap gap-1">' + itemsList + '</div>' +
+        '</td>' +
+        '<td class="px-6 py-4">' +
+          '<div class="flex items-center justify-center gap-2">' +
+            '<button onclick="window.editEvent(\'' + escapeHtml(e._id) + '\')" class="inline-flex items-center gap-1 px-3 py-1.5 bg-violet-50 text-violet-600 hover:bg-violet-100 rounded-lg text-xs font-medium transition-colors" title="Edit">' +
+              '<i class="fa-solid fa-pen"></i> Edit' +
+            '</button>' +
+            '<button onclick="window.deleteEvent(\'' + escapeHtml(e._id) + '\')" class="inline-flex items-center gap-1 px-3 py-1.5 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-lg text-xs font-medium transition-colors" title="Delete">' +
+              '<i class="fa-solid fa-trash"></i> Delete' +
+            '</button>' +
+          '</div>' +
+        '</td>' +
         '</tr>';
     }).join('');
   }
@@ -446,7 +498,73 @@
     } catch (err) { toast(err.message || 'Failed to delete.', 'error'); }
   };
 
-  // Daily Subjects CRUD
+  // Event Filter and Sort
+  var eventFilterStatus = 'all';
+  var eventSortOrder = 'date-asc';
+
+  window.toggleEventFilter = function () {
+    // Cycle through filter options: all -> today -> upcoming -> past -> all
+    if (eventFilterStatus === 'all') eventFilterStatus = 'today';
+    else if (eventFilterStatus === 'today') eventFilterStatus = 'upcoming';
+    else if (eventFilterStatus === 'upcoming') eventFilterStatus = 'past';
+    else eventFilterStatus = 'all';
+    
+    applyEventFilterAndSort();
+    toast('Filter: ' + eventFilterStatus.charAt(0).toUpperCase() + eventFilterStatus.slice(1));
+  };
+
+  window.toggleEventSort = function () {
+    // Cycle through sort options: date-asc -> date-desc -> title-asc -> title-desc -> date-asc
+    if (eventSortOrder === 'date-asc') eventSortOrder = 'date-desc';
+    else if (eventSortOrder === 'date-desc') eventSortOrder = 'title-asc';
+    else if (eventSortOrder === 'title-asc') eventSortOrder = 'title-desc';
+    else eventSortOrder = 'date-asc';
+    
+    applyEventFilterAndSort();
+    var sortLabel = eventSortOrder.replace('-', ' ').replace('asc', '↑').replace('desc', '↓');
+    toast('Sort: ' + sortLabel.charAt(0).toUpperCase() + sortLabel.slice(1));
+  };
+
+  function applyEventFilterAndSort() {
+    var today = new Date().toISOString().split('T')[0];
+    var filtered = eventsList.filter(function (e) {
+      var eventDate = e.date || e.startDate;
+      var isToday = eventDate === today;
+      var isPast = eventDate < today;
+      var isUpcoming = eventDate > today;
+      
+      if (eventFilterStatus === 'today') return isToday;
+      if (eventFilterStatus === 'upcoming') return isUpcoming;
+      if (eventFilterStatus === 'past') return isPast;
+      return true;
+    });
+    
+    // Sort
+    filtered.sort(function (a, b) {
+      var dateA = a.date || a.startDate;
+      var dateB = b.date || b.startDate;
+      var titleA = (a.title || '').toLowerCase();
+      var titleB = (b.title || '').toLowerCase();
+      
+      if (eventSortOrder === 'date-asc') return dateA.localeCompare(dateB);
+      if (eventSortOrder === 'date-desc') return dateB.localeCompare(dateA);
+      if (eventSortOrder === 'title-asc') return titleA.localeCompare(titleB);
+      if (eventSortOrder === 'title-desc') return titleB.localeCompare(titleA);
+      return 0;
+    });
+    
+    renderEvents(filtered);
+  }
+
+  // Override renderEvents to use the filter/sort when called without list
+  var originalRenderEvents = renderEvents;
+  renderEvents = function (list) {
+    if (!list) {
+      applyEventFilterAndSort();
+      return;
+    }
+    originalRenderEvents(list);
+  };
   var dailySubjectsFlat = [];
   var subjectsTableBody = document.getElementById('dailySubjectsTableBody');
   var subjectsTableWrap = document.getElementById('subjectsTableWrap');
@@ -500,7 +618,7 @@
         : '<span class="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-semibold">Inactive</span>';
 
       var subjectTypeDisplay = course.subjectType && course.subjectType !== ''
-        ? '<span class="px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold">' + escapeHtml(course.subjectType) + '</span>'
+        ? '<span class="px-3 py-1 rounded-full bg-violet-100 text-violet-700 text-xs font-semibold">' + escapeHtml(course.subjectType) + '</span>'
         : '<span class="text-gray-400 text-sm">—</span>';
 
       return '<tr class="hover:bg-gray-50 transition-colors">' +
@@ -512,7 +630,7 @@
         '<td class="px-6 py-4">' + escapeHtml(course.semester) + '</td>' +
         '<td class="px-6 py-4">' + statusBadge + '</td>' +
         '<td class="px-6 py-4"><div class="flex gap-2">' +
-        '<button onclick="editCourse(\'' + course._id + '\')" class="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-1"><i class="fa-solid fa-pen text-xs"></i> Edit</button>' +
+        '<button onclick="editCourse(\'' + course._id + '\')" class="px-3 py-1.5 bg-violet-500 hover:bg-violet-600 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-1"><i class="fa-solid fa-pen text-xs"></i> Edit</button>' +
         '<button onclick="deleteCourse(\'' + course._id + '\')" class="px-3 py-1.5 bg-rose-500 hover:bg-rose-600 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-1"><i class="fa-solid fa-trash text-xs"></i> Delete</button>' +
         '</div></td>' +
         '</tr>';
@@ -719,7 +837,7 @@
               '<td class="px-6 py-4"><span class="font-medium text-gray-700">' + escapeHtml(a.date) + '</span></td>' +
               '<td class="px-6 py-4">' + statusBadge + '</td>' +
               '<td class="px-6 py-4"><div class="flex gap-2">' +
-              '<button onclick="window.editAnnouncement(\'' + escapeHtml(a._id) + '\')" class="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-1"><i class="fa-solid fa-pen text-xs"></i> Edit</button>' +
+              '<button onclick="window.editAnnouncement(\'' + escapeHtml(a._id) + '\')" class="px-3 py-1.5 bg-violet-500 hover:bg-violet-600 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-1"><i class="fa-solid fa-pen text-xs"></i> Edit</button>' +
               '<button onclick="window.deleteAnnouncement(\'' + escapeHtml(a._id) + '\')" class="px-3 py-1.5 bg-rose-500 hover:bg-rose-600 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-1"><i class="fa-solid fa-trash text-xs"></i> Delete</button>' +
               '</div></td>' +
               '</tr>';
@@ -856,28 +974,51 @@
     if (!musicGrid) return;
     musicGrid.innerHTML = files.map(function (music) {
       var locationLabel = music.location === 'login' ? 'Login Page' : music.location === 'portal' ? 'Student Portal' : 'Both Pages';
-      var statusClass = music.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600';
+      var locationIcon = music.location === 'login' ? 'fa-right-to-bracket' : music.location === 'portal' ? 'fa-graduation-cap' : 'fa-globe';
+      var statusClass = music.isActive ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-gray-100 text-gray-600 border-gray-200';
       var statusText = music.isActive ? 'Active' : 'Inactive';
+      var statusIcon = music.isActive ? 'fa-circle-play' : 'fa-circle-pause';
       var fileSize = formatFileSize(music.fileSize);
 
-      return '<div class="glass rounded-2xl border-2 border-gray-200 p-5 hover:border-primary-500 hover:shadow-lg transition-all card-hover">' +
+      return '<div class="bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-xl hover:border-violet-300 transition-all card-hover group">' +
+        '<!-- Header with Icon and Status -->' +
         '<div class="flex items-start justify-between mb-4">' +
-        '<div class="flex-1"><h3 class="font-bold text-gray-800 mb-1">' + escapeHtml(music.title) + '</h3>' +
-        '<p class="text-xs text-gray-500">' + fileSize + '</p></div>' +
-        '<span class="px-3 py-1 rounded-full text-xs font-semibold ' + statusClass + '">' + statusText + '</span>' +
+          '<div class="flex items-center gap-3">' +
+            '<div class="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-md">' +
+              '<i class="fa-solid fa-music text-white text-lg"></i>' +
+            '</div>' +
+            '<div class="flex-1 min-w-0">' +
+              '<h3 class="font-bold text-gray-800 text-sm truncate">' + escapeHtml(music.title) + '</h3>' +
+              '<p class="text-xs text-gray-500">' + fileSize + '</p>' +
+            '</div>' +
+          '</div>' +
+          '<span class="px-2.5 py-1 rounded-full text-xs font-semibold border ' + statusClass + ' flex items-center gap-1">' +
+            '<i class="fa-solid ' + statusIcon + '"></i>' + statusText +
+          '</span>' +
         '</div>' +
-        '<div class="mb-4"><span class="inline-flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-medium bg-primary-50 text-primary-700">' +
-        '<i class="fa-solid fa-map-marker-alt"></i> ' + locationLabel +
-        '</span></div>' +
-        '<audio controls class="w-full mb-4" style="height: 40px;"><source src="' + music.filePath + '" type="audio/mpeg">Your browser does not support audio.</audio>' +
+        '<!-- Location Badge -->' +
+        '<div class="mb-4">' +
+          '<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-violet-50 text-violet-700 border border-violet-100">' +
+            '<i class="fa-solid ' + locationIcon + '"></i> ' + locationLabel +
+          '</span>' +
+        '</div>' +
+        '<!-- Audio Player -->' +
+        '<div class="mb-4 bg-gray-50 rounded-xl p-3">' +
+          '<audio controls class="w-full" style="height: 36px;"><source src="' + music.filePath + '" type="audio/mpeg">Your browser does not support audio.</audio>' +
+        '</div>' +
+        '<!-- Action Buttons -->' +
         '<div class="flex gap-2">' +
-        '<button onclick="toggleMusicStatus(\'' + music._id + '\', ' + music.isActive + ')" class="flex-1 px-4 py-2 rounded-lg font-medium transition-all ' + (music.isActive ? 'bg-gray-100 text-gray-700 hover:bg-gray-200' : 'bg-green-100 text-green-700 hover:bg-green-200') + '">' +
-        '<i class="fa-solid fa-' + (music.isActive ? 'pause' : 'play') + '"></i> ' + (music.isActive ? 'Deactivate' : 'Activate') +
-        '</button>' +
-        '<button onclick="openMusicEditModal(\'' + music._id + '\', \'' + escapeHtml(music.title) + '\', \'' + music.location + '\')" class="px-4 py-2 rounded-lg font-medium bg-blue-100 text-blue-700 hover:bg-blue-200 transition-all"><i class="fa-solid fa-edit"></i></button>' +
-        '<button onclick="deleteMusic(\'' + music._id + '\')" class="px-4 py-2 rounded-lg font-medium bg-red-100 text-red-700 hover:bg-red-200 transition-all"><i class="fa-solid fa-trash"></i></button>' +
+          '<button onclick="toggleMusicStatus(\'' + music._id + '\', ' + music.isActive + ')" class="flex-1 px-4 py-2.5 rounded-xl font-semibold text-sm transition-all ' + (music.isActive ? 'bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200' : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200') + ' flex items-center justify-center gap-2">' +
+            '<i class="fa-solid fa-' + (music.isActive ? 'pause' : 'play') + '"></i> ' + (music.isActive ? 'Deactivate' : 'Activate') +
+          '</button>' +
+          '<button onclick="openMusicEditModal(\'' + music._id + '\', \'' + escapeHtml(music.title) + '\', \'' + music.location + '\')" class="px-4 py-2.5 rounded-xl font-semibold text-sm bg-violet-50 text-violet-700 hover:bg-violet-100 border border-violet-200 transition-all" title="Edit">' +
+            '<i class="fa-solid fa-pen"></i>' +
+          '</button>' +
+          '<button onclick="deleteMusic(\'' + music._id + '\')" class="px-4 py-2.5 rounded-xl font-semibold text-sm bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 transition-all" title="Delete">' +
+            '<i class="fa-solid fa-trash"></i>' +
+          '</button>' +
         '</div>' +
-        '</div>';
+      '</div>';
     }).join('');
   }
 
@@ -1413,7 +1554,7 @@
                   <div>
                     <div class="flex items-center gap-2">
                       <span class="font-semibold text-gray-800">${user.name}</span>
-                      ${isSelf ? '<span class="px-2 py-0.5 rounded-full bg-blue-500 text-white text-xs font-semibold">You</span>' : ''}
+                      ${isSelf ? '<span class="px-2 py-0.5 rounded-full bg-violet-500 text-white text-xs font-semibold">You</span>' : ''}
                     </div>
                     <div class="flex items-center gap-2 mt-1">
                       ${onlineStatus}
@@ -1424,7 +1565,7 @@
               </td>
               <td class="px-6 py-4 text-gray-600">${user.email}</td>
               <td class="px-6 py-4">
-                <span class="px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold">${user.role}</span>
+                <span class="px-3 py-1 rounded-full bg-violet-100 text-violet-700 text-xs font-semibold">${user.role}</span>
               </td>
               <td class="px-6 py-4 text-gray-600">${createdDate}</td>
               <td class="px-6 py-4">${statusBadge}</td>
@@ -1731,8 +1872,8 @@
                   <div class="bg-white border-2 border-emerald-300 rounded-lg p-3 mb-2">
                     <p class="text-xs text-gray-600 mb-1">Temporary Password:</p>
                     <div class="flex items-center gap-2">
-                      <code class="text-lg font-bold text-blue-600 flex-1" id="tempPasswordDisplay">${data.temporaryPassword}</code>
-                      <button onclick="copyTempPassword('${data.temporaryPassword}')" class="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white text-xs rounded-lg transition-all">
+                      <code class="text-lg font-bold text-violet-600 flex-1" id="tempPasswordDisplay">${data.temporaryPassword}</code>
+                      <button onclick="copyTempPassword('${data.temporaryPassword}')" class="px-3 py-1 bg-violet-500 hover:bg-violet-600 text-white text-xs rounded-lg transition-all">
                         <i class="fa-solid fa-copy"></i> Copy
                       </button>
                     </div>
@@ -2034,106 +2175,124 @@
 
   // Load all documents
   window.loadDepartmentDocuments = async function () {
+    console.log('🚀 === loadDepartmentDocuments STARTED ===');
     const tbody = document.getElementById('documentsTableBody');
-    const categoryFilter = document.getElementById('categoryFilter');
 
-    if (!tbody) return;
+    if (!tbody) {
+      console.error('❌ tbody not found!');
+      return;
+    }
 
-    const category = categoryFilter ? categoryFilter.value : '';
+    // Get selected category from active button
+    const activeBtn = document.querySelector('.category-btn.bg-primary-600');
+    const category = activeBtn ? activeBtn.getAttribute('data-category') : 'All';
+    console.log('📂 Category selected:', category);
+    console.log('🎯 Active button:', activeBtn);
 
-    tbody.innerHTML = '<tr><td colspan="8" class="px-6 py-12 text-center text-gray-500"><i class="fa-solid fa-spinner fa-spin text-3xl mb-3 text-primary-500"></i><p>Loading documents...</p></td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-12 text-center text-gray-500"><i class="fa-solid fa-spinner fa-spin text-3xl mb-3 text-primary-500"></i><p>Loading documents...</p></td></tr>';
 
     try {
       const token = localStorage.getItem('adminToken');
-      const url = category
+      console.log('🔑 Token exists:', token ? 'YES' : 'NO');
+      
+      // Only add category param if not "All"
+      const url = category && category !== 'All'
         ? `/api/department-documents?category=${category}`
         : '/api/department-documents';
+      console.log('🔗 Fetching URL:', url);
 
       const response = await fetch(url, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
+      console.log('📥 Response status:', response.status);
+      console.log('📥 Response OK:', response.ok);
 
       const data = await response.json();
+      console.log('📄 Data received:', data);
+      console.log('📄 Data.success:', data.success);
+      console.log('📄 Documents count:', data.documents ? data.documents.length : 'N/A');
 
       if (data.success) {
         if (data.documents.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="8" class="px-6 py-8 text-center text-gray-500">No documents found</td></tr>';
+          console.log('⚠️ No documents found');
+          tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-8 text-center text-gray-500">No documents found</td></tr>';
           return;
         }
 
+        console.log('✅ Rendering', data.documents.length, 'documents');
         tbody.innerHTML = data.documents.map(doc => {
           const date = new Date(doc.dateIssued).toLocaleDateString();
+          
+          // Status badges like Grade Portal
           const publishedBadge = doc.isPublished
-            ? '<span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-semibold">Yes</span>'
-            : '<span class="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-semibold">No</span>';
+            ? '<span class="px-2 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-semibold">Yes</span>'
+            : '<span class="px-2 py-1 rounded-full bg-red-100 text-red-700 text-xs font-semibold">No</span>';
 
           const activeBadge = doc.isActive !== false
-            ? '<span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold">Active</span>'
-            : '<span class="px-3 py-1 rounded-full bg-red-100 text-red-700 text-xs font-semibold">Inactive</span>';
+            ? '<span class="px-2 py-1 rounded-full bg-violet-100 text-violet-700 text-xs font-semibold">Active</span>'
+            : '<span class="px-2 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-semibold">Inactive</span>';
 
-          const pinnedBadge = doc.isPinned
-            ? '<i class="fa-solid fa-thumbtack text-primary-500 mr-2"></i>'
-            : '';
-
-          let typeIcon = '<i class="fa-solid fa-file-lines text-xl"></i>';
+          // File type icon
+          let typeIcon = '<i class="fa-solid fa-file text-gray-400 text-lg"></i>';
           if (doc.contentType === 'file') {
-            if (doc.fileType === 'pdf') typeIcon = '<i class="fa-solid fa-file-pdf text-red-500 text-xl"></i>';
-            else if (doc.fileType === 'doc' || doc.fileType === 'docx') typeIcon = '<i class="fa-solid fa-file-word text-blue-500 text-xl"></i>';
-            else if (doc.fileType === 'jpg' || doc.fileType === 'jpeg' || doc.fileType === 'png') typeIcon = '<i class="fa-solid fa-file-image text-green-500 text-xl"></i>';
+            if (doc.fileType === 'pdf') typeIcon = '<i class="fa-solid fa-file-pdf text-red-500 text-lg"></i>';
+            else if (doc.fileType === 'doc' || doc.fileType === 'docx') typeIcon = '<i class="fa-solid fa-file-word text-blue-500 text-lg"></i>';
+            else if (doc.fileType === 'jpg' || doc.fileType === 'jpeg' || doc.fileType === 'png') typeIcon = '<i class="fa-solid fa-file-image text-green-500 text-lg"></i>';
+          } else {
+            typeIcon = '<i class="fa-solid fa-file-lines text-amber-500 text-lg"></i>';
           }
 
+          // Truncate description for display
+          const shortDesc = doc.description && doc.description.length > 50 
+            ? doc.description.substring(0, 50) + '...' 
+            : (doc.description || 'No description');
+
           return `
-            <tr class="hover:bg-gray-50 transition-colors">
+            <tr class="hover:bg-gray-50 transition-colors border-b border-gray-100">
               <td class="px-6 py-4">
-                <div class="flex items-center gap-3">
-                  ${pinnedBadge}
+                <div class="flex items-start gap-3">
+                  ${doc.isPinned ? '<i class="fa-solid fa-thumbtack text-violet-500 mt-1"></i>' : ''}
                   <div>
-                    <div class="font-semibold text-gray-800">${doc.title}</div>
-                    <div class="text-sm text-gray-500">${doc.description || 'No description'}</div>
+                    <div class="font-semibold text-gray-800 text-sm">${doc.title}</div>
+                    <div class="text-xs text-gray-500 mt-0.5 max-w-xs">${shortDesc}</div>
                   </div>
                 </div>
               </td>
               <td class="px-6 py-4 text-center">
-                <span class="px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold">${doc.category}</span>
+                <span class="px-2 py-1 rounded-full bg-violet-50 text-violet-600 text-xs font-medium">${doc.category}</span>
               </td>
               <td class="px-6 py-4 text-center">${typeIcon}</td>
-              <td class="px-6 py-4 text-center text-gray-600 text-sm">${date}</td>
+              <td class="px-6 py-4 text-center text-sm text-gray-600">${date}</td>
               <td class="px-6 py-4 text-center">${publishedBadge}</td>
               <td class="px-6 py-4 text-center">${activeBadge}</td>
-              <td class="px-6 py-4 text-center">
-                <div class="text-sm text-gray-600">
-                  <div><i class="fa-solid fa-eye text-primary-500 mr-1"></i> ${doc.viewCount || 0}</div>
-                  <div><i class="fa-solid fa-download text-green-500 mr-1"></i> ${doc.downloadCount || 0}</div>
-                  <div><i class="fa-solid fa-comments text-blue-500 mr-1"></i> ${doc.comments?.length || 0}</div>
-                </div>
-              </td>
               <td class="px-6 py-4">
-                <div class="flex items-center justify-center gap-2 flex-wrap">
-                  <button onclick="togglePublishDocument('${doc._id}')" class="px-3 py-2 ${doc.isPublished ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'} rounded-lg hover:opacity-80 transition-opacity text-sm font-medium" title="${doc.isPublished ? 'Unpublish' : 'Publish'}">
-                    <i class="fa-solid fa-${doc.isPublished ? 'eye-slash' : 'eye'}"></i>
+                <div class="flex items-center justify-center gap-1">
+                  <button onclick="viewDocument('${doc._id}')" class="w-8 h-8 rounded-lg bg-violet-50 text-violet-600 hover:bg-violet-100 flex items-center justify-center transition-colors" title="View">
+                    <i class="fa-solid fa-eye text-xs"></i>
                   </button>
-                  <button onclick="toggleActiveDocument('${doc._id}')" class="px-3 py-2 ${doc.isActive !== false ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'} rounded-lg hover:opacity-80 transition-opacity text-sm font-medium" title="${doc.isActive !== false ? 'Deactivate' : 'Activate'}">
-                    <i class="fa-solid fa-${doc.isActive !== false ? 'toggle-on' : 'toggle-off'}"></i>
+                  <button onclick="editDocument('${doc._id}')" class="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 hover:bg-amber-100 flex items-center justify-center transition-colors" title="Edit">
+                    <i class="fa-solid fa-pen text-xs"></i>
                   </button>
-                  <button onclick="editDocument('${doc._id}')" class="px-3 py-2 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition-colors text-sm font-medium" title="Edit">
-                    <i class="fa-solid fa-edit"></i>
-                  </button>
-                  <button onclick="viewDocument('${doc._id}')" class="px-3 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors text-sm font-medium" title="View">
-                    <i class="fa-solid fa-eye"></i>
-                  </button>
-                  <button onclick="deleteDocument('${doc._id}', '${doc.title.replace(/'/g, "\\\'")}')" class="px-3 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors text-sm font-medium" title="Delete">
-                    <i class="fa-solid fa-trash"></i>
+                  <button onclick="deleteDocument('${doc._id}', '${doc.title.replace(/'/g, "\\'")}')" class="w-8 h-8 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 flex items-center justify-center transition-colors" title="Delete">
+                    <i class="fa-solid fa-trash text-xs"></i>
                   </button>
                 </div>
               </td>
             </tr>
           `;
         }).join('');
+        console.log('✅ Documents rendered successfully');
+      } else {
+        console.error('❌ API returned success: false');
+        tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-8 text-center text-red-500">Error: ' + (data.error || 'Unknown error') + '</td></tr>';
       }
     } catch (err) {
-      console.error('Load documents error:', err);
-      tbody.innerHTML = '<tr><td colspan="8" class="px-6 py-8 text-center text-red-500">Error loading documents</td></tr>';
+      console.error('❌❌❌ Load documents error:', err);
+      console.error('❌ Error name:', err.name);
+      console.error('❌ Error message:', err.message);
+      tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-8 text-center text-red-500">Error loading documents: ' + err.message + '</td></tr>';
     }
+    console.log('🏁 === loadDepartmentDocuments FINISHED ===');
   };
 
   // Open upload modal
@@ -2148,6 +2307,87 @@
   window.closeUploadDocumentModal = function () {
     document.getElementById('uploadDocumentModal').classList.add('hidden');
   };
+
+  // Close edit document modal
+  window.closeEditDocumentModal = function () {
+    document.getElementById('editDocumentModal').classList.add('hidden');
+  };
+
+  // Handle edit document form submission
+  const editDocumentForm = document.getElementById('editDocumentForm');
+  if (editDocumentForm) {
+    editDocumentForm.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      
+      const docId = document.getElementById('editDocId').value;
+      const messageDiv = document.getElementById('editDocumentMessage');
+      const submitBtn = this.querySelector('button[type="submit"]');
+      
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Saving...';
+      
+      try {
+        const token = localStorage.getItem('adminToken');
+        const formData = {
+          title: document.getElementById('editDocTitle').value,
+          description: document.getElementById('editDocDescription').value,
+          category: document.getElementById('editDocCategory').value,
+          dateIssued: document.getElementById('editDocDate').value,
+          isPublished: document.getElementById('editIsPublished').checked,
+          isPinned: document.getElementById('editIsPinned').checked
+        };
+        
+        const response = await fetch(`/api/department-documents/${docId}`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(formData)
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          messageDiv.className = 'p-4 bg-emerald-50 border-l-4 border-emerald-500 rounded-r-xl';
+          messageDiv.innerHTML = `
+            <div class="flex items-center gap-3 text-emerald-800">
+              <i class="fa-solid fa-check-circle text-lg"></i>
+              <span class="text-sm font-medium">Document updated successfully!</span>
+            </div>
+          `;
+          messageDiv.classList.remove('hidden');
+          
+          setTimeout(() => {
+            closeEditDocumentModal();
+            loadDepartmentDocuments();
+          }, 1500);
+        } else {
+          messageDiv.className = 'p-4 bg-red-50 border-l-4 border-red-500 rounded-r-xl';
+          messageDiv.innerHTML = `
+            <div class="flex items-center gap-3 text-red-800">
+              <i class="fa-solid fa-exclamation-circle text-lg"></i>
+              <span class="text-sm font-medium">${data.error || 'Update failed'}</span>
+            </div>
+          `;
+          messageDiv.classList.remove('hidden');
+        }
+      } catch (error) {
+        console.error('Edit error:', error);
+        messageDiv.className = 'p-4 bg-red-50 border-l-4 border-red-500 rounded-r-xl';
+        messageDiv.innerHTML = `
+          <div class="flex items-center gap-3 text-red-800">
+            <i class="fa-solid fa-exclamation-circle text-lg"></i>
+            <span class="text-sm font-medium">Network error. Please try again.</span>
+          </div>
+        `;
+        messageDiv.classList.remove('hidden');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fa-solid fa-save mr-2"></i>Save Changes';
+      }
+    });
+  }
 
   // Switch content type
   window.switchContentType = function (type) {
@@ -2259,10 +2499,39 @@
     }
   };
 
-  // Edit document (placeholder for now)
-  window.editDocument = function (docId) {
-    alert('Edit functionality will be implemented soon. Document ID: ' + docId);
-    // TODO: Open edit modal with document data
+          // Edit document - open edit modal with document data
+  window.editDocument = async function (docId) {
+    const token = localStorage.getItem('adminToken');
+    
+    try {
+      // Fetch document data
+      const response = await fetch(`/api/department-documents/${docId}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await response.json();
+      
+      if (!data.success) {
+        alert('Failed to load document for editing');
+        return;
+      }
+      
+      const doc = data.document;
+      
+      // Populate edit form
+      document.getElementById('editDocId').value = docId;
+      document.getElementById('editDocTitle').value = doc.title;
+      document.getElementById('editDocDescription').value = doc.description || '';
+      document.getElementById('editDocCategory').value = doc.category;
+      document.getElementById('editDocDate').value = doc.dateIssued ? doc.dateIssued.split('T')[0] : '';
+      document.getElementById('editIsPublished').checked = doc.isPublished;
+      document.getElementById('editIsPinned').checked = doc.isPinned;
+      
+      // Show modal
+      document.getElementById('editDocumentModal').classList.remove('hidden');
+    } catch (error) {
+      console.error('Edit document error:', error);
+      alert('Error loading document for editing');
+    }
   };
 
   // Delete document
@@ -2373,7 +2642,7 @@
             </div>
             <div class="p-8">
               ${doc.description ? `
-                <div class="mb-6 p-5 bg-blue-50 rounded-2xl border-l-4 border-blue-500">
+                <div class="mb-6 p-5 bg-violet-50 rounded-2xl border-l-4 border-violet-500">
                   <p class="text-gray-700">${doc.description}</p>
                 </div>
               ` : ''}
@@ -2518,10 +2787,23 @@
     });
   }
 
-  // Category filter
+  // Category filter - new button-based
   const categoryFilter = document.getElementById('categoryFilter');
   if (categoryFilter) {
-    categoryFilter.addEventListener('change', loadDepartmentDocuments);
+    categoryFilter.addEventListener('click', function(e) {
+      if (e.target.classList.contains('category-btn')) {
+        // Remove active class from all buttons
+        document.querySelectorAll('.category-btn').forEach(btn => {
+          btn.classList.remove('bg-primary-600', 'text-white');
+          btn.classList.add('bg-gray-100', 'text-gray-600');
+        });
+        // Add active class to clicked button
+        e.target.classList.remove('bg-gray-100', 'text-gray-600');
+        e.target.classList.add('bg-primary-600', 'text-white');
+        
+        loadDepartmentDocuments();
+      }
+    });
   }
 
   // Search functionality

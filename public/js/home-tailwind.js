@@ -367,6 +367,11 @@
           </div>
         </div>
       `;
+    }
+    
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+  }
 
   // Statistics Cards - Fetch Real Data
   const statEvents = document.getElementById('statEvents');

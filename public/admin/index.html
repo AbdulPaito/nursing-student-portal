@@ -532,87 +532,89 @@
     <main class="flex-1 p-4 lg:p-8 pt-20 lg:pt-8">
       <!-- Dashboard Section -->
       <section id="section-dashboard" class="admin-section animate-fade-in">
-        <!-- Header -->
-        <div class="mb-8 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          <div>
-            <h1
-              class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary-700 to-secondary-700 bg-clip-text text-transparent mb-2">
-              Dashboard Overview
-            </h1>
-            <p class="text-gray-500">Welcome back! Here's what's happening in your portal.</p>
-          </div>
-          <div class="flex items-center gap-3">
-            <div class="glass rounded-2xl px-4 py-2 flex items-center gap-2">
-              <i class="fa-regular fa-calendar text-primary-600"></i>
-              <span class="text-sm font-medium text-gray-700" id="currentDate">Loading...</span>
+        <!-- Blue Header like Grade Portal -->
+        <div class="mb-8 bg-gradient-to-r from-violet-600 to-purple-700 rounded-2xl p-6 text-white shadow-xl">
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
+                <i class="fa-solid fa-chart-line text-xl"></i>
+              </div>
+              <div>
+                <h1 class="text-2xl font-bold">Dashboard Overview</h1>
+                <p class="text-white/80 text-sm">Welcome back! Here's what's happening in your portal.</p>
+              </div>
+            </div>
+            <div class="glass rounded-xl px-4 py-2 flex items-center gap-2 bg-white/10">
+              <i class="fa-regular fa-calendar text-white"></i>
+              <span class="text-sm font-medium text-white" id="currentDate">Loading...</span>
             </div>
           </div>
         </div>
 
         <!-- Stats Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           <!-- Total Events -->
           <div
-            class="card-hover stat-gradient-1 rounded-3xl p-6 text-white shadow-xl shadow-primary-500/20 stagger-1 animate-fade-in-up">
-            <div class="flex items-start justify-between mb-4">
-              <div class="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center">
-                <i class="fa-solid fa-calendar-check text-2xl"></i>
+            class="card-hover stat-gradient-1 rounded-2xl p-4 text-white shadow-lg shadow-primary-500/20 stagger-1 animate-fade-in-up">
+            <div class="flex items-start justify-between mb-2">
+              <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
+                <i class="fa-solid fa-calendar-check text-lg"></i>
               </div>
-              <span class="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold">+12%</span>
+              <span class="px-2 py-0.5 rounded-full bg-white/20 text-[10px] font-semibold">+12%</span>
             </div>
-            <div class="text-4xl font-bold mb-1" id="statEvents">0</div>
-            <div class="text-white/80 font-medium">Total Events</div>
-            <div class="mt-4 w-full bg-white/20 rounded-full h-2">
-              <div class="progress-bar bg-white rounded-full h-2" style="width: 75%"></div>
+            <div class="text-3xl font-bold mb-0.5" id="statEvents">0</div>
+            <div class="text-white/80 text-sm font-medium">Total Events</div>
+            <div class="mt-2 w-full bg-white/20 rounded-full h-1.5">
+              <div class="progress-bar bg-white rounded-full h-1.5" style="width: 75%"></div>
             </div>
           </div>
 
           <!-- Active Subjects -->
           <div
-            class="card-hover stat-gradient-2 rounded-3xl p-6 text-white shadow-xl shadow-emerald-500/20 stagger-2 animate-fade-in-up">
-            <div class="flex items-start justify-between mb-4">
-              <div class="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center">
-                <i class="fa-solid fa-book-open-reader text-2xl"></i>
+            class="card-hover stat-gradient-2 rounded-2xl p-4 text-white shadow-lg shadow-emerald-500/20 stagger-2 animate-fade-in-up">
+            <div class="flex items-start justify-between mb-2">
+              <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
+                <i class="fa-solid fa-book-open-reader text-lg"></i>
               </div>
-              <span class="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold">Active</span>
+              <span class="px-2 py-0.5 rounded-full bg-white/20 text-[10px] font-semibold">Active</span>
             </div>
-            <div class="text-4xl font-bold mb-1" id="statSubjects">0</div>
-            <div class="text-white/80 font-medium">Days Scheduled</div>
-            <div class="mt-4 w-full bg-white/20 rounded-full h-2">
-              <div class="progress-bar bg-white rounded-full h-2" style="width: 60%"></div>
+            <div class="text-3xl font-bold mb-0.5" id="statSubjects">0</div>
+            <div class="text-white/80 text-sm font-medium">Days Scheduled</div>
+            <div class="mt-2 w-full bg-white/20 rounded-full h-1.5">
+              <div class="progress-bar bg-white rounded-full h-1.5" style="width: 60%"></div>
             </div>
           </div>
 
           <!-- Announcements -->
           <div
-            class="card-hover stat-gradient-3 rounded-3xl p-6 text-white shadow-xl shadow-amber-500/20 stagger-3 animate-fade-in-up">
-            <div class="flex items-start justify-between mb-4">
-              <div class="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center">
-                <i class="fa-solid fa-bullhorn text-2xl"></i>
+            class="card-hover stat-gradient-3 rounded-2xl p-4 text-white shadow-lg shadow-amber-500/20 stagger-3 animate-fade-in-up">
+            <div class="flex items-start justify-between mb-2">
+              <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
+                <i class="fa-solid fa-bullhorn text-lg"></i>
               </div>
-              <span class="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold">Live</span>
+              <span class="px-2 py-0.5 rounded-full bg-white/20 text-[10px] font-semibold">Live</span>
             </div>
-            <div class="text-4xl font-bold mb-1" id="statAnnouncements">0</div>
-            <div class="text-white/80 font-medium">Announcements</div>
-            <div class="mt-4 w-full bg-white/20 rounded-full h-2">
-              <div class="progress-bar bg-white rounded-full h-2" style="width: 85%"></div>
+            <div class="text-3xl font-bold mb-0.5" id="statAnnouncements">0</div>
+            <div class="text-white/80 text-sm font-medium">Announcements</div>
+            <div class="mt-2 w-full bg-white/20 rounded-full h-1.5">
+              <div class="progress-bar bg-white rounded-full h-1.5" style="width: 85%"></div>
             </div>
           </div>
 
           <!-- Next Event -->
           <div
-            class="card-hover stat-gradient-4 rounded-3xl p-6 text-white shadow-xl shadow-rose-500/20 stagger-4 animate-fade-in-up">
-            <div class="flex items-start justify-between mb-4">
-              <div class="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center">
-                <i class="fa-solid fa-clock text-2xl"></i>
+            class="card-hover stat-gradient-4 rounded-2xl p-4 text-white shadow-lg shadow-rose-500/20 stagger-4 animate-fade-in-up">
+            <div class="flex items-start justify-between mb-2">
+              <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
+                <i class="fa-solid fa-clock text-lg"></i>
               </div>
-              <span class="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold">Soon</span>
+              <span class="px-2 py-0.5 rounded-full bg-white/20 text-[10px] font-semibold">Soon</span>
             </div>
-            <div class="text-lg font-bold mb-1 truncate" id="statNextEventName">—</div>
-            <div class="text-white/80 text-sm" id="statNextEventDate">No upcoming events</div>
-            <div class="mt-4 flex items-center gap-2">
-              <i class="fa-solid fa-hourglass-half text-white/60"></i>
-              <span class="text-xs text-white/60" id="statCountdown">—</span>
+            <div class="text-base font-bold mb-0.5 truncate" id="statNextEventName">—</div>
+            <div class="text-white/80 text-xs" id="statNextEventDate">No upcoming events</div>
+            <div class="mt-2 flex items-center gap-2">
+              <i class="fa-solid fa-hourglass-half text-white/60 text-xs"></i>
+              <span class="text-[10px] text-white/60" id="statCountdown">—</span>
             </div>
           </div>
         </div>
@@ -658,8 +660,8 @@
               <li class="flex items-center gap-4 py-2">
                 <div class="skeleton w-12 h-12 rounded-xl"></div>
                 <div class="flex-1 space-y-2">
-                  <div class="skeleton h-4 w-2/3 rounded"></div>
-                  <div class="skeleton h-3 w-1/3 rounded"></div>
+                  <div class="skeleton h-4 w-3/4 rounded"></div>
+                  <div class="skeleton h-3 w-1/2 rounded"></div>
                 </div>
               </li>
             </ul>
@@ -668,85 +670,70 @@
       </section>
 
       <!-- Department Section (Combined) -->
-      <section id="section-department" class="admin-section hidden animate-fade-in">
-        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-8">
-          <div>
-            <h1
-              class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary-700 to-secondary-700 bg-clip-text text-transparent mb-2">
-              Department Documents
-            </h1>
-            <p class="text-gray-500">Upload and manage letters, memos, and official documents</p>
-          </div>
-        </div>
-
-        <!-- Department Documents Section -->
-        <div id="deptDocsSection">
-          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-8">
-            <div>
-              <h2 class="text-2xl font-bold text-gray-800">Department Documents</h2>
-              <p class="text-gray-600">Upload and manage letters, memos, and official documents</p>
+      <section id="section-department" class="admin-section hidden animate-fade-in" onanimationend="if(window.loadDepartmentDocuments){console.log('🎬 Animation end - auto loading documents');loadDepartmentDocuments();}">
+        <!-- Blue Header like Grade Management -->
+        <div class="mb-8 bg-gradient-to-r from-violet-600 to-purple-700 rounded-2xl p-6 text-white shadow-xl">
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
+                <i class="fa-solid fa-folder-open text-xl"></i>
+              </div>
+              <div>
+                <h1 class="text-2xl font-bold">Department Documents</h1>
+                <p class="text-white/80 text-sm">Upload and manage letters, memos, and official documents</p>
+              </div>
             </div>
             <button type="button"
-              class="btn-shimmer px-6 py-3.5 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold rounded-2xl shadow-xl shadow-blue-500/30 transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-2 group"
+              class="px-5 py-2.5 bg-white text-violet-600 font-semibold rounded-xl hover:bg-violet-50 transition-colors flex items-center gap-2 shadow-lg"
               onclick="openUploadDocumentModal()">
-              <i class="fa-solid fa-cloud-arrow-up group-hover:-translate-y-1 transition-transform"></i>
+              <i class="fa-solid fa-plus"></i>
               <span>Upload Document</span>
             </button>
           </div>
+        </div>
 
-          <!-- Documents Table -->
-          <div class="glass rounded-3xl shadow-xl overflow-hidden">
-            <div class="p-6 border-b border-gray-100">
-              <div class="flex flex-col sm:flex-row gap-4 justify-between">
-                <div class="relative max-w-md flex-1">
-                  <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                  <input type="text" id="documentsSearch" placeholder="Search documents..."
-                    class="w-full pl-12 pr-4 py-3.5 bg-gray-50 border-2 border-gray-100 rounded-2xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all">
-                </div>
-                <div class="flex gap-2">
-                  <select id="categoryFilter" class="px-4 py-2 rounded-xl bg-gray-100 text-gray-600 focus:outline-none">
-                    <option value="">All Categories</option>
-                    <option value="Letter">Letter</option>
-                    <option value="Memo">Memo</option>
-                    <option value="Policy">Policy</option>
-                    <option value="Notice">Notice</option>
-                    <option value="Form">Form</option>
-                    <option value="Announcement">Announcement</option>
-                  </select>
-                </div>
+        <!-- Documents Table -->
+        <div class="glass rounded-3xl shadow-xl overflow-hidden">
+          <div class="p-6 border-b border-gray-100">
+            <div class="flex flex-col sm:flex-row gap-4 justify-between items-center">
+              <div class="relative max-w-md flex-1">
+                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input type="text" id="documentsSearch" placeholder="Search documents..."
+                  class="w-full pl-12 pr-4 py-3.5 bg-gray-50 border-2 border-gray-100 rounded-2xl text-gray-700 placeholder-gray-400 focus:border-violet-500 focus:bg-white focus:outline-none transition-all">
+              </div>
+              <div class="flex flex-wrap gap-2" id="categoryFilter">
+                <button class="category-btn px-4 py-2 rounded-xl bg-violet-600 text-white font-medium text-sm" data-category="All">All</button>
+                <button class="category-btn px-4 py-2 rounded-xl bg-gray-100 text-gray-600 font-medium text-sm hover:bg-gray-200 transition-colors" data-category="Letter">Letter</button>
+                <button class="category-btn px-4 py-2 rounded-xl bg-gray-100 text-gray-600 font-medium text-sm hover:bg-gray-200 transition-colors" data-category="Memo">Memo</button>
+                <button class="category-btn px-4 py-2 rounded-xl bg-gray-100 text-gray-600 font-medium text-sm hover:bg-gray-200 transition-colors" data-category="Policy">Policy</button>
+                <button class="category-btn px-4 py-2 rounded-xl bg-gray-100 text-gray-600 font-medium text-sm hover:bg-gray-200 transition-colors" data-category="Notice">Notice</button>
+                <button class="category-btn px-4 py-2 rounded-xl bg-gray-100 text-gray-600 font-medium text-sm hover:bg-gray-200 transition-colors" data-category="Form">Form</button>
               </div>
             </div>
+          </div>
 
-            <div class="overflow-x-auto">
-              <table class="w-full">
-                <thead class="bg-gray-50 border-b border-gray-200">
-                  <tr>
-                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Title
-                    </th>
-                    <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                      Category</th>
-                    <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Type
-                    </th>
-                    <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Date
-                    </th>
-                    <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                      Published</th>
-                    <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Stats
-                    </th>
-                    <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                      Actions</th>
-                  </tr>
-                </thead>
-                <tbody id="documentsTableBody" class="divide-y divide-gray-200">
-                  <tr>
-                    <td colspan="7" class="px-6 py-12 text-center text-gray-500">
-                      <i class="fa-solid fa-spinner fa-spin text-3xl mb-3 text-primary-500"></i>
-                      <p>Loading documents...</p>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead class="bg-gradient-to-r from-violet-600 to-purple-700 text-white">
+                <tr>
+                  <th class="px-6 py-4 text-left text-sm font-semibold">Document Name</th>
+                  <th class="px-6 py-4 text-center text-sm font-semibold">Category</th>
+                  <th class="px-6 py-4 text-center text-sm font-semibold">Type</th>
+                  <th class="px-6 py-4 text-center text-sm font-semibold">Date Issued</th>
+                  <th class="px-6 py-4 text-center text-sm font-semibold">Published</th>
+                  <th class="px-6 py-4 text-center text-sm font-semibold">Status</th>
+                  <th class="px-6 py-4 text-center text-sm font-semibold">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="documentsTableBody" class="divide-y divide-gray-200">
+                <tr>
+                  <td colspan="7" class="px-6 py-12 text-center text-gray-500">
+                    <i class="fa-solid fa-spinner fa-spin text-3xl mb-3 text-primary-500"></i>
+                    <p>Loading documents...</p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </section>
@@ -774,11 +761,11 @@
             <div class="grid grid-cols-2 gap-4 mb-6">
               <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2">
-                  <i class="fa-solid fa-users text-blue-600 mr-1"></i>
+                  <i class="fa-solid fa-users text-violet-600 mr-1"></i>
                   Total Students
                 </label>
                 <input type="number" id="editTotalStudents" min="0"
-                  class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:outline-none transition-all"
+                  class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-violet-500 focus:outline-none transition-all"
                   placeholder="0">
               </div>
               <div>
@@ -856,37 +843,43 @@
 
       <!-- Events Section -->
       <section id="section-events" class="admin-section hidden animate-fade-in">
-        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-8">
-          <div>
-            <h1
-              class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary-700 to-secondary-700 bg-clip-text text-transparent mb-2">
-              Events Management
-            </h1>
-            <p class="text-gray-500">Create and manage college events and activities</p>
+        <!-- Blue Header like Grade Management -->
+        <div class="mb-8 bg-gradient-to-r from-violet-600 to-purple-700 rounded-2xl p-6 text-white shadow-xl">
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
+                <i class="fa-solid fa-calendar-check text-xl"></i>
+              </div>
+              <div>
+                <h1 class="text-2xl font-bold">Events Management</h1>
+                <p class="text-white/80 text-sm">Create and manage college events and activities</p>
+              </div>
+            </div>
+            <button type="button"
+              class="px-5 py-2.5 bg-white text-violet-600 font-semibold rounded-xl hover:bg-violet-50 transition-colors flex items-center gap-2 shadow-lg"
+              onclick="openEventForm()">
+              <i class="fa-solid fa-plus"></i>
+              <span>Add Event</span>
+            </button>
           </div>
-          <button type="button"
-            class="btn-shimmer px-6 py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold rounded-2xl shadow-xl shadow-emerald-500/30 transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-2 group"
-            onclick="openEventForm()">
-            <i class="fa-solid fa-plus group-hover:rotate-90 transition-transform"></i>
-            <span>Add Event</span>
-          </button>
         </div>
 
         <div class="glass rounded-3xl shadow-xl overflow-hidden">
+          <!-- Search and Filter Bar -->
           <div class="p-6 border-b border-gray-100">
-            <div class="flex flex-col sm:flex-row gap-4 justify-between">
+            <div class="flex flex-col sm:flex-row gap-4 justify-between items-center">
               <div class="relative max-w-md flex-1">
                 <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
                 <input type="text" id="eventsSearch" placeholder="Search events by title..."
-                  class="w-full pl-12 pr-4 py-3.5 bg-gray-50 border-2 border-gray-100 rounded-2xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
+                  class="w-full pl-12 pr-4 py-3.5 bg-gray-50 border-2 border-gray-100 rounded-2xl text-gray-700 placeholder-gray-400 focus:border-violet-500 focus:bg-white focus:outline-none transition-all">
               </div>
               <div class="flex gap-2">
-                <button
+                <button type="button" onclick="toggleEventFilter()"
                   class="px-4 py-2 rounded-xl bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors flex items-center gap-2">
                   <i class="fa-solid fa-filter"></i>
                   <span>Filter</span>
                 </button>
-                <button
+                <button type="button" onclick="toggleEventSort()"
                   class="px-4 py-2 rounded-xl bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors flex items-center gap-2">
                   <i class="fa-solid fa-arrow-down-short-wide"></i>
                   <span>Sort</span>
@@ -895,6 +888,7 @@
             </div>
           </div>
 
+          <!-- Loading State -->
           <div id="eventsLoading" class="hidden p-12 text-center">
             <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary-100 mb-4">
               <i class="fa-solid fa-spinner fa-spin text-2xl text-primary-600"></i>
@@ -902,16 +896,17 @@
             <p class="text-gray-500 font-medium">Loading events...</p>
           </div>
 
+          <!-- Events Table -->
           <div id="eventsTableWrap" class="overflow-x-auto">
             <table class="w-full">
-              <thead class="bg-gradient-to-r from-primary-600 to-secondary-600 text-white">
+              <thead class="bg-gradient-to-r from-violet-600 to-purple-700 text-white">
                 <tr>
                   <th class="px-6 py-4 text-left text-sm font-semibold">Event Details</th>
                   <th class="px-6 py-4 text-left text-sm font-semibold">Start Time</th>
                   <th class="px-6 py-4 text-left text-sm font-semibold">Date</th>
                   <th class="px-6 py-4 text-left text-sm font-semibold">Location</th>
                   <th class="px-6 py-4 text-left text-sm font-semibold">Items Required</th>
-                  <th class="px-6 py-4 text-left text-sm font-semibold">Actions</th>
+                  <th class="px-6 py-4 text-center text-sm font-semibold">Actions</th>
                 </tr>
               </thead>
               <tbody id="eventsTableBody" class="divide-y divide-gray-100">
@@ -1122,20 +1117,25 @@
 
       <!-- Music Management Section -->
       <section id="section-music" class="admin-section hidden animate-fade-in">
-        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-8">
-          <div>
-            <h1
-              class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary-700 to-secondary-700 bg-clip-text text-transparent mb-2">
-              Background Music
-            </h1>
-            <p class="text-gray-500">Manage background music for login and portal pages</p>
+        <!-- Blue Header like Grade Portal -->
+        <div class="mb-8 bg-gradient-to-r from-violet-600 to-purple-700 rounded-2xl p-6 text-white shadow-xl">
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
+                <i class="fa-solid fa-music text-xl"></i>
+              </div>
+              <div>
+                <h1 class="text-2xl font-bold">Background Music</h1>
+                <p class="text-white/80 text-sm">Manage background music for login and portal pages</p>
+              </div>
+            </div>
+            <button type="button"
+              class="px-5 py-2.5 bg-white text-violet-600 font-semibold rounded-xl hover:bg-violet-50 transition-colors flex items-center gap-2 shadow-lg"
+              onclick="openMusicUploadModal()">
+              <i class="fa-solid fa-upload"></i>
+              <span>Upload Music</span>
+            </button>
           </div>
-          <button type="button"
-            class="btn-shimmer px-6 py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold rounded-2xl shadow-xl shadow-emerald-500/30 transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-2 group"
-            onclick="openMusicUploadModal()">
-            <i class="fa-solid fa-upload group-hover:rotate-12 transition-transform"></i>
-            <span>Upload Music</span>
-          </button>
         </div>
 
         <!-- Loading State -->
@@ -1162,19 +1162,24 @@
 
       <!-- User Management Section -->
       <section id="section-users" class="admin-section hidden animate-fade-in">
-        <div class="mb-8 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          <div>
-            <h1
-              class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary-700 to-secondary-700 bg-clip-text text-transparent mb-2">
-              User Management
-            </h1>
-            <p class="text-gray-500">Manage admin users and reset passwords</p>
+        <!-- Blue Header like Grade Portal -->
+        <div class="mb-8 bg-gradient-to-r from-violet-600 to-purple-700 rounded-2xl p-6 text-white shadow-xl">
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
+                <i class="fa-solid fa-users-gear text-xl"></i>
+              </div>
+              <div>
+                <h1 class="text-2xl font-bold">User Management</h1>
+                <p class="text-white/80 text-sm">Manage admin users and reset passwords</p>
+              </div>
+            </div>
+            <button type="button" onclick="openAddUserModal()"
+              class="px-5 py-2.5 bg-white text-violet-600 font-semibold rounded-xl hover:bg-violet-50 transition-colors flex items-center gap-2 shadow-lg">
+              <i class="fa-solid fa-user-plus"></i>
+              <span>Add New User</span>
+            </button>
           </div>
-          <button type="button" onclick="openAddUserModal()"
-            class="btn-shimmer px-6 py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold rounded-2xl shadow-xl shadow-emerald-500/30 transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-2 group">
-            <i class="fa-solid fa-user-plus group-hover:scale-110 transition-transform"></i>
-            <span>Add New User</span>
-          </button>
         </div>
 
         <!-- Users Table -->
@@ -1206,20 +1211,25 @@
 
       <!-- Change Password Section -->
       <section id="section-change-password" class="admin-section hidden animate-fade-in">
-        <div class="mb-8">
-          <h1
-            class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary-700 to-secondary-700 bg-clip-text text-transparent mb-2">
-            Change Password
-          </h1>
-          <p class="text-gray-500">Update your account password for security</p>
+        <!-- Blue Header like Grade Portal -->
+        <div class="mb-8 bg-gradient-to-r from-violet-600 to-purple-700 rounded-2xl p-6 text-white shadow-xl">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
+              <i class="fa-solid fa-key text-xl"></i>
+            </div>
+            <div>
+              <h1 class="text-2xl font-bold">Change Password</h1>
+              <p class="text-white/80 text-sm">Update your account password for security</p>
+            </div>
+          </div>
         </div>
 
         <div class="max-w-2xl mx-auto">
           <div class="glass rounded-3xl shadow-xl p-8">
-            <div class="mb-6 p-4 bg-blue-50 border-l-4 border-blue-500 rounded-r-xl">
+            <div class="mb-6 p-4 bg-violet-50 border-l-4 border-violet-500 rounded-r-xl">
               <div class="flex items-start gap-3">
-                <i class="fa-solid fa-circle-info text-blue-600 text-lg mt-0.5"></i>
-                <div class="text-sm text-blue-800">
+                <i class="fa-solid fa-circle-info text-violet-600 text-lg mt-0.5"></i>
+                <div class="text-sm text-violet-800">
                   <p class="font-semibold mb-1">Password Requirements:</p>
                   <ul class="list-disc list-inside space-y-1">
                     <li>At least 6 characters long</li>
@@ -1397,7 +1407,7 @@
 
         <div class="flex items-center gap-3 mb-6">
           <div
-            class="w-12 h-12 rounded-2xl bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center">
+            class="w-12 h-12 rounded-2xl bg-gradient-to-r from-violet-500 to-purple-500 flex items-center justify-center">
             <i class="fa-solid fa-edit text-white text-xl"></i>
           </div>
           <h3 class="text-2xl font-bold text-gray-800">Edit Music</h3>
@@ -1428,7 +1438,7 @@
             <button type="button" onclick="closeMusicEditModal()"
               class="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-all">Cancel</button>
             <button type="submit"
-              class="flex-1 px-6 py-3 bg-gradient-to-br from-blue-600 to-cyan-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all">Save
+              class="flex-1 px-6 py-3 bg-gradient-to-br from-violet-600 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all">Save
               Changes</button>
           </div>
         </form>
@@ -1438,101 +1448,138 @@
 
   <!-- Event Modal -->
   <div id="eventModal" class="fixed inset-0 z-50 hidden">
-    <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity" onclick="closeModal('eventModal')">
+    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm transition-opacity" onclick="closeModal('eventModal')">
     </div>
     <div class="flex items-center justify-center min-h-screen p-4 overflow-y-auto">
-      <div class="glass rounded-3xl shadow-2xl max-w-2xl w-full p-8 relative animate-scale-in my-8">
-        <button type="button"
-          class="absolute top-6 right-6 w-10 h-10 rounded-full bg-gray-100 text-gray-500 hover:text-gray-700 hover:bg-gray-200 flex items-center justify-center transition-all"
-          onclick="closeModal('eventModal')">
-          <i class="fa-solid fa-xmark text-xl"></i>
-        </button>
-
-        <div class="flex items-center gap-3 mb-6">
-          <div
-            class="w-12 h-12 rounded-2xl bg-gradient-to-r from-primary-500 to-secondary-500 flex items-center justify-center">
-            <i class="fa-solid fa-calendar-plus text-white text-xl"></i>
+      <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full relative animate-scale-in my-8 overflow-hidden">
+        <!-- Header with Blue Gradient -->
+        <div class="bg-gradient-to-r from-violet-600 to-purple-700 px-8 py-6">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
+                <i class="fa-solid fa-calendar-plus text-white text-xl"></i>
+              </div>
+              <h3 class="text-2xl font-bold text-white" id="eventModalTitle">Add Event</h3>
+            </div>
+            <button type="button"
+              class="w-10 h-10 rounded-full bg-white/20 text-white hover:bg-white/30 flex items-center justify-center transition-all"
+              onclick="closeModal('eventModal')">
+              <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
           </div>
-          <h3 class="text-2xl font-bold text-gray-800" id="eventModalTitle">Add Event</h3>
+          <p class="text-violet-100 text-sm mt-2">Create and manage college events and activities</p>
         </div>
 
-        <input type="hidden" id="eventId">
+        <div class="p-8">
+          <input type="hidden" id="eventId">
 
-        <div class="space-y-5">
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Title <span
-                class="text-rose-500">*</span></label>
-            <input type="text" id="eventTitle" required
-              class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow"
-              placeholder="Enter event title">
-          </div>
-
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Description</label>
-            <textarea id="eventDescription" rows="2"
-              class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow resize-none"
-              placeholder="Enter event description"></textarea>
-          </div>
-
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Category</label>
-            <select id="eventCategory"
-              class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow"
-              onchange="toggleCustomCategory()">
-              <option value="">Select category</option>
-              <option value="Orientation">Orientation</option>
-              <option value="Training">Training</option>
-              <option value="Workshops">Workshops</option>
-              <option value="Seminars">Seminars</option>
-              <option value="Examination">Examination</option>
-              <option value="Social Events">Social Events</option>
-              <option value="Other">Other</option>
-            </select>
-            <input type="text" id="eventCategoryCustom" placeholder="Enter custom category"
-              class="hidden w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow mt-3">
-          </div>
-
-          <div class="grid grid-cols-2 gap-4">
+          <div class="space-y-5">
+            <!-- Title -->
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2">Start Date <span
-                  class="text-rose-500">*</span></label>
-              <input type="date" id="eventStartDate" required
-                class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
+              <label class="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
+                <i class="fa-solid fa-heading text-violet-500"></i>
+                Event Title <span class="text-rose-500">*</span>
+              </label>
+              <input type="text" id="eventTitle" required
+                class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-violet-500 focus:bg-white focus:outline-none transition-all"
+                placeholder="Enter event title">
             </div>
+
+            <!-- Description -->
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2">End Date</label>
-              <input type="date" id="eventEndDate"
-                class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
+              <label class="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
+                <i class="fa-solid fa-align-left text-violet-500"></i>
+                Description
+              </label>
+              <textarea id="eventDescription" rows="2"
+                class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-violet-500 focus:bg-white focus:outline-none transition-all resize-none"
+                placeholder="Enter event description"></textarea>
+            </div>
+
+            <!-- Category -->
+            <div>
+              <label class="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
+                <i class="fa-solid fa-tag text-violet-500"></i>
+                Category
+              </label>
+              <select id="eventCategory"
+                class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-violet-500 focus:bg-white focus:outline-none transition-all"
+                onchange="toggleCustomCategory()">
+                <option value="">Select category</option>
+                <option value="Orientation">Orientation</option>
+                <option value="Training">Training</option>
+                <option value="Workshops">Workshops</option>
+                <option value="Seminars">Seminars</option>
+                <option value="Examination">Examination</option>
+                <option value="Social Events">Social Events</option>
+                <option value="Other">Other</option>
+              </select>
+              <input type="text" id="eventCategoryCustom" placeholder="Enter custom category"
+                class="hidden w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-violet-500 focus:bg-white focus:outline-none transition-all mt-3">
+            </div>
+
+            <!-- Date Row -->
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
+                  <i class="fa-regular fa-calendar text-violet-500"></i>
+                  Start Date <span class="text-rose-500">*</span>
+                </label>
+                <input type="date" id="eventStartDate" required
+                  class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-violet-500 focus:bg-white focus:outline-none transition-all">
+              </div>
+              <div>
+                <label class="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
+                  <i class="fa-regular fa-calendar-check text-violet-500"></i>
+                  End Date
+                </label>
+                <input type="date" id="eventEndDate"
+                  class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-violet-500 focus:bg-white focus:outline-none transition-all">
+              </div>
+            </div>
+
+            <!-- Time -->
+            <div>
+              <label class="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
+                <i class="fa-regular fa-clock text-violet-500"></i>
+                Start Time <span class="text-rose-500">*</span>
+              </label>
+              <input type="time" id="eventTime" required
+                class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-violet-500 focus:bg-white focus:outline-none transition-all">
+            </div>
+
+            <!-- Location -->
+            <div>
+              <label class="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
+                <i class="fa-solid fa-location-dot text-violet-500"></i>
+                Location
+              </label>
+              <input type="text" id="eventLocation"
+                class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-violet-500 focus:bg-white focus:outline-none transition-all"
+                placeholder="Enter location">
+            </div>
+
+            <!-- Items Required -->
+            <div>
+              <label class="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
+                <i class="fa-solid fa-list-check text-violet-500"></i>
+                Items Required <span class="text-gray-400 font-normal">(one per line)</span>
+              </label>
+              <textarea id="eventItems" rows="3" placeholder="Item 1&#10;Item 2&#10;Item 3"
+                class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-violet-500 focus:bg-white focus:outline-none transition-all resize-none"></textarea>
             </div>
           </div>
 
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Start Time <span
-                class="text-rose-500">*</span></label>
-            <input type="time" id="eventTime" required
-              class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow">
+          <!-- Buttons -->
+          <div class="flex justify-end gap-3 mt-8 pt-6 border-t border-gray-100">
+            <button type="button" class="px-6 py-3 text-gray-600 hover:text-gray-800 font-semibold transition-colors rounded-xl hover:bg-gray-100"
+              onclick="closeModal('eventModal')">Cancel</button>
+            <button type="button" id="eventSaveBtn"
+              class="px-8 py-3 bg-gradient-to-r from-violet-600 to-purple-700 hover:from-violet-700 hover:to-purple-800 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-violet-500/30 flex items-center gap-2">
+              <i class="fa-solid fa-save"></i>
+              Save Event
+            </button>
           </div>
-
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Location</label>
-            <input type="text" id="eventLocation"
-              class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow"
-              placeholder="Enter location">
-          </div>
-
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Items Required (one per line)</label>
-            <textarea id="eventItems" rows="3" placeholder="Item 1&#10;Item 2&#10;Item 3"
-              class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all input-glow resize-none"></textarea>
-          </div>
-        </div>
-
-        <div class="flex justify-end gap-3 mt-8">
-          <button type="button" class="px-6 py-3 text-gray-600 hover:text-gray-800 font-semibold transition-colors"
-            onclick="closeModal('eventModal')">Cancel</button>
-          <button type="button" id="eventSaveBtn"
-            class="btn-shimmer px-8 py-3 bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 text-white font-semibold rounded-xl transition-all duration-300 shadow-xl shadow-primary-500/30">Save
-            Event</button>
         </div>
       </div>
     </div>
@@ -1993,7 +2040,7 @@
             Cancel
           </button>
           <button type="button" id="studentSaveBtn"
-            class="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-blue-700 transition-all flex items-center justify-center gap-2">
+            class="flex-1 px-6 py-3 bg-gradient-to-r from-violet-500 to-violet-600 text-white rounded-xl font-semibold hover:from-violet-600 hover:to-violet-700 transition-all flex items-center justify-center gap-2">
             <i class="fa-solid fa-save"></i>
             Save Student
           </button>
@@ -2176,10 +2223,10 @@
 
     <div class="max-w-2xl mx-auto">
       <div class="glass rounded-3xl shadow-xl p-8">
-        <div class="mb-6 p-4 bg-blue-50 border-l-4 border-blue-500 rounded-r-xl">
+        <div class="mb-6 p-4 bg-violet-50 border-l-4 border-violet-500 rounded-r-xl">
           <div class="flex items-start gap-3">
-            <i class="fa-solid fa-circle-info text-blue-600 text-lg mt-0.5"></i>
-            <div class="text-sm text-blue-800">
+            <i class="fa-solid fa-circle-info text-violet-600 text-lg mt-0.5"></i>
+            <div class="text-sm text-violet-800">
               <p class="font-semibold mb-1">Password Requirements:</p>
               <ul class="list-disc list-inside space-y-1">
                 <li>At least 6 characters long</li>
@@ -2563,9 +2610,6 @@
             Cancel
           </button>
           <button type="submit"
-            class="flex-1 px-6 py-3.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-2xl hover:from-blue-600 hover:to-blue-700 transition-all shadow-lg shadow-blue-500/30">
-            <i class="fa-solid fa-cloud-arrow-up mr-2"></i>Upload Document
-          </button>
         </div>
       </form>
     </div>
