@@ -391,6 +391,134 @@
       background: #e5e7eb;
       color: #374151;
     }
+
+    /* Events Table Styles */
+    #eventsTableWrap tbody tr {
+      transition: all 0.3s ease;
+    }
+
+    #eventsTableWrap tbody tr:hover {
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.03) 0%, rgba(139, 92, 246, 0.05) 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px -2px rgba(124, 58, 237, 0.1);
+    }
+
+    #eventsTableWrap tbody td {
+      padding: 1.25rem 1.5rem;
+      font-size: 0.9rem;
+      color: #374151;
+      vertical-align: middle;
+    }
+
+    #eventsTableWrap tbody td:first-child {
+      font-weight: 600;
+      color: #1f2937;
+    }
+
+    /* Event time badge */
+    .event-time-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      padding: 0.5rem 0.875rem;
+      background: linear-gradient(135deg, #ede9fe 0%, #f5f3ff 100%);
+      border: 1px solid #ddd6fe;
+      border-radius: 0.75rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #7c3aed;
+    }
+
+    /* Event date styling */
+    .event-date {
+      display: flex;
+      flex-direction: column;
+      gap: 0.125rem;
+    }
+
+    .event-date-day {
+      font-weight: 700;
+      color: #1f2937;
+      font-size: 0.95rem;
+    }
+
+    .event-date-year {
+      font-size: 0.8rem;
+      color: #6b7280;
+    }
+
+    /* Location badge */
+    .location-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      padding: 0.375rem 0.75rem;
+      background: #fef3c7;
+      border: 1px solid #fde68a;
+      border-radius: 0.625rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #92400e;
+    }
+
+    /* Items list */
+    .items-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.375rem;
+    }
+
+    .item-tag {
+      padding: 0.25rem 0.625rem;
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      border-radius: 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: #065f46;
+    }
+
+    /* Action buttons container */
+    .action-buttons {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .action-btn {
+      width: 2.25rem;
+      height: 2.25rem;
+      border-radius: 0.625rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      border: none;
+      cursor: pointer;
+    }
+
+    .action-btn-edit {
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      color: white;
+      box-shadow: 0 2px 8px -2px rgba(59, 130, 246, 0.3);
+    }
+
+    .action-btn-edit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px -2px rgba(59, 130, 246, 0.4);
+    }
+
+    .action-btn-delete {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      color: white;
+      box-shadow: 0 2px 8px -2px rgba(239, 68, 68, 0.3);
+    }
+
+    .action-btn-delete:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px -2px rgba(239, 68, 68, 0.4);
+    }
   </style>
 </head>
 
@@ -714,22 +842,61 @@
 
           <div class="overflow-x-auto">
             <table class="w-full">
-              <thead class="bg-gradient-to-r from-violet-600 to-purple-700 text-white">
+              <thead class="bg-gradient-to-r from-violet-600 via-violet-600 to-purple-600 text-white">
                 <tr>
-                  <th class="px-6 py-4 text-left text-sm font-semibold">Document Name</th>
-                  <th class="px-6 py-4 text-center text-sm font-semibold">Category</th>
-                  <th class="px-6 py-4 text-center text-sm font-semibold">Type</th>
-                  <th class="px-6 py-4 text-center text-sm font-semibold">Date Issued</th>
-                  <th class="px-6 py-4 text-center text-sm font-semibold">Published</th>
-                  <th class="px-6 py-4 text-center text-sm font-semibold">Status</th>
-                  <th class="px-6 py-4 text-center text-sm font-semibold">Actions</th>
+                  <th class="px-5 py-4 text-left text-sm font-bold tracking-wide">
+                    <div class="flex items-center gap-2">
+                      <i class="fa-solid fa-file-lines text-white/70"></i>
+                      Document Name
+                    </div>
+                  </th>
+                  <th class="px-4 py-4 text-center text-sm font-bold tracking-wide">
+                    <div class="flex items-center justify-center gap-2">
+                      <i class="fa-solid fa-folder text-white/70"></i>
+                      Category
+                    </div>
+                  </th>
+                  <th class="px-4 py-4 text-center text-sm font-bold tracking-wide">
+                    <div class="flex items-center justify-center gap-2">
+                      <i class="fa-solid fa-file-circle-check text-white/70"></i>
+                      Type
+                    </div>
+                  </th>
+                  <th class="px-4 py-4 text-center text-sm font-bold tracking-wide">
+                    <div class="flex items-center justify-center gap-2">
+                      <i class="fa-regular fa-calendar text-white/70"></i>
+                      Date
+                    </div>
+                  </th>
+                  <th class="px-3 py-4 text-center text-sm font-bold tracking-wide">
+                    <div class="flex items-center justify-center gap-1">
+                      <i class="fa-solid fa-eye text-white/70 text-xs"></i>
+                      Views
+                    </div>
+                  </th>
+                  <th class="px-3 py-4 text-center text-sm font-bold tracking-wide">
+                    <div class="flex items-center justify-center gap-1">
+                      <i class="fa-solid fa-download text-white/70 text-xs"></i>
+                      Downloads
+                    </div>
+                  </th>
+                  <th class="px-3 py-4 text-center text-sm font-bold tracking-wide">Published</th>
+                  <th class="px-3 py-4 text-center text-sm font-bold tracking-wide">Active</th>
+                  <th class="px-4 py-4 text-center text-sm font-bold tracking-wide">
+                    <div class="flex items-center justify-center gap-2">
+                      <i class="fa-solid fa-gear text-white/70"></i>
+                      Actions
+                    </div>
+                  </th>
                 </tr>
               </thead>
-              <tbody id="documentsTableBody" class="divide-y divide-gray-200">
+              <tbody id="documentsTableBody" class="divide-y divide-gray-100/80">
                 <tr>
-                  <td colspan="7" class="px-6 py-12 text-center text-gray-500">
-                    <i class="fa-solid fa-spinner fa-spin text-3xl mb-3 text-primary-500"></i>
-                    <p>Loading documents...</p>
+                  <td colspan="9" class="px-6 py-12 text-center">
+                    <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 mb-4 shadow-inner">
+                      <i class="fa-solid fa-spinner fa-spin text-3xl text-violet-500"></i>
+                    </div>
+                    <p class="text-gray-500 font-medium">Loading documents...</p>
                   </td>
                 </tr>
               </tbody>
@@ -864,25 +1031,25 @@
           </div>
         </div>
 
-        <div class="glass rounded-3xl shadow-xl overflow-hidden">
+        <div class="glass rounded-3xl shadow-xl overflow-hidden border border-white/50">
           <!-- Search and Filter Bar -->
-          <div class="p-6 border-b border-gray-100">
+          <div class="p-6 border-b border-gray-100 bg-gradient-to-r from-gray-50/50 to-white/50">
             <div class="flex flex-col sm:flex-row gap-4 justify-between items-center">
               <div class="relative max-w-md flex-1">
                 <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
                 <input type="text" id="eventsSearch" placeholder="Search events by title..."
-                  class="w-full pl-12 pr-4 py-3.5 bg-gray-50 border-2 border-gray-100 rounded-2xl text-gray-700 placeholder-gray-400 focus:border-violet-500 focus:bg-white focus:outline-none transition-all">
+                  class="w-full pl-12 pr-4 py-3.5 bg-white border-2 border-gray-100 rounded-2xl text-gray-700 placeholder-gray-400 focus:border-violet-500 focus:bg-white focus:outline-none transition-all shadow-sm hover:shadow-md">
               </div>
               <div class="flex gap-2">
                 <button type="button" onclick="toggleEventFilter()"
-                  class="px-4 py-2 rounded-xl bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors flex items-center gap-2">
-                  <i class="fa-solid fa-filter"></i>
-                  <span>Filter</span>
+                  class="px-4 py-2.5 rounded-xl bg-white border border-gray-200 text-gray-600 hover:bg-violet-50 hover:border-violet-200 hover:text-violet-600 transition-all flex items-center gap-2 shadow-sm">
+                  <i class="fa-solid fa-filter text-sm"></i>
+                  <span class="font-medium">Filter</span>
                 </button>
                 <button type="button" onclick="toggleEventSort()"
-                  class="px-4 py-2 rounded-xl bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors flex items-center gap-2">
-                  <i class="fa-solid fa-arrow-down-short-wide"></i>
-                  <span>Sort</span>
+                  class="px-4 py-2.5 rounded-xl bg-white border border-gray-200 text-gray-600 hover:bg-violet-50 hover:border-violet-200 hover:text-violet-600 transition-all flex items-center gap-2 shadow-sm">
+                  <i class="fa-solid fa-arrow-down-short-wide text-sm"></i>
+                  <span class="font-medium">Sort</span>
                 </button>
               </div>
             </div>
@@ -890,8 +1057,8 @@
 
           <!-- Loading State -->
           <div id="eventsLoading" class="hidden p-12 text-center">
-            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary-100 mb-4">
-              <i class="fa-solid fa-spinner fa-spin text-2xl text-primary-600"></i>
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-violet-100 mb-4 animate-pulse">
+              <i class="fa-solid fa-spinner fa-spin text-2xl text-violet-600"></i>
             </div>
             <p class="text-gray-500 font-medium">Loading events...</p>
           </div>
@@ -899,21 +1066,51 @@
           <!-- Events Table -->
           <div id="eventsTableWrap" class="overflow-x-auto">
             <table class="w-full">
-              <thead class="bg-gradient-to-r from-violet-600 to-purple-700 text-white">
+              <thead class="bg-gradient-to-r from-violet-600 via-violet-600 to-purple-600 text-white">
                 <tr>
-                  <th class="px-6 py-4 text-left text-sm font-semibold">Event Details</th>
-                  <th class="px-6 py-4 text-left text-sm font-semibold">Start Time</th>
-                  <th class="px-6 py-4 text-left text-sm font-semibold">Date</th>
-                  <th class="px-6 py-4 text-left text-sm font-semibold">Location</th>
-                  <th class="px-6 py-4 text-left text-sm font-semibold">Items Required</th>
-                  <th class="px-6 py-4 text-center text-sm font-semibold">Actions</th>
+                  <th class="px-6 py-5 text-left text-sm font-bold tracking-wide">
+                    <div class="flex items-center gap-2">
+                      <i class="fa-solid fa-calendar-day text-white/70"></i>
+                      Event Details
+                    </div>
+                  </th>
+                  <th class="px-6 py-5 text-left text-sm font-bold tracking-wide">
+                    <div class="flex items-center gap-2">
+                      <i class="fa-regular fa-clock text-white/70"></i>
+                      Start Time
+                    </div>
+                  </th>
+                  <th class="px-6 py-5 text-left text-sm font-bold tracking-wide">
+                    <div class="flex items-center gap-2">
+                      <i class="fa-regular fa-calendar text-white/70"></i>
+                      Date
+                    </div>
+                  </th>
+                  <th class="px-6 py-5 text-left text-sm font-bold tracking-wide">
+                    <div class="flex items-center gap-2">
+                      <i class="fa-solid fa-location-dot text-white/70"></i>
+                      Location
+                    </div>
+                  </th>
+                  <th class="px-6 py-5 text-left text-sm font-bold tracking-wide">
+                    <div class="flex items-center gap-2">
+                      <i class="fa-solid fa-list-check text-white/70"></i>
+                      Items Required
+                    </div>
+                  </th>
+                  <th class="px-6 py-5 text-center text-sm font-bold tracking-wide">
+                    <div class="flex items-center justify-center gap-2">
+                      <i class="fa-solid fa-gear text-white/70"></i>
+                      Actions
+                    </div>
+                  </th>
                 </tr>
               </thead>
-              <tbody id="eventsTableBody" class="divide-y divide-gray-100">
+              <tbody id="eventsTableBody" class="divide-y divide-gray-100/80">
                 <tr>
                   <td colspan="6" class="px-6 py-12 text-center">
-                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gray-100 mb-4">
-                      <i class="fa-solid fa-spinner fa-spin text-2xl text-gray-400"></i>
+                    <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 mb-4 shadow-inner">
+                      <i class="fa-solid fa-spinner fa-spin text-3xl text-violet-500"></i>
                     </div>
                     <p class="text-gray-500 font-medium">Loading events...</p>
                   </td>
@@ -2615,11 +2812,158 @@
     </div>
   </div>
 
-  <!-- Document Viewer Modal -->
-  <div id="documentViewerModal" class="modal-backdrop hidden">
-    <div class="modal-container">
-      <div class="modal-content max-w-4xl">
-        <!-- Content injected by JS -->
+  <!-- Edit Document Modal -->
+  <div id="editDocumentModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between p-6 border-b border-gray-200">
+        <div>
+          <h2 class="text-2xl font-bold text-gray-800">Edit Document</h2>
+          <p class="text-sm text-gray-500 mt-1">Update document details</p>
+        </div>
+        <button onclick="closeEditDocumentModal()"
+          class="w-10 h-10 rounded-xl bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors">
+          <i class="fa-solid fa-times text-gray-600"></i>
+        </button>
+      </div>
+
+      <form id="editDocumentForm" class="p-6 space-y-5">
+        <input type="hidden" id="editDocId">
+        
+        <!-- Message Div -->
+        <div id="editDocumentMessage" class="hidden"></div>
+
+        <!-- Title -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">Title <span class="text-red-500">*</span></label>
+          <input type="text" id="editDocTitle" required
+            class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-primary-500 focus:bg-white focus:outline-none transition-all"
+            placeholder="Document title">
+        </div>
+
+        <!-- Category -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">Category <span class="text-red-500">*</span></label>
+          <select id="editDocCategory" required
+            class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-primary-500 focus:bg-white focus:outline-none transition-all">
+            <option value="Letter">Letter</option>
+            <option value="Memo">Memo</option>
+            <option value="Policy">Policy</option>
+            <option value="Notice">Notice</option>
+            <option value="Form">Form</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <!-- Description -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">Description</label>
+          <textarea id="editDocDescription" rows="3"
+            class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-primary-500 focus:bg-white focus:outline-none transition-all resize-none"
+            placeholder="Document description (optional)"></textarea>
+        </div>
+
+        <!-- Date Issued -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">Date Issued <span class="text-red-500">*</span></label>
+          <input type="date" id="editDocDate" required
+            class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-primary-500 focus:bg-white focus:outline-none transition-all">
+        </div>
+
+        <!-- Status Toggles -->
+        <div class="flex flex-wrap gap-4">
+          <label class="flex items-center gap-3 cursor-pointer">
+            <input type="checkbox" id="editIsPublished" class="w-5 h-5 rounded border-gray-300 text-primary-600 focus:ring-primary-500">
+            <span class="text-sm font-medium text-gray-700">Published</span>
+          </label>
+          <label class="flex items-center gap-3 cursor-pointer">
+            <input type="checkbox" id="editIsPinned" class="w-5 h-5 rounded border-gray-300 text-primary-600 focus:ring-primary-500">
+            <span class="text-sm font-medium text-gray-700">Pinned</span>
+          </label>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex gap-3 pt-4 border-t border-gray-200">
+          <button type="button" onclick="closeEditDocumentModal()"
+            class="flex-1 px-6 py-3.5 bg-gray-100 text-gray-700 font-semibold rounded-2xl hover:bg-gray-200 transition-colors">
+            Cancel
+          </button>
+          <button type="submit"
+            class="flex-1 px-6 py-3.5 bg-gradient-to-r from-primary-600 to-secondary-600 text-white font-semibold rounded-2xl hover:shadow-lg transition-all">
+            <i class="fa-solid fa-save mr-2"></i>Save Changes
+          </button>
+  </div>
+  <div id="filePreview" class="hidden mt-4 p-4 bg-gray-50 rounded-xl flex items-center gap-3">
+    <i class="fa-solid fa-file text-2xl text-primary-500"></i>
+    <div class="flex-1">
+      <p id="fileName" class="font-medium text-gray-800"></p>
+      <p id="fileSize" class="text-sm text-gray-500"></p>
+    </div>
+    <button type="button" onclick="clearFile()" class="text-red-500 hover:text-red-700">
+      <i class="fa-solid fa-times"></i>
+    </button>
+  </div>
+</div>
+
+<!-- Text Content Section -->
+<div id="textContentSection" class="hidden">
+  <label for="docTextContent" class="block text-sm font-semibold text-gray-700 mb-2">
+    Document Content <span class="text-red-500">*</span>
+  </label>
+  <textarea id="docTextContent" name="textContent" rows="10"
+    class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all font-mono text-sm"
+    placeholder="Type or paste your document content here..."></textarea>
+  <p class="text-xs text-gray-500 mt-2">Supports plain text. Formatting will be preserved.</p>
+</div>
+
+<!-- Date Issued -->
+<div>
+  <label for="docDate" class="block text-sm font-semibold text-gray-700 mb-2">
+    Date Issued
+  </label>
+  <input type="date" id="docDate" name="dateIssued"
+    class="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 focus:border-primary-500 focus:bg-white focus:outline-none transition-all">
+</div>
+
+<!-- Options -->
+<div class="flex flex-col sm:flex-row gap-4">
+  <label class="flex items-center gap-3 cursor-pointer group">
+    <input type="checkbox" id="isPublished" name="isPublished"
+      class="w-5 h-5 rounded border-2 border-gray-300 text-primary-600 focus:ring-2 focus:ring-primary-500">
+    <span class="text-gray-700 font-medium group-hover:text-primary-600 transition-colors">Publish
+      Immediately</span>
+  </label>
+  <label class="flex items-center gap-3 cursor-pointer group">
+    <input type="checkbox" id="isPinned" name="isPinned"
+      class="w-5 h-5 rounded border-2 border-gray-300 text-primary-600 focus:ring-2 focus:ring-primary-500">
+    <span class="text-gray-700 font-medium group-hover:text-primary-600 transition-colors">
+      <i class="fa-solid fa-thumbtack mr-1"></i>Pin to Top
+    </span>
+  </label>
+</div>
+
+<!-- Message -->
+<div id="uploadDocumentMessage" class="hidden"></div>
+
+<!-- Actions -->
+<div class="flex gap-3 pt-4 border-t border-gray-200">
+  <button type="button" onclick="closeUploadDocumentModal()"
+    class="flex-1 px-6 py-3.5 bg-gray-100 text-gray-700 font-semibold rounded-2xl hover:bg-gray-200 transition-colors">
+    Cancel
+  </button>
+  <button type="submit"
+            class="flex-1 px-6 py-3.5 bg-gradient-to-r from-primary-600 to-secondary-600 text-white font-semibold rounded-2xl hover:shadow-lg transition-all">
+            <i class="fa-solid fa-cloud-arrow-up mr-2"></i>Upload Document
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Document Modal - NEW WORKING VERSION -->
+  <div id="docModal" class="fixed inset-0 bg-black/70 z-[99999] hidden" style="display: none;">
+    <div class="flex items-center justify-center min-h-screen p-4">
+      <div id="docModalContent" class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+        <!-- Content will be injected here -->
       </div>
     </div>
   </div>
@@ -2627,5 +2971,4 @@
   <script src="admin-tailwind.js"></script>
   <script src="admin.js"></script>
 </body>
-
 </html>

@@ -222,7 +222,13 @@ router.get('/:id', async (req, res) => {
     console.error('Get document error:', err);
     res.status(500).json({
       success: false,
-      error: 'Server error'
+      error: 'Server error: ' + err.message,
+      errorDetails: {
+        name: err.name,
+        message: err.message,
+        code: err.code,
+        type: err.constructor.name
+      }
     });
   }
 });
@@ -269,10 +275,11 @@ router.put('/:id', auth, async (req, res) => {
       document
     });
   } catch (err) {
-    console.error('Update document error:', err);
+    console.error('❌ Update document error:', err.message);
+    console.error('Stack:', err.stack);
     res.status(500).json({
       success: false,
-      error: 'Server error'
+      error: 'Server error: ' + err.message
     });
   }
 });
@@ -328,6 +335,8 @@ router.delete('/:id', auth, async (req, res) => {
  */
 router.patch('/:id/publish', auth, async (req, res) => {
   try {
+    console.log('🔄 Toggle publish for document:', req.params.id);
+    
     // Check if user is admin
     if (req.user.role !== 'admin' && req.user.role !== 'superadmin') {
       return res.status(403).json({
@@ -336,9 +345,19 @@ router.patch('/:id/publish', auth, async (req, res) => {
       });
     }
 
+    // Validate ID format
+    if (!req.params.id || req.params.id.length !== 24) {
+      console.log('❌ Invalid document ID format:', req.params.id);
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid document ID format'
+      });
+    }
+
     const document = await DepartmentDocument.findById(req.params.id);
 
     if (!document) {
+      console.log('❌ Document not found:', req.params.id);
       return res.status(404).json({
         success: false,
         error: 'Document not found'
@@ -347,17 +366,20 @@ router.patch('/:id/publish', auth, async (req, res) => {
 
     document.isPublished = !document.isPublished;
     await document.save();
+    
+    console.log('✅ Document publish status updated:', document.isPublished);
 
     res.json({
       success: true,
-      message: `Document ${document.isPublished ? 'published' : 'unpublished'} successfully`,
+      message: `Document ${document.isPublished ? 'published' : 'hidden'} successfully`,
       document
     });
   } catch (err) {
-    console.error('Toggle publish error:', err);
+    console.error('❌ Toggle publish error:', err.message);
+    console.error('Stack:', err.stack);
     res.status(500).json({
       success: false,
-      error: 'Server error'
+      error: 'Server error: ' + err.message
     });
   }
 });

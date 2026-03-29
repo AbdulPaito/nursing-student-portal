@@ -335,7 +335,7 @@
 
     if (!musicBtn || !dropdown || !muteBtn || !volumeSlider) return;
 
-    // Toggle dropdown
+    // Toggle dropdown only (mute button controls audio)
     musicBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       dropdown.classList.toggle('show');
@@ -493,8 +493,14 @@
    * Setup fallback for autoplay restrictions
    */
   function setupAutoplayFallback() {
+    // Show visual notification to user
+    showAutoplayNotification();
+    
     const startOnInteraction = () => {
       if (!audio) return;
+      
+      // Hide notification
+      hideAutoplayNotification();
       
       audio.muted = false;
       audio.play().then(() => {
@@ -515,6 +521,91 @@
     document.addEventListener('click', startOnInteraction, { once: true });
     document.addEventListener('keydown', startOnInteraction, { once: true });
     document.addEventListener('touchstart', startOnInteraction, { once: true });
+  }
+
+  /**
+   * Show autoplay notification overlay
+   */
+  function showAutoplayNotification() {
+    if (document.getElementById('autoplayNotification')) return;
+    
+    const notification = document.createElement('div');
+    notification.id = 'autoplayNotification';
+    notification.innerHTML = `
+      <div class="autoplay-notification">
+        <div class="autoplay-content">
+          <i class="fa-solid fa-music"></i>
+          <span>Click anywhere to enable background music</span>
+        </div>
+      </div>
+    `;
+    
+    // Add styles
+    const style = document.createElement('style');
+    style.textContent = `
+      .autoplay-notification {
+        position: fixed;
+        bottom: 100px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 50px;
+        box-shadow: 0 10px 30px rgba(124, 58, 237, 0.4);
+        z-index: 9999;
+        animation: slideUp 0.5s ease, pulse 2s infinite;
+        cursor: pointer;
+      }
+      
+      .autoplay-content {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+      
+      .autoplay-content i {
+        font-size: 18px;
+        animation: bounce 1s infinite;
+      }
+      
+      @keyframes slideUp {
+        from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+        to { opacity: 1; transform: translateX(-50%) translateY(0); }
+      }
+      
+      @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-3px); }
+      }
+      
+      @keyframes pulse {
+        0%, 100% { box-shadow: 0 10px 30px rgba(124, 58, 237, 0.4); }
+        50% { box-shadow: 0 10px 40px rgba(124, 58, 237, 0.6); }
+      }
+    `;
+    
+    document.head.appendChild(style);
+    document.body.appendChild(notification);
+    
+    // Auto-hide after 10 seconds if not clicked
+    setTimeout(() => {
+      hideAutoplayNotification();
+    }, 10000);
+  }
+
+  /**
+   * Hide autoplay notification
+   */
+  function hideAutoplayNotification() {
+    const notification = document.getElementById('autoplayNotification');
+    if (notification) {
+      notification.style.animation = 'slideUp 0.3s ease reverse';
+      setTimeout(() => notification.remove(), 300);
+    }
   }
 
   /**

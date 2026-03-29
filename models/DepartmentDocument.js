@@ -66,7 +66,7 @@ const departmentDocumentSchema = new mongoose.Schema({
   contentType: {
     type: String,
     enum: ['file', 'text'],
-    required: true
+    default: 'file'
   },
 
   // For uploaded files
@@ -134,8 +134,7 @@ const departmentDocumentSchema = new mongoose.Schema({
 
   uploadedBy: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
+    ref: 'User'
   }
 }, {
   timestamps: true

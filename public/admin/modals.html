@@ -1,0 +1,107 @@
+  <!-- Edit Document Modal -->
+  <div id="editDocumentModal"
+    class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-2xl w-full p-8 max-h-[90vh] overflow-y-auto animate-scale-in">
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center">
+            <i class="fa-solid fa-pen text-white text-xl"></i>
+          </div>
+          <h2 class="text-2xl font-bold text-gray-800">Edit Document</h2>
+        </div>
+        <button onclick="closeEditDocumentModal()" class="w-10 h-10 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-600 flex items-center justify-center transition-all">
+          <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+      </div>
+
+      <form id="editDocumentForm" onsubmit="saveDocumentChanges(event)">
+        <input type="hidden" id="editDocId">
+
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Title</label>
+            <input type="text" id="editDocTitle" required
+              class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-violet-500 focus:outline-none transition-all">
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Description</label>
+            <textarea id="editDocDescription" rows="3"
+              class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-violet-500 focus:outline-none transition-all resize-none"></textarea>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Category</label>
+              <select id="editDocCategory" required
+                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-violet-500 focus:outline-none transition-all bg-white">
+                <option value="Letter">Letter</option>
+                <option value="Memo">Memo</option>
+                <option value="Policy">Policy</option>
+                <option value="Notice">Notice</option>
+                <option value="Form">Form</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Date Issued</label>
+              <input type="date" id="editDocDate" required
+                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-violet-500 focus:outline-none transition-all">
+            </div>
+          </div>
+
+          <div class="flex items-center gap-6">
+            <label class="flex items-center gap-3 cursor-pointer">
+              <div class="relative">
+                <input type="checkbox" id="editIsPublished" class="sr-only peer">
+                <div class="w-12 h-6 bg-gray-200 rounded-full peer-checked:bg-violet-500 transition-colors"></div>
+                <div class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-6"></div>
+              </div>
+              <span class="text-sm font-medium text-gray-700">Published</span>
+            </label>
+
+            <label class="flex items-center gap-3 cursor-pointer">
+              <div class="relative">
+                <input type="checkbox" id="editIsPinned" class="sr-only peer">
+                <div class="w-12 h-6 bg-gray-200 rounded-full peer-checked:bg-amber-500 transition-colors"></div>
+                <div class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-6"></div>
+              </div>
+              <span class="text-sm font-medium text-gray-700">Pinned</span>
+            </label>
+          </div>
+        </div>
+
+        <div id="editDocumentMessage" class="hidden mt-4"></div>
+
+        <div class="flex gap-3 pt-6 mt-6 border-t border-gray-200">
+          <button type="button" onclick="closeEditDocumentModal()"
+            class="flex-1 px-6 py-3.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl transition-all">
+            Cancel
+          </button>
+          <button type="submit"
+            class="flex-1 px-6 py-3.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-semibold rounded-xl shadow-lg transition-all hover:-translate-y-0.5">
+            <i class="fa-solid fa-save mr-2"></i>Save Changes
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Document Viewer Modal -->
+  <div id="documentViewerModal"
+    class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto animate-fade-in-up">
+      <!-- Modal content will be dynamically inserted here -->
+    </div>
+  </div>
+
+  <script>
+    // Close modal when clicking outside
+    document.getElementById('editDocumentModal')?.addEventListener('click', function(e) {
+      if (e.target === this) closeEditDocumentModal();
+    });
+    document.getElementById('documentViewerModal')?.addEventListener('click', function(e) {
+      if (e.target === this) closeDocumentModal();
+    });
+  </script>
+</body>
+</html>

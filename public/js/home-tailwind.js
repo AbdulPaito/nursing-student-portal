@@ -167,10 +167,10 @@
       return;
     }
 
-    // Split events into groups of 4
+    // Split events into groups of 2
     const chunks = [];
-    for (let i = 0; i < upcomingEvents.length; i += 4) {
-      chunks.push(upcomingEvents.slice(i, i + 4));
+    for (let i = 0; i < upcomingEvents.length; i += 2) {
+      chunks.push(upcomingEvents.slice(i, i + 2));
     }
 
     eventSlides = chunks;

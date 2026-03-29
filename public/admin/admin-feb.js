@@ -86,7 +86,7 @@
     });
   }
 
-  // Section switching + active highlight with URL hash persistence
+  // Section switching + active highlight
   function showSection(sectionName) {
     console.log('📄 Switching to section:', sectionName);
     document.querySelectorAll('.admin-section').forEach(function (s) { s.classList.add('hidden'); });
@@ -94,39 +94,10 @@
     if (target) {
       target.classList.remove('hidden');
       console.log('✅ Section visible:', sectionName);
-      // Update URL hash to persist section
-      window.location.hash = sectionName;
     } else {
       console.error('❌ Section not found:', 'section-' + sectionName);
     }
   }
-
-  // Load section from URL hash on page load
-  function loadSectionFromHash() {
-    var hash = window.location.hash.replace('#', '');
-    var validSections = ['dashboard', 'events', 'announcements', 'daily-subjects', 'courses', 'department', 'department-documents', 'music', 'users', 'settings'];
-    
-    if (hash && validSections.indexOf(hash) !== -1) {
-      console.log('📍 Loading section from URL hash:', hash);
-      showSection(hash);
-      // Update active nav link
-      document.querySelectorAll('.admin-sidebar .nav-link').forEach(function (n) { n.classList.remove('active'); });
-      var activeLink = document.querySelector('.admin-sidebar .nav-link[data-section="' + hash + '"]');
-      if (activeLink) activeLink.classList.add('active');
-      // Load section data
-      if (hash === 'department') setTimeout(function () { loadDepartmentInfo(); }, 50);
-      if (hash === 'music') { console.log('🎵 Music section loaded, fetching files...'); loadMusicFiles(); }
-      if (hash === 'department-documents') { console.log('📄 Department documents loaded, fetching...'); loadDepartmentDocuments(); }
-    } else {
-      // Default to dashboard if no valid hash
-      showSection('dashboard');
-    }
-  }
-
-  // Handle hash changes (browser back/forward)
-  window.addEventListener('hashchange', function() {
-    loadSectionFromHash();
-  });
 
   document.querySelectorAll('.admin-sidebar .nav-link[data-section]').forEach(function (link) {
     link.addEventListener('click', function (e) {
@@ -309,14 +280,144 @@
     });
   }
 
-  // Events CRUD - REMOVED: Using admin-tailwind.js version instead to prevent duplication
-  // Note: loadEvents(), renderEvents(), editEvent(), deleteEvent() are defined in admin-tailwind.js
-  
-  // Keep event save button listener since it's needed
+  // Events CRUD
+  var eventsList = [];
+  var eventsTableBody = document.getElementById('eventsTableBody');
+  var eventsTableWrap = document.getElementById('eventsTableWrap');
+  var eventsLoading = document.getElementById('eventsLoading');
+  function setEventsLoading(on) {
+    if (eventsLoading) eventsLoading.classList.toggle('d-none', !on);
+    if (eventsTableWrap) eventsTableWrap.classList.toggle('d-none', on);
+  }
+  async function loadEvents() {
+    setEventsLoading(true);
+    try {
+      var res = await apiFetch('/api/events');
+      var raw = res.data;
+      eventsList = Array.isArray(raw) ? raw : (raw && raw.data ? raw.data : []);
+      renderEvents(eventsList);
+    } catch (err) {
+      if (eventsTableBody) eventsTableBody.innerHTML = '<tr><td colspan="6" class="px-6 py-12 text-center"><div class="text-rose-600 font-medium">Failed to load events</div></td></tr>';
+      toast('Failed to load events', 'error');
+    }
+    setEventsLoading(false);
+  }
+  function renderEvents(list) {
+    var q = (document.getElementById('eventsSearch') && document.getElementById('eventsSearch').value || '').toLowerCase();
+    var filtered = q ? list.filter(function (e) { return (e.title || '').toLowerCase().includes(q); }) : list;
+    if (!eventsTableBody) return;
+
+    if (!filtered.length) {
+      eventsTableBody.innerHTML = '<tr><td colspan="6" class="px-6 py-12 text-center"><div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gray-100 mb-4"><i class="fa-solid fa-calendar-days text-2xl text-gray-400"></i></div><p class="text-gray-500 font-medium">No events found</p></td></tr>';
+      return;
+    }
+
+    eventsTableBody.innerHTML = filtered.map(function (e) {
+      var itemsList = e.items && e.items.length ? e.items.map(escapeHtml).join(', ') : '<span class="text-gray-400">—</span>';
+      return '<tr class="hover:bg-gray-50 transition-colors">' +
+        '<td class="px-6 py-4"><span class="font-semibold text-gray-800">' + escapeHtml(e.title) + '</span></td>' +
+        '<td class="px-6 py-4"><span class="font-medium text-gray-700">' + escapeHtml(e.time || '—') + '</span></td>' +
+        '<td class="px-6 py-4"><span class="font-medium text-gray-700">' + escapeHtml(e.date) + '</span></td>' +
+        '<td class="px-6 py-4"><span class="text-gray-600">' + escapeHtml(e.location || '—') + '</span></td>' +
+        '<td class="px-6 py-4"><span class="text-sm text-gray-600">' + itemsList + '</span></td>' +
+        '<td class="px-6 py-4"><div class="flex gap-2">' +
+        '<button onclick="window.editEvent(\'' + escapeHtml(e._id) + '\')" class="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-1"><i class="fa-solid fa-pen text-xs"></i> Edit</button>' +
+        '<button onclick="window.deleteEvent(\'' + escapeHtml(e._id) + '\')" class="px-3 py-1.5 bg-rose-500 hover:bg-rose-600 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-1"><i class="fa-solid fa-trash text-xs"></i> Delete</button>' +
+        '</div></td>' +
+        '</tr>';
+    }).join('');
+  }
+  if (document.getElementById('eventsSearch')) document.getElementById('eventsSearch').addEventListener('input', function () { renderEvents(eventsList); });
+
+  window.openEventForm = function () {
+    document.getElementById('eventModalTitle').textContent = 'Add Event';
+    document.getElementById('eventId').value = '';
+    document.getElementById('eventTitle').value = '';
+    document.getElementById('eventDescription').value = '';
+    if (document.getElementById('eventCategory')) document.getElementById('eventCategory').value = '';
+    document.getElementById('eventStartDate').value = '';
+    document.getElementById('eventEndDate').value = '';
+    document.getElementById('eventTime').value = '09:00';
+    document.getElementById('eventLocation').value = '';
+    document.getElementById('eventItems').value = '';
+    // Show modal
+    var modal = document.getElementById('eventModal');
+    if (modal) modal.classList.remove('hidden');
+  };
+  window.editEvent = function (id) {
+    var e = eventsList.find(function (x) { return x._id === id; });
+    if (!e) return;
+    document.getElementById('eventModalTitle').textContent = 'Edit Event';
+    document.getElementById('eventId').value = e._id;
+    document.getElementById('eventTitle').value = e.title || '';
+    document.getElementById('eventDescription').value = e.description || '';
+    if (document.getElementById('eventCategory')) document.getElementById('eventCategory').value = e.category || '';
+    document.getElementById('eventStartDate').value = e.startDate || e.date || '';
+    document.getElementById('eventEndDate').value = e.endDate || '';
+    document.getElementById('eventTime').value = e.time || '09:00';
+    document.getElementById('eventLocation').value = e.location || '';
+    document.getElementById('eventItems').value = (e.items && e.items.length) ? e.items.join('\n') : '';
+    // Show modal
+    var modal = document.getElementById('eventModal');
+    if (modal) modal.classList.remove('hidden');
+  };
+
   var eventSaveBtn = document.getElementById('eventSaveBtn');
   if (eventSaveBtn) {
-    console.log('✅ Event save button found in admin.js, but using tailwind version instead');
+    console.log('✅ Event save button found, attaching listener');
+    eventSaveBtn.addEventListener('click', async function () {
+      console.log('🎯 Event save button clicked!');
+      var id = document.getElementById('eventId').value;
+      var startDate = document.getElementById('eventStartDate').value;
+      var endDate = document.getElementById('eventEndDate').value;
+      var body = {
+        title: document.getElementById('eventTitle').value.trim(),
+        description: document.getElementById('eventDescription').value.trim(),
+        category: (document.getElementById('eventCategory') && document.getElementById('eventCategory').value) || '',
+        date: startDate, // Use startDate as the primary date for backward compatibility
+        startDate: startDate,
+        endDate: endDate,
+        time: document.getElementById('eventTime').value,
+        location: document.getElementById('eventLocation').value.trim(),
+        items: (document.getElementById('eventItems').value || '').split('\n').map(function (s) { return s.trim(); }).filter(Boolean)
+      };
+      console.log('📋 Event data to save:', body);
+      eventSaveBtn.disabled = true;
+      eventSaveBtn.textContent = 'Saving...';
+      try {
+        console.log('📡 Sending request to:', '/api/events' + (id ? '/' + id : ''));
+        var res = await apiFetch('/api/events' + (id ? '/' + id : ''), { method: id ? 'PUT' : 'POST', headers: headers(), body: JSON.stringify(body) });
+        console.log('📥 Response:', res);
+        if (!res.ok) throw new Error(res.data.error || 'Save failed');
+        // Hide modal
+        var modal = document.getElementById('eventModal');
+        if (modal) modal.classList.add('hidden');
+        toast(res.data.message || 'Saved.');
+        console.log('✅ Event saved successfully!');
+        loadEvents();
+        loadDashboard();
+      } catch (err) {
+        console.error('❌ Save error:', err);
+        toast(err.message || 'Failed to save.', 'error');
+      }
+      eventSaveBtn.disabled = false;
+      eventSaveBtn.textContent = 'Save Event';
+    });
+  } else {
+    console.error('❌ eventSaveBtn not found - check if element ID exists in HTML');
   }
+
+  window.deleteEvent = async function (id) {
+    var ok = await confirmDelete('Delete this event?');
+    if (!ok) return;
+    try {
+      var res = await apiFetch('/api/events/' + id, { method: 'DELETE', headers: headers() });
+      if (!res.ok) throw new Error(res.data.error || 'Delete failed');
+      toast(res.data.message || 'Deleted.');
+      loadEvents();
+      loadDashboard();
+    } catch (err) { toast(err.message || 'Failed to delete.', 'error'); }
+  };
 
   // Daily Subjects CRUD
   var dailySubjectsFlat = [];
@@ -679,8 +780,8 @@
     } catch (err) { toast(err.message || 'Failed to delete.', 'error'); }
   };
 
-  // Load initial data - REMOVED loadEvents() to prevent duplication (it's handled by admin-tailwind.js)
   loadDashboard();
+  loadEvents();
   loadCourses();
   loadAnnouncements();
 
@@ -1057,12 +1158,14 @@
     }
   });
 
-  // Initialize - load section from URL hash or default to dashboard
+  // Initialize - show dashboard by default
   document.addEventListener('DOMContentLoaded', function () {
     console.log('✅ Admin dashboard initialized');
-    
-    // Load section from URL hash (persists on refresh)
-    loadSectionFromHash();
+    // Dashboard section should be visible by default
+    var dashboardSection = document.getElementById('section-dashboard');
+    if (dashboardSection && !dashboardSection.classList.contains('hidden')) {
+      console.log('✅ Dashboard is default section');
+    }
 
     // Load department info when department section is shown
     var departmentSection = document.getElementById('section-department');
@@ -1905,12 +2008,13 @@
   // Load all documents
   window.loadDepartmentDocuments = async function () {
     const tbody = document.getElementById('documentsTableBody');
+    const categoryFilter = document.getElementById('categoryFilter');
 
     if (!tbody) return;
 
-    const category = currentCategoryFilter || 'All';
+    const category = categoryFilter ? categoryFilter.value : '';
 
-    tbody.innerHTML = '<tr><td colspan="9" class="px-6 py-12 text-center text-gray-500"><i class="fa-solid fa-spinner fa-spin text-3xl mb-3 text-primary-500"></i><p>Loading documents...</p></td></tr>';
+    tbody.innerHTML = '<tr><td colspan="8" class="px-6 py-12 text-center text-gray-500"><i class="fa-solid fa-spinner fa-spin text-3xl mb-3 text-primary-500"></i><p>Loading documents...</p></td></tr>';
 
     try {
       const token = localStorage.getItem('adminToken');
@@ -1926,107 +2030,72 @@
 
       if (data.success) {
         if (data.documents.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="9" class="px-6 py-12 text-center"><div class="inline-flex flex-col items-center"><div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center mb-4 shadow-inner"><i class="fa-solid fa-folder-open text-4xl text-gray-300"></i></div><p class="text-gray-500 font-medium">No documents found</p></div></td></tr>';
+          tbody.innerHTML = '<tr><td colspan="8" class="px-6 py-8 text-center text-gray-500">No documents found</td></tr>';
           return;
         }
 
-        tbody.innerHTML = data.documents.map((doc, index) => {
-          const date = new Date(doc.dateIssued).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-          
-          // File type icon with color and label
-          let typeIcon = '<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-gray-400 to-gray-500 flex items-center justify-center shadow-sm"><i class="fa-solid fa-file-lines text-white text-sm"></i></div>';
-          let typeLabel = 'Text';
+        tbody.innerHTML = data.documents.map(doc => {
+          const date = new Date(doc.dateIssued).toLocaleDateString();
+          const publishedBadge = doc.isPublished
+            ? '<span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-semibold">Yes</span>'
+            : '<span class="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-semibold">No</span>';
+
+          const activeBadge = doc.isActive !== false
+            ? '<span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold">Active</span>'
+            : '<span class="px-3 py-1 rounded-full bg-red-100 text-red-700 text-xs font-semibold">Inactive</span>';
+
+          const pinnedBadge = doc.isPinned
+            ? '<i class="fa-solid fa-thumbtack text-primary-500 mr-2"></i>'
+            : '';
+
+          let typeIcon = '<i class="fa-solid fa-file-lines text-xl"></i>';
           if (doc.contentType === 'file') {
-            if (doc.fileType === 'pdf') {
-              typeIcon = '<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center shadow-sm"><i class="fa-solid fa-file-pdf text-white text-sm"></i></div>';
-              typeLabel = 'PDF';
-            } else if (doc.fileType === 'doc' || doc.fileType === 'docx') {
-              typeIcon = '<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-sm"><i class="fa-solid fa-file-word text-white text-sm"></i></div>';
-              typeLabel = 'Word';
-            } else if (doc.fileType === 'jpg' || doc.fileType === 'jpeg' || doc.fileType === 'png') {
-              typeIcon = '<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center shadow-sm"><i class="fa-solid fa-file-image text-white text-sm"></i></div>';
-              typeLabel = 'Image';
-            }
+            if (doc.fileType === 'pdf') typeIcon = '<i class="fa-solid fa-file-pdf text-red-500 text-xl"></i>';
+            else if (doc.fileType === 'doc' || doc.fileType === 'docx') typeIcon = '<i class="fa-solid fa-file-word text-blue-500 text-xl"></i>';
+            else if (doc.fileType === 'jpg' || doc.fileType === 'jpeg' || doc.fileType === 'png') typeIcon = '<i class="fa-solid fa-file-image text-green-500 text-xl"></i>';
           }
 
-          // Category badge color
-          const categoryColors = {
-            'Letter': 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-blue-200',
-            'Memo': 'bg-gradient-to-r from-purple-500 to-purple-600 text-white shadow-purple-200',
-            'Policy': 'bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-amber-200',
-            'Notice': 'bg-gradient-to-r from-rose-500 to-rose-600 text-white shadow-rose-200',
-            'Form': 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-emerald-200',
-            'Announcement': 'bg-gradient-to-r from-violet-500 to-violet-600 text-white shadow-violet-200'
-          };
-          const categoryClass = categoryColors[doc.category] || 'bg-gradient-to-r from-gray-500 to-gray-600 text-white shadow-gray-200';
-
-          // Published toggle button with better styling
-          const publishBtn = doc.isPublished
-            ? `<button onclick="togglePublishDocument('${doc._id}')" class="h-8 px-3 rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-600 text-white shadow-md hover:shadow-lg hover:scale-105 flex items-center gap-1.5 transition-all text-xs font-medium" title="Published - Click to Unpublish"><i class="fa-solid fa-check text-xs"></i>Published</button>`
-            : `<button onclick="togglePublishDocument('${doc._id}')" class="h-8 px-3 rounded-lg bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-gray-600 flex items-center gap-1.5 transition-all text-xs font-medium" title="Draft - Click to Publish"><i class="fa-solid fa-xmark text-xs"></i>Draft</button>`;
-
-          // Active toggle button with better styling
-          const activeBtn = doc.isActive !== false
-            ? `<button onclick="toggleActiveDocument('${doc._id}')" class="h-8 px-3 rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 text-white shadow-md hover:shadow-lg hover:scale-105 flex items-center gap-1.5 transition-all text-xs font-medium" title="Active - Click to Deactivate"><i class="fa-solid fa-check text-xs"></i>Active</button>`
-            : `<button onclick="toggleActiveDocument('${doc._id}')" class="h-8 px-3 rounded-lg bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-gray-600 flex items-center gap-1.5 transition-all text-xs font-medium" title="Inactive - Click to Activate"><i class="fa-solid fa-xmark text-xs"></i>Inactive</button>`;
-
-          // Stats badges
-          const viewsBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-violet-50 text-violet-700 text-xs font-semibold border border-violet-100"><i class="fa-solid fa-eye text-violet-500 text-xs"></i> ${doc.viewCount || 0}</span>`;
-          const downloadsBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 text-xs font-semibold border border-emerald-100"><i class="fa-solid fa-download text-emerald-500 text-xs"></i> ${doc.downloadCount || 0}</span>`;
-
           return `
-            <tr class="group hover:bg-gradient-to-r hover:from-violet-50/30 hover:to-purple-50/20 transition-all duration-300 border-b border-gray-100 last:border-0" style="animation: fadeInRow 0.4s ease-out ${index * 0.05}s both;">
-              <td class="px-4 py-3 text-center align-middle">
-                <div class="flex items-center justify-center gap-2">
-                  <div class="flex-shrink-0 w-4">
-                    ${doc.isPinned ? '<i class="fa-solid fa-thumbtack text-violet-500 text-xs transform -rotate-45"></i>' : ''}
-                  </div>
-                  <div class="flex-1 min-w-0 text-left">
-                    <div class="font-semibold text-gray-800 text-sm group-hover:text-violet-700 transition-colors truncate">${doc.title}</div>
-                    <div class="text-xs text-gray-500 truncate max-w-[180px]">${doc.description || 'No description'}</div>
+            <tr class="hover:bg-gray-50 transition-colors">
+              <td class="px-6 py-4">
+                <div class="flex items-center gap-3">
+                  ${pinnedBadge}
+                  <div>
+                    <div class="font-semibold text-gray-800">${doc.title}</div>
+                    <div class="text-sm text-gray-500">${doc.description || 'No description'}</div>
                   </div>
                 </div>
               </td>
-              <td class="px-3 py-3 text-center align-middle">
-                <span class="px-2.5 py-1 rounded-lg ${categoryClass} text-xs font-semibold shadow-sm inline-block">
-                  ${doc.category}
-                </span>
+              <td class="px-6 py-4 text-center">
+                <span class="px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold">${doc.category}</span>
               </td>
-              <td class="px-3 py-3 text-center align-middle">
-                <div class="flex flex-col items-center justify-center gap-0.5">
-                  ${typeIcon}
-                  <span class="text-xs text-gray-500 font-medium">${typeLabel}</span>
+              <td class="px-6 py-4 text-center">${typeIcon}</td>
+              <td class="px-6 py-4 text-center text-gray-600 text-sm">${date}</td>
+              <td class="px-6 py-4 text-center">${publishedBadge}</td>
+              <td class="px-6 py-4 text-center">${activeBadge}</td>
+              <td class="px-6 py-4 text-center">
+                <div class="text-sm text-gray-600">
+                  <div><i class="fa-solid fa-eye text-primary-500 mr-1"></i> ${doc.viewCount || 0}</div>
+                  <div><i class="fa-solid fa-download text-green-500 mr-1"></i> ${doc.downloadCount || 0}</div>
+                  <div><i class="fa-solid fa-comments text-blue-500 mr-1"></i> ${doc.comments?.length || 0}</div>
                 </div>
               </td>
-              <td class="px-3 py-3 text-center align-middle">
-                <span class="text-xs font-medium text-gray-600 bg-gray-50 px-2 py-1 rounded border border-gray-100 inline-block">${date}</span>
-              </td>
-              <td class="px-2 py-3 text-center align-middle">
-                ${viewsBadge}
-              </td>
-              <td class="px-2 py-3 text-center align-middle">
-                ${downloadsBadge}
-              </td>
-              <td class="px-2 py-3 text-center align-middle">
-                <div class="flex items-center justify-center">
-                  ${publishBtn}
-                </div>
-              </td>
-              <td class="px-2 py-3 text-center align-middle">
-                <div class="flex items-center justify-center">
-                  ${activeBtn}
-                </div>
-              </td>
-              <td class="px-3 py-3 text-center align-middle">
-                <div class="flex items-center justify-center gap-1">
-                  <button onclick="window.viewDocument('${doc._id}')" class="h-7 px-2 rounded-lg bg-blue-100 text-blue-600 hover:bg-blue-200 transition-all shadow-sm text-xs font-medium" title="View">
-                    <i class="fa-solid fa-eye text-xs"></i>
+              <td class="px-6 py-4">
+                <div class="flex items-center justify-center gap-2 flex-wrap">
+                  <button onclick="togglePublishDocument('${doc._id}')" class="px-3 py-2 ${doc.isPublished ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'} rounded-lg hover:opacity-80 transition-opacity text-sm font-medium" title="${doc.isPublished ? 'Unpublish' : 'Publish'}">
+                    <i class="fa-solid fa-${doc.isPublished ? 'eye-slash' : 'eye'}"></i>
                   </button>
-                  <button onclick="window.editDocument('${doc._id}')" class="h-7 px-2 rounded-lg bg-amber-100 text-amber-600 hover:bg-amber-200 transition-all shadow-sm text-xs font-medium" title="Edit">
-                    <i class="fa-solid fa-pen text-xs"></i>
+                  <button onclick="toggleActiveDocument('${doc._id}')" class="px-3 py-2 ${doc.isActive !== false ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'} rounded-lg hover:opacity-80 transition-opacity text-sm font-medium" title="${doc.isActive !== false ? 'Deactivate' : 'Activate'}">
+                    <i class="fa-solid fa-${doc.isActive !== false ? 'toggle-on' : 'toggle-off'}"></i>
                   </button>
-                  <button onclick="window.deleteDocument('${doc._id}', '${doc.title.replace(/'/g, "\\'")}')" class="h-7 px-2 rounded-lg bg-rose-100 text-rose-600 hover:bg-rose-200 transition-all shadow-sm text-xs font-medium" title="Delete">
-                    <i class="fa-solid fa-trash text-xs"></i>
+                  <button onclick="editDocument('${doc._id}')" class="px-3 py-2 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition-colors text-sm font-medium" title="Edit">
+                    <i class="fa-solid fa-edit"></i>
+                  </button>
+                  <button onclick="viewDocument('${doc._id}')" class="px-3 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors text-sm font-medium" title="View">
+                    <i class="fa-solid fa-eye"></i>
+                  </button>
+                  <button onclick="deleteDocument('${doc._id}', '${doc.title.replace(/'/g, "\\\'")}')" class="px-3 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors text-sm font-medium" title="Delete">
+                    <i class="fa-solid fa-trash"></i>
                   </button>
                 </div>
               </td>
@@ -2036,7 +2105,7 @@
       }
     } catch (err) {
       console.error('Load documents error:', err);
-      tbody.innerHTML = '<tr><td colspan="9" class="px-6 py-12 text-center"><div class="inline-flex flex-col items-center"><div class="w-16 h-16 rounded-2xl bg-rose-100 flex items-center justify-center mb-3"><i class="fa-solid fa-triangle-exclamation text-2xl text-rose-500"></i></div><p class="text-rose-600 font-medium">Error loading documents</p></div></td></tr>';
+      tbody.innerHTML = '<tr><td colspan="8" class="px-6 py-8 text-center text-red-500">Error loading documents</td></tr>';
     }
   };
 
@@ -2163,76 +2232,67 @@
     }
   };
 
-  // Edit document - NEW WORKING VERSION
-  window.editDocument = async function(docId) {
-    console.log('✏️ editDocument called:', docId);
-    const modal = document.getElementById('docModal');
-    const modalContent = document.getElementById('docModalContent');
+  // Edit document - REAL implementation with modal form
+  window.editDocument = async function (docId) {
+    const modal = document.getElementById('documentViewerModal');
     const token = localStorage.getItem('adminToken');
-    
-    if (!modal || !modalContent) {
-      alert('Modal not found!');
-      return;
-    }
-    
+
     // Show loading
-    modalContent.innerHTML = `
-      <div class="p-8 text-center">
-        <i class="fa-solid fa-spinner fa-spin text-4xl text-violet-600 mb-4"></i>
+    modal.innerHTML = `
+      <div class="bg-white rounded-3xl shadow-2xl max-w-2xl w-full p-8 text-center">
+        <i class="fa-solid fa-spinner fa-spin text-4xl text-primary-600 mb-4"></i>
         <p class="text-gray-600">Loading edit form...</p>
       </div>
     `;
-    modal.style.display = 'block';
-    
+    modal.classList.remove('hidden');
+
     try {
       const response = await fetch(`/api/department-documents/${docId}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
+
       const data = await response.json();
-      
+
       if (!data.success) {
-        modalContent.innerHTML = `<div class="p-8 text-center text-red-600">Error: ${data.error}</div>`;
-        return;
+        throw new Error(data.error || 'Failed to load document');
       }
-      
+
       const doc = data.document;
-      
-      modalContent.innerHTML = `
-        <div class="bg-white rounded-2xl overflow-hidden">
-          <!-- Header - Violet theme to match admin dashboard -->
-          <div class="bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-5">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <div class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
-                  <i class="fa-solid fa-pen text-white text-xl"></i>
-                </div>
-                <h2 class="text-2xl font-bold text-white">Edit Document</h2>
+
+      // Build edit form
+      modal.innerHTML = `
+        <div class="bg-white rounded-3xl shadow-2xl max-w-2xl w-full p-8 max-h-[90vh] overflow-y-auto">
+          <div class="flex items-center justify-between mb-6">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center">
+                <i class="fa-solid fa-pen text-white text-xl"></i>
               </div>
-              <button onclick="closeDocModal()" class="text-white/80 hover:text-white transition-colors">
-                <i class="fa-solid fa-xmark text-2xl"></i>
-              </button>
+              <h2 class="text-2xl font-bold text-gray-800">Edit Document</h2>
             </div>
+            <button onclick="closeDocumentModal()" class="w-10 h-10 rounded-xl bg-gray-100 hover:bg-gray-200 flex items-center justify-center">
+              <i class="fa-solid fa-xmark text-xl text-gray-600"></i>
+            </button>
           </div>
           
-          <form onsubmit="return saveDocEdit('${docId}')" class="p-6">
+          <form id="editDocForm" onsubmit="return saveDocumentEdit('${docId}')">
             <div class="space-y-4">
               <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-1">Title</label>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Title</label>
                 <input type="text" id="editTitle" value="${doc.title || ''}" required
-                  class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-violet-500 outline-none transition-colors">
+                  class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-violet-500 outline-none">
               </div>
               
               <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-1">Description</label>
-                <textarea id="editDesc" rows="3"
-                  class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-violet-500 outline-none resize-none transition-colors">${doc.description || ''}</textarea>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Description</label>
+                <textarea id="editDescription" rows="3"
+                  class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-violet-500 outline-none resize-none">${doc.description || ''}</textarea>
               </div>
               
               <div class="grid grid-cols-2 gap-4">
                 <div>
-                  <label class="block text-sm font-semibold text-gray-700 mb-1">Category</label>
+                  <label class="block text-sm font-semibold text-gray-700 mb-2">Category</label>
                   <select id="editCategory" required
-                    class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-violet-500 outline-none bg-white transition-colors">
+                    class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-violet-500 outline-none bg-white">
                     <option value="Letter" ${doc.category === 'Letter' ? 'selected' : ''}>Letter</option>
                     <option value="Memo" ${doc.category === 'Memo' ? 'selected' : ''}>Memo</option>
                     <option value="Policy" ${doc.category === 'Policy' ? 'selected' : ''}>Policy</option>
@@ -2241,58 +2301,75 @@
                   </select>
                 </div>
                 <div>
-                  <label class="block text-sm font-semibold text-gray-700 mb-1">Date</label>
-                  <input type="date" id="editDate" value="${doc.dateIssued ? doc.dateIssued.split('T')[0] : ''}" required
-                    class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-violet-500 outline-none transition-colors">
+                  <label class="block text-sm font-semibold text-gray-700 mb-2">Date Issued</label>
+                  <input type="date" id="editDateIssued" value="${doc.dateIssued ? doc.dateIssued.split('T')[0] : ''}" required
+                    class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-violet-500 outline-none">
                 </div>
               </div>
               
-              <div class="flex gap-6 pt-2">
+              <div class="flex items-center gap-6">
                 <label class="flex items-center gap-2 cursor-pointer">
-                  <input type="checkbox" id="editPublished" ${doc.isPublished ? 'checked' : ''}
-                    class="w-5 h-5 rounded border-gray-300 text-violet-600 focus:ring-violet-500">
+                  <input type="checkbox" id="editIsPublished" ${doc.isPublished ? 'checked' : ''}
+                    class="w-5 h-5 rounded border-gray-300 text-violet-600">
                   <span class="text-sm font-medium text-gray-700">Published</span>
                 </label>
                 <label class="flex items-center gap-2 cursor-pointer">
-                  <input type="checkbox" id="editPinned" ${doc.isPinned ? 'checked' : ''}
-                    class="w-5 h-5 rounded border-gray-300 text-violet-600 focus:ring-violet-500">
+                  <input type="checkbox" id="editIsPinned" ${doc.isPinned ? 'checked' : ''}
+                    class="w-5 h-5 rounded border-gray-300 text-amber-600">
                   <span class="text-sm font-medium text-gray-700">Pinned</span>
                 </label>
               </div>
             </div>
             
-            <div class="flex gap-3 mt-6 pt-4 border-t">
-              <button type="button" onclick="closeDocModal()"
+            <div class="flex gap-3 pt-6 mt-6 border-t border-gray-200">
+              <button type="button" onclick="closeDocumentModal()"
                 class="flex-1 px-6 py-3 bg-gray-100 hover:bg-gray-200 rounded-xl font-medium transition-colors">
                 Cancel
               </button>
               <button type="submit"
-                class="flex-1 px-6 py-3 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white rounded-xl font-medium transition-all">
+                class="flex-1 px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl font-medium hover:shadow-lg transition-all">
                 <i class="fa-solid fa-save mr-2"></i>Save Changes
               </button>
             </div>
           </form>
         </div>
       `;
+
     } catch (error) {
-      modalContent.innerHTML = `<div class="p-8 text-center text-red-600">Error loading document</div>`;
+      console.error('Edit document error:', error);
+      modal.innerHTML = `
+        <div class="bg-white rounded-3xl shadow-2xl max-w-2xl w-full p-8 text-center">
+          <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fa-solid fa-exclamation-triangle text-2xl text-red-600"></i>
+          </div>
+          <h3 class="text-xl font-bold text-gray-800 mb-2">Failed to Load Document</h3>
+          <p class="text-gray-600 mb-4">${error.message}</p>
+          <button onclick="closeDocumentModal()" class="px-6 py-2 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors">
+            Close
+          </button>
+        </div>
+      `;
     }
   };
 
   // Save document edit
-  window.saveDocEdit = async function(docId) {
+  window.saveDocumentEdit = async function (docId) {
     const token = localStorage.getItem('adminToken');
+    const submitBtn = document.querySelector('#editDocForm button[type="submit"]');
     
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Saving...';
+
     try {
       const formData = {
         title: document.getElementById('editTitle').value,
-        description: document.getElementById('editDesc').value,
+        description: document.getElementById('editDescription').value,
         category: document.getElementById('editCategory').value,
-        dateIssued: document.getElementById('editDate').value,
-        isPublished: document.getElementById('editPublished').checked,
-        isPinned: document.getElementById('editPinned').checked
+        dateIssued: document.getElementById('editDateIssued').value,
+        isPublished: document.getElementById('editIsPublished').checked,
+        isPinned: document.getElementById('editIsPinned').checked
       };
-      
+
       const response = await fetch(`/api/department-documents/${docId}`, {
         method: 'PUT',
         headers: {
@@ -2301,90 +2378,34 @@
         },
         body: JSON.stringify(formData)
       });
-      
+
       const data = await response.json();
-      
+
       if (data.success) {
-        alert('Document updated!');
-        closeDocModal();
+        alert('Document updated successfully!');
+        closeDocumentModal();
         loadDepartmentDocuments();
       } else {
-        alert(data.error || 'Failed to update');
+        alert(data.error || 'Failed to update document');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fa-solid fa-save mr-2"></i>Save Changes';
       }
     } catch (error) {
+      console.error('Save error:', error);
       alert('Error saving document');
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = '<i class="fa-solid fa-save mr-2"></i>Save Changes';
     }
+
     return false;
   };
 
-  // Delete document with custom confirmation modal
-  window.deleteDocument = async function(docId, title) {
-    const modal = document.getElementById('docModal');
-    const modalContent = document.getElementById('docModalContent');
-    
-    if (!modal || !modalContent) {
+  // Delete document
+  window.deleteDocument = async function (docId, title) {
+    if (!confirm(`Are you sure you want to delete "${title}"?\n\nThis action cannot be undone.`)) {
       return;
     }
-    
-    // Show custom delete confirmation
-    modalContent.innerHTML = `
-      <div class="bg-white rounded-2xl shadow-2xl overflow-hidden w-full max-w-sm mx-auto">
-        <!-- Header -->
-        <div class="bg-gradient-to-r from-rose-500 to-red-600 px-5 py-4 flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <i class="fa-solid fa-trash text-white text-lg"></i>
-            <h2 class="text-xl font-bold text-white">Delete Document</h2>
-          </div>
-          <button onclick="closeDocModal()" class="text-white/70 hover:text-white transition-colors">
-            <i class="fa-solid fa-xmark text-xl"></i>
-          </button>
-        </div>
-        
-        <div class="p-5">
-          <!-- Warning Icon -->
-          <div class="text-center mb-4">
-            <div class="w-14 h-14 rounded-full bg-rose-100 flex items-center justify-center mx-auto mb-3">
-              <i class="fa-solid fa-triangle-exclamation text-xl text-rose-500"></i>
-            </div>
-            <p class="text-gray-600 text-sm mb-1">Are you sure you want to delete</p>
-            <p class="font-bold text-gray-800">"${title}"?</p>
-          </div>
-          
-          <div class="bg-rose-50 border border-rose-200 rounded-lg p-3 mb-4">
-            <p class="text-rose-700 text-xs text-center">
-              <i class="fa-solid fa-circle-info mr-1"></i>
-              This action cannot be undone.
-            </p>
-          </div>
-          
-          <div class="flex gap-2">
-            <button onclick="closeDocModal()" class="flex-1 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors text-sm">
-              Cancel
-            </button>
-            <button onclick="confirmDeleteDocument('${docId}')" class="flex-1 px-4 py-2.5 bg-rose-500 hover:bg-rose-600 text-white rounded-lg font-medium transition-colors text-sm flex items-center justify-center gap-1.5">
-              <i class="fa-solid fa-trash text-xs"></i>
-              Delete
-            </button>
-          </div>
-        </div>
-      </div>
-    `;
-    modal.style.display = 'block';
-  };
 
-  // Confirm and execute document deletion
-  window.confirmDeleteDocument = async function(docId) {
-    const modal = document.getElementById('docModal');
-    const modalContent = document.getElementById('docModalContent');
-    
-    // Show loading
-    modalContent.innerHTML = `
-      <div class="p-8 text-center">
-        <i class="fa-solid fa-spinner fa-spin text-4xl text-rose-500 mb-4"></i>
-        <p class="text-gray-600">Deleting document...</p>
-      </div>
-    `;
-    
     try {
       const token = localStorage.getItem('adminToken');
       const response = await fetch(`/api/department-documents/${docId}`, {
@@ -2395,212 +2416,121 @@
       const data = await response.json();
 
       if (data.success) {
-        modalContent.innerHTML = `
-          <div class="p-8 text-center">
-            <div class="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-4">
-              <i class="fa-solid fa-check text-2xl text-emerald-500"></i>
-            </div>
-            <p class="text-gray-800 font-semibold mb-2">Document deleted successfully!</p>
-          </div>
-        `;
-        setTimeout(() => {
-          closeDocModal();
-          loadDepartmentDocuments();
-        }, 1000);
+        loadDepartmentDocuments();
       } else {
-        modalContent.innerHTML = `
-          <div class="p-8 text-center">
-            <div class="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
-              <i class="fa-solid fa-exclamation-triangle text-2xl text-red-500"></i>
-            </div>
-            <p class="text-gray-800 font-semibold mb-2">Failed to delete</p>
-            <p class="text-gray-500 text-sm">${data.error || 'An error occurred'}</p>
-            <button onclick="closeDocModal()" class="mt-4 px-6 py-2 bg-gray-100 hover:bg-gray-200 rounded-xl">Close</button>
-          </div>
-        `;
+        alert(data.error || 'Failed to delete document');
       }
     } catch (error) {
       console.error('Delete document error:', error);
-      modalContent.innerHTML = `
-        <div class="p-8 text-center">
-          <div class="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
-            <i class="fa-solid fa-exclamation-triangle text-2xl text-red-500"></i>
-          </div>
-          <p class="text-gray-800 font-semibold mb-2">Error deleting document</p>
-          <button onclick="closeDocModal()" class="mt-4 px-6 py-2 bg-gray-100 hover:bg-gray-200 rounded-xl">Close</button>
-        </div>
-      `;
+      alert('Error deleting document');
     }
   };
 
-  // View document - NEW WORKING VERSION with improved design
-  window.viewDocument = async function(docId) {
-    console.log('👁️ viewDocument called:', docId);
-    const modal = document.getElementById('docModal');
-    const modalContent = document.getElementById('docModalContent');
+  // View document with comments
+  window.viewDocument = async function (docId) {
+    const modal = document.getElementById('documentViewerModal');
     const token = localStorage.getItem('adminToken');
-    
-    if (!modal || !modalContent) {
-      alert('Modal not found!');
-      return;
-    }
-    
-    // Show loading
-    modalContent.innerHTML = `
-      <div class="p-8 text-center">
-        <i class="fa-solid fa-spinner fa-spin text-4xl text-violet-600 mb-4"></i>
-        <p class="text-gray-600">Loading document...</p>
-      </div>
-    `;
-    modal.style.display = 'block';
-    
+
     try {
       const response = await fetch(`/api/department-documents/${docId}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await response.json();
-      
-      if (!data.success) {
-        modalContent.innerHTML = `<div class="p-8 text-center text-red-600">Error: ${data.error}</div>`;
-        return;
-      }
-      
-      const doc = data.document;
-      const date = new Date(doc.dateIssued).toLocaleDateString();
-      const fileExt = doc.fileType?.toLowerCase() || '';
-      const isPdf = fileExt === 'pdf';
-      const isImage = ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(fileExt);
-      
-      // Build file preview section
-      let filePreviewSection = '';
-      if (doc.fileUrl) {
-        if (isImage) {
-          filePreviewSection = `
-            <div class="mb-6">
-              <div class="relative group cursor-pointer" onclick="viewFullImage('${doc.fileUrl}', '${doc.title}')">
-                <img src="${doc.fileUrl}" alt="${doc.title}" class="max-w-full max-h-[500px] object-contain rounded-xl border border-gray-200 shadow-lg mx-auto">
-                <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center">
-                  <div class="text-white text-center">
-                    <i class="fa-solid fa-expand text-3xl mb-2"></i>
-                    <p class="text-sm font-medium">Click to view full image</p>
-                  </div>
+
+      if (data.success) {
+        const doc = data.document;
+        const date = new Date(doc.dateIssued).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+
+        // Build comments HTML with delete buttons
+        const commentsHtml = doc.comments && doc.comments.length > 0 ?
+          doc.comments.map((comment, idx) => `
+            <div class="p-4 bg-white rounded-xl border border-gray-200 mb-3" id="admin-comment-${comment._id}">
+              <div class="flex items-start justify-between mb-2">
+                <div>
+                  <p class="font-semibold text-gray-800">${comment.userName}</p>
+                  <p class="text-sm text-gray-500">${new Date(comment.createdAt).toLocaleString()}</p>
                 </div>
+                <button onclick="deleteComment('${docId}', '${comment._id}')" class="px-3 py-1 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors text-sm font-medium" title="Delete Comment">
+                  <i class="fa-solid fa-trash"></i> Delete
+                </button>
               </div>
-            </div>
-          `;
-        } else if (isPdf) {
-          filePreviewSection = `
-            <div class="mb-6">
-              <iframe src="${doc.fileUrl}" class="w-full h-96 rounded-xl border border-gray-200" type="application/pdf"></iframe>
-            </div>
-          `;
-        } else {
-          filePreviewSection = `
-            <div class="bg-gradient-to-r from-violet-50 to-purple-50 p-4 rounded-xl border border-violet-200 mb-6">
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                  <div class="w-12 h-12 rounded-xl bg-violet-100 flex items-center justify-center">
-                    <i class="fa-solid fa-file text-xl text-violet-600"></i>
-                  </div>
-                  <div>
-                    <p class="font-semibold text-gray-800">${doc.fileName || 'Document'}</p>
-                    <p class="text-sm text-gray-500">${doc.fileType?.toUpperCase() || 'File'}</p>
-                  </div>
+              <p class="text-gray-700">${comment.comment}</p>
+              
+              <!-- Replies -->
+              ${comment.replies && comment.replies.length > 0 ? `
+                <div class="ml-4 mt-3 space-y-2 border-l-2 border-gray-100 pl-4">
+                  ${comment.replies.map((reply, rIdx) => `
+                    <div class="p-3 bg-gray-50 rounded-lg" id="admin-reply-${comment._id}-${rIdx}">
+                      <div class="flex items-center justify-between mb-1">
+                        <p class="font-semibold text-gray-700 text-sm">${reply.userName}</p>
+                        <span class="text-xs text-gray-500">${new Date(reply.createdAt).toLocaleString()}</span>
+                      </div>
+                      <p class="text-gray-600 text-sm">${reply.comment}</p>
+                    </div>
+                  `).join('')}
                 </div>
-              </div>
+              ` : ''}
             </div>
-          `;
-        }
-      }
-      
-      modalContent.innerHTML = `
-        <div class="bg-white rounded-2xl overflow-hidden">
-          <!-- Header -->
-          <div class="bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-5">
-            <div class="flex items-start justify-between">
+          `).join('') :
+          '<p class="text-gray-500 text-center py-8">No comments yet</p>';
+
+        modal.innerHTML = `
+          <div class="bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto animate-fade-in-up">
+            <div class="sticky top-0 bg-gradient-to-r from-primary-600 via-primary-500 to-secondary-500 px-8 py-6 rounded-t-3xl flex items-start justify-between z-10">
               <div class="text-white">
                 <h2 class="text-2xl font-bold mb-2">${doc.title}</h2>
                 <div class="flex flex-wrap gap-4 text-sm text-white/90">
-                  <span><i class="fa-solid fa-calendar mr-1"></i>${date}</span>
-                  <span><i class="fa-solid fa-eye mr-1"></i>${doc.viewCount || 0} views</span>
-                  <span><i class="fa-solid fa-download mr-1"></i>${doc.downloadCount || 0} downloads</span>
-                  <span class="px-2 py-0.5 rounded-lg ${doc.isPublished ? 'bg-emerald-400/30' : 'bg-gray-400/30'}">
-                    ${doc.isPublished ? 'Published' : 'Draft'}
-                  </span>
+                  <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-calendar-alt"></i>
+                    <span>${date}</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-eye"></i>
+                    <span>${doc.viewCount || 0} views</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-download"></i>
+                    <span>${doc.downloadCount || 0} downloads</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-comments"></i>
+                    <span>${doc.comments?.length || 0} comments</span>
+                  </div>
                 </div>
               </div>
-              <button onclick="closeDocModal()" class="text-white/80 hover:text-white transition-colors">
-                <i class="fa-solid fa-xmark text-2xl"></i>
+              <button onclick="closeDocumentModal()" class="w-12 h-12 rounded-xl bg-white/20 hover:bg-white/30 backdrop-blur-sm flex items-center justify-center transition-all ml-4 group">
+                <i class="fa-solid fa-times text-white text-lg group-hover:scale-110 transition-transform"></i>
               </button>
             </div>
-          </div>
-          
-          <!-- Content -->
-          <div class="p-6">
-            ${doc.description ? `
-              <div class="mb-6 p-4 bg-blue-50 rounded-xl border-l-4 border-blue-500">
-                <p class="text-gray-700">${doc.description}</p>
-              </div>
-            ` : ''}
-            
-            ${filePreviewSection}
-            
-            <div class="border-t pt-6">
-              <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-                <i class="fa-solid fa-comments text-violet-500"></i>
-                Comments (${doc.comments?.length || 0})
-              </h3>
-              ${doc.comments?.length ? doc.comments.map(c => `
-                <div class="bg-gray-50 p-4 rounded-xl mb-3">
-                  <div class="flex items-center justify-between mb-2">
-                    <p class="font-semibold text-gray-800">${c.userName}</p>
-                    <span class="text-xs text-gray-500">${new Date(c.createdAt).toLocaleString()}</span>
-                  </div>
-                  <p class="text-gray-700">${c.comment}</p>
+            <div class="p-8">
+              ${doc.description ? `
+                <div class="mb-6 p-5 bg-blue-50 rounded-2xl border-l-4 border-blue-500">
+                  <p class="text-gray-700">${doc.description}</p>
                 </div>
-              `).join('') : '<p class="text-gray-500 text-center py-4">No comments yet</p>'}
+              ` : ''}
+              <div class="mb-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">Comments (${doc.comments?.length || 0})</h3>
+                ${commentsHtml}
+              </div>
             </div>
           </div>
-        </div>
-      `;
+        `;
+
+        modal.classList.remove('hidden');
+      }
     } catch (error) {
-      modalContent.innerHTML = `<div class="p-8 text-center text-red-600">Error loading document</div>`;
+      console.error('View document error:', error);
+      alert('Failed to load document');
     }
   };
 
-  // Close modal
-  window.closeDocModal = function() {
-    const modal = document.getElementById('docModal');
-    if (modal) modal.style.display = 'none';
-  };
-
-  // View full image
-  window.viewFullImage = function(imageUrl, title) {
-    const fullImageModal = document.createElement('div');
-    fullImageModal.id = 'fullImageModal';
-    fullImageModal.className = 'fixed inset-0 bg-black/90 z-[999999] flex items-center justify-center p-4';
-    fullImageModal.style.display = 'flex';
-    fullImageModal.innerHTML = `
-      <div class="relative max-w-full max-h-full">
-        <button onclick="closeFullImage()" class="absolute -top-12 right-0 text-white/80 hover:text-white text-2xl">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-        <img src="${imageUrl}" alt="${title}" class="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl">
-        <p class="text-white text-center mt-4 text-sm">${title}</p>
-      </div>
-    `;
-    document.body.appendChild(fullImageModal);
-    
-    // Close on click outside
-    fullImageModal.onclick = function(e) {
-      if (e.target === fullImageModal) closeFullImage();
-    };
-  };
-
-  // Close full image modal
-  window.closeFullImage = function() {
-    const modal = document.getElementById('fullImageModal');
-    if (modal) modal.remove();
+  // Close document modal
+  window.closeDocumentModal = function () {
+    document.getElementById('documentViewerModal').classList.add('hidden');
   };
 
   // Delete comment
@@ -2723,33 +2653,11 @@
     });
   }
 
-  // Category filter - button-based
-  let currentCategoryFilter = 'All';
-  
-  function setupCategoryFilterButtons() {
-    const filterContainer = document.getElementById('categoryFilter');
-    if (!filterContainer) return;
-    
-    const buttons = filterContainer.querySelectorAll('.category-btn');
-    buttons.forEach(btn => {
-      btn.addEventListener('click', function() {
-        // Update active state
-        buttons.forEach(b => {
-          b.classList.remove('bg-violet-600', 'text-white');
-          b.classList.add('bg-gray-100', 'text-gray-600');
-        });
-        this.classList.remove('bg-gray-100', 'text-gray-600');
-        this.classList.add('bg-violet-600', 'text-white');
-        
-        // Update filter and reload
-        currentCategoryFilter = this.getAttribute('data-category');
-        loadDepartmentDocuments();
-      });
-    });
+  // Category filter
+  const categoryFilter = document.getElementById('categoryFilter');
+  if (categoryFilter) {
+    categoryFilter.addEventListener('change', loadDepartmentDocuments);
   }
-  
-  // Initialize category filter buttons
-  setupCategoryFilterButtons();
 
   // Search functionality
   const documentsSearch = document.getElementById('documentsSearch');

@@ -516,55 +516,61 @@
       const today = new Date().toISOString().split('T')[0];
       const isPast = e.date < today;
       const statusBadge = isPast 
-        ? '<span class="px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-600">Past</span>'
-        : '<span class="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-600">Upcoming</span>';
+        ? '<span class="px-3 py-1.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-600 border border-gray-200">Past</span>'
+        : '<span class="px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700 border border-emerald-200">Upcoming</span>';
+      
+      const itemsList = e.items && e.items.length 
+        ? `<div class="flex flex-wrap gap-1">${e.items.slice(0, 2).map(item => `<span class="px-2 py-1 rounded-md bg-violet-50 text-violet-700 text-xs font-medium border border-violet-100">${escapeHtml(item)}</span>`).join('')}${e.items.length > 2 ? `<span class="px-2 py-1 rounded-md bg-gray-100 text-gray-500 text-xs font-medium">+${e.items.length - 2}</span>` : ''}</div>`
+        : '<span class="text-gray-400 text-sm">—</span>';
       
       return `
-        <tr class="hover:bg-gray-50/80 transition-colors border-b border-gray-50 last:border-0 opacity-0 animate-fade-in" style="animation-delay: ${index * 0.05}s; animation-fill-mode: forwards;">
+        <tr class="group hover:bg-gradient-to-r hover:from-violet-50/50 hover:to-purple-50/30 transition-all duration-300 border-b border-gray-100 last:border-0" style="animation: fadeInRow 0.4s ease-out ${index * 0.05}s both;">
           <td class="px-6 py-4">
             <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-xl bg-gradient-to-r from-primary-500 to-secondary-500 flex items-center justify-center flex-shrink-0">
+              <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center flex-shrink-0 shadow-md group-hover:shadow-lg group-hover:scale-105 transition-all">
                 <i class="fa-solid fa-calendar text-white text-sm"></i>
               </div>
               <div>
-                <p class="text-sm font-semibold text-gray-800">${escapeHtml(e.title)}</p>
+                <p class="text-sm font-bold text-gray-800 group-hover:text-violet-700 transition-colors">${escapeHtml(e.title)}</p>
                 <p class="text-xs text-gray-500">${e.category || 'General'}</p>
               </div>
             </div>
           </td>
           <td class="px-6 py-4">
-            <span class="text-gray-700">${formatTime(e.time)}</span>
+            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-700 text-xs font-semibold border border-blue-100">
+              <i class="fa-regular fa-clock text-xs"></i>
+              ${formatTime(e.time)}
+            </span>
           </td>
           <td class="px-6 py-4">
-            <div class="text-sm text-gray-800 font-medium">${escapeHtml(e.startDate || e.date)}</div>
-            ${e.endDate && e.endDate !== e.startDate ? `<div class="text-xs text-gray-500">to ${escapeHtml(e.endDate)}</div>` : ''}
-          </td>
-          <td class="px-6 py-4">
-            <div class="flex items-center gap-2 text-sm text-gray-600">
-              <i class="fa-solid fa-location-dot text-rose-400"></i>
-              <span>${escapeHtml(e.location || '—')}</span>
+            <div class="flex flex-col">
+              <span class="text-sm font-semibold text-gray-800">${escapeHtml(e.startDate || e.date)}</span>
+              ${e.endDate && e.endDate !== e.startDate ? `<span class="text-xs text-gray-500">to ${escapeHtml(e.endDate)}</span>` : ''}
             </div>
           </td>
           <td class="px-6 py-4">
-            ${e.items && e.items.length 
-              ? `<div class="flex flex-wrap gap-1">${e.items.slice(0, 3).map(item => `<span class="px-2 py-1 rounded-lg bg-gray-100 text-gray-600 text-xs">${escapeHtml(item)}</span>`).join('')}${e.items.length > 3 ? `<span class="px-2 py-1 rounded-lg bg-gray-100 text-gray-500 text-xs">+${e.items.length - 3}</span>` : ''}</div>`
-              : '<span class="text-gray-400 text-sm">—</span>'
-            }
+            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-50 text-amber-700 text-xs font-medium border border-amber-100">
+              <i class="fa-solid fa-location-dot text-amber-500"></i>
+              ${escapeHtml(e.location || '—')}
+            </span>
           </td>
           <td class="px-6 py-4">
-            <div class="flex items-center gap-2">
+            ${itemsList}
+          </td>
+          <td class="px-6 py-4">
+            <div class="flex items-center justify-center gap-2">
               ${statusBadge}
-              <button class="w-9 h-9 rounded-xl bg-amber-100 text-amber-600 hover:bg-amber-200 flex items-center justify-center transition-colors" onclick="editEvent('${escapeHtml(e._id)}')" title="Edit">
-                <i class="fa-solid fa-pen text-sm"></i>
+              <button class="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 hover:bg-amber-200 hover:scale-105 flex items-center justify-center transition-all" onclick="editEvent('${escapeHtml(e._id)}')" title="Edit">
+                <i class="fa-solid fa-pen text-xs"></i>
               </button>
-              <button class="w-9 h-9 rounded-xl bg-rose-100 text-rose-600 hover:bg-rose-200 flex items-center justify-center transition-colors" onclick="deleteEvent('${escapeHtml(e._id)}')" title="Delete">
-                <i class="fa-solid fa-trash text-sm"></i>
+              <button class="w-8 h-8 rounded-lg bg-rose-100 text-rose-600 hover:bg-rose-200 hover:scale-105 flex items-center justify-center transition-all" onclick="deleteEvent('${escapeHtml(e._id)}')" title="Delete">
+                <i class="fa-solid fa-trash text-xs"></i>
               </button>
             </div>
           </td>
         </tr>
       `;
-    }).join('') : '<tr><td colspan="6" class="px-6 py-12 text-center"><i class="fa-solid fa-inbox text-4xl text-gray-300 mb-3"></i><p class="text-gray-500">No events found.</p></td></tr>';
+    }).join('') : '<tr><td colspan="6" class="px-6 py-12 text-center"><div class="inline-flex flex-col items-center"><i class="fa-solid fa-inbox text-5xl text-gray-200 mb-3"></i><p class="text-gray-500 font-medium">No events found</p></div></td></tr>';
   }
 
   if (document.getElementById('eventsSearch')) {

@@ -279,14 +279,95 @@
       animation-delay: -4s;
     }
     
-    /* Input focus animation */
-    .input-animated {
+    /* Enhanced Input Styling */
+    .input-group {
+      position: relative;
       transition: all 0.3s ease;
     }
     
-    .input-animated:focus {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 30px -10px rgba(124, 58, 237, 0.3);
+    .input-field {
+      width: 100%;
+      padding: 14px 16px 14px 48px;
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 16px;
+      font-size: 15px;
+      font-weight: 500;
+      color: #1e293b;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+    
+    .input-field::placeholder {
+      color: #94a3b8;
+      font-weight: 400;
+    }
+    
+    .input-field:hover {
+      background: #ffffff;
+      border-color: #cbd5e1;
+      box-shadow: 0 4px 12px rgba(124, 58, 237, 0.08);
+    }
+    
+    .input-field:focus {
+      background: #ffffff;
+      border-color: #7c3aed;
+      box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.1), 0 4px 20px rgba(124, 58, 237, 0.15);
+      outline: none;
+    }
+    
+    .input-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+      font-size: 18px;
+      transition: all 0.3s ease;
+      pointer-events: none;
+    }
+    
+    .input-group:focus-within .input-icon {
+      color: #7c3aed;
+    }
+    
+    /* Error state */
+    .input-field.error {
+      border-color: #ef4444;
+      background: #fef2f2;
+      box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+    }
+    
+    .input-field.error + .input-icon {
+      color: #ef4444;
+    }
+    
+    /* Password toggle button */
+    .password-toggle {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .password-toggle:hover {
+      color: #7c3aed;
+      background: rgba(124, 58, 237, 0.1);
+    }
+    
+    .password-toggle:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
     }
     
     /* Button shimmer effect */
@@ -404,23 +485,21 @@
         <form id="loginForm" novalidate>
           <!-- Email Field -->
           <div class="mb-5">
-            <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">
+            <label for="email" class="block text-sm font-semibold text-gray-700 mb-2.5">
               Email Address <span class="text-primary-500">*</span>
             </label>
-            <div class="relative group">
-              <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <i class="fa-regular fa-envelope text-gray-400 group-focus-within:text-primary-500 transition-colors"></i>
-              </div>
+            <div class="input-group">
+              <i class="fa-regular fa-envelope input-icon"></i>
               <input 
                 type="email" 
                 id="email" 
                 required 
                 placeholder="admin@nursing.edu" 
                 autocomplete="email"
-                class="input-animated w-full pl-11 pr-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all"
+                class="input-field"
               >
             </div>
-            <p class="text-red-500 text-xs mt-1.5 hidden flex items-center gap-1" id="emailError">
+            <p class="text-red-500 text-xs mt-2 hidden flex items-center gap-1" id="emailError">
               <i class="fa-solid fa-circle-exclamation text-xs"></i>
               <span>Please enter your email address.</span>
             </p>
@@ -428,31 +507,30 @@
 
           <!-- Password Field -->
           <div class="mb-6">
-            <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">
+            <label for="password" class="block text-sm font-semibold text-gray-700 mb-2.5">
               Password <span class="text-primary-500">*</span>
             </label>
-            <div class="relative group">
-              <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <i class="fa-solid fa-lock text-gray-400 group-focus-within:text-primary-500 transition-colors"></i>
-              </div>
+            <div class="input-group">
+              <i class="fa-solid fa-lock input-icon"></i>
               <input 
                 type="password" 
                 id="password" 
                 required 
-                placeholder="••••••••" 
+                placeholder="Enter your password" 
                 autocomplete="current-password"
-                class="input-animated w-full pl-11 pr-12 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:border-primary-500 focus:bg-white focus:outline-none transition-all"
+                class="input-field"
+                style="padding-right: 48px;"
               >
               <button 
                 type="button" 
                 id="passwordToggle"
-                class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-primary-500 transition-colors focus:outline-none"
+                class="password-toggle"
                 aria-label="Toggle password visibility"
               >
                 <i class="fa-regular fa-eye" id="passwordIcon"></i>
               </button>
             </div>
-            <p class="text-red-500 text-xs mt-1.5 hidden flex items-center gap-1" id="passwordError">
+            <p class="text-red-500 text-xs mt-2 hidden flex items-center gap-1" id="passwordError">
               <i class="fa-solid fa-circle-exclamation text-xs"></i>
               <span>Please enter your password.</span>
             </p>
@@ -657,8 +735,7 @@
       });
 
       function showFieldError(el, msg) {
-        el.classList.add('border-red-500', 'bg-red-50');
-        el.classList.remove('border-gray-200', 'bg-gray-50');
+        el.classList.add('error');
         const err = el.parentElement.nextElementSibling;
         if (err && err.id.includes('Error')) {
           err.querySelector('span').textContent = msg || 'This field is required.';
@@ -668,8 +745,7 @@
       }
 
       function clearFieldError(el) {
-        el.classList.remove('border-red-500', 'bg-red-50');
-        el.classList.add('border-gray-200', 'bg-gray-50');
+        el.classList.remove('error');
         const err = el.parentElement.nextElementSibling;
         if (err && err.id.includes('Error')) {
           err.classList.add('hidden');
